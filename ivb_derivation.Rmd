@@ -1,0 +1,161 @@
+---
+title: "IVB-paper"
+author: "Manoel Galdino"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: pdf_document
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+In this document, we derive the expression for the **Included Variable Bias (IVB)** caused by conditioning on a collider variable \( Z \) in a regression model. This bias is analogous to the well-known omitted variable bias (OVB) but arises when a collider is incorrectly included in the model.
+
+# Model Setup
+
+We consider the following models:
+
+## Short Regression
+
+The true relationship between the outcome \( y \) and the treatment \( D \) is given by:
+
+\[
+y = \beta_0 + \beta_1 D + e
+\]
+
+- \( \beta_0 \): Intercept term.
+- \( \beta_1 \): True effect of \( D \) on \( y \).
+- \( e \): Error term with \( \mathbb{E}[e|D] = 0 \).
+
+## Wrong Model (Long Regression with Collider Bias)
+
+Including the collider variable \( Z \) leads to the following (misspecified) model:
+
+\[
+y = \beta_0^\star + \beta_1^\star D + \beta_2^\star Z + e^\star
+\]
+
+- \( \beta_0^\star, \beta_1^\star, \beta_2^\star \): Estimated coefficients from the long regression.
+- \( e^\star \): Error term where \( \mathbb{E}[e^\star|D] \neq 0 \).
+
+## Collider Relationship
+
+The collider variable \( Z \) is influenced by both \( D \) and \( y \):
+
+\[
+Z = \gamma_0 + \gamma_1 D + \gamma_2 y + u
+\]
+
+- \( \gamma_0, \gamma_1, \gamma_2 \): Parameters of the collider equation.
+- \( u \): Error term with \( \mathbb{E}[u|D] = 0 \) and \( \mathbb{E}[u|y] = 0 \).
+
+
+## Step 1: Express Bias in Terms of Covariances
+
+The bias in the estimated coefficient \( \beta_1^\star \) arises due to the inclusion of the collider \( Z \):
+
+We know that $\beta_1 = \frac{\operatorname{Cov}(D, Y)}{\operatorname{Var}(D)}$.
+
+We also know that $\beta_1^\star = \frac{\operatorname{Cov}(D, Y) -\beta_2^\star\operatorname{Cov}(D, Z) }{\operatorname{Var}(D)}$. 
+
+If we define $\text{Bias} = \beta_1^\star - \beta_1$, then:
+
+\[
+\text{Bias} = \beta_1^\star - \beta_1 = -\beta_2^\star \frac{\operatorname{Cov}(D, Z)}{\operatorname{Var}(D)}
+\]
+
+- \( \beta_2^\star \): Coefficient of \( Z \) from the long regression.
+- \( \operatorname{Cov}(D, Z) \) and \( \operatorname{Var}(D) \): Covariance and variance terms involving observable variables.
+
+## Step 2: Avoiding \( \gamma_1 \) and \( \gamma_2 \)
+
+We substitute the expression for \( y \) into the collider equation to eliminate \( \gamma_1 \) and \( \gamma_2 \).
+
+### Substitute \( y \) into the Collider Equation
+
+From the true model:
+
+\[
+y = \beta_0 + \beta_1 D + e
+\]
+
+Substitute \( y \) into \( Z \):
+
+
+\begin{align*}
+Z &= \gamma_0 + \gamma_1 D + \gamma_2 y + u \\
+  &= \gamma_0 + \gamma_1 D + \gamma_2 (\beta_0 + \beta_1 D + e) + u \\
+  &= (\gamma_0 + \gamma_2 \beta_0) + (\gamma_1 + \gamma_2 \beta_1) D + \gamma_2 e + u
+\end{align*}
+
+
+### Define New Terms
+
+Let:
+
+
+\begin{align*}
+\phi_0 &= \gamma_0 + \gamma_2 \beta_0 \\
+\phi_1 &= \gamma_1 + \gamma_2 \beta_1 \\
+\varepsilon &= \gamma_2 e + u
+\end{align*}
+
+
+So the collider equation becomes:
+
+\[
+Z = \phi_0 + \phi_1 D + \varepsilon
+\]
+
+- \( \phi_1 \): Coefficient from regressing \( Z \) on \( D \).
+- \( \varepsilon \): Composite error term.
+
+## Step 3: Express Covariance Using Observable Quantities
+
+The covariance between \( D \) and \( Z \) is:
+
+\[
+\operatorname{Cov}(D, Z) = \phi_1 \operatorname{Var}(D)
+\]
+
+Thus, the bias becomes:
+
+\[
+\text{Bias} = -\beta_2^\star \frac{\operatorname{Cov}(D, Z)}{\operatorname{Var}(D)} = -\beta_2^\star \phi_1
+\]
+
+- Both \( \beta_2^\star \) and \( \phi_1 \) are estimable from data.
+
+# Final Expression of Included Variable Bias
+
+The included variable bias is:
+
+\[
+\text{Bias} = -\beta_2^\star \phi_1
+\]
+
+Where:
+
+- \( \beta_2^\star \): Estimated coefficient of \( Z \) from the long regression.
+- \( \phi_1 \): Estimated coefficient from regressing \( Z \) on \( D \).
+
+# Practical Implications
+
+- **Estimating \( \beta_2^\star \):** Run the long regression of \( y \) on \( D \) and \( Z \).
+- **Estimating \( \phi_1 \):** Regress \( Z \) on \( D \) to obtain \( \phi_1 \).
+- **Calculating Bias:** Use the formula \( \text{Bias} = -\beta_2^\star \phi_1 \) to quantify the bias.
+
+# Conclusion
+
+By expressing the included variable bias in terms of observable quantities (\( \beta_2^\star \) and \( \phi_1 \)), we can quantify the bias introduced by incorrectly including a collider variable in the regression model. This derivation parallels the omitted variable bias formula but addresses the specific context of collider bias.
+
+# References
+
+- **Econometrics Textbooks** for foundational knowledge on regression models and biases.
+- **Causal Inference Literature** for understanding collider bias and its implications.
+
