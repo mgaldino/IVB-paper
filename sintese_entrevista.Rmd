@@ -1,0 +1,73 @@
+---
+title: "Síntese da Entrevista de Pesquisa — Included Variable Bias"
+author: "Manoel Galdino"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+## Pergunta de pesquisa
+
+Qual é o viés introduzido quando um pesquisador inclui uma variável collider (post-treatment) em um modelo de regressão, e como quantificá-lo em termos de quantidades observáveis?
+
+## Argumento central
+
+Assim como o OVB tem uma fórmula clássica que decompõe o viés de omitir uma variável relevante, o IVB (Included Variable Bias) pode ser expresso como $\text{Bias} = -\hat{\beta}_2^* \times \hat{\phi}_1$, onde ambos os termos são estimáveis a partir dos dados. A literatura sobre collider/post-treatment bias diz qualitativamente "não controle por colliders", mas não oferece uma ferramenta quantitativa para diagnosticar o tamanho e a direção do estrago. Esta fórmula preenche essa lacuna.
+
+## Resultados teóricos
+
+### Cross-section
+$$\text{IVB} = -\hat{\beta}_2^* \times \hat{\phi}_1$$
+
+### ADL(1,0) — via FWL
+$$\text{IVB}(\beta) = -\hat{\theta}^* \times \hat{\pi}$$
+
+onde $\hat{\theta}^*$ é o coeficiente de $Z_t$ na regressão longa e $\hat{\pi}$ é o coeficiente de $D_t$ na regressão auxiliar $Z_t \sim D_t + y_{t-1}$.
+
+### ADL(p,q) — generalização
+$$\text{IVB}(\beta_j) = -\hat{\theta}^* \times \hat{\pi}_j$$
+
+A forma é idêntica em todos os casos. A derivação completa está em `ivb_adl_derivacao.md`.
+
+## Validação por simulação (concluída)
+
+Três cenários simulados com 500 iterações cada, todos confirmando que a fórmula captura o viés com precisão:
+
+| Cenário | $\beta$ verdadeiro | $\hat{\beta}$ com collider | Viés empírico | Viés fórmula |
+|---|---|---|---|---|
+| Cross-section | 1.000 | 0.656 | -0.344 | -0.344 |
+| ADL(1,0) | 1.000 | 0.654 | -0.346 | -0.346 |
+| Civil War | 5.000 | 4.596 | -0.404 | -0.404 |
+
+Código e plots em `sim_ivb_completa.R` e `plots/`.
+
+## Contribuição para a literatura
+
+- Complementa Blackwell & Glynn (2018), que identificam o problema de post-treatment bias em TSCS e propõem soluções (SNMM, MSM), mas não quantificam o viés em fórmula fechada
+- Espelha a tradição do OVB, dando ao pesquisador aplicado uma ferramenta intuitiva e operacional: DAGs dizem *se* há problema, a fórmula diz *quanto* problema
+- Incorpora e atualiza material do working paper "Beware the collider" (Galdino, Moreira & Dolleans, 2023), que já contém DAGs, exemplo de guerra civil e conceito de "foreign collider bias"
+- Abre caminho para análise de sensibilidade à la Cinelli & Hazlett (2020) em paper futuro
+
+## Aplicação empírica
+
+Exemplo baseado na literatura de guerra civil (cf. Hegre et al., 2001; Blattman & Miguel, 2010):
+
+- **Tratamento**: Political Change
+- **Outcome**: Civil War
+- **Collider**: Democracy Level (causado por Civil War, mas incluído como controle pela heurística padrão)
+- DAGs já desenvolvidos no "Beware the collider", incluindo o conceito de "foreign collider bias" em TSCS
+
+## Decisões tomadas
+
+- **Escopo**: paper focado no IVB, sem análise de sensibilidade (fica para paper futuro)
+- **Venue-alvo**: PSRM (Political Science Research and Methods)
+- **Coautores**: convidar Davi Moreira e Carolina Dolleans, coautores do "Beware the collider", cujo material será incorporado
+- **Estrutura do paper**: fusão do IVB paper (fórmula + derivações + simulações) com o "Beware the collider" (motivação + DAGs + exemplo aplicado)
+
+## Próximos passos
+
+1. ~~Derivar o IVB para o caso ADL~~ (concluído — `ivb_adl_derivacao.md`)
+2. ~~Simulações Monte Carlo validando a fórmula~~ (concluído — `sim_ivb_completa.R`)
+3. **Escrever versão nova do paper** fundindo os dois manuscritos, com estrutura para PSRM
+4. **Conversar com Davi e Carolina** sobre coautoria
+5. **Buscar exemplo empírico com dados reais** — replicar paper canônico da literatura de guerra civil onde o controle é plausivelmente collider, aplicando a fórmula do IVB
+6. **Paper futuro**: análise de sensibilidade para IVB à la Cinelli & Hazlett (2020), possivelmente para PA ou Journal of Causal Inference (com exemplo de epidemio/economia)

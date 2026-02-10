@@ -1,0 +1,1017 @@
+---
+title: "Included Variable Bias: A Formula for Collider Bias in Cross-Sectional and Time-Series Cross-Sectional Regressions"
+author:
+  - "Manoel Galdino^[Assistant Professor of Political Science, Universidade de São Paulo. E-mail: mgaldino@usp.br]"
+  - "Davi Moreira^[Professor of Quantitative Methods, Mitch Daniels School of Business, Purdue University.]"
+  - "Carolina Dolleans^[Graduate Student of Political Science, Universidade Federal de Pernambuco.]"
+date: "`r format(Sys.Date(), '%B %Y')`"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    keep_tex: true
+    number_sections: true
+    fig_caption: true
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{booktabs}
+  - \usepackage{tikz}
+  - \usetikzlibrary{positioning, arrows.meta, calc, shapes.misc}
+  - \usepackage{setspace}
+  - \usepackage{float}
+  - \usepackage{caption}
+  - \usepackage[round]{natbib}
+  - \doublespacing
+  - \newtheorem{proposition}{Proposition}
+  - \newtheorem{definition}{Definition}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+abstract: |
+  The selection of control variables is a critical step in observational studies, yet standard heuristics can inadvertently lead researchers to include collider variables, introducing bias rather than removing it. While Directed Acyclic Graphs (DAGs) can diagnose whether a variable is a collider, they do not quantify the magnitude of the resulting bias. We derive the Included Variable Bias (IVB) formula---a closed-form expression that mirrors the classic Omitted Variable Bias (OVB) formula but addresses the opposite problem: the bias from erroneously including a variable. We show that $\text{IVB} = -\theta^{\star} \times \pi$, where both components are directly estimable from data. We extend the result from cross-sectional models to the Autoregressive Distributed Lag (ADL) specifications common in time-series cross-sectional (TSCS) analysis. Monte Carlo simulations confirm the formula's exactness across multiple data-generating processes, and we illustrate its application with an example from the civil war literature.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.pos = "H",
+  cache = TRUE,
+  dpi = 300
+)
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(kableExtra)
+
+theme_set(theme_minimal(base_size = 12))
+```
+
+# Introduction
+
+Applied researchers using observational data face a fundamental challenge: which variables should be included as controls in a regression model? The answer to this question is decisive for causal identification, yet the discipline's standard practices offer surprisingly little guidance for getting it right. Two widely used heuristics---what we call *control checking* and *confounding checking*---instruct researchers to include variables that cause the outcome or that jointly cause the treatment and the outcome. While these rules are sensible in many settings, they share a critical blind spot: they do not assess whether a candidate control variable is a collider, a variable that is caused by both the treatment and the outcome (or by the treatment and an unobserved common cause of the outcome). Including a collider in a regression opens a backdoor path and biases the estimate of the causal effect \citep{pearl2009causality, elwert2014endogenous}.
+
+The problem is especially acute in time-series cross-sectional (TSCS) research designs, which are ubiquitous in comparative politics and international relations \citep{beck1995what, franzese2007spatial}. In TSCS settings, researchers routinely lag their control variables to avoid reverse causality. This seemingly prudent practice can, paradoxically, create collider bias. When a lagged control variable is itself caused by the outcome and by an unobserved variable that also affects the outcome, conditioning on it opens a spurious path---a phenomenon we term ``foreign collider bias.''
+
+Directed Acyclic Graphs (DAGs) have become an increasingly recognized tool for diagnosing such problems \citep{pearl2018book, imbens2020potential}. A growing literature in political science has begun to apply DAGs to improve causal identification \citep{montgomery2018conditioning, blackwell2018make}. DAGs provide a clear, qualitative answer to the question of *whether* including a particular variable introduces bias. However, they are silent on the equally important question of *how much* bias results. A researcher who discovers that a control variable is a collider still does not know the magnitude or even the direction of the bias without additional tools.
+
+This paper fills that gap. We derive the **Included Variable Bias (IVB)** formula---a closed-form expression for the bias that arises when a collider variable is erroneously included in a regression model. The formula takes a remarkably simple form:
+\begin{equation}
+\text{IVB} = -\theta^{\star} \times \pi
+\label{eq:ivb_main}
+\end{equation}
+where $\theta^{\star}$ is the coefficient on the collider in the misspecified (``long'') regression and $\pi$ is the coefficient on the treatment in an auxiliary regression of the collider on the treatment and legitimate controls. Both quantities are directly estimable from data, making the formula immediately operational for applied researchers.
+
+The IVB formula mirrors the well-known Omitted Variable Bias (OVB) formula, but addresses the symmetrically opposite problem. Where OVB quantifies the cost of leaving out a relevant confounder, IVB quantifies the cost of putting in an irrelevant---or, more precisely, harmful---collider. We show that this result holds not only in standard cross-sectional regression but extends naturally to the Autoregressive Distributed Lag (ADL) models that are the workhorse of TSCS analysis. The extension relies on the Frisch--Waugh--Lovell (FWL) theorem \citep{frisch1933partial, lovell1963seasonal} and yields the same functional form, with the key quantities now partialled out by the dynamic controls (lagged dependent variables and lagged treatments).
+
+We validate the formula through Monte Carlo simulations across three data-generating processes: a pure cross-section, an ADL(1,0) panel, and a substantive civil war DGP inspired by the empirical literature on political change and conflict. In every scenario, the formula predicts the empirical bias with exact precision.
+
+The remainder of this paper is organized as follows. Section 2 reviews the standard heuristics for selecting control variables and identifies their limitations. Section 3 introduces DAGs and illustrates collider bias in a TSCS context using a running example from the civil war literature. Section 4 presents the core theoretical contribution: the derivation of the IVB formula for cross-sectional and ADL models. Section 5 validates the formula through Monte Carlo simulations. Section 6 provides a practical walkthrough of the formula using the civil war example. Section 7 concludes with recommendations for applied researchers.
+
+
+# The Control Variable Problem \label{sec:control}
+
+In observational studies, when using regression with a selection-on-observables strategy to identify a causal effect, including the right set of control variables is decisive. Which variables to include depends primarily on the researcher's scientific understanding of which variables are crucial to explain the phenomena of interest. A second criterion is that the model should be *identified*, meaning there is no bias in estimating the causal estimand of interest \citep{cinelli2021crash}. In practice, most scholars rely on informal heuristics to decide which controls to include. We review the two most common approaches below and argue that, while each has merit, neither is sufficient to prevent collider bias---and neither can quantify the resulting damage.
+
+## Control Checking
+
+A standard heuristic is to review the relevant literature to search for potential causal variables of the outcome of interest and include them in the regression as controls. A typical example of such a heuristic comes from a paper on foreign aid:
+
+> ``As the previous literature on aid policy maintains, various other factors shape donor decisions about the allocation of aid resources, including other recipient characteristics and non-developmental donor goals. I include them as control to provide a fully specified model'' \citep[][p.~81]{dietrich2016donor}.
+
+One can argue in favor of this approach by noting that a thorough literature review may identify variables whose inclusion decreases the unexplained variance in the dependent variable, thereby improving the precision of the estimate of the Average Causal Effect \citep{hahn2004functional, pearl2013linear, cinelli2021crash}. Unfortunately, this justification is not sufficient to decide whether a variable *should* be included as a control. As shown by \citet{cinelli2021crash}, it is quite possible to include a variable that decreases precision *and* induces bias, even if it is causally related to the outcome of interest. The control checking heuristic is agnostic about the causal structure linking the control to the treatment and outcome, and therefore cannot distinguish a helpful confounder from a harmful collider.
+
+## Confounding Checking
+
+A slightly better heuristic is to survey the literature specifically for potential *confounding* variables---those that cause both the outcome and the treatment. In econometric parlance, the goal is to avoid omitted variable bias by including all appropriate confounders. A typical example of this approach comes from the literature on political regime change and civil war:
+
+> ``Our model does not attempt to present an inclusive theory of civil war, but level of democracy and political change do not provide a complete explanation. Therefore, we identify a number of control variables---Development, Ethnic Heterogeneity, Proximity of Independence, and International War in Country---whose omission might bias the results for the regime change variable'' \citep[][p.~37]{hegre2001toward}.
+
+This heuristic is closer to the right intuition because it is explicitly focused on diminishing the primary source of bias in observational studies, namely, omitted variable bias. In DAG parlance, no omitted variable bias remains if the researcher blocks all backdoor paths by including all appropriate confounders. However---and this is a key point of this paper---this heuristic does not assess whether the researcher is inadvertently conditioning on a collider rather than a confounder. In the TSCS context, this omission is particularly dangerous because the temporal structure of the data creates new opportunities for collider bias that are absent in pure cross-sections.
+
+## The Quantification Gap
+
+What about formal approaches that go beyond heuristics? Several alternatives exist. \citet{heckman2008econometric} argues that researchers should explicitly model the selection into treatment, which allows one to formally assess whether the causal effect is identified. While rigorous, this approach may be infeasible in practice due to tractability constraints or insufficient scientific knowledge about the selection process. Causal discovery algorithms \citep{spirtes2016causal, glymour2019review, duarte2021automated} offer another path, but they presuppose that all relevant variables have been measured---precisely the problem we need to solve in the first place.
+
+A third approach, advocated by \citet{pearl2009causality} and employed in this paper, is to draw a Directed Acyclic Graph (DAG) to determine whether the causal effect is identified. The DAG approach allows the researcher to reason about missing controls, erroneously included ``bad controls,'' and even unobservable variables that set the limits of the study \citep{cinelli2021crash}.
+
+Yet even the DAG approach, as typically used, has a limitation: it provides a \textit{qualitative} diagnosis---``this variable is a collider; do not condition on it''---but not a \textit{quantitative} one---``conditioning on this collider introduces a bias of magnitude $x$ in direction $d$.'' This paper addresses precisely this gap. By deriving a closed-form formula for the Included Variable Bias, we give applied researchers a tool that complements DAGs: the graph tells them *whether* there is a problem, and the formula tells them *how much* of a problem it is.
+
+
+# DAGs and Collider Bias \label{sec:dags}
+
+## Preliminaries
+
+Directed Acyclic Graphs (DAGs) are part of an approach to causal inference first developed by \citet{wright1928tariff} and \citet{wright1934method}, and substantially advanced by the work of \citet{pearl2009causality} and collaborators \citep{pearl2018book}. DAGs have been applied in several domains, including epidemiology, computer science, and, more recently, political science \citep{imbens2020potential, yao2021survey}.
+
+All DAGs comprise three primary structures: chains, forks, and colliders (or inverted forks). Understanding these structures is essential for correct control variable selection.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.8cm,
+    every node/.style={draw, circle, minimum size=1cm, font=\small},
+    arr/.style={-{Stealth[length=2.5mm]}, thick}
+]
+
+% Collider (inverted fork)
+\node (X0) at (0,4) {$X_0$};
+\node (Y1) at (2,4) {$Y_1$};
+\node (W) at (0,2.5) {$W$};
+\draw[arr] (X0) -- (Y1);
+\draw[arr] (W) -- (Y1);
+\node[draw=none, font=\normalsize\bfseries] at (1, 1.5) {(a) Collider};
+
+% Fork
+\node (V3) at (5.5,4) {$V_3$};
+\node (V1) at (4,2.5) {$V_1$};
+\node (V2) at (7,2.5) {$V_2$};
+\draw[arr] (V3) -- (V1);
+\draw[arr] (V3) -- (V2);
+\node[draw=none, font=\normalsize\bfseries] at (5.5, 1.5) {(b) Fork};
+
+% Chain
+\node (Z) at (10,4) {$Z$};
+\node (X1) at (11.5,2.5) {$X_1$};
+\node (Y2) at (13,4) {$Y_2$};
+\draw[arr] (Z) -- (X1);
+\draw[arr] (X1) -- (Y2);
+\node[draw=none, font=\normalsize\bfseries] at (11.5, 1.5) {(c) Chain};
+
+\end{tikzpicture}
+\caption{The three elementary structures of DAGs: (a)~a collider or inverted fork, where $Y_1$ is a common effect of $X_0$ and $W$; (b)~a fork, where $V_3$ is a common cause of $V_1$ and $V_2$; and (c)~a chain, where $X_1$ is a mediator between $Z$ and $Y_2$.}
+\label{fig:three_structures}
+\end{figure}
+
+In a **fork** (panel b), $V_3$ is a common cause of $V_1$ and $V_2$. If one is interested in the effect of $V_1$ on $V_2$, controlling for the common cause $V_3$ blocks the backdoor path and eliminates omitted variable bias. In a **chain** (panel c), $X_1$ mediates the effect of $Z$ on $Y_2$. If one is interested in the total effect, controlling for the mediator blocks the causal path and leads to underestimation. In a **collider** (panel a), $Y_1$ is a common effect of $X_0$ and $W$. A collider, unlike chains and forks, does not induce an association between its parent variables. However, conditioning on a collider (or on its descendants) *creates* a spurious association between its causes \citep{pearl2018book, elwert2014endogenous}.
+
+The heuristic behind ``confounding checking'' can be understood as an attempt to block all backdoor paths by conditioning on forks. However, this heuristic says nothing about what happens when the candidate control is a collider. This is the problem we now illustrate in a TSCS context.
+
+## A TSCS Application: Political Change and Civil War
+
+Consider a typical setup in comparative politics. A researcher wants to estimate the causal effect of political regime change on civil war, as in \citet{hegre2001toward}. Suppose the only measured confounder is per capita income, which plausibly causes both political change and civil war \citep{blattman2010civil}. The researcher controls for per capita income to block the backdoor path.
+
+In a TSCS setting, variables must be indexed by time. The researcher decides to lag both per capita income and political change to address reverse causality concerns. The resulting model corresponds to the temporal DAG in Figure~\ref{fig:dag_tscs}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2.5cm and 2.2cm,
+    every node/.style={draw, rounded rectangle, minimum height=0.8cm, font=\small, align=center},
+    arr/.style={-{Stealth[length=2.5mm]}, thick}
+]
+
+% Period t-1 and t nodes
+\node (PC1) at (0, 3) {$PC_{t-1}$};
+\node (PCt) at (5, 3) {$PC_t$};
+\node (CWt) at (2.5, 1.5) {$CW_t$};
+\node (CW1) at (7.5, 1.5) {$CW_{t+1}$};
+\node (Inc1) at (0, 0) {$Inc_{t-1}$};
+\node (Inct) at (5, 0) {$Inc_t$};
+
+% Arrows
+\draw[arr] (PC1) -- (CWt);
+\draw[arr] (PC1) -- (PCt);
+\draw[arr] (Inc1) -- (CWt);
+\draw[arr] (Inc1) -- (PC1);
+\draw[arr] (Inc1) -- (Inct);
+\draw[arr] (CWt) -- (CW1);
+\draw[arr] (PCt) -- (CW1);
+\draw[arr] (Inct) -- (CW1);
+\draw[arr] (Inct) -- (PCt);
+
+\end{tikzpicture}
+\caption{Temporal DAG for the effect of Political Change ($PC$) on Civil War ($CW$), with Per Capita Income ($Inc$) as a confounder. The temporal structure reveals that a lagged dependent variable ($CW_t$) is needed to block all backdoor paths to $CW_{t+1}$.}
+\label{fig:dag_tscs}
+\end{figure}
+
+A key insight from this DAG is that the dynamic structure introduces backdoor paths through the lagged outcome ($CW_t$). To block these paths, the researcher must include $CW_t$ as a control---leading to a dynamic panel (ADL) specification. Without the lagged dependent variable, the causal effect is biased.
+
+## Foreign Collider Bias
+
+Now suppose the researcher, following the confounding checking heuristic, wants to add Democracy Level ($Dem$) as an additional control, as \citet{hegre2001toward} suggest. At first glance, this seems harmless: democracy plausibly affects both political change and civil war. However, a more careful DAG reveals a critical problem.
+
+It is plausible that civil war *causes* changes in democracy levels (countries that experience civil war tend to become less democratic). If, in addition, there exist unobserved factors $U$ that affect both democracy levels and civil war---such as institutional quality, state capacity, or regional instability---then democracy level becomes a **collider**: it is a common effect of civil war and the unobserved $U$. Conditioning on it opens a backdoor path connecting $U$ to civil war through democracy level.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=2.2cm and 2cm,
+    every node/.style={draw, rounded rectangle, minimum height=0.8cm, font=\small, align=center},
+    arr/.style={-{Stealth[length=2.5mm]}, thick},
+    arrdash/.style={-{Stealth[length=2.5mm]}, thick, dashed}
+]
+
+% Nodes
+\node (PC1) at (0, 4) {$PC_{t-1}$};
+\node (PCt) at (5, 4) {$PC_t$};
+\node (CWt) at (2.5, 2) {$CW_t$};
+\node (CW1) at (7.5, 2) {$CW_{t+1}$};
+\node (Inc1) at (0, 0) {$Inc_{t-1}$};
+\node (Inct) at (5, 0) {$Inc_t$};
+\node (U) at (10, 4) {$U$};
+\node (Dem) at (10, 0) {$Dem_{t}$};
+
+% Structural arrows
+\draw[arr] (PC1) -- (CWt);
+\draw[arr] (PC1) -- (PCt);
+\draw[arr] (Inc1) -- (CWt);
+\draw[arr] (Inc1) -- (PC1);
+\draw[arr] (Inc1) -- (Inct);
+\draw[arr] (CWt) -- (CW1);
+\draw[arr] (PCt) -- (CW1);
+\draw[arr] (Inct) -- (CW1);
+\draw[arr] (Inct) -- (PCt);
+
+% Collider arrows
+\draw[arr, color=red!70!black] (CW1) -- (Dem);
+\draw[arr, color=red!70!black] (U) -- (Dem);
+\draw[arrdash, color=red!70!black] (U) -- (CW1);
+
+\end{tikzpicture}
+\caption{Complete DAG showing Democracy Level ($Dem_t$) as a collider. Civil War and an unobserved variable $U$ both cause Democracy Level. Conditioning on $Dem_t$ opens a spurious backdoor path $PC_t \to CW_{t+1} \leftarrow U \to Dem_t$, biasing the estimate of the effect of Political Change on Civil War. Red arrows highlight the collider structure.}
+\label{fig:dag_collider}
+\end{figure}
+
+We call this \textit{foreign collider bias} because the collider problem arises from a causal pathway that the researcher discovers only by looking at the ``foreign'' literature on the determinants of democracy---a literature that is typically separate from the civil war literature motivating the original study. The standard heuristics for including controls review the literature on the \textit{outcome} and the \textit{treatment}, but they do not instruct the researcher to investigate whether the candidate control is itself caused by the treatment or outcome through an unobserved variable.
+
+This example illustrates the power of DAGs: by making the causal structure explicit, they reveal that Democracy Level is a collider and that conditioning on it biases the regression. But the DAG alone does not tell us \textit{how much} bias results. For that, we need a formula.
+
+
+# The Included Variable Bias Formula \label{sec:ivb}
+
+In this section, we derive the Included Variable Bias (IVB) formula for the bias introduced by conditioning on a collider variable. We begin with the cross-sectional case, then compare IVB with the classical OVB formula, and finally extend the result to ADL models used in TSCS analysis.
+
+## Cross-Section Derivation \label{sec:cs_derivation}
+
+Consider the following setup. The true (``short'') model relating the outcome $y$ to the treatment $D$ is:
+\begin{equation}
+y = \beta_0 + \beta_1 D + e, \qquad \mathbb{E}[e \mid D] = 0
+\label{eq:short}
+\end{equation}
+where $\beta_1$ is the true causal effect of $D$ on $y$.
+
+Now suppose a researcher erroneously includes a collider variable $Z$ in the regression, estimating the ``long'' model:
+\begin{equation}
+y = \beta_0^{\star} + \beta_1^{\star} D + \beta_2^{\star} Z + e^{\star}
+\label{eq:long}
+\end{equation}
+where the star superscript indicates coefficients from the misspecified model. Here $\mathbb{E}[e^{\star} \mid D] \neq 0$ in general, because conditioning on the collider $Z$ opens a spurious path.
+
+The collider $Z$ is caused by both $D$ and $y$:
+\begin{equation}
+Z = \gamma_0 + \gamma_1 D + \gamma_2 y + u, \qquad \mathbb{E}[u \mid D] = 0, \; \mathbb{E}[u \mid y] = 0
+\label{eq:collider_structural}
+\end{equation}
+
+The population coefficients from OLS satisfy:
+\[
+\beta_1 = \frac{\text{Cov}(D, y)}{\text{Var}(D)}, \qquad
+\beta_1^{\star} = \frac{\text{Cov}(D, y) - \beta_2^{\star} \,\text{Cov}(D, Z)}{\text{Var}(D)}
+\]
+
+Subtracting, the bias in the estimated treatment effect is:
+\begin{equation}
+\text{Bias} = \beta_1^{\star} - \beta_1 = -\beta_2^{\star} \frac{\text{Cov}(D, Z)}{\text{Var}(D)}
+\label{eq:bias_step1}
+\end{equation}
+
+To express this in terms of estimable quantities, substitute the true model \eqref{eq:short} into the collider equation \eqref{eq:collider_structural}:
+\begin{align}
+Z &= \gamma_0 + \gamma_1 D + \gamma_2 (\beta_0 + \beta_1 D + e) + u \nonumber \\
+  &= \underbrace{(\gamma_0 + \gamma_2 \beta_0)}_{\phi_0} + \underbrace{(\gamma_1 + \gamma_2 \beta_1)}_{\phi_1} D + \underbrace{(\gamma_2 e + u)}_{\varepsilon}
+\label{eq:reduced_form_Z}
+\end{align}
+
+The reduced-form coefficient $\phi_1$ is simply the population coefficient from regressing $Z$ on $D$:
+\[
+\phi_1 = \frac{\text{Cov}(D, Z)}{\text{Var}(D)}
+\]
+
+Substituting into \eqref{eq:bias_step1} yields the IVB formula:
+
+\begin{proposition}[IVB, Cross-Section]
+\label{prop:ivb_cs}
+When a collider variable $Z$ is erroneously included in a regression of $y$ on $D$, the bias in the treatment effect estimate is:
+\begin{equation}
+\boxed{\textit{IVB} = \beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1}
+\label{eq:ivb_cs}
+\end{equation}
+where $\beta_2^{\star}$ is the coefficient on $Z$ in the long regression \eqref{eq:long} and $\phi_1$ is the coefficient from regressing $Z$ on $D$.
+\end{proposition}
+
+Both $\beta_2^{\star}$ and $\phi_1$ are directly estimable from data: run the long regression to obtain $\hat{\beta}_2^{\star}$, and regress $Z$ on $D$ to obtain $\hat{\phi}_1$. No knowledge of the structural parameters $\gamma_1$ or $\gamma_2$ is needed.
+
+## OVB versus IVB \label{sec:ovb_vs_ivb}
+
+The IVB formula has a striking structural parallel with the classical Omitted Variable Bias formula. Table~\ref{tab:ovb_ivb} presents the comparison side by side.
+
+\begin{table}[H]
+\centering
+\caption{Comparison of Omitted Variable Bias (OVB) and Included Variable Bias (IVB)}
+\label{tab:ovb_ivb}
+\begin{tabular}{lcc}
+\toprule
+ & \textbf{OVB} & \textbf{IVB} \\
+\midrule
+Problem & Omitting a confounder & Including a collider \\
+Correct model & Long (includes confounder) & Short (excludes collider) \\
+Wrong model & Short (omits confounder) & Long (includes collider) \\
+Formula & $\delta_1 \times \gamma$ & $-\beta_2^{\star} \times \phi_1$ \\
+Components & $\delta_1$: effect of omitted var in long reg & $\beta_2^{\star}$: effect of collider in long reg \\
+ & $\gamma$: regression of omitted var on $D$ & $\phi_1$: regression of collider on $D$ \\
+Sign of bias & $\text{sign}(\delta_1) \times \text{sign}(\gamma)$ & $-\text{sign}(\beta_2^{\star}) \times \text{sign}(\phi_1)$ \\
+Estimable? & Only if confounder is observed & Yes, both components from data \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key difference lies in the direction of the problem. With OVB, the researcher runs a short regression when the long regression is correct, and the bias equals the product of two regression coefficients involving the omitted variable. With IVB, the researcher runs a long regression when the short regression is correct, and the bias is the *negative* product of two analogous coefficients involving the included collider. The negative sign in the IVB formula arises because the mechanisms operate in opposite directions: OVB captures the effect of an omitted common cause channeled through the treatment-outcome relationship, while IVB captures the spurious association created by conditioning on a common effect.
+
+A notable practical advantage of IVB is that its components are *always* estimable: the researcher has already included $Z$ in the regression (otherwise there would be no bias), so $\beta_2^{\star}$ is available, and $\phi_1$ comes from a simple auxiliary regression. By contrast, OVB requires observing the omitted variable---which, by definition, is often unavailable.
+
+## Extension to ADL(1,0) via FWL \label{sec:adl10}
+
+We now extend the IVB formula to the dynamic models used in TSCS analysis. Consider an ADL(1,0) specification. The correct (``short'') model is:
+\begin{equation}
+y_t = \alpha + \beta D_t + \rho y_{t-1} + e_t, \qquad \mathbb{E}[e_t \mid D_t, y_{t-1}] = 0
+\label{eq:adl_short}
+\end{equation}
+
+The misspecified (``long'') model erroneously includes a collider $Z_t$:
+\begin{equation}
+y_t = \alpha^{\star} + \beta^{\star} D_t + \rho^{\star} y_{t-1} + \theta^{\star} Z_t + v_t
+\label{eq:adl_long}
+\end{equation}
+
+Our goal is to express $\beta^{\star} - \beta$ in terms of estimable quantities. The key tool is the Frisch--Waugh--Lovell (FWL) theorem \citep{frisch1933partial, lovell1963seasonal}.
+
+Define the set of ``legitimate'' controls $W_t = (1, y_{t-1})$ and let $\tilde{y}_t$, $\tilde{D}_t$, and $\tilde{Z}_t$ denote the residuals from projecting each variable on $W_t$. By FWL, the long regression \eqref{eq:adl_long} is equivalent to:
+\[
+\tilde{y}_t = \beta^{\star} \tilde{D}_t + \theta^{\star} \tilde{Z}_t + \tilde{v}_t
+\]
+
+In this bivariate residualized regression, the coefficient on $\tilde{D}_t$ satisfies:
+\[
+\beta^{\star} = \frac{\text{Cov}(\tilde{D}_t, \tilde{y}_t) - \theta^{\star}\,\text{Cov}(\tilde{D}_t, \tilde{Z}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+The short model coefficient (also via FWL) is:
+\[
+\beta = \frac{\text{Cov}(\tilde{D}_t, \tilde{y}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+Subtracting:
+\[
+\beta^{\star} - \beta = -\theta^{\star} \frac{\text{Cov}(\tilde{D}_t, \tilde{Z}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+Now consider the auxiliary regression:
+\begin{equation}
+Z_t = a + \pi D_t + \lambda y_{t-1} + \eta_t
+\label{eq:aux_adl}
+\end{equation}
+
+By the algebra of partial regression, $\pi = \text{Cov}(\tilde{D}_t, \tilde{Z}_t) / \text{Var}(\tilde{D}_t)$. Substituting:
+
+\begin{proposition}[IVB, ADL(1,0)]
+\label{prop:ivb_adl}
+In an ADL(1,0) model, when a collider $Z_t$ is erroneously included, the bias in the treatment effect is:
+\begin{equation}
+\boxed{\textit{IVB}(\beta) = \beta^{\star} - \beta = -\theta^{\star} \times \pi}
+\label{eq:ivb_adl}
+\end{equation}
+where $\theta^{\star}$ is the coefficient on $Z_t$ in the long regression \eqref{eq:adl_long} and $\pi$ is the coefficient on $D_t$ in the auxiliary regression \eqref{eq:aux_adl}.
+\end{proposition}
+
+The formula has the same structural form as the cross-sectional case. The only difference is that all quantities are now *partial* effects, conditioned on the legitimate controls $(1, y_{t-1})$. The dynamics enter through the residualization, but the final formula remains a simple product.
+
+## Generalization to ADL($p$,$q$) \label{sec:adl_pq}
+
+The result extends naturally to general ADL($p$,$q$) specifications. Consider the correct model:
+\[
+y_t = \alpha + \sum_{i=1}^{p} \rho_i y_{t-i} + \sum_{j=0}^{q} \beta_j D_{t-j} + e_t
+\]
+
+and the misspecified model including $Z_t$:
+\[
+y_t = \alpha^{\star} + \sum_{i=1}^{p} \rho_i^{\star} y_{t-i} + \sum_{j=0}^{q} \beta_j^{\star} D_{t-j} + \theta^{\star} Z_t + v_t
+\]
+
+Let $W_t$ denote the vector of all legitimate controls (constant, $y_{t-1}, \ldots, y_{t-p}$, and the relevant lags of $D$ other than $D_{t-j}$). The FWL argument carries through identically:
+
+\begin{proposition}[IVB, ADL($p$,$q$)]
+\label{prop:ivb_adlpq}
+For any coefficient $\beta_j$ in an ADL($p$,$q$) model, the bias from including a collider $Z_t$ is:
+\begin{equation}
+\boxed{\textit{IVB}(\beta_j) = \beta_j^{\star} - \beta_j = -\theta^{\star} \times \pi_j}
+\label{eq:ivb_adlpq}
+\end{equation}
+where $\pi_j$ is the coefficient on $D_{t-j}$ in the auxiliary regression $Z_t \sim D_{t-j} + W_t$.
+\end{proposition}
+
+The generality of this result is noteworthy. Regardless of the number of lags in the outcome or the treatment, the IVB for any coefficient $\beta_j$ is always the negative product of two estimable quantities: the collider coefficient $\theta^{\star}$ in the long model, and the partial association $\pi_j$ between the treatment at lag $j$ and the collider, controlling for all other legitimate regressors.
+
+An important practical observation is that while the *form* of the bias is simple, the *magnitude* can vary substantially depending on the dynamics. When the treatment $D_t$ is highly predictable from lags, the residualized treatment $\tilde{D}_t$ has little variation, and $\pi$ can become unstable. When $Z_t$ is a post-treatment variable that responds to $y$ or to correlated shocks, both $\theta^{\star} \neq 0$ and $\pi \neq 0$ tend to arise mechanically.
+
+## A Practical Recipe \label{sec:recipe}
+
+We summarize the IVB formula as a simple three-step procedure for the applied researcher:
+
+\begin{enumerate}
+\item \textbf{Run the long regression.} Estimate the model that includes the suspected collider $Z$:
+\[
+y = \ldots + \theta^{\star} Z + \text{other controls} + v
+\]
+Record $\hat{\theta}^{\star}$.
+
+\item \textbf{Run the auxiliary regression.} Regress the suspected collider on the treatment and all legitimate controls:
+\[
+Z = \ldots + \pi D + \text{same controls as in step 1, minus } Z + \eta
+\]
+Record $\hat{\pi}$.
+
+\item \textbf{Compute the bias.} The estimated IVB is:
+\[
+\widehat{\text{IVB}} = -\hat{\theta}^{\star} \times \hat{\pi}
+\]
+\end{enumerate}
+
+If $|\widehat{\text{IVB}}|$ is large relative to the estimated treatment effect, the researcher has strong reason to exclude the collider from the specification. The sign of the IVB indicates the *direction* of the bias: whether including the collider attenuates or amplifies the treatment effect.
+
+
+# Monte Carlo Validation \label{sec:montecarlo}
+
+We validate the IVB formula through Monte Carlo simulations across three data-generating processes (DGPs): a pure cross-section, an ADL(1,0) panel, and a substantive civil war DGP. In every case, we compare the empirical bias (the difference between the long and short regression estimates) to the bias predicted by the IVB formula. We run 500 replications for each DGP.
+
+## DGP 1: Cross-Section
+
+The first DGP is a simple cross-sectional model with $n = 10{,}000$ observations. The treatment effect is $\beta_1 = 1$, and the collider is generated as $Z = 0.6 D + 0.4 Y + u$, where $u \sim \mathcal{N}(0,1)$.
+
+```{r sim-crosssection, cache=TRUE}
+set.seed(42)
+n <- 10000
+nsim <- 500
+
+beta1_true <- 1
+gamma1 <- 0.6
+gamma2 <- 0.4
+
+results_cs <- data.frame(
+  sim = 1:nsim,
+  beta_short = NA_real_,
+  beta_long = NA_real_,
+  bias_empirical = NA_real_,
+  bias_formula = NA_real_
+)
+
+for (i in 1:nsim) {
+  D <- rnorm(n)
+  e <- rnorm(n)
+  u <- rnorm(n)
+
+  Y <- beta1_true * D + e
+  Z <- gamma1 * D + gamma2 * Y + u
+
+  mod_short <- lm(Y ~ D)
+  mod_long  <- lm(Y ~ D + Z)
+  mod_aux   <- lm(Z ~ D)
+
+  theta_star <- coef(mod_long)["Z"]
+  phi1       <- coef(mod_aux)["D"]
+
+  results_cs$beta_short[i]     <- coef(mod_short)["D"]
+  results_cs$beta_long[i]      <- coef(mod_long)["D"]
+  results_cs$bias_empirical[i] <- coef(mod_long)["D"] - coef(mod_short)["D"]
+  results_cs$bias_formula[i]   <- -theta_star * phi1
+}
+```
+
+## DGP 2: ADL(1,0) Panel
+
+The second DGP is an ADL(1,0) panel with $N = 200$ units and $T = 20$ periods. The treatment effect is $\beta = 1$, the autoregressive coefficient is $\rho = 0.5$, and the collider is generated as $Z_t = 0.6 D_t + 0.4 Y_t + u_t$.
+
+```{r sim-adl-function, cache=TRUE}
+sim_adl_panel <- function(N, T_periods, beta, rho, delta_d, delta_y,
+                          seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+
+  Y <- matrix(NA, N, T_periods)
+  D <- matrix(rnorm(N * T_periods), N, T_periods)
+  Z <- matrix(NA, N, T_periods)
+
+  Y[, 1] <- rnorm(N)
+  Z[, 1] <- delta_d * D[, 1] + delta_y * Y[, 1] + rnorm(N)
+
+  for (t in 2:T_periods) {
+    Y[, t] <- rho * Y[, t-1] + beta * D[, t] + rnorm(N)
+    Z[, t] <- delta_d * D[, t] + delta_y * Y[, t] + rnorm(N)
+  }
+
+  data.frame(
+    id    = rep(1:N, each = (T_periods - 1)),
+    t     = rep(2:T_periods, times = N),
+    Y     = as.vector(Y[, 2:T_periods]),
+    D     = as.vector(D[, 2:T_periods]),
+    Z     = as.vector(Z[, 2:T_periods]),
+    Y_lag = as.vector(Y[, 1:(T_periods - 1)])
+  )
+}
+```
+
+```{r sim-adl, cache=TRUE}
+set.seed(99)
+nsim <- 500
+N <- 200
+T_periods <- 20
+beta_true <- 1
+rho_true <- 0.5
+delta_d <- 0.6
+delta_y <- 0.4
+
+results_adl <- data.frame(
+  sim = 1:nsim,
+  beta_short = NA_real_,
+  beta_long = NA_real_,
+  bias_empirical = NA_real_,
+  bias_formula = NA_real_
+)
+
+for (i in 1:nsim) {
+  df <- sim_adl_panel(N, T_periods, beta_true, rho_true, delta_d, delta_y)
+
+  mod_short <- lm(Y ~ D + Y_lag, data = df)
+  mod_long  <- lm(Y ~ D + Y_lag + Z, data = df)
+  mod_aux   <- lm(Z ~ D + Y_lag, data = df)
+
+  theta_star <- coef(mod_long)["Z"]
+  pi_hat     <- coef(mod_aux)["D"]
+
+  results_adl$beta_short[i]     <- coef(mod_short)["D"]
+  results_adl$beta_long[i]      <- coef(mod_long)["D"]
+  results_adl$bias_empirical[i] <- coef(mod_long)["D"] - coef(mod_short)["D"]
+  results_adl$bias_formula[i]   <- -theta_star * pi_hat
+}
+```
+
+## DGP 3: Civil War with Foreign Collider Bias
+
+The third DGP is a substantive model based on the civil war example from Sections 3 and 6. The true effect of Political Change on Civil War is $\beta_{PC} = 5$. The model includes Per Capita Income as a confounder and a lagged dependent variable. Democracy Level is generated as a collider, caused by Civil War ($\gamma_{CW} = -0.6$) and an unobserved variable $U$ ($\gamma_U = 1.0$) that also affects Civil War ($\gamma_{U \to CW} = 0.5$).
+
+```{r sim-civilwar-function, cache=TRUE}
+sim_civil_war <- function(N, T_periods,
+                          beta_pc = 5,
+                          rho_cw = 0.3,
+                          rho_pc = 0.4,
+                          alpha_inc = 0.5,
+                          rho_inc = 0.8,
+                          gamma_cw_dem = -0.6,
+                          gamma_u_dem = 1,
+                          gamma_u_cw = 0.5,
+                          seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+
+  CW  <- matrix(NA, N, T_periods)
+  PC  <- matrix(NA, N, T_periods)
+  Inc <- matrix(NA, N, T_periods)
+  Dem <- matrix(NA, N, T_periods)
+  U   <- matrix(rnorm(N * T_periods), N, T_periods)
+
+  PC[, 1]  <- rnorm(N)
+  Inc[, 1] <- rnorm(N, 10, 2)
+  CW[, 1]  <- beta_pc * PC[, 1] + alpha_inc * Inc[, 1] +
+               gamma_u_cw * U[, 1] + rnorm(N)
+  Dem[, 1] <- gamma_cw_dem * CW[, 1] + gamma_u_dem * U[, 1] + rnorm(N)
+
+  for (t in 2:T_periods) {
+    Inc[, t] <- rho_inc * Inc[, t-1] + rnorm(N)
+    PC[, t]  <- rho_pc * PC[, t-1] + rnorm(N)
+    CW[, t]  <- rho_cw * CW[, t-1] + beta_pc * PC[, t] +
+                 alpha_inc * Inc[, t] + gamma_u_cw * U[, t] + rnorm(N)
+    Dem[, t] <- gamma_cw_dem * CW[, t] + gamma_u_dem * U[, t] + rnorm(N)
+  }
+
+  data.frame(
+    id      = rep(1:N, each = (T_periods - 1)),
+    t       = rep(2:T_periods, times = N),
+    CW      = as.vector(CW[, 2:T_periods]),
+    PC      = as.vector(PC[, 2:T_periods]),
+    Inc     = as.vector(Inc[, 2:T_periods]),
+    Dem     = as.vector(Dem[, 2:T_periods]),
+    CW_lag  = as.vector(CW[, 1:(T_periods - 1)]),
+    PC_lag  = as.vector(PC[, 1:(T_periods - 1)]),
+    Inc_lag = as.vector(Inc[, 1:(T_periods - 1)])
+  )
+}
+```
+
+```{r sim-civilwar, cache=TRUE}
+set.seed(321)
+nsim <- 500
+N <- 200
+T_periods <- 20
+beta_pc_true <- 5
+
+results_cw <- data.frame(
+  sim = 1:nsim,
+  beta_no_dem = NA_real_,
+  beta_with_dem = NA_real_,
+  bias_empirical = NA_real_,
+  bias_formula = NA_real_
+)
+
+for (i in 1:nsim) {
+  df <- sim_civil_war(N, T_periods, beta_pc = beta_pc_true)
+
+  mod_correct  <- lm(CW ~ PC + CW_lag + Inc, data = df)
+  mod_collider <- lm(CW ~ PC + CW_lag + Inc + Dem, data = df)
+  mod_aux      <- lm(Dem ~ PC + CW_lag + Inc, data = df)
+
+  theta_star <- coef(mod_collider)["Dem"]
+  pi_hat     <- coef(mod_aux)["PC"]
+
+  results_cw$beta_no_dem[i]      <- coef(mod_correct)["PC"]
+  results_cw$beta_with_dem[i]    <- coef(mod_collider)["PC"]
+  results_cw$bias_empirical[i]   <- coef(mod_collider)["PC"] - coef(mod_correct)["PC"]
+  results_cw$bias_formula[i]     <- -theta_star * pi_hat
+}
+```
+
+## Results
+
+Figure~\ref{fig:scatter_cs} displays the cross-sectional results. Each point represents one simulation replication, with the formula-predicted bias on the horizontal axis and the empirical bias on the vertical axis. All points fall exactly on the 45-degree line, confirming that the IVB formula predicts the bias with exact precision.
+
+```{r fig-scatter-cs, fig.cap="Cross-section: Empirical bias versus IVB formula prediction across 500 simulations. All points fall on the 45-degree line, confirming the formula's exactness. \\label{fig:scatter_cs}", fig.width=6, fig.height=5}
+ggplot(results_cs, aes(x = bias_formula, y = bias_empirical)) +
+  geom_point(alpha = 0.3, size = 1, color = "grey30") +
+  geom_abline(intercept = 0, slope = 1, color = "firebrick", linewidth = 0.8) +
+  labs(
+    x = expression("Formula bias: " * -hat(beta)[2]^"*" * " " * hat(phi)[1]),
+    y = expression("Empirical bias: " * hat(beta)["long"] - hat(beta)["short"])
+  ) +
+  coord_equal() +
+  theme(plot.margin = margin(5, 10, 5, 5))
+```
+
+Table~\ref{tab:mc_summary} summarizes the results across all three DGPs. In every scenario, the mean empirical bias and the mean formula-predicted bias coincide to at least three decimal places.
+
+```{r tab-mc-summary}
+summary_tab <- data.frame(
+  Scenario = c("Cross-section", "ADL(1,0)", "Civil War"),
+  `True effect` = c(
+    beta1_true,
+    beta_true,
+    beta_pc_true
+  ),
+  `Mean estimate (with collider)` = c(
+    round(mean(results_cs$beta_long), 3),
+    round(mean(results_adl$beta_long), 3),
+    round(mean(results_cw$beta_with_dem), 3)
+  ),
+  `Mean empirical bias` = c(
+    round(mean(results_cs$bias_empirical), 3),
+    round(mean(results_adl$bias_empirical), 3),
+    round(mean(results_cw$bias_empirical), 3)
+  ),
+  `Mean formula bias` = c(
+    round(mean(results_cs$bias_formula), 3),
+    round(mean(results_adl$bias_formula), 3),
+    round(mean(results_cw$bias_formula), 3)
+  ),
+  check.names = FALSE
+)
+
+kable(summary_tab,
+      format = "latex",
+      booktabs = TRUE,
+      caption = "Monte Carlo summary across three DGPs (500 replications each). The IVB formula predicts the empirical bias exactly in every scenario. \\label{tab:mc_summary}",
+      align = c("l", "c", "c", "c", "c")) %>%
+  kable_styling(latex_options = c("hold_position"))
+```
+
+Figure~\ref{fig:density_cw} shows the distribution of the estimated effect of Political Change on Civil War with and without Democracy Level as a control. The correct specification (without the collider) is centered on the true effect of 5, while the misspecified model (with the collider) is shifted to the left, reflecting the negative IVB introduced by conditioning on Democracy Level.
+
+```{r fig-density-cw, fig.cap="Civil War DGP: Distribution of the estimated effect of Political Change on Civil War across 500 simulations. The correct specification (without Democracy Level, in blue) is centered on the true effect of 5. The misspecified model (with Democracy Level as collider, in red) is biased downward. \\label{fig:density_cw}", fig.width=7, fig.height=4.5}
+results_cw %>%
+  select(sim, beta_no_dem, beta_with_dem) %>%
+  pivot_longer(-sim, names_to = "model", values_to = "beta") %>%
+  mutate(model = ifelse(model == "beta_no_dem",
+                        "Without Democracy Level (correct)",
+                        "With Democracy Level (collider)")) %>%
+  ggplot(aes(x = beta, fill = model)) +
+  geom_density(alpha = 0.5) +
+  geom_vline(xintercept = beta_pc_true, linetype = "dashed", linewidth = 0.7) +
+  annotate("text", x = beta_pc_true + 0.05, y = 0,
+           label = paste0("True effect = ", beta_pc_true),
+           hjust = 0, vjust = -0.5, size = 3.5) +
+  labs(
+    x = expression(hat(beta)[PC]),
+    y = "Density",
+    fill = "Model"
+  ) +
+  scale_fill_manual(values = c("Without Democracy Level (correct)" = "steelblue",
+                                "With Democracy Level (collider)" = "firebrick")) +
+  theme(legend.position = "bottom")
+```
+
+The results are unambiguous: the IVB formula $\widehat{\text{IVB}} = -\hat{\theta}^{\star} \times \hat{\pi}$ matches the empirical bias *exactly* in every replication and every DGP. This is not an approximation; it is an algebraic identity that holds in finite samples whenever the OLS estimates are computed on the same data.
+
+
+# Application: Political Change and Civil War \label{sec:application}
+
+We now return to the civil war example to illustrate how a researcher would apply the IVB formula in practice. The scenario is as follows: the researcher has estimated an ADL model of Civil War on Political Change, controlling for Per Capita Income and lagged Civil War. A reviewer suggests adding Democracy Level as an additional control. The researcher suspects that Democracy Level may be a collider but wants to quantify the potential damage.
+
+Following the three-step recipe from Section 4.5:
+
+**Step 1: Run the long regression.** The researcher estimates:
+\[
+CW_{t+1} = \alpha^{\star} + \beta_{PC}^{\star} \, PC_t + \rho^{\star} \, CW_t + \alpha_{Inc}^{\star} \, Inc_t + \theta^{\star} \, Dem_t + v_t
+\]
+
+```{r application-demo, cache=TRUE}
+set.seed(42)
+df_app <- sim_civil_war(N = 200, T_periods = 20, beta_pc = 5)
+
+mod_correct  <- lm(CW ~ PC + CW_lag + Inc, data = df_app)
+mod_collider <- lm(CW ~ PC + CW_lag + Inc + Dem, data = df_app)
+mod_aux      <- lm(Dem ~ PC + CW_lag + Inc, data = df_app)
+
+beta_correct  <- round(coef(mod_correct)["PC"], 3)
+beta_collider <- round(coef(mod_collider)["PC"], 3)
+theta_star    <- round(coef(mod_collider)["Dem"], 3)
+pi_hat        <- round(coef(mod_aux)["PC"], 3)
+ivb_hat       <- round(-coef(mod_collider)["Dem"] * coef(mod_aux)["PC"], 3)
+```
+
+In this simulation draw, $\hat{\theta}^{\star} = `r theta_star`$. The coefficient is negative, reflecting the fact that civil war tends to reduce democracy levels. Including Democracy Level in the regression partially ``controls away'' the variation in Civil War that operates through this channel, distorting the estimate of the Political Change effect.
+
+**Step 2: Run the auxiliary regression.** The researcher estimates:
+\[
+Dem_t = a + \pi \, PC_t + \lambda \, CW_t + \delta \, Inc_t + \eta_t
+\]
+
+The estimated coefficient is $\hat{\pi} = `r pi_hat`$. This coefficient captures the partial association between Political Change and Democracy Level, net of lagged Civil War and Income.
+
+**Step 3: Compute the IVB.** The estimated bias is:
+\[
+\widehat{\text{IVB}} = -\hat{\theta}^{\star} \times \hat{\pi} = -(`r theta_star`) \times (`r pi_hat`) = `r ivb_hat`
+\]
+
+We can verify: the correct estimate (without Democracy Level) is $\hat{\beta}_{PC} = `r beta_correct`$, and the collider-contaminated estimate is $\hat{\beta}_{PC}^{\star} = `r beta_collider`$. The difference is $`r beta_collider` - `r beta_correct` = `r round(as.numeric(beta_collider) - as.numeric(beta_correct), 3)`$, which matches the IVB formula prediction.
+
+This example illustrates several practical lessons. First, the IVB formula allows researchers to *quantify* the bias from including a suspected collider, providing concrete numbers rather than a qualitative warning. Second, the sign of the bias is informative: in this case, including Democracy Level *attenuates* the estimated effect of Political Change on Civil War, pushing it toward zero. A researcher who naively includes Democracy Level would underestimate the true effect. Third, the three-step procedure is simple enough to be implemented as a routine diagnostic check whenever a variable's causal status is uncertain.
+
+More broadly, the IVB formula serves as a bridge between DAG-based qualitative reasoning and the quantitative demands of applied research. The DAG tells the researcher that Democracy Level is a collider; the formula tells her exactly how much damage including it would cause.
+
+
+# Conclusion \label{sec:conclusion}
+
+This paper makes three contributions to the methodology of causal inference in observational studies. First, we derive the Included Variable Bias (IVB) formula, a closed-form expression for the bias introduced when a researcher erroneously includes a collider variable in a regression model. The formula, $\text{IVB} = -\theta^{\star} \times \pi$, is the mirror image of the classic Omitted Variable Bias formula and shares its appealing properties: it is a simple product of two estimable regression coefficients, it reveals both the magnitude and the direction of the bias, and it is immediately operational for applied researchers.
+
+Second, we show that the IVB formula extends naturally from cross-sectional models to the Autoregressive Distributed Lag (ADL) specifications that are the workhorse of time-series cross-sectional research in political science. The extension relies on the Frisch--Waugh--Lovell theorem and preserves the same functional form, with the key quantities now partialled out by the dynamic controls. This result is particularly relevant because TSCS settings are especially susceptible to collider bias: the practice of lagging control variables to avoid reverse causality can inadvertently create collider structures, a phenomenon we call ``foreign collider bias.''
+
+Third, we provide a simple three-step diagnostic recipe that any applied researcher can implement. Whenever a variable's causal status is uncertain---is it a confounder that should be included, or a collider that should be excluded?---the researcher can run the long regression, run the auxiliary regression, and compute the IVB. If the estimated bias is large relative to the treatment effect, the researcher has quantitative grounds for excluding the variable.
+
+Our work connects to and extends several strands of the literature. It complements \citet{cinelli2021crash}, who provide a systematic taxonomy of good and bad controls using DAGs, by adding a quantitative dimension: not just *whether* a control is bad, but *how bad* it is. It complements \citet{blackwell2018make}, who propose sequential g-estimation and marginal structural models as solutions to post-treatment bias in TSCS, by providing a diagnostic formula that does not require the researcher to adopt a different estimation framework. And it extends the OVB tradition exemplified by \citet{cinelli2020making}, who develop sensitivity analysis tools for omitted variable bias, to the symmetric problem of included variable bias.
+
+Several limitations deserve mention. The IVB formula is derived for linear models and may not directly apply to nonlinear specifications. The formula quantifies bias under the assumption that the researcher *knows* which variable is the collider; it does not help with the prior step of identifying colliders, for which DAGs remain essential. Additionally, we do not develop a formal sensitivity analysis framework for IVB---an extension that would allow researchers to assess how sensitive their results are to potential collider bias even when the collider is not directly observed.
+
+This last limitation points to a natural direction for future work. Just as \citet{cinelli2020making} developed sensitivity analysis tools that extend the OVB formula to scenarios where the omitted variable is unobserved, a parallel development for IVB would allow researchers to ask: ``How strong would the collider relationship need to be to change my conclusions?'' We leave this extension for future research.
+
+In the meantime, we encourage applied researchers to add the IVB formula to their diagnostic toolkit. The combination of DAGs for qualitative reasoning and the IVB formula for quantitative assessment provides a powerful framework for making informed decisions about control variable selection---decisions that are critical for the credibility of causal claims in observational research.
+
+\singlespacing
+\bibliographystyle{apsr}
+\bibliography{references}
+
+\newpage
+\doublespacing
+\appendix
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}
+\renewcommand{\thetable}{A\arabic{table}}
+
+# Online Appendix
+
+## Appendix A: Full Cross-Section Derivation \label{app:cs}
+
+We provide the step-by-step algebra for the cross-section IVB derivation.
+
+**Setup.** The true model is $y = \beta_0 + \beta_1 D + e$ with $\mathbb{E}[e \mid D] = 0$. The wrong model includes a collider $Z$: $y = \beta_0^{\star} + \beta_1^{\star} D + \beta_2^{\star} Z + e^{\star}$. The collider relationship is $Z = \gamma_0 + \gamma_1 D + \gamma_2 y + u$ with $\mathbb{E}[u \mid D, y] = 0$.
+
+**Step 1.** From the standard OLS formula for a multivariate regression:
+\[
+\beta_1^{\star} = \frac{\text{Cov}(D, y) \cdot \text{Var}(Z) - \text{Cov}(D, Z) \cdot \text{Cov}(Z, y)}{\text{Var}(D) \cdot \text{Var}(Z) - [\text{Cov}(D, Z)]^2}
+\]
+
+However, it is more convenient to use the Frisch--Waugh--Lovell approach. By FWL, $\beta_1^{\star}$ equals the coefficient from regressing $y$ on $D$ after partialling out $Z$, or equivalently:
+\[
+\beta_1^{\star} = \frac{\text{Cov}(D, y) - \beta_2^{\star} \text{Cov}(D, Z)}{\text{Var}(D)}
+\]
+
+This gives:
+\[
+\beta_1^{\star} - \beta_1 = -\beta_2^{\star} \frac{\text{Cov}(D, Z)}{\text{Var}(D)}
+\]
+
+**Step 2.** Substitute $y = \beta_0 + \beta_1 D + e$ into $Z = \gamma_0 + \gamma_1 D + \gamma_2 y + u$:
+\begin{align*}
+Z &= \gamma_0 + \gamma_1 D + \gamma_2(\beta_0 + \beta_1 D + e) + u \\
+  &= (\gamma_0 + \gamma_2 \beta_0) + (\gamma_1 + \gamma_2 \beta_1) D + (\gamma_2 e + u)
+\end{align*}
+
+Define $\phi_0 = \gamma_0 + \gamma_2 \beta_0$, $\phi_1 = \gamma_1 + \gamma_2 \beta_1$, and $\varepsilon = \gamma_2 e + u$.
+
+**Step 3.** Since $\mathbb{E}[\varepsilon \mid D] = \gamma_2 \mathbb{E}[e \mid D] + \mathbb{E}[u \mid D] = 0$:
+\[
+\frac{\text{Cov}(D, Z)}{\text{Var}(D)} = \phi_1
+\]
+
+**Step 4.** Therefore:
+\[
+\text{IVB} = \beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1 \qquad \blacksquare
+\]
+
+
+## Appendix B: Full FWL/ADL Derivation \label{app:adl}
+
+We provide the complete derivation for the ADL(1,0) case using FWL.
+
+**Setup.** The correct model is $y_t = \alpha + \beta D_t + \rho y_{t-1} + e_t$ with $\mathbb{E}[e_t \mid D_t, y_{t-1}] = 0$. The wrong model includes a collider: $y_t = \alpha^{\star} + \beta^{\star} D_t + \rho^{\star} y_{t-1} + \theta^{\star} Z_t + v_t$.
+
+**Step 1 (FWL residualization).** Let $W_t = (1, y_{t-1})$. Define residuals:
+\begin{align*}
+\tilde{y}_t &:= y_t - \hat{\Pi}_y W_t \\
+\tilde{D}_t &:= D_t - \hat{\Pi}_D W_t \\
+\tilde{Z}_t &:= Z_t - \hat{\Pi}_Z W_t
+\end{align*}
+
+By FWL, the long regression $y_t \sim D_t + y_{t-1} + Z_t$ is equivalent to $\tilde{y}_t \sim \tilde{D}_t + \tilde{Z}_t$.
+
+**Step 2 (Two-variable regression formula).** In the residualized regression:
+\[
+\beta^{\star} = \frac{\text{Cov}(\tilde{D}_t, \tilde{y}_t) - \theta^{\star} \text{Cov}(\tilde{D}_t, \tilde{Z}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+The short model (by FWL applied to $y_t \sim D_t + y_{t-1}$) gives:
+\[
+\beta = \frac{\text{Cov}(\tilde{D}_t, \tilde{y}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+**Step 3 (Bias).** Subtracting:
+\[
+\beta^{\star} - \beta = -\theta^{\star} \frac{\text{Cov}(\tilde{D}_t, \tilde{Z}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+**Step 4 (Auxiliary regression).** Consider $Z_t = a + \pi D_t + \lambda y_{t-1} + \eta_t$. By FWL, $\pi$ equals the coefficient from regressing $\tilde{Z}_t$ on $\tilde{D}_t$:
+\[
+\pi = \frac{\text{Cov}(\tilde{D}_t, \tilde{Z}_t)}{\text{Var}(\tilde{D}_t)}
+\]
+
+**Step 5 (Result).**
+\[
+\text{IVB}(\beta) = \beta^{\star} - \beta = -\theta^{\star} \times \pi \qquad \blacksquare
+\]
+
+**ADL($p$,$q$) extension.** For general ADL($p$,$q$), the legitimate control set becomes $W_t = (1, y_{t-1}, \ldots, y_{t-p}, D_{t-1}, \ldots, D_{t-q})$ (excluding $D_{t-j}$ when computing the bias for $\beta_j$). The FWL argument carries through identically, yielding $\text{IVB}(\beta_j) = -\theta^{\star} \times \pi_j$ where $\pi_j$ is the coefficient on $D_{t-j}$ in the auxiliary regression $Z_t \sim D_{t-j} + W_t$. $\blacksquare$
+
+
+## Appendix C: Additional Simulation Plots \label{app:plots}
+
+```{r fig-heatmap, fig.cap="Cross-section IVB as a function of the collider parameters $\\gamma_1$ (D $\\to$ Z) and $\\gamma_2$ (Y $\\to$ Z). The bias increases in magnitude with both parameters. \\label{fig:heatmap}", fig.width=6, fig.height=5}
+grid_params <- expand.grid(
+  gamma1 = seq(0, 1, by = 0.2),
+  gamma2 = seq(0, 1, by = 0.2)
+)
+
+set.seed(123)
+n_hm <- 10000
+
+grid_results <- grid_params %>%
+  rowwise() %>%
+  mutate(
+    bias = {
+      D <- rnorm(n_hm)
+      e <- rnorm(n_hm)
+      u <- rnorm(n_hm)
+      Y <- 1 * D + e
+      Z <- gamma1 * D + gamma2 * Y + u
+
+      mod_long <- lm(Y ~ D + Z)
+      mod_aux  <- lm(Z ~ D)
+
+      -coef(mod_long)["Z"] * coef(mod_aux)["D"]
+    }
+  ) %>%
+  ungroup()
+
+ggplot(grid_results, aes(x = factor(gamma1), y = factor(gamma2), fill = bias)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  geom_text(aes(label = round(bias, 3)), size = 3.5) +
+  scale_fill_gradient2(low = "steelblue", mid = "white", high = "firebrick",
+                       midpoint = 0, name = "IVB") +
+  labs(
+    x = expression(gamma[1] ~ " (D" %->% "Z)"),
+    y = expression(gamma[2] ~ " (Y" %->% "Z)")
+  )
+```
+
+```{r fig-adl-scatter, fig.cap="ADL(1,0): Empirical bias versus IVB formula prediction across 500 simulations. \\label{fig:adl_scatter}", fig.width=6, fig.height=5}
+ggplot(results_adl, aes(x = bias_formula, y = bias_empirical)) +
+  geom_point(alpha = 0.3, size = 1, color = "grey30") +
+  geom_abline(intercept = 0, slope = 1, color = "firebrick", linewidth = 0.8) +
+  labs(
+    x = expression("Formula bias: " * -hat(theta)^"*" * hat(pi)),
+    y = expression("Empirical bias: " * hat(beta)["long"] - hat(beta)["short"])
+  ) +
+  coord_equal()
+```
+
+```{r fig-adl-density, fig.cap="ADL(1,0): Distribution of treatment effect estimates with and without the collider across 500 simulations. \\label{fig:adl_density}", fig.width=7, fig.height=4.5}
+results_adl %>%
+  select(sim, beta_short, beta_long) %>%
+  pivot_longer(-sim, names_to = "model", values_to = "beta") %>%
+  mutate(model = ifelse(model == "beta_short",
+                        "ADL short (correct)",
+                        "ADL long (with collider)")) %>%
+  ggplot(aes(x = beta, fill = model)) +
+  geom_density(alpha = 0.5) +
+  geom_vline(xintercept = beta_true, linetype = "dashed", linewidth = 0.7) +
+  labs(
+    x = expression(hat(beta)),
+    y = "Density",
+    fill = "Model"
+  ) +
+  scale_fill_manual(values = c("ADL short (correct)" = "steelblue",
+                                "ADL long (with collider)" = "firebrick")) +
+  theme(legend.position = "bottom")
+```
+
+```{r fig-rho-effect, fig.cap="ADL(1,0): Effect of the autoregressive parameter $\\rho$ on the magnitude of the IVB. Both the empirical bias and the formula prediction are shown. \\label{fig:rho_effect}", fig.width=7, fig.height=4.5}
+rho_grid <- seq(0, 0.9, by = 0.1)
+
+set.seed(77)
+rho_results <- data.frame(rho = rho_grid, bias_mean = NA, formula_mean = NA)
+
+for (r in seq_along(rho_grid)) {
+  biases <- numeric(200)
+  formulas <- numeric(200)
+
+  for (i in 1:200) {
+    df <- sim_adl_panel(N, T_periods, beta_true, rho_grid[r], delta_d, delta_y)
+
+    mod_short <- lm(Y ~ D + Y_lag, data = df)
+    mod_long  <- lm(Y ~ D + Y_lag + Z, data = df)
+    mod_aux   <- lm(Z ~ D + Y_lag, data = df)
+
+    biases[i]  <- coef(mod_long)["D"] - coef(mod_short)["D"]
+    formulas[i] <- -coef(mod_long)["Z"] * coef(mod_aux)["D"]
+  }
+
+  rho_results$bias_mean[r]    <- mean(biases)
+  rho_results$formula_mean[r] <- mean(formulas)
+}
+
+rho_results %>%
+  pivot_longer(-rho, names_to = "type", values_to = "bias") %>%
+  mutate(type = ifelse(type == "bias_mean", "Empirical bias", "Formula prediction")) %>%
+  ggplot(aes(x = rho, y = bias, color = type, shape = type)) +
+  geom_point(size = 3) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = expression(rho ~ " (autoregressive coefficient)"),
+    y = "Mean bias",
+    color = NULL, shape = NULL
+  ) +
+  scale_color_manual(values = c("Empirical bias" = "firebrick",
+                                 "Formula prediction" = "steelblue")) +
+  theme(legend.position = "bottom")
+```
+
+
+## Appendix D: Simulation Code Description \label{app:code}
+
+All simulations in this paper are implemented in R and embedded in the R~Markdown source file. The code is fully reproducible: all random number generators are seeded, and results can be exactly replicated by compiling the source document.
+
+**DGP 1 (Cross-section):** We generate $n = 10{,}000$ observations per replication with $D \sim \mathcal{N}(0,1)$, $e \sim \mathcal{N}(0,1)$, and $u \sim \mathcal{N}(0,1)$. The outcome is $Y = \beta_1 D + e$ with $\beta_1 = 1$. The collider is $Z = \gamma_1 D + \gamma_2 Y + u$ with $\gamma_1 = 0.6$ and $\gamma_2 = 0.4$.
+
+**DGP 2 (ADL):** We simulate a panel with $N = 200$ units and $T = 20$ periods. The outcome follows $Y_t = \rho Y_{t-1} + \beta D_t + e_t$ with $\rho = 0.5$ and $\beta = 1$. The collider is $Z_t = \delta_d D_t + \delta_y Y_t + u_t$ with $\delta_d = 0.6$ and $\delta_y = 0.4$.
+
+**DGP 3 (Civil War):** We simulate a richer panel with $N = 200$ units and $T = 20$ periods. The DGP includes Political Change ($PC$), Civil War ($CW$), Per Capita Income ($Inc$), Democracy Level ($Dem$), and an unobserved variable $U$. The key parameters are: $\beta_{PC} = 5$, $\rho_{CW} = 0.3$, $\rho_{PC} = 0.4$, $\alpha_{Inc} = 0.5$, $\rho_{Inc} = 0.8$, $\gamma_{CW \to Dem} = -0.6$, $\gamma_{U \to Dem} = 1.0$, $\gamma_{U \to CW} = 0.5$.
+
+The full simulation code is available in the companion file \texttt{sim\_ivb\_completa.R}.
+
+
+## Appendix E: Connection to Potential Outcomes \label{app:po}
+
+The IVB formula can be connected to the potential outcomes framework as follows. Under the standard assumptions of SUTVA and a linear constant-effect model, the potential outcomes are $Y_i(d) = \alpha + \beta_1 d + e_i$, where $\beta_1$ is the Average Treatment Effect (ATE). The observed outcome is $Y_i = Y_i(D_i) = \alpha + \beta_1 D_i + e_i$.
+
+When the researcher conditions on a collider $Z_i$---a variable that is caused by both $D_i$ and $Y_i$---the conditional independence assumption $Y_i(d) \perp\!\!\!\perp D_i \mid Z_i$ is violated. This is because conditioning on a common effect of $D$ and $Y$ creates a spurious association between treatment assignment and potential outcomes. In the language of potential outcomes, including a collider introduces selection bias *within strata of* $Z$.
+
+The IVB formula quantifies this selection bias. The term $\beta_2^{\star}$ reflects the (spurious) partial association between $Z$ and $Y$ conditional on $D$ in the misspecified model, while $\phi_1$ reflects the association between $D$ and $Z$ that arises because both are causes (or functions of causes) of $Z$. Their product, with a negative sign, equals the bias in the ATE estimate.
+
+This connection underscores a key insight: the IVB formula bridges the DAG-based and potential outcomes-based perspectives on causal inference. Where DAGs provide the qualitative diagnosis (conditioning on a collider violates $d$-separation), the formula provides the quantitative assessment (the bias equals $-\beta_2^{\star} \times \phi_1$), expressed entirely in terms of observable regression coefficients.
