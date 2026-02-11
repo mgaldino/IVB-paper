@@ -1,3 +1,9 @@
+# =============================================================================
+# DEPRECATED: This file is an abandoned exploratory draft and should NOT be used.
+# It contains bugs (undefined variable on line 44) and incomplete code.
+# The authoritative simulation file is: sim_ivb_completa.R
+# =============================================================================
+
 # Set seed for reproducibility
 set.seed(123)
 

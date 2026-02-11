@@ -1,6 +1,14 @@
 # =============================================================================
 # Simulações completas do IVB — Cross-section e ADL
 # Manoel Galdino
+#
+# NOTE: The authoritative source for paper results is the Rmd file.
+# This script is a standalone version of the simulations for convenience.
+#
+# IMPORTANT: This script assumes the working directory is the project root
+# (where the .Rproj file lives). When opened in RStudio via the .Rproj file,
+# the working directory is set automatically. All ggsave() calls use relative
+# paths under "plots/".
 # =============================================================================
 
 library(ggplot2)
@@ -270,6 +278,8 @@ set.seed(77)
 rho_results <- data.frame(rho = rho_grid, bias_medio = NA, bias_formula_medio = NA)
 
 for (r in seq_along(rho_grid)) {
+  # Using 200 inner replications (instead of 500) to keep runtime manageable,
+  # since this loop runs once per value in rho_grid (10 values total).
   biases <- numeric(200)
   formulas <- numeric(200)
 
