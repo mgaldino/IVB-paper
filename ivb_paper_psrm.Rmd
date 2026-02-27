@@ -427,6 +427,66 @@ An important practical observation is that while the *form* of the bias is simpl
 
 A further consideration arises in panels with unit fixed effects and short time dimensions. In such settings, the OLS estimates of ADL coefficients suffer from Nickell bias \citep{nickell1981biases}, which arises because the demeaned lagged dependent variable is mechanically correlated with the demeaned error term. The IVB formula remains an algebraic identity even in this setting---it correctly decomposes the difference between the short and long regression coefficients---but the components $\theta^{\star}$ and $\pi$ will themselves reflect both collider bias and Nickell bias. Researchers using fixed-effects ADL models should therefore be aware that the IVB diagnostic captures collider bias within the OLS framework as estimated, and that separate corrections for dynamic panel bias (such as GMM estimators) may be needed before the IVB components can be given a purely causal interpretation.
 
+## Lagging the Treatment Is Not a Mechanical Cure \label{sec:lag_not_cure}
+
+Applied work sometimes replaces a contemporaneous treatment $D_t$ with a longer lag (e.g., $D_{t-3}$) under the intuition that this should make collider bias less likely. The IVB decomposition clarifies that this is not true in general.
+
+\begin{proposition}[Lag Substitution Without Lagged Outcome]
+\label{prop:ivb_lag_sub}
+Consider a model without lagged dependent variables. For any target lag $k \geq 0$, define:
+\[
+y_t = \alpha + \beta_k D_{t-k} + W_t'\gamma + e_t
+\]
+as the correct (short) model, and
+\[
+y_t = \alpha^{\star} + \beta_k^{\star} D_{t-k} + W_t'\gamma^{\star} + \theta^{\star} Z_t + v_t
+\]
+as the long model including collider $Z_t$. Then:
+\[
+\beta_k^{\star} - \beta_k = -\theta^{\star}\pi_k,
+\]
+where $\pi_k$ is the coefficient on $D_{t-k}$ in
+\[
+Z_t = a + \pi_k D_{t-k} + W_t'\delta + \eta_t.
+\]
+
+Now suppose the collider process is:
+\[
+Z_t = a + \pi_0 D_t + \pi_1 D_{t-1} + W_t'\delta + \eta_t.
+\]
+Let $\widetilde{X}$ denote residualization of $X$ on $W_t$, and define
+\[
+\widetilde{D}_{t-\ell} = \omega_{\ell k}\widetilde{D}_{t-k} + r_{\ell t}, \qquad \ell \in \{0,1\},
+\]
+with $\mathrm{Cov}(\widetilde{D}_{t-k}, r_{\ell t}) = 0$. Then:
+\[
+\pi_k = \pi_0 \omega_{0k} + \pi_1 \omega_{1k},
+\]
+so that
+\begin{equation}
+\beta_k^{\star} - \beta_k = -\theta^{\star}\left(\pi_0 \omega_{0k} + \pi_1 \omega_{1k}\right).
+\label{eq:ivb_lag_sub}
+\end{equation}
+In particular, for $k=3$:
+\[
+\beta_3^{\star} - \beta_3 = -\theta^{\star}\left(\pi_0 \omega_{03} + \pi_1 \omega_{13}\right).
+\]
+\end{proposition}
+
+Equation~\eqref{eq:ivb_lag_sub} shows that moving from $D_{t-1}$ to $D_{t-3}$ does not mechanically eliminate IVB. Bias disappears only in special cases, such as $\theta^{\star}=0$, $\omega_{03}=\omega_{13}=0$, or knife-edge cancellation $\pi_0 \omega_{03} + \pi_1 \omega_{13}=0$.
+
+More generally, if
+\[
+Z_t = a + \sum_{\ell=0}^{L}\pi_{\ell} D_{t-\ell} + W_t'\delta + \eta_t,
+\]
+then for any target lag $k$:
+\[
+\pi_k = \sum_{\ell=0}^{L}\pi_{\ell}\omega_{\ell k}
+\quad\Rightarrow\quad
+\beta_k^{\star} - \beta_k = -\theta^{\star}\sum_{\ell=0}^{L}\pi_{\ell}\omega_{\ell k}.
+\]
+Hence, longer lags can attenuate IVB when the $\omega_{\ell k}$ terms are small, but they do not guarantee zero collider bias.
+
 ## A Practical Recipe \label{sec:recipe}
 
 We summarize the IVB formula as a simple three-step procedure for the applied researcher:
