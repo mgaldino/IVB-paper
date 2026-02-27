@@ -1,5 +1,5 @@
 ---
-title: "Included Variable Bias: Empirical Applications Across Four Published Studies"
+title: "Included Variable Bias: Empirical Applications Across Six Published Studies"
 author: ""
 date: "`r Sys.Date()`"
 bibliography: unified_references.bib
@@ -29,7 +29,7 @@ source("ivb_utils.R")
 
 # Introduction
 
-This report applies the Included Variable Bias (IVB) decomposition to four published studies in political science. The IVB identity quantifies how much the treatment coefficient changes when a candidate collider is included as a control:
+This report applies the Included Variable Bias (IVB) decomposition to six published studies in political science. The IVB identity quantifies how much the treatment coefficient changes when a candidate collider is included as a control:
 
 $$
 \text{IVB}(\hat\beta) = \hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi
@@ -37,7 +37,7 @@ $$
 
 where $\hat\beta^*$ is the treatment coefficient in the "long" model (with the candidate collider $z$), $\hat\beta$ is the coefficient in the "short" model (without $z$), $\hat\theta^*$ is the coefficient of $z$ in the long model, and $\hat\pi$ is the treatment coefficient in the auxiliary regression $z \sim d + w$.
 
-The four applications span different substantive areas, model specifications, and data structures:
+The six applications span different substantive areas, model specifications, and data structures:
 
 | Paper | Journal | Treatment | Outcome | Model |
 |-------|---------|-----------|---------|-------|
@@ -45,6 +45,8 @@ The four applications span different substantive areas, model specifications, an
 | @leipziger2024 | AJPS | Democratic transition (binary) | Ethnic inequality | TWFE |
 | @blair_etal2023 | APSR | UN democracy mandate | Electoral democracy | Country FE |
 | @albers_etal2023 | IO | Government turnover | Fiscal capacity change | Polity + period FE |
+| @rogowski_etal2022 | AJPS | Postal infrastructure (ln) | GDP growth | TWFE |
+| @ballard_rosa_etal2022 | IO | Government partisanship | Bond denomination | Country FE |
 
 For each study, we: (1) replicate the main specification, (2) assess collider plausibility for each control based on the substantive literature, (3) compute the IVB for each control treated as a candidate collider, and (4) discuss how the literature evidence and IVB computations relate.
 
@@ -827,6 +829,266 @@ kable(fs_combined,
 ```
 
 
+# Application 5: @rogowski_etal2022
+
+## Specification
+
+@rogowski_etal2022 estimate the effect of public postal infrastructure on economic development using a TWFE country panel model. The main specification (Table 1, Model 2) is:
+
+$$
+\text{GDP growth}_{i,t+1} = \beta \, \text{Post Offices}_{i,t-1} + \mathbf{Z}'_{it}\gamma + \delta_i + \gamma_t + \varepsilon_{it}
+$$
+
+where $\text{GDP growth}_{i,t+1}$ is the 5-year GDP growth rate (one period forward), $\text{Post Offices}_{i,t-1}$ is the log cumulative stock of post offices (5-year lag), and $\mathbf{Z}_{it}$ includes four controls: log GDP per capita (5-year lag), log population, urbanization rate, and Polity2 democracy score. Standard errors are clustered by country.
+
+```{r rogowski-data}
+dat_rg <- read.delim(
+  "candidate_papers/post_office_2022/country_panel.tab",
+  stringsAsFactors = FALSE
+)
+dat_rg <- dat_rg %>%
+  arrange(country_id, trend) %>%
+  group_by(country_id) %>%
+  mutate(F_e_migdpgro_5yr = lead(e_migdpgro_5yr, 1)) %>%
+  ungroup()
+dat_rg$country_f <- factor(dat_rg$country_id)
+dat_rg$year_f <- factor(dat_rg$year)
+```
+
+## Replication
+
+```{r rogowski-replication}
+mod_rg <- feols(
+  F_e_migdpgro_5yr ~ upu_totalpo_ipo_ln_stock_1_5yr + e_migdppcln_5yr +
+    e_mipopula_ipo_ln + e_miurbaniz_ipo + e_polity2_ipo |
+    country_f + year_f,
+  data = dat_rg, vcov = ~country_id
+)
+
+comp_rg <- data.frame(
+  Variable = c("Post offices (ln stock)", "GDP p.c. (ln)", "Population (ln)",
+               "Urbanization", "Polity2"),
+  `beta (replicated)` = round(coef(mod_rg), 4),
+  `SE (replicated)` = round(se(mod_rg), 4),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(comp_rg, row.names = FALSE,
+      caption = "Rogowski et al. (2022): Replication of Table 1, Model 2")
+```
+
+The replicated treatment coefficient is $\hat\beta$ = `r round(coef(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"], 4)` (SE = `r round(se(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"], 4)`, N = `r mod_rg$nobs`). Post offices have a statistically significant positive effect on subsequent GDP growth.
+
+## Collider Assessment: Literature Review
+
+The key collider candidate is **log GDP per capita**. Post offices facilitate economic development---this is the paper's core mechanism---which raises GDP per capita ($D \to Z$). At the same time, GDP growth (the outcome) mechanically determines future GDP per capita levels ($Y \to Z$). This creates a classic collider concern, amplified by the conditional convergence pattern: richer countries grow more slowly, so controlling for GDP per capita absorbs a negative confound while potentially opening a collider pathway.
+
+The remaining controls are less concerning:
+
+- **Population**: Causality likely runs from population to post offices (demand-driven), not vice versa.
+- **Urbanization**: Post offices may facilitate urbanization through market integration, but the IVB is empirically small.
+- **Polity2**: Communication infrastructure may facilitate democratization [Prat & Stromberg 2013], but the channel is weak and slow-acting.
+
+## IVB Decomposition
+
+```{r rogowski-ivb}
+rg_d_var <- "upu_totalpo_ipo_ln_stock_1_5yr"
+rg_controls <- c("e_migdppcln_5yr", "e_mipopula_ipo_ln",
+                  "e_miurbaniz_ipo", "e_polity2_ipo")
+rg_labels <- c("Log GDP p.c.", "Log population", "Urbanization", "Polity2")
+
+tab_rg <- do.call(rbind, lapply(seq_along(rg_controls), function(j) {
+  z_var <- rg_controls[j]
+  w_vars <- setdiff(rg_controls, z_var)
+  res <- compute_ivb_multi(
+    data = dat_rg, y = "F_e_migdpgro_5yr", d_vars = rg_d_var,
+    z = z_var, w = w_vars,
+    fe = c("country_f", "year_f"), vcov = "iid"
+  )
+  r <- res$results
+  data.frame(Collider = rg_labels[j], beta_short = r$beta_short,
+             beta_long = r$beta_long, theta = r$theta, pi = r$pi,
+             IVB = r$ivb_formula, pct = round(100 * r$ivb_formula / r$beta_long, 1),
+             stringsAsFactors = FALSE)
+}))
+
+kable(tab_rg, digits = 4, row.names = FALSE,
+      caption = "Rogowski et al. (2022): IVB decomposition (Table 1, Model 2)",
+      col.names = c("Control", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta$",
+                     "$\\hat\\pi$", "IVB", "IVB/$\\hat\\beta$ (\\%)"))
+```
+
+## Discussion
+
+Log GDP per capita dominates the IVB decomposition, accounting for approximately `r round(tab_rg$pct[1], 0)`% of $\hat\beta_{\text{long}}$. Including GDP per capita *inflates* the treatment effect from `r round(tab_rg$beta_short[1], 4)` to `r round(tab_rg$beta_long[1], 4)`. This reflects the well-known conditional convergence phenomenon: higher GDP per capita predicts lower subsequent growth ($\hat\theta < 0$), and more post offices predict higher GDP per capita ($\hat\pi > 0$), so $-\hat\theta \cdot \hat\pi > 0$. Whether this represents collider bias (post offices raise GDP levels, which then mechanically relate to growth) or appropriate deconfounding (controlling for convergence) depends on the causal structure and is a fundamental challenge in growth regressions.
+
+```{r rogowski-summary}
+rg_summary <- data.frame(
+  Control = rg_labels,
+  `Y causes Z` = c("Yes (mechanical)", "Weak/reverse", "Weak", "Possible"),
+  `D causes Z` = c("Yes (core mechanism)", "Weak/reverse", "Possible", "Possible"),
+  `Collider` = c("Plausible (also confounder)", "Unlikely", "Unlikely", "Unlikely"),
+  IVB = round(tab_rg$IVB, 4),
+  Pct = round(tab_rg$pct, 1),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(rg_summary,
+      caption = "Rogowski et al. (2022): Literature evidence and IVB magnitudes",
+      col.names = c("Control", "$Y \\to Z$?", "$D \\to Z$?",
+                     "Collider?", "IVB", "IVB/$\\hat\\beta$ (\\%)"))
+```
+
+
+# Application 6: @ballard_rosa_etal2022
+
+## Specification
+
+@ballard_rosa_etal2022 estimate the effect of government partisanship on the proportion of sovereign bonds issued in domestic currency. The main specification (Table 2, Column 3) is:
+
+$$
+\text{propDom}_{it} = \beta_R \text{Right}_{i,t-1} + \beta_L \text{Left}_{i,t-1} + \mathbf{Z}'_{it}\gamma + f(t) + \alpha_i + \varepsilon_{it}
+$$
+
+where $\text{propDom}_{it}$ is the proportion of sovereign bonds (maturity > 1 year) issued in domestic currency (0--1), $\text{Right}$ and $\text{Left}$ are lagged partisan dummies (Center as base), $\mathbf{Z}_{it}$ includes 16 controls (most lagged 12 months), $f(t)$ is a cubic time polynomial, and $\alpha_i$ are country fixed effects. The sample includes non-OECD countries at monthly frequency (1990--2016). Standard errors are clustered by country.
+
+The paper has **two treatment variables** (Right and Left). We focus on $\hat\beta_L$ (Left government), the main finding: left-wing governments issue significantly more domestic-currency debt.
+
+```{r ballard-data}
+dat_br <- read.delim(
+  "candidate_papers/ballard_rosa_2022/Coming_to_Terms_data.tab",
+  stringsAsFactors = FALSE
+)
+dat_br <- dat_br %>%
+  arrange(ccode, time) %>%
+  group_by(ccode) %>%
+  mutate(
+    l1_rightwing = lag(rightwing_exec_mo, 1),
+    l1_leftwing  = lag(leftwing_exec_mo, 1),
+    l12_lngdppc       = lag(lngdppc, 12),
+    l12_gdp_growth    = lag(gdp_growth, 12),
+    l12_avgDebt_gdp   = lag(avgDebt_gdp, 12),
+    l12_curr_act_gdp  = lag(curr_act_gdp, 12),
+    l12_tradeGDP      = lag(tradeGDP, 12),
+    l12_oil_rents     = lag(oil_rents_gdp, 12),
+    l12_fdi_net       = lag(fdi_net_inflow_gdp, 12),
+    l12_treasury10yr  = lag(treasury10yr, 12),
+    l12_peg           = lag(peg, 12),
+    l12_highCBI       = lag(highCBI, 12),
+    l12_kaopen        = lag(kaopen, 12),
+    l12_imfAnyInPlace = lag(imfAnyInPlace, 12),
+    l12_v2x_polyarchy = lag(v2x_polyarchy, 12)
+  ) %>%
+  ungroup() %>%
+  filter(oecd == 0)
+```
+
+## Replication
+
+```{r ballard-replication}
+br_d_vars <- c("l1_rightwing", "l1_leftwing")
+br_controls <- c("l12_lngdppc", "l12_gdp_growth", "l12_avgDebt_gdp",
+                  "l12_curr_act_gdp", "l12_tradeGDP", "l12_oil_rents",
+                  "l12_fdi_net", "l12_treasury10yr", "l12_peg", "l12_highCBI",
+                  "l12_kaopen", "l12_imfAnyInPlace", "crisis_currency",
+                  "crisis_inflation", "crisis_sovdebt", "l12_v2x_polyarchy")
+br_temporal <- c("time", "time2", "time3")
+br_labels <- c("Log GDP p.c.", "GDP growth", "External debt/GDP",
+               "Current account/GDP", "Trade/GDP", "Oil rents/GDP",
+               "FDI/GDP", "US Treasury 10yr", "Pegged XR", "High CBI",
+               "Chinn-Ito openness", "IMF program", "Currency crisis",
+               "Inflation crisis", "Sov. debt crisis", "Democracy (V-Dem)")
+
+fml_br <- as.formula(paste("propDom_gt1yr ~",
+  paste(c(br_d_vars, br_controls, br_temporal), collapse = " + "), "| ccode"))
+mod_br <- feols(fml_br, data = dat_br, vcov = ~ccode)
+
+comp_br <- data.frame(
+  Variable = c("Right government", "Left government"),
+  `Published` = c(-0.075, 0.109),
+  `Replicated` = round(coef(mod_br)[br_d_vars], 3),
+  `SE (published)` = c(0.033, 0.044),
+  `SE (replicated)` = round(se(mod_br)[br_d_vars], 3),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(comp_br, row.names = FALSE,
+      caption = "Ballard-Rosa et al. (2022): Replication of Table 2, Column 3")
+```
+
+The replication matches published values exactly: $\hat\beta_L$ = `r round(coef(mod_br)["l1_leftwing"], 3)` (SE = `r round(se(mod_br)["l1_leftwing"], 3)`, N = `r mod_br$nobs`, `r length(fixest::fixef(mod_br)$ccode)` countries).
+
+## Collider Assessment: Literature Review
+
+The most substantively concerning collider candidates are:
+
+- **Inflation crisis** (contemporaneous): Strong collider candidate. Left-wing governments face higher inflation risk through expansionary fiscal preferences [Hibbs 1977; Alesina 1987], and inflation crises directly reduce domestic-currency bond issuance. Since this variable is *not lagged*, the collider channel is temporally plausible.
+- **IMF program** (lagged 12 months): Possible collider. Governments may strategically enter IMF programs based on ideology [Vreeland 2003], and IMF conditionality may influence bond denomination choices. The 12-month lag provides some protection.
+- **GDP per capita** (lagged 12 months): Weak collider. Partisan effects on GDP take time to materialize, and the 12-month lag mitigates the concern.
+- **US Treasury rate**: Not a collider---exogenous to individual-country partisanship.
+
+The 12-month lag structure on most controls substantially mitigates collider concerns. For partisanship (lagged 1 month) to "cause" a 12-month lagged control conditional on country FE, it would need to affect the control with a lead of at least 12 months, which is implausible for most macroeconomic variables.
+
+## IVB Decomposition
+
+```{r ballard-ivb}
+tab_br <- do.call(rbind, lapply(seq_along(br_controls), function(j) {
+  z_var <- br_controls[j]
+  w_vars <- c(setdiff(br_controls, z_var), br_temporal)
+  res <- compute_ivb_multi(
+    data = dat_br, y = "propDom_gt1yr", d_vars = br_d_vars,
+    z = z_var, w = w_vars,
+    fe = "ccode", vcov = "iid"
+  )
+  r_left <- res$results[res$results$term == "l1_leftwing", ]
+  data.frame(Collider = br_labels[j], beta_short = r_left$beta_short,
+             beta_long = r_left$beta_long, theta = r_left$theta,
+             pi = r_left$pi, IVB = r_left$ivb_formula,
+             pct = round(100 * r_left$ivb_formula / r_left$beta_long, 1),
+             stringsAsFactors = FALSE)
+}))
+
+kable(tab_br, digits = 4, row.names = FALSE,
+      caption = "Ballard-Rosa et al. (2022): IVB for Left government coefficient",
+      col.names = c("Control", "$\\hat\\beta_L^{\\text{short}}$",
+                     "$\\hat\\beta_L^{\\text{long}}$", "$\\hat\\theta$",
+                     "$\\hat\\pi_L$", "IVB", "IVB/$\\hat\\beta_L$ (\\%)"))
+```
+
+## Discussion
+
+```{r ballard-discussion}
+br_top3 <- tab_br[order(abs(tab_br$IVB), decreasing = TRUE), ][1:3, ]
+```
+
+The three largest IVB contributors for $\hat\beta_L$ are: (1) **`r br_top3$Collider[1]`** (IVB = `r round(br_top3$IVB[1], 4)`, `r round(br_top3$pct[1], 1)`%), (2) **`r br_top3$Collider[2]`** (IVB = `r round(br_top3$IVB[2], 4)`, `r round(br_top3$pct[2], 1)`%), and (3) **`r br_top3$Collider[3]`** (IVB = `r round(br_top3$IVB[3], 4)`, `r round(br_top3$pct[3], 1)`%).
+
+Inflation crisis is the most substantively concerning: the large negative $\hat\theta$ (inflation crises reduce domestic-currency issuance by `r round(abs(tab_br$theta[tab_br$Collider == "Inflation crisis"]), 3)` pp) combined with a partisan channel from left governments to inflation risk creates a positive IVB that may inflate $\hat\beta_L$. However, the magnitude (about 11%) is modest and does not threaten the paper's qualitative conclusion.
+
+Most controls produce negligible IVBs ($<$ 2%), reflecting the effective temporal separation between the 1-month lagged treatment and the 12-month lagged controls.
+
+```{r ballard-summary}
+br_summary <- data.frame(
+  Control = br_labels,
+  `D to Z` = c("Weak (lag)", "Weak (lag)", "Weak", "Weak", "Possible",
+               "Weak", "Weak", "No (exogenous)", "Possible", "Weak",
+               "Possible", "Possible", "Weak", "Strong", "Weak", "Possible"),
+  `Y to Z` = c("Weak", "Weak", "Possible", "Possible", "Weak", "No",
+               "Possible", "No (exogenous)", "Possible", "Weak",
+               "Possible", "Possible", "Possible", "Strong", "Possible", "Weak"),
+  `Collider` = c("Unlikely", "Unlikely", "Unlikely", "Unlikely", "Unlikely",
+                  "Unlikely", "Unlikely", "No", "Possible", "Unlikely",
+                  "Possible", "Possible", "Possible", "Plausible",
+                  "Possible", "Unlikely"),
+  IVB = round(tab_br$IVB, 4),
+  Pct = round(tab_br$pct, 1),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(br_summary,
+      caption = "Ballard-Rosa et al. (2022): Literature evidence and IVB magnitudes",
+      col.names = c("Control", "$D \\to Z$?", "$Y \\to Z$?",
+                     "Collider?", "IVB", "IVB/$\\hat\\beta_L$ (\\%)"))
+```
+
+
 # Cross-Application Comparison
 
 ```{r cross-comparison}
@@ -836,6 +1098,8 @@ cl_max_fe <- tab_cl_fe[which.max(abs(tab_cl_fe$IVB)), ]
 lp_max <- tab_lp_t1[which.max(abs(tab_lp_t1$IVB)), ]
 pk_max <- tab_pk[which.max(abs(tab_pk$IVB)), ]
 fs_max_row <- ivb_fs[which.max(ivb_fs$abs_ivb), ]
+rg_max <- tab_rg[which.max(abs(tab_rg$IVB)), ]
+br_max <- tab_br[which.max(abs(tab_br$IVB)), ]
 
 cross <- data.frame(
   Paper = c(
@@ -843,29 +1107,38 @@ cross <- data.frame(
     "Claassen (2020, AJPS)",
     "Leipziger (2024, AJPS)",
     "Blair et al. (2023, APSR)",
-    "Albers et al. (2023, IO)"
+    "Albers et al. (2023, IO)",
+    "Rogowski et al. (2022, AJPS)",
+    "Ballard-Rosa et al. (2022, IO)"
   ),
-  Spec = c("Pooled OLS", "Country FE", "TWFE", "Country FE", "Polity + period FE"),
+  Spec = c("Pooled OLS", "Country FE", "TWFE", "Country FE",
+           "Polity + period FE", "TWFE", "Country FE"),
   `Largest |IVB|` = c(
     sprintf("%.4f (%s)", cl_max_ols$IVB, cl_max_ols$Collider),
     sprintf("%.4f (%s)", cl_max_fe$IVB, cl_max_fe$Collider),
     sprintf("%.4f (%s)", lp_max$IVB, lp_max$Outcome),
     sprintf("%.4f (%s)", pk_max$IVB, pk_max$Collider),
-    sprintf("%.4f (%s)", fs_max_row$ivb_formula, fs_labels[fs_max_row$candidate_collider])
+    sprintf("%.4f (%s)", fs_max_row$ivb_formula, fs_labels[fs_max_row$candidate_collider]),
+    sprintf("%.4f (%s)", rg_max$IVB, rg_max$Collider),
+    sprintf("%.4f (%s)", br_max$IVB, br_max$Collider)
   ),
   `IVB / beta (%)` = c(
     sprintf("%.1f%%", 100 * abs(cl_max_ols$IVB) / abs(cl_max_ols$beta_long)),
     sprintf("%.1f%%", 100 * abs(cl_max_fe$IVB) / abs(cl_max_fe$beta_long)),
     sprintf("%.1f%%", 100 * abs(lp_max$IVB) / abs(lp_max$beta_long)),
     sprintf("%.1f%%", 100 * abs(pk_max$IVB) / abs(pk_max$beta_long)),
-    sprintf("%.1f%%", 100 * abs(fs_max_row$ivb_formula) / abs(fs_max_row$beta_long))
+    sprintf("%.1f%%", 100 * abs(fs_max_row$ivb_formula) / abs(fs_max_row$beta_long)),
+    sprintf("%.1f%%", 100 * abs(rg_max$IVB) / abs(rg_max$beta_long)),
+    sprintf("%.1f%%", 100 * abs(br_max$IVB) / abs(br_max$beta_long))
   ),
   `Collider plausible` = c(
     "Yes (mechanical + diffusion)",
     "Yes (Acemoglu et al. 2019)",
     "Yes (Grundler & Link 2024)",
     "Yes, but lag protects",
-    "No (structural)"
+    "No (structural)",
+    "Yes (convergence + mechanism)",
+    "Yes (partisan inflation theory)"
   ),
   check.names = FALSE, stringsAsFactors = FALSE
 )
@@ -875,7 +1148,7 @@ kable(cross,
 
 ## Summary of Patterns
 
-```{r cross-plot, fig.height=5, fig.width=8}
+```{r cross-plot, fig.height=6, fig.width=8}
 # Collect all IVBs across papers
 all_ivbs <- rbind(
   data.frame(paper = "Claassen\n(OLS)", control = tab_cl_ols$Collider,
@@ -887,7 +1160,11 @@ all_ivbs <- rbind(
   data.frame(paper = "Blair et al.", control = tab_pk$Collider,
              ivb = tab_pk$IVB, stringsAsFactors = FALSE),
   data.frame(paper = "Albers et al.", control = fs_labels[ivb_fs$candidate_collider],
-             ivb = ivb_fs$ivb_formula, stringsAsFactors = FALSE)
+             ivb = ivb_fs$ivb_formula, stringsAsFactors = FALSE),
+  data.frame(paper = "Rogowski et al.", control = tab_rg$Collider,
+             ivb = tab_rg$IVB, stringsAsFactors = FALSE),
+  data.frame(paper = "Ballard-Rosa\net al.", control = tab_br$Collider,
+             ivb = tab_br$IVB, stringsAsFactors = FALSE)
 )
 
 # Boxplot
@@ -902,17 +1179,17 @@ boxplot(ivb ~ paper_f, data = all_ivbs, horizontal = TRUE, las = 1,
 abline(v = 0, lty = 2, col = "grey50")
 ```
 
-Across four applications with a total of `r nrow(all_ivbs)` IVB estimates:
+Across six applications with a total of `r nrow(all_ivbs)` IVB estimates:
 
-1. **GDP per capita** is the most common and often the largest candidate collider. It appears as a control in three of four papers (Claassen, Leipziger, Blair et al.) and produces the largest or second-largest IVB in each case. The democracy $\to$ GDP channel [@acemoglu_etal2019] and the ethnic inequality $\to$ GDP channel [@grundler_link2024] are well-established.
+1. **GDP per capita** is the most common and often the largest candidate collider. It appears as a control in five of six papers and produces the largest or second-largest IVB in most cases. In Rogowski et al., GDP per capita accounts for 58% of the treatment coefficient, making it the largest proportional IVB across all applications---a consequence of the conditional convergence phenomenon in growth regressions. The democracy $\to$ GDP channel [@acemoglu_etal2019] and the ethnic inequality $\to$ GDP channel [@grundler_link2024] are well-established.
 
-2. **IVB magnitudes are generally modest** (median |IVB| = `r round(median(abs(all_ivbs$ivb)), 4)`) but can reach 10--16% of the treatment coefficient. The largest proportional IVB is Leipziger's GDP per capita (16% attenuation), demonstrating that even a single collider can meaningfully shift conclusions.
+2. **IVB magnitudes are generally modest** (median |IVB| = `r round(median(abs(all_ivbs$ivb)), 4)`) but can reach 10--58% of the treatment coefficient. The largest proportional IVB is Rogowski et al.'s GDP per capita (58%), followed by Leipziger's GDP per capita (16% attenuation), demonstrating that a single collider can meaningfully shift conclusions.
 
-3. **Lagging is not a mechanical cure.** Blair et al.'s strategy of lagging controls one additional period beyond the treatment (3 vs. 2 years) rules out strict contemporaneous collider channels. However, as the lag-substitution result in the main paper shows, IVB persists whenever the treatment is autocorrelated across periods ($\pi_k = \sum_\ell \pi_\ell \omega_{\ell k} \neq 0$). The nonzero IVBs for Blair et al. illustrate that lag structures attenuate but do not guarantee elimination of bias.
+3. **Lagging mitigates but does not eliminate collider bias.** Blair et al.'s strategy of lagging controls one additional period beyond the treatment (3 vs. 2 years) and Ballard-Rosa et al.'s 12-month lag structure both reduce the scope for collider bias. However, as the lag-substitution result in the main paper shows, IVB persists whenever the treatment is autocorrelated across periods ($\pi_k = \sum_\ell \pi_\ell \omega_{\ell k} \neq 0$). The nonzero IVBs for these papers illustrate that lag structures attenuate but do not guarantee elimination of bias.
 
-4. **Not all large IVBs reflect colliders.** Albers et al.'s independence variable produces the largest absolute IVB ($-0.041$) across all applications, but it is a structural/historical variable, not a collider. This underscores that the IVB formula quantifies *arithmetic bias from inclusion* regardless of the underlying causal structure, and must be paired with substantive knowledge.
+4. **Not all large IVBs reflect colliders.** Albers et al.'s independence variable produces the largest absolute IVB ($-0.041$) among the first four applications, but it is a structural/historical variable, not a collider. Similarly, in Rogowski et al., GDP per capita serves as both a confounder and a potential collider, and the large IVB reflects both channels. This underscores that the IVB formula quantifies *arithmetic bias from inclusion* regardless of the underlying causal structure, and must be paired with substantive knowledge.
 
-5. **Direction of bias.** When a plausible collider is included, the direction of IVB is informative: positive IVB attenuates the treatment effect (Leipziger, Albers et al. inflation/growth), while negative IVB amplifies it (Claassen). The sign depends on the product $-\hat\theta^* \cdot \hat\pi$ and is not predictable a priori.
+5. **Direction of bias.** When a plausible collider is included, the direction of IVB is informative: positive IVB inflates the treatment effect (Rogowski et al., Ballard-Rosa et al. inflation crisis), while negative IVB deflates it (Claassen). The sign depends on the product $-\hat\theta^* \cdot \hat\pi$ and is not predictable a priori.
 
 
 ## Does IVB Change the Studies' Conclusions?
@@ -931,7 +1208,9 @@ conclusions <- data.frame(
     "Leipziger (Income)",
     "Leipziger (Educ.)",
     "Blair et al.",
-    "Albers et al."
+    "Albers et al.",
+    "Rogowski et al.",
+    "Ballard-Rosa et al."
   ),
   `Strongest collider(s)` = c(
     "Regional democracy",
@@ -940,7 +1219,9 @@ conclusions <- data.frame(
     "Log GDP p.c.",
     "Log GDP p.c.",
     "GDP p.c. + Foreign aid",
-    "Hyperinflation + GDP growth + Lib. democracy"
+    "Hyperinflation + GDP growth + Lib. democracy",
+    "Log GDP p.c.",
+    "Inflation crisis + IMF program"
   ),
   `Literature support` = c(
     "Moderate + mechanical",
@@ -949,7 +1230,9 @@ conclusions <- data.frame(
     "Moderate-strong",
     "Moderate-strong",
     "Strong (but lag attenuates)",
-    "Strong / Moderate-strong / Moderate"
+    "Strong / Moderate-strong / Moderate",
+    "Strong (convergence + mechanism)",
+    "Strong (partisan theory) / Possible"
   ),
   beta_long = c(
     round(coef(mod_cl_ols)["SupDem_m1"], 4),
@@ -958,7 +1241,9 @@ conclusions <- data.frame(
     round(coef(mod_lp_grg)["L_lexical_index_5"], 4),
     round(coef(mod_lp_ggini)["L_lexical_index_5"], 4),
     round(coef(m_pk)[pk_d_var], 4),
-    round(ivb_fs$beta_long[1], 4)
+    round(ivb_fs$beta_long[1], 4),
+    round(coef(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"], 4),
+    round(coef(mod_br)["l1_leftwing"], 4)
   ),
   SE = c(
     round(se(mod_cl_ols)["SupDem_m1"], 4),
@@ -967,7 +1252,9 @@ conclusions <- data.frame(
     round(se(mod_lp_grg)["L_lexical_index_5"], 4),
     round(se(mod_lp_ggini)["L_lexical_index_5"], 4),
     round(se(m_pk)[pk_d_var], 4),
-    NA
+    NA,
+    round(se(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"], 4),
+    round(se(mod_br)["l1_leftwing"], 4)
   ),
   IVB_colliders = c(
     # Claassen OLS: regional democracy
@@ -983,7 +1270,12 @@ conclusions <- data.frame(
           tab_pk$IVB[tab_pk$Collider == "Foreign Aid"], 4),
     # Albers: hyperinflation + GDP growth + liberal democracy
     round(sum(ivb_fs$ivb_formula[ivb_fs$candidate_collider %in%
-      c("X_inflation_ep", "X_g_gdp_yoy", "libdem_extra_vdem")]), 4)
+      c("X_inflation_ep", "X_g_gdp_yoy", "libdem_extra_vdem")]), 4),
+    # Rogowski: GDP p.c.
+    round(tab_rg$IVB[tab_rg$Collider == "Log GDP p.c."], 4),
+    # Ballard-Rosa: inflation crisis + IMF program
+    round(tab_br$IVB[tab_br$Collider == "Inflation crisis"] +
+          tab_br$IVB[tab_br$Collider == "IMF program"], 4)
   ),
   check.names = FALSE, stringsAsFactors = FALSE
 )
@@ -1040,8 +1332,11 @@ kable(disp, digits = 4, row.names = FALSE,
 lp_pct <- round(100 * abs(conclusions$IVB_colliders[3]) /
                   abs(conclusions$beta_long[3]), 1)
 
+rg_pct <- round(100 * abs(conclusions$IVB_colliders[conclusions$Paper == "Rogowski et al."]) /
+                  abs(conclusions$beta_long[conclusions$Paper == "Rogowski et al."]), 1)
+
 cat(sprintf(paste0(
-  "1. **No sign reversals.** In none of the four studies does removing the ",
+  "1. **No sign reversals.** In none of the six studies does removing the ",
   "literature-supported collider(s) flip the sign of the treatment effect. ",
   "The qualitative direction of each study's main finding is preserved.\n\n",
   "2. **No significance reversals.** In all cases where standard errors are ",
@@ -1049,21 +1344,21 @@ cat(sprintf(paste0(
   "(at the 5%% level) both with and without the candidate collider(s). ",
   "Collider bias does not create or destroy statistical significance in these ",
   "applications.\n\n",
-  "3. **Magnitude changes are modest but not negligible.** The largest proportional ",
-  "IVB is Leipziger's GDP per capita for the public services outcome: the ",
-  "published coefficient of $\\hat\\beta^* = %.4f$ would be $\\hat\\beta = %.4f$ ",
-  "without the collider, a %.1f%% attenuation. This is meaningful for interpretation ",
-  "--- the \"true\" effect of democracy on ethnic inequality may be roughly one-sixth ",
-  "larger than published --- but it does not overturn the paper's central finding. ",
-  "For Claassen, Albers et al., and Blair et al., the proportional IVBs from ",
-  "literature-supported colliders are smaller (generally under 10%%).\n\n",
+  "3. **Magnitude changes vary but generally do not overturn conclusions.** The largest ",
+  "proportional IVB from a literature-supported collider is Rogowski et al.'s GDP per capita ",
+  "(%.1f%%), reflecting the conditional convergence pattern in growth regressions. For ",
+  "Leipziger, the IVB is %.1f%%; for Ballard-Rosa et al., the combined IVB from inflation ",
+  "crisis and IMF program is about 19%%. These magnitudes are meaningful for interpretation ",
+  "but do not overturn any paper's central finding. For Claassen, Blair et al., and ",
+  "Albers et al., the proportional IVBs from literature-supported colliders are smaller ",
+  "(generally under 10%%).\n\n",
   "4. **The IVB formula is most valuable as a sensitivity diagnostic.** Rather than ",
   "overturning conclusions, these results show that the IVB formula provides a ",
   "principled, quantitative way to assess how sensitive a treatment estimate is to ",
   "the inclusion of each control. When the literature identifies a strong collider ",
   "candidate and the IVB is large, the researcher has quantitative grounds for ",
   "either excluding the variable or reporting both specifications."
-), conclusions$beta_long[3], conclusions$beta_short[3], lp_pct))
+), rg_pct, lp_pct))
 ```
 
 
