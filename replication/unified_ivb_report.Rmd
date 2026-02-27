@@ -463,7 +463,7 @@ $$
 
 where $y_{it}$ is electoral democracy (V-Dem polyarchy), $D_{i,t-2}$ is a peacekeeping measure lagged 2 periods, and $\mathbf{Z}_{i,t-3}$ is a vector of six controls lagged 3 periods: population, foreign aid, GDP per capita, refugees/IDPs, literacy, and fuel exports. Controls are imputed with within-country means before lagging.
 
-A key design feature is that controls are lagged 3 periods while the treatment is lagged only 2, providing protection against collider bias.
+A key design feature is that controls are lagged 3 periods while the treatment is lagged only 2. While this temporal ordering rules out strict contemporaneous collider channels ($Y_t \to Z_{t-3}$), the IVB decomposition shows that longer lags do not mechanically eliminate bias --- it persists to the extent that the treatment is autocorrelated across periods.
 
 ```{r peacekeeping-data}
 df_pk_raw <- read_dta("candidate_papers/peacekeeping/data_replication.dta")
@@ -559,13 +559,13 @@ The democracy mandate coefficient is $\hat\beta$ = `r round(coef(m_pk)[pk_d_var]
 
 ## Collider Assessment: Literature Review
 
-For each control, we assess whether the outcome (electoral democracy) plausibly causes that control. A critical design feature of @blair_etal2023 is that controls are lagged 3 periods while the treatment is lagged only 2. This temporal ordering means that even for theoretically plausible colliders, the collider channel would require democracy at time $t$ to affect a control measured at $t-3$ --- which is temporally impossible in a strict sense, though persistent within-country democracy trajectories could create weaker feedback effects.
+For each control, we assess whether the outcome (electoral democracy) plausibly causes that control. A notable design feature of @blair_etal2023 is that controls are lagged 3 periods while the treatment is lagged only 2. This temporal ordering rules out *strict contemporaneous* collider channels: democracy at time $t$ cannot cause a control measured at $t-3$. However, as the lag-substitution result in the main paper shows, longer lags do not mechanically eliminate IVB. The bias $-\theta^* \pi_k$ persists whenever the treatment is autocorrelated across periods, because the residualized association between $D_{t-2}$ and $Z_{t-3}$ (captured by $\pi$) can remain nonzero through the treatment's serial dependence. In this application, $\pi$ reflects the predictive association between peacekeeping mandates at $t-2$ and controls at $t-3$ --- driven by selection dynamics (countries that receive mandates have distinct prior trajectories) rather than by a genuine causal collider channel.
 
-**GDP per capita.** @acemoglu_etal2019 provide the leading evidence that democracy causes GDP growth, estimating a ~20% increase in GDP per capita over 25 years through investment, reform, and human capital channels. @papaioannou_siourounis2008 find approximately 1 percentage point of additional annual growth following democratization. The evidence for the $Y \to Z$ channel is **strong**, though the 3-year lag substantially mitigates the collider concern.
+**GDP per capita.** @acemoglu_etal2019 provide the leading evidence that democracy causes GDP growth, estimating a ~20% increase in GDP per capita over 25 years through investment, reform, and human capital channels. @papaioannou_siourounis2008 find approximately 1 percentage point of additional annual growth following democratization. The evidence for the $Y \to Z$ channel is **strong**. The 3-year lag rules out a strict contemporaneous channel, but the IVB can remain nonzero through the treatment's autocorrelation.
 
-**Refugees and IDPs.** @davenport2007 documents the "domestic democratic peace": democracies repress less, generating fewer refugees. @iqbal_zorn2006 confirm that higher democracy levels reduce refugee outflows, with armed conflict being the strongest predictor. The relationship is complex in post-conflict settings --- the exact context of this paper --- since democratic transitions can be destabilizing and may initially increase displacement [@melander_oberg2007]. The evidence is **moderate**, with the 3-year lag providing important protection.
+**Refugees and IDPs.** @davenport2007 documents the "domestic democratic peace": democracies repress less, generating fewer refugees. @iqbal_zorn2006 confirm that higher democracy levels reduce refugee outflows, with armed conflict being the strongest predictor. The relationship is complex in post-conflict settings --- the exact context of this paper --- since democratic transitions can be destabilizing and may initially increase displacement [@melander_oberg2007]. The evidence is **moderate**. The 3-year lag blocks the contemporaneous channel but not the residual association through serial dependence.
 
-**Foreign aid.** A well-established literature documents that Western donors allocate more aid to democracies. @alesina_dollar2000 show that countries that democratize receive more aid. @bermeo2016 refines this finding, showing that aid from *democratic* donors specifically rewards democratization. This is especially relevant in peacekeeping contexts, where democratic transitions trigger donor engagement. The evidence for the $Y \to Z$ channel is **strong**, but the 3-year lag provides substantial protection.
+**Foreign aid.** A well-established literature documents that Western donors allocate more aid to democracies. @alesina_dollar2000 show that countries that democratize receive more aid. @bermeo2016 refines this finding, showing that aid from *democratic* donors specifically rewards democratization. This is especially relevant in peacekeeping contexts, where democratic transitions trigger donor engagement. The evidence for the $Y \to Z$ channel is **strong**. As with other controls, the 3-year lag blocks the contemporaneous channel, but the IVB remains informative about the sensitivity of the treatment estimate to this control's inclusion.
 
 **Fuel exports.** Fuel exports are determined by geological endowments and global commodity prices, not by political regime type. The resource curse literature [@ross2001] examines the reverse direction (oil $\to$ politics). **No evidence** for a collider channel.
 
@@ -585,11 +585,11 @@ pk_lit <- data.frame(
                 "Reduced repression (Davenport 2007)",
                 "Education spending (Stasavage 2005), but decades",
                 "Geology determines extraction"),
-  `Lag protects` = c("Yes (fully)", "Substantially", "Substantially",
-                      "Substantially", "Yes (fully)", "Yes (fully)"),
+  `Lag attenuates` = c("Fully (no Y->Z)", "Partially", "Partially",
+                        "Partially", "Fully (no Y->Z)", "Fully (no Y->Z)"),
   check.names = FALSE, stringsAsFactors = FALSE
 )
-kable(pk_lit, caption = "Blair et al. (2023): Summary of collider evidence and lag protection")
+kable(pk_lit, caption = "Blair et al. (2023): Summary of collider evidence and lag attenuation")
 ```
 
 
@@ -647,7 +647,7 @@ kable(tab_pk_pct, digits = 4, row.names = FALSE,
 
 GDP per capita and refugees/IDPs together account for the bulk of the total IVB, consistent with the literature review identifying them as the controls with the strongest collider channels. Foreign aid --- also a strong collider candidate based on the aid-democracy literature [@bermeo2016; @alesina_dollar2000] --- produces the third-largest IVB. Controls with no collider channel (fuel exports, population) produce small or negative IVBs.
 
-However, Blair et al.'s design choice to lag controls 3 periods versus 2 periods for the treatment provides substantial protection against collider bias. Even for the strongest collider candidates, the temporal ordering means that democracy at time $t$ would need to affect controls measured 3 years earlier, which is temporally impossible in a strict sense. The IVB results are therefore best interpreted as a *sensitivity analysis* --- showing how much the treatment coefficient depends on each control's inclusion --- rather than as measuring definitive collider bias.
+Blair et al.'s design choice to lag controls 3 periods versus 2 periods for the treatment rules out *strict contemporaneous* collider channels ($Y_t \to Z_{t-3}$). However, as the lag-substitution proposition in the main paper demonstrates, longer lags do not mechanically eliminate IVB: bias persists whenever the treatment is autocorrelated across periods, because $\pi_k = \sum_\ell \pi_\ell \omega_{\ell k}$ can remain nonzero. In this application, the nonzero IVBs reflect the predictive association between peacekeeping mandates at $t-2$ and controls at $t-3$, which arises from selection dynamics (countries receiving mandates have distinct prior trajectories) rather than from a genuine causal collider channel. The IVB results should therefore be interpreted as a *sensitivity analysis* --- quantifying how much the treatment estimate depends on each control's inclusion --- while recognizing that the lag structure attenuates but does not guarantee elimination of collider bias.
 
 ```{r peacekeeping-combined-summary}
 pk_combined <- data.frame(
@@ -659,11 +659,11 @@ pk_combined <- data.frame(
                        "Acemoglu et al. 2019", "Iqbal & Zorn 2006",
                        "Stasavage 2005", "Ross 2001"),
   IVB = round(tab_pk$IVB, 4),
-  `Lag protects` = c("Yes (fully)", "Substantially", "Substantially",
-                      "Substantially", "Yes (fully)", "Yes (fully)"),
+  `Lag attenuates` = c("Fully (no Y->Z)", "Partially", "Partially",
+                        "Partially", "Fully (no Y->Z)", "Fully (no Y->Z)"),
   check.names = FALSE, stringsAsFactors = FALSE
 )
-kable(pk_combined, caption = "Blair et al. (2023): Literature evidence, IVB magnitudes, and lag protection")
+kable(pk_combined, caption = "Blair et al. (2023): Literature evidence, IVB magnitudes, and lag attenuation")
 ```
 
 
@@ -908,7 +908,7 @@ Across four applications with a total of `r nrow(all_ivbs)` IVB estimates:
 
 2. **IVB magnitudes are generally modest** (median |IVB| = `r round(median(abs(all_ivbs$ivb)), 4)`) but can reach 10--16% of the treatment coefficient. The largest proportional IVB is Leipziger's GDP per capita (16% attenuation), demonstrating that even a single collider can meaningfully shift conclusions.
 
-3. **Design features matter.** Blair et al.'s strategy of lagging controls one additional period beyond the treatment (3 vs. 2 years) provides substantial protection against collider bias, even for controls with documented causal links from the outcome.
+3. **Lagging is not a mechanical cure.** Blair et al.'s strategy of lagging controls one additional period beyond the treatment (3 vs. 2 years) rules out strict contemporaneous collider channels. However, as the lag-substitution result in the main paper shows, IVB persists whenever the treatment is autocorrelated across periods ($\pi_k = \sum_\ell \pi_\ell \omega_{\ell k} \neq 0$). The nonzero IVBs for Blair et al. illustrate that lag structures attenuate but do not guarantee elimination of bias.
 
 4. **Not all large IVBs reflect colliders.** Albers et al.'s independence variable produces the largest absolute IVB ($-0.041$) across all applications, but it is a structural/historical variable, not a collider. This underscores that the IVB formula quantifies *arithmetic bias from inclusion* regardless of the underlying causal structure, and must be paired with substantive knowledge.
 
