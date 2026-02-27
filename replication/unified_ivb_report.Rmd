@@ -1,0 +1,918 @@
+---
+title: "Included Variable Bias: Empirical Applications Across Four Published Studies"
+author: ""
+date: "`r Sys.Date()`"
+bibliography: unified_references.bib
+output:
+  pdf_document:
+    number_sections: true
+    keep_tex: false
+    toc: true
+    toc_depth: 3
+  html_document:
+    toc: true
+    toc_depth: 3
+    link-citations: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 5
+)
+library(fixest)
+library(haven)
+library(dplyr)
+library(knitr)
+source("ivb_utils.R")
+```
+
+# Introduction
+
+This report applies the Included Variable Bias (IVB) decomposition to four published studies in political science. The IVB identity quantifies how much the treatment coefficient changes when a candidate collider is included as a control:
+
+$$
+\text{IVB}(\hat\beta) = \hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi
+$$
+
+where $\hat\beta^*$ is the treatment coefficient in the "long" model (with the candidate collider $z$), $\hat\beta$ is the coefficient in the "short" model (without $z$), $\hat\theta^*$ is the coefficient of $z$ in the long model, and $\hat\pi$ is the treatment coefficient in the auxiliary regression $z \sim d + w$.
+
+The four applications span different substantive areas, model specifications, and data structures:
+
+| Paper | Journal | Treatment | Outcome | Model |
+|-------|---------|-----------|---------|-------|
+| @claassen2020 | AJPS | Public support for democracy | Liberal democracy | ADL (OLS + FE) |
+| @leipziger2024 | AJPS | Democratic transition (binary) | Ethnic inequality | TWFE |
+| @blair_etal2023 | APSR | UN democracy mandate | Electoral democracy | Country FE |
+| @albers_etal2023 | IO | Government turnover | Fiscal capacity change | Polity + period FE |
+
+For each study, we: (1) replicate the main specification, (2) assess collider plausibility for each control based on the substantive literature, (3) compute the IVB for each control treated as a candidate collider, and (4) discuss how the literature evidence and IVB computations relate.
+
+
+# Application 1: @claassen2020
+
+## Specification
+
+@claassen2020 estimates the effect of public support for democracy on subsequent democratic change using an autoregressive distributed lag (ADL) model:
+
+$$
+d_{it} = \alpha + \phi_1 d_{it-1} + \phi_2 d_{it-2} + \beta s_{it-1} + \mathbf{Z}'_{it-1}\gamma + \varepsilon_{it}
+$$
+
+where $d_{it}$ is the V-Dem Liberal Democracy index, $s_{it-1}$ is lagged public support for democracy, and $\mathbf{Z}_{it-1}$ includes five controls: log GDP per capita, GDP growth, regional democracy, percent Muslim, and resource dependence.
+
+```{r claassen-data}
+dat_cl <- read.delim(
+  "candidate_papers/claassen_2020/Support_democracy_ajps_correct.tab",
+  stringsAsFactors = FALSE
+)
+```
+
+## Replication
+
+```{r claassen-replication}
+# Pooled OLS (Model 1.1)
+mod_cl_ols <- feols(
+  Libdem_VD ~ Libdem_m1 + Libdem_m2 + SupDem_m1 +
+    lnGDP_imp_m1 + GDP_imp_grth_m1 + Libdem_regUN_m1 +
+    Pr_Muslim + Res_cp_WDI_di_m1,
+  data = dat_cl, vcov = "iid"
+)
+
+# Country FE
+mod_cl_fe <- feols(
+  Libdem_VD ~ Libdem_m1 + Libdem_m2 + SupDem_m1 +
+    lnGDP_imp_m1 + GDP_imp_grth_m1 + Libdem_regUN_m1 +
+    Res_cp_WDI_di_m1 | Country,
+  data = dat_cl, vcov = "iid"
+)
+
+comp_cl <- data.frame(
+  Specification = c("Pooled OLS", "Country FE"),
+  N = c(mod_cl_ols$nobs, mod_cl_fe$nobs),
+  `beta (published)` = c(0.267, NA),
+  `beta (replicated)` = c(
+    round(coef(mod_cl_ols)["SupDem_m1"], 3),
+    round(coef(mod_cl_fe)["SupDem_m1"], 3)
+  ),
+  `SE (replicated)` = c(
+    round(se(mod_cl_ols)["SupDem_m1"], 3),
+    round(se(mod_cl_fe)["SupDem_m1"], 3)
+  ),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(comp_cl, digits = 3,
+      caption = "Claassen (2020): Replication of treatment coefficient on $s_{t-1}$")
+```
+
+The dataset contains `r nrow(dat_cl)` country-year observations for `r length(unique(dat_cl$Country))` countries. Published standard errors for the OLS specification are not reported in the replication data; the SEs above are computed from the replicated model with IID variance.
+
+## Collider Assessment: Literature Review
+
+For each control in Claassen's model, we assess whether the outcome (liberal democracy) plausibly causes that control variable. If $Y \to Z$, then conditioning on $Z$ introduces collider bias.
+
+**Log GDP per capita and GDP growth.** The relationship between democracy and economic growth is one of the most studied questions in comparative political economy. After decades of ambiguous findings [@przeworski_etal2000; @barro1996], a consensus emerged with @acemoglu_etal2019, who used dynamic panel methods, system GMM, and regional democratization waves as instruments. They estimate that democratization increases GDP per capita by approximately 20% over 25 years, operating through channels including investment in education and health, economic reform, and reduced social conflict. A meta-analysis by @doucouliagos_ulubasoglu2008 confirms robust indirect effects via human capital and economic freedom. Since Claassen's outcome --- liberal democracy --- plausibly causes GDP per capita through these documented channels, both log GDP per capita and GDP growth are candidate colliders. The evidence is **strong**.
+
+**Regional democracy.** The democratic diffusion literature documents that democratization in one country raises democratic prospects in neighboring countries. @gleditsch_ward2006 show that democratic neighborhoods increase the probability of democratic transition, while @brinks_coppedge2006 find robust convergence toward regional averages. @leeson_dean2009 estimate that countries capture approximately 11% of their neighbors' democratic changes. Crucially, Claassen's regional democracy variable (`Libdem_regUN_m1`) is the mean of liberal democracy scores in the UN sub-region, which *includes country $i$'s own score*. This creates a mechanical dependence: any change in $d_i$ directly enters $z_i$ by construction, making regional democracy an almost certain collider even before considering genuine diffusion effects. The evidence is **moderate for diffusion, plus a mechanical component**.
+
+**Percent Muslim.** This variable is essentially time-invariant and reflects deep historical and demographic patterns. There is no plausible contemporary causal channel from liberal democracy to the proportion of the population that is Muslim. **No evidence** for a collider channel.
+
+**Resource dependence.** The resource curse literature [@ross2001] examines whether natural resources hinder democracy --- i.e., the direction $Z \to Y$, not the direction relevant for collider bias ($Y \to Z$). Resource extraction is determined primarily by geological endowments and commodity prices, not by political regime type. The evidence for a $Y \to Z$ channel is **weak or reversed**.
+
+```{r claassen-lit-summary}
+cl_lit <- data.frame(
+  Control = c("Log GDP p.c.", "GDP growth", "Regional democracy",
+              "% Muslim", "Resource dep."),
+  `Y causes Z` = c("Strong", "Strong", "Moderate + mechanical",
+                    "No (time-invariant)", "Weak/reverse"),
+  Mechanism = c("Democracy promotes growth (Acemoglu et al. 2019)",
+                "Same channel as GDP p.c.",
+                "Diffusion + mechanical composition",
+                "No contemporary channel",
+                "Resource curse is Z->Y, not Y->Z"),
+  `Key reference` = c("Acemoglu et al. 2019", "Acemoglu et al. 2019",
+                       "Gleditsch & Ward 2006", "---", "Ross 2001"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(cl_lit, caption = "Claassen (2020): Summary of collider evidence from the literature")
+```
+
+
+## IVB Decomposition
+
+```{r claassen-ivb}
+cl_controls <- c("lnGDP_imp_m1", "GDP_imp_grth_m1", "Libdem_regUN_m1",
+                  "Pr_Muslim", "Res_cp_WDI_di_m1")
+cl_ldv <- c("Libdem_m1", "Libdem_m2")
+cl_labels <- c("Log GDP p.c.", "GDP growth", "Regional democracy",
+               "% Muslim", "Resource dep.")
+
+# Pooled OLS
+ivb_cl_ols <- lapply(cl_controls, function(z_var) {
+  w_vars <- c(cl_ldv, setdiff(cl_controls, z_var))
+  compute_ivb_multi(
+    data = dat_cl, y = "Libdem_VD", d_vars = "SupDem_m1",
+    z = z_var, w = w_vars, fe = character(), vcov = "iid"
+  )
+})
+names(ivb_cl_ols) <- cl_controls
+
+tab_cl_ols <- do.call(rbind, lapply(seq_along(cl_controls), function(i) {
+  r <- ivb_cl_ols[[cl_controls[i]]]$results
+  data.frame(
+    Collider = cl_labels[i], beta_short = r$beta_short, beta_long = r$beta_long,
+    theta = r$theta, pi = r$pi, IVB = r$ivb_formula, check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+
+# Country FE
+cl_fe_controls <- c("lnGDP_imp_m1", "GDP_imp_grth_m1", "Libdem_regUN_m1",
+                     "Res_cp_WDI_di_m1")
+cl_fe_labels <- c("Log GDP p.c.", "GDP growth", "Regional democracy", "Resource dep.")
+
+ivb_cl_fe <- lapply(cl_fe_controls, function(z_var) {
+  w_vars <- c(cl_ldv, setdiff(cl_fe_controls, z_var))
+  compute_ivb_multi(
+    data = dat_cl, y = "Libdem_VD", d_vars = "SupDem_m1",
+    z = z_var, w = w_vars, fe = "Country", vcov = "iid"
+  )
+})
+names(ivb_cl_fe) <- cl_fe_controls
+
+tab_cl_fe <- do.call(rbind, lapply(seq_along(cl_fe_controls), function(i) {
+  r <- ivb_cl_fe[[cl_fe_controls[i]]]$results
+  data.frame(
+    Collider = cl_fe_labels[i], beta_short = r$beta_short, beta_long = r$beta_long,
+    theta = r$theta, pi = r$pi, IVB = r$ivb_formula, check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+```
+
+```{r claassen-ivb-ols-table}
+kable(tab_cl_ols, digits = 4, row.names = FALSE,
+      caption = "Claassen (2020): IVB decomposition --- Pooled OLS",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "Check"))
+```
+
+```{r claassen-ivb-fe-table}
+kable(tab_cl_fe, digits = 4, row.names = FALSE,
+      caption = "Claassen (2020): IVB decomposition --- Country FE",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "Check"))
+```
+
+## Discussion
+
+The literature review identified log GDP per capita and regional democracy as the strongest collider candidates, with GDP growth sharing the same channel as log GDP per capita. The IVB computations confirm that these controls produce the largest biases: regional democracy produces the largest IVB in pooled OLS ($\approx -0.009$, ~3% of $\hat\beta$), driven by a high $\hat\pi$ (1.10) reflecting the strong association between public support and regional democracy. In the FE specification, log GDP per capita produces the largest IVB ($\approx -0.016$), consistent with the well-documented democracy-growth link [@acemoglu_etal2019]. Percent Muslim (time-invariant, absorbed by FE) and resource dependence (weak/reverse channel) produce small IVBs, consistent with their low collider plausibility.
+
+```{r claassen-combined-summary}
+cl_combined <- data.frame(
+  Control = c("Log GDP p.c.", "GDP growth", "Regional democracy",
+              "% Muslim", "Resource dep."),
+  `Y causes Z` = c("Strong", "Strong", "Moderate + mechanical",
+                    "No (time-invariant)", "Weak/reverse"),
+  `Key reference` = c("Acemoglu et al. 2019", "Acemoglu et al. 2019",
+                       "Gleditsch & Ward 2006", "---", "Ross 2001"),
+  `IVB (OLS)` = round(tab_cl_ols$IVB, 4),
+  `IVB (FE)` = c(
+    round(tab_cl_fe$IVB[tab_cl_fe$Collider == "Log GDP p.c."], 4),
+    round(tab_cl_fe$IVB[tab_cl_fe$Collider == "GDP growth"], 4),
+    round(tab_cl_fe$IVB[tab_cl_fe$Collider == "Regional democracy"], 4),
+    NA,
+    round(tab_cl_fe$IVB[tab_cl_fe$Collider == "Resource dep."], 4)
+  ),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(cl_combined, caption = "Claassen (2020): Literature evidence and IVB magnitudes")
+```
+
+
+# Application 2: @leipziger2024
+
+## Specification
+
+@leipziger2024 estimates the effect of democratic transitions on socioeconomic ethnic inequality using TWFE:
+
+$$
+\text{Ethnic Inequality}_{it} = \beta \, \text{Democracy}(0,1)_{i,t-1} + \theta \, X_{i,t-1} + \delta_i + \gamma_t + \varepsilon_{it}
+$$
+
+where ethnic inequality is measured by three indices (V-Dem public services, Alesina et al. nightlight income, Omoeva et al. education), Democracy is a binary indicator based on the Lexical Index ($\geq$ 5), and $X_{i,t-1}$ is log GDP per capita in the baseline specification.
+
+```{r leipziger-data}
+dat_lp <- read.delim(
+  "candidate_papers/leipziger_2024/Country-level_dataset.tab",
+  stringsAsFactors = FALSE
+)
+
+# Generate variables
+dat_lp$lexical_index_5 <- ifelse(dat_lp$lexical_index >= 5, 1,
+                                  ifelse(dat_lp$lexical_index <= 4, 0, NA))
+dat_lp$SEI <- (dat_lp$v2peapssoc - 3.37) / (-3.135 - 3.37)
+
+dat_lp <- dat_lp %>%
+  arrange(country_id, year) %>%
+  group_by(country_id) %>%
+  mutate(
+    L_lexical_index_5 = dplyr::lag(lexical_index_5, 1),
+    L_latent_gdppc_mean_log = dplyr::lag(latent_gdppc_mean_log, 1),
+    L_e_total_oil_income_pc = dplyr::lag(e_total_oil_income_pc, 1),
+    L_e_civil_war = dplyr::lag(e_civil_war, 1),
+    L_efindex = dplyr::lag(efindex, 1),
+    L_e_migdpgro = dplyr::lag(e_migdpgro, 1)
+  ) %>%
+  ungroup()
+
+dat_lp$year_f <- factor(dat_lp$year)
+dat_lp$country_f <- factor(dat_lp$country_id)
+```
+
+## Replication
+
+```{r leipziger-replication}
+mod_lp_sei <- feols(
+  SEI ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat_lp, vcov = ~country_id
+)
+mod_lp_grg <- feols(
+  grg ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat_lp, vcov = ~country_id
+)
+mod_lp_ggini <- feols(
+  ggini ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat_lp, vcov = ~country_id
+)
+
+comp_lp <- data.frame(
+  Outcome = c("Public services (SEI)", "Income (Alesina)", "Education (Omoeva)"),
+  N_pub = c(15188, 517, 3945),
+  N_rep = c(mod_lp_sei$nobs, mod_lp_grg$nobs, mod_lp_ggini$nobs),
+  Beta_pub = c(-0.035, -0.030, -0.005),
+  Beta_rep = c(
+    round(coef(mod_lp_sei)["L_lexical_index_5"], 3),
+    round(coef(mod_lp_grg)["L_lexical_index_5"], 3),
+    round(coef(mod_lp_ggini)["L_lexical_index_5"], 3)
+  ),
+  SE_pub = c(0.012, 0.016, 0.007),
+  SE_rep = c(
+    round(se(mod_lp_sei)["L_lexical_index_5"], 3),
+    round(se(mod_lp_grg)["L_lexical_index_5"], 3),
+    round(se(mod_lp_ggini)["L_lexical_index_5"], 3)
+  ),
+  stringsAsFactors = FALSE
+)
+kable(comp_lp, digits = 3,
+      caption = "Leipziger (2024): Replication of Table 1",
+      col.names = c("Outcome", "N (pub.)", "N (rep.)", "$\\hat\\beta$ (pub.)",
+                     "$\\hat\\beta$ (rep.)", "SE (pub.)", "SE (rep.)"))
+```
+
+Standard errors are clustered at the country level, matching the published specification.
+
+## Collider Assessment: Literature Review
+
+For each control, we assess whether the outcome (ethnic inequality) plausibly causes that control. If $Y \to Z$, conditioning on $Z$ introduces collider bias.
+
+**GDP per capita.** The relationship between ethnic inequality and economic development is well-documented. @easterly_levine1997 showed that ethnic diversity explains poor growth performance in Africa through channels including political instability, low provision of public goods, and underinvestment in education. @alesina_etal2016 found a strong negative association between ethnic inequality (measured by the Gini of nightlight luminosity across ethnic homelands) and contemporary development. Most importantly, @grundler_link2024 use instrumental variables based on the artificiality of subnational borders in Africa to estimate a *causal* effect: moving from an equal distribution to complete concentration reduces GDP per capita by 12--15%. Since ethnic inequality (Leipziger's outcome) reduces GDP per capita, and democratic transitions (the treatment) also affect GDP through channels documented by @acemoglu_etal2019, GDP per capita is a candidate collider. The evidence is **moderate to strong**.
+
+**Civil war.** The horizontal inequalities literature provides strong theoretical and empirical evidence that ethnic inequality generates grievances that escalate into civil conflict. @cederman_etal2013 document that politically excluded and economically disadvantaged ethnic groups face significantly higher risks of civil conflict. @wucherpfennig_etal2016 use colonial rule strategies (British vs. French indirect rule) as instruments for ethnic exclusion, finding that earlier studies *underestimated* the impact of inclusion on conflict. Since democratic transitions also reduce civil conflict risk, civil war is a theoretically plausible collider. The evidence for the $Y \to Z$ channel is **strong in theory**, though the empirical IVB turns out to be negligible.
+
+**Oil income per capita.** Oil income is determined by geological endowments and global commodity prices. There is no plausible causal channel from ethnic inequality to oil extraction volumes or prices. The resource curse literature [@ross2001] examines the reverse direction (oil $\to$ political institutions). **No evidence** for a collider channel.
+
+**Ethnic fractionalization.** This is a structural demographic variable measuring the probability that two randomly chosen individuals belong to different ethnic groups. It reflects historical population composition and changes only over decades or centuries. Importantly, ethnic fractionalization (diversity of group sizes) is conceptually distinct from ethnic inequality (differences in economic outcomes between groups), as @posner2004 and @alesina_etal2016 emphasize. **No evidence** for a collider channel.
+
+**GDP growth.** The same mechanisms that link ethnic inequality to GDP levels --- conflict, reduced public goods, underinvestment in human capital [@easterly_levine1997; @grundler_link2024] --- also apply to growth rates. However, the empirical IVB is essentially zero, because democratic transitions have a minimal effect on GDP growth conditional on the other controls.
+
+@leipziger2024 deliberately excludes additional controls from the baseline specification, citing "the risk of posttreatment bias" (p. 1347). This is consistent with collider bias concerns. Our analysis examines whether the retained control (GDP per capita) also introduces a measurable bias.
+
+```{r leipziger-lit-summary}
+lp_lit <- data.frame(
+  Control = c("Log GDP p.c.", "Oil income p.c.", "Civil war",
+              "Ethnic frac.", "GDP growth"),
+  `Y causes Z` = c("Moderate-strong", "No", "Strong (theory)",
+                    "No (structural)", "Moderate"),
+  Mechanism = c("Ethnic ineq. reduces growth (Grundler & Link 2024)",
+                "Geology determines extraction",
+                "HI -> grievances -> conflict (Cederman et al. 2013)",
+                "Demographic composition, not affected by inequality",
+                "Same channels as GDP p.c."),
+  `Key reference` = c("Grundler & Link 2024; Easterly & Levine 1997",
+                       "---",
+                       "Cederman et al. 2013; Wucherpfennig et al. 2016",
+                       "Posner 2004",
+                       "Easterly & Levine 1997"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(lp_lit, caption = "Leipziger (2024): Summary of collider evidence from the literature")
+```
+
+
+## IVB Decomposition
+
+### Baseline (Table 1): GDP per capita as sole candidate collider
+
+```{r leipziger-ivb-t1}
+lp_outcomes <- c("SEI", "grg", "ggini")
+lp_outcome_labels <- c("Public services (SEI)", "Income (Alesina)", "Education (Omoeva)")
+
+ivb_lp_t1 <- lapply(lp_outcomes, function(y_var) {
+  compute_ivb_multi(
+    data = dat_lp, y = y_var, d_vars = "L_lexical_index_5",
+    z = "L_latent_gdppc_mean_log", w = character(),
+    fe = c("country_f", "year_f"), vcov = "iid"
+  )
+})
+names(ivb_lp_t1) <- lp_outcomes
+
+tab_lp_t1 <- do.call(rbind, lapply(seq_along(lp_outcomes), function(i) {
+  r <- ivb_lp_t1[[lp_outcomes[i]]]$results
+  data.frame(
+    Outcome = lp_outcome_labels[i],
+    N = ivb_lp_t1[[lp_outcomes[i]]]$sample_n,
+    beta_short = r$beta_short, beta_long = r$beta_long,
+    theta = r$theta, pi = r$pi, IVB = r$ivb_formula, check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+
+kable(tab_lp_t1, digits = 4, row.names = FALSE,
+      caption = "Leipziger (2024): IVB decomposition --- Table 1 (GDP p.c. as collider)",
+      col.names = c("Outcome", "N", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "Check"))
+```
+
+### Extended model (Table A11): Multiple controls, SEI outcome
+
+```{r leipziger-ivb-ext}
+lp_all_controls <- c("L_latent_gdppc_mean_log", "L_e_total_oil_income_pc",
+                      "L_e_civil_war", "L_efindex", "L_e_migdpgro")
+lp_ctrl_labels <- c("Log GDP p.c.", "Oil income p.c.", "Civil war",
+                     "Ethnic frac.", "GDP growth")
+
+ivb_lp_ext <- lapply(seq_along(lp_all_controls), function(j) {
+  z_var <- lp_all_controls[j]
+  w_vars <- setdiff(lp_all_controls, z_var)
+  tryCatch(
+    compute_ivb_multi(
+      data = dat_lp, y = "SEI", d_vars = "L_lexical_index_5",
+      z = z_var, w = w_vars,
+      fe = c("country_f", "year_f"), vcov = "iid"
+    ),
+    error = function(e) NULL
+  )
+})
+names(ivb_lp_ext) <- lp_all_controls
+
+tab_lp_ext <- do.call(rbind, lapply(seq_along(lp_all_controls), function(j) {
+  if (is.null(ivb_lp_ext[[j]])) return(NULL)
+  r <- ivb_lp_ext[[j]]$results
+  data.frame(
+    Collider = lp_ctrl_labels[j],
+    beta_short = r$beta_short, beta_long = r$beta_long,
+    theta = r$theta, pi = r$pi, IVB = r$ivb_formula, check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+
+kable(tab_lp_ext, digits = 4, row.names = FALSE,
+      caption = "Leipziger (2024): IVB decomposition --- Table A11 (SEI outcome)",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "Check"))
+```
+
+## Discussion
+
+GDP per capita --- the only time-varying control in the baseline specification --- produces the largest IVB: approximately +0.006 for the public services measure, *attenuating* the estimated effect of democracy on ethnic inequality by about 16% (from $-0.041$ to $-0.035$). The direction of this attenuation is consistent with the literature: $\hat\theta^*$ is negative (richer countries have less ethnic inequality) and $\hat\pi$ is positive (democracy increases income), so the IVB $= -\hat\theta^* \hat\pi > 0$, pushing the treatment coefficient toward zero.
+
+The literature strongly supports the collider interpretation for GDP per capita: @grundler_link2024 provide causal IV estimates of the ethnic inequality $\to$ GDP channel, and @acemoglu_etal2019 establish the democracy $\to$ GDP channel. Civil war has a strong theoretical basis as a collider [@cederman_etal2013], but its empirical IVB is negligible. Oil income and ethnic fractionalization are not plausible colliders, consistent with their near-zero IVBs.
+
+The Leipziger case illustrates that even a single control retained for "good" confounding-adjustment reasons can introduce a measurable bias when it is also a collider.
+
+```{r leipziger-combined-summary}
+lp_combined <- data.frame(
+  Control = c("Log GDP p.c.", "Oil income p.c.", "Civil war",
+              "Ethnic frac.", "GDP growth"),
+  `Y causes Z` = c("Moderate-strong", "No", "Strong",
+                    "No (structural)", "Moderate"),
+  `Key reference` = c("Grundler & Link 2024", "---",
+                       "Cederman et al. 2013", "---", "Easterly & Levine 1997"),
+  `IVB (Table 1)` = c(round(tab_lp_t1$IVB[1], 4), rep(NA, 4)),
+  `IVB (Table A11)` = round(tab_lp_ext$IVB, 4),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(lp_combined, caption = "Leipziger (2024): Literature evidence and IVB magnitudes")
+```
+
+
+# Application 3: @blair_etal2023
+
+## Specification
+
+@blair_etal2023 estimate the effect of UN peacekeeping on democratization:
+
+$$
+y_{it} = \beta \, D_{i,t-2} + \gamma' \mathbf{Z}_{i,t-3} + \delta_i + \varepsilon_{it}
+$$
+
+where $y_{it}$ is electoral democracy (V-Dem polyarchy), $D_{i,t-2}$ is a peacekeeping measure lagged 2 periods, and $\mathbf{Z}_{i,t-3}$ is a vector of six controls lagged 3 periods: population, foreign aid, GDP per capita, refugees/IDPs, literacy, and fuel exports. Controls are imputed with within-country means before lagging.
+
+A key design feature is that controls are lagged 3 periods while the treatment is lagged only 2, providing protection against collider bias.
+
+```{r peacekeeping-data}
+df_pk_raw <- read_dta("candidate_papers/peacekeeping/data_replication.dta")
+
+df_pk <- df_pk_raw %>%
+  filter(!(gwnoloc == 531 & year < 1993)) %>%
+  filter(!(gwnoloc == 626 & year < 2011)) %>%
+  arrange(gwnoloc, year)
+
+# Lagged dependent variables
+df_pk <- df_pk %>%
+  group_by(gwnoloc) %>%
+  mutate(
+    v2x_polyarchy_1l = lag(v2x_polyarchy, 1),
+    v2x_polyarchy_2l = lag(v2x_polyarchy, 2),
+    v2x_polyarchy_3l = lag(v2x_polyarchy, 3)
+  ) %>%
+  ungroup()
+
+# Personnel in thousands
+df_pk <- df_pk %>%
+  mutate(
+    itotal_compound_K = itotal_compound / 1000,
+    iactual_civilian_total_K = iactual_civilian_total / 1000
+  )
+
+# Lagged treatment (2-period)
+df_pk <- df_pk %>%
+  group_by(gwnoloc) %>%
+  mutate(
+    ipema_any_demo_assist_dum_2l = lag(ipema_any_demo_assist_dum, 2),
+    itotal_compound_K_2l = lag(itotal_compound_K, 2),
+    iactual_civilian_total_K_2l = lag(iactual_civilian_total_K, 2),
+    iany_demo_all_max_dum_2l = lag(iany_demo_all_max_dum, 2)
+  ) %>%
+  ungroup()
+
+# Impute controls with within-country means
+pk_ctrl_vars <- c("wdi_pop", "wdi_oda", "wdi_gdppc", "unhcr_ref_idp",
+                   "wdi_literacy", "wdi_fuel")
+for (v in pk_ctrl_vars) {
+  new_v <- paste0("i", v)
+  df_pk[[new_v]] <- df_pk[[v]]
+  country_means <- df_pk %>%
+    group_by(gwnoloc) %>%
+    summarise(cmean = mean(.data[[v]], na.rm = TRUE), .groups = "drop")
+  df_pk <- df_pk %>%
+    left_join(country_means, by = "gwnoloc", suffix = c("", "_cm"))
+  df_pk[[new_v]] <- ifelse(is.na(df_pk[[new_v]]), df_pk$cmean, df_pk[[new_v]])
+  df_pk$cmean <- NULL
+}
+
+# Lagged controls (3-period)
+df_pk <- df_pk %>%
+  group_by(gwnoloc) %>%
+  mutate(
+    iwdi_pop_3l = lag(iwdi_pop, 3),
+    iwdi_oda_3l = lag(iwdi_oda, 3),
+    iwdi_gdppc_3l = lag(iwdi_gdppc, 3),
+    iunhcr_ref_idp_3l = lag(iunhcr_ref_idp, 3),
+    iwdi_literacy_3l = lag(iwdi_literacy, 3),
+    iwdi_fuel_3l = lag(iwdi_fuel, 3)
+  ) %>%
+  ungroup()
+
+df_pk <- df_pk %>% filter(year >= 1991)
+```
+
+## Replication
+
+```{r peacekeeping-replication}
+pk_d_var <- "ipema_any_demo_assist_dum_2l"
+pk_ctrl_lagged <- c("iwdi_pop_3l", "iwdi_oda_3l", "iwdi_gdppc_3l",
+                     "iunhcr_ref_idp_3l", "iwdi_literacy_3l", "iwdi_fuel_3l")
+
+fml_pk <- as.formula(paste0("v2x_polyarchy ~ ", pk_d_var, " + ",
+                             paste(pk_ctrl_lagged, collapse = " + "),
+                             " | gwnoloc"))
+m_pk <- feols(fml_pk, data = df_pk, vcov = "iid")
+
+comp_pk <- data.frame(
+  Specification = "Country FE (Table 2)",
+  N = nobs(m_pk),
+  `beta (replicated)` = round(coef(m_pk)[pk_d_var], 3),
+  `SE (replicated)` = round(se(m_pk)[pk_d_var], 3),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(comp_pk, digits = 3,
+      caption = "Blair et al. (2023): Replication of democracy mandate coefficient")
+```
+
+The democracy mandate coefficient is $\hat\beta$ = `r round(coef(m_pk)[pk_d_var], 3)` (SE = `r round(se(m_pk)[pk_d_var], 3)`, N = `r nobs(m_pk)`, `r length(unique(df_pk$gwnoloc))` countries, 1991--`r max(df_pk$year)`).
+
+## Collider Assessment: Literature Review
+
+For each control, we assess whether the outcome (electoral democracy) plausibly causes that control. A critical design feature of @blair_etal2023 is that controls are lagged 3 periods while the treatment is lagged only 2. This temporal ordering means that even for theoretically plausible colliders, the collider channel would require democracy at time $t$ to affect a control measured at $t-3$ --- which is temporally impossible in a strict sense, though persistent within-country democracy trajectories could create weaker feedback effects.
+
+**GDP per capita.** @acemoglu_etal2019 provide the leading evidence that democracy causes GDP growth, estimating a ~20% increase in GDP per capita over 25 years through investment, reform, and human capital channels. @papaioannou_siourounis2008 find approximately 1 percentage point of additional annual growth following democratization. The evidence for the $Y \to Z$ channel is **strong**, though the 3-year lag substantially mitigates the collider concern.
+
+**Refugees and IDPs.** @davenport2007 documents the "domestic democratic peace": democracies repress less, generating fewer refugees. @iqbal_zorn2006 confirm that higher democracy levels reduce refugee outflows, with armed conflict being the strongest predictor. The relationship is complex in post-conflict settings --- the exact context of this paper --- since democratic transitions can be destabilizing and may initially increase displacement [@melander_oberg2007]. The evidence is **moderate**, with the 3-year lag providing important protection.
+
+**Foreign aid.** A well-established literature documents that Western donors allocate more aid to democracies. @alesina_dollar2000 show that countries that democratize receive more aid. @bermeo2016 refines this finding, showing that aid from *democratic* donors specifically rewards democratization. This is especially relevant in peacekeeping contexts, where democratic transitions trigger donor engagement. The evidence for the $Y \to Z$ channel is **strong**, but the 3-year lag provides substantial protection.
+
+**Fuel exports.** Fuel exports are determined by geological endowments and global commodity prices, not by political regime type. The resource curse literature [@ross2001] examines the reverse direction (oil $\to$ politics). **No evidence** for a collider channel.
+
+**Literacy.** While democracies invest more in education [@stasavage2005], adult literacy is a slow-moving stock variable that changes over decades as younger, educated cohorts age into the adult population. Within the panel's time horizon and with 3-year lags, the effect of democracy on literacy is negligible. The evidence is **weak/long-run**.
+
+**Population.** Population is a fundamentally demographic variable driven by fertility, mortality, and migration. While some evidence suggests democracy improves health outcomes [@besley_kudamatsu2006], these effects operate over very long time horizons. Population is essentially exogenous to electoral democracy in the short and medium run. **No evidence** for a collider channel.
+
+```{r peacekeeping-lit-summary}
+pk_lit <- data.frame(
+  Control = c("Population", "Foreign Aid", "GDP per capita",
+              "Refugees & IDPs", "Literacy", "Fuel Exports"),
+  `Y causes Z` = c("No (demographic)", "Strong", "Strong",
+                    "Moderate", "Weak/long-run", "No (geological)"),
+  Mechanism = c("No short-run mechanism",
+                "Donors reward democratization (Bermeo 2016)",
+                "Democracy promotes growth (Acemoglu et al. 2019)",
+                "Reduced repression (Davenport 2007)",
+                "Education spending (Stasavage 2005), but decades",
+                "Geology determines extraction"),
+  `Lag protects` = c("Yes (fully)", "Substantially", "Substantially",
+                      "Substantially", "Yes (fully)", "Yes (fully)"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(pk_lit, caption = "Blair et al. (2023): Summary of collider evidence and lag protection")
+```
+
+
+## IVB Decomposition
+
+```{r peacekeeping-ivb}
+pk_ctrl_labels <- c(
+  "iwdi_pop_3l" = "Population",
+  "iwdi_oda_3l" = "Foreign Aid",
+  "iwdi_gdppc_3l" = "GDP per capita",
+  "iunhcr_ref_idp_3l" = "Refugees & IDPs",
+  "iwdi_literacy_3l" = "Literacy",
+  "iwdi_fuel_3l" = "Fuel Exports"
+)
+
+ivb_pk <- lapply(pk_ctrl_lagged, function(z_var) {
+  w_vars <- setdiff(pk_ctrl_lagged, z_var)
+  compute_ivb_multi(
+    data = df_pk, y = "v2x_polyarchy", d_vars = pk_d_var,
+    z = z_var, w = w_vars,
+    fe = "gwnoloc", vcov = "iid"
+  )
+})
+names(ivb_pk) <- pk_ctrl_lagged
+
+tab_pk <- do.call(rbind, lapply(names(ivb_pk), function(z) {
+  r <- ivb_pk[[z]]$results
+  data.frame(
+    Collider = pk_ctrl_labels[z],
+    beta_short = r$beta_short, beta_long = r$beta_long,
+    theta = r$theta, pi = r$pi, IVB = r$ivb_formula, check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+
+kable(tab_pk, digits = 4, row.names = FALSE,
+      caption = "Blair et al. (2023): IVB decomposition --- Table 2 (Democracy Mandate)",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "Check"))
+```
+
+```{r peacekeeping-proportions}
+pk_total_ivb <- sum(tab_pk$IVB)
+tab_pk_pct <- tab_pk %>%
+  select(Collider, IVB) %>%
+  arrange(desc(abs(IVB))) %>%
+  mutate(`% of total` = sprintf("%.1f%%", 100 * IVB / pk_total_ivb))
+
+kable(tab_pk_pct, digits = 4, row.names = FALSE,
+      caption = "Blair et al. (2023): IVB sorted by absolute magnitude")
+```
+
+## Discussion
+
+GDP per capita and refugees/IDPs together account for the bulk of the total IVB, consistent with the literature review identifying them as the controls with the strongest collider channels. Foreign aid --- also a strong collider candidate based on the aid-democracy literature [@bermeo2016; @alesina_dollar2000] --- produces the third-largest IVB. Controls with no collider channel (fuel exports, population) produce small or negative IVBs.
+
+However, Blair et al.'s design choice to lag controls 3 periods versus 2 periods for the treatment provides substantial protection against collider bias. Even for the strongest collider candidates, the temporal ordering means that democracy at time $t$ would need to affect controls measured 3 years earlier, which is temporally impossible in a strict sense. The IVB results are therefore best interpreted as a *sensitivity analysis* --- showing how much the treatment coefficient depends on each control's inclusion --- rather than as measuring definitive collider bias.
+
+```{r peacekeeping-combined-summary}
+pk_combined <- data.frame(
+  Control = tab_pk$Collider,
+  `Y causes Z` = c("No (demographic)", "Strong (Bermeo 2016)",
+                    "Strong (Acemoglu et al. 2019)", "Moderate (Davenport 2007)",
+                    "Weak/long-run", "No (geological)"),
+  `Key reference` = c("---", "Alesina & Dollar 2000",
+                       "Acemoglu et al. 2019", "Iqbal & Zorn 2006",
+                       "Stasavage 2005", "Ross 2001"),
+  IVB = round(tab_pk$IVB, 4),
+  `Lag protects` = c("Yes (fully)", "Substantially", "Substantially",
+                      "Substantially", "Yes (fully)", "Yes (fully)"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(pk_combined, caption = "Blair et al. (2023): Literature evidence, IVB magnitudes, and lag protection")
+```
+
+
+# Application 4: @albers_etal2023
+
+## Specification
+
+@albers_etal2023 estimate the determinants of fiscal capacity in Africa using a century-long panel (1900--2015) with 5-year averages:
+
+$$
+\Delta \text{Tax}_{it} = \beta \cdot \text{GovChange}_{i,t-1} + \boldsymbol{\theta}' \mathbf{Z}_{it} + \delta_i + \gamma_t + \varepsilon_{it}
+$$
+
+where $\Delta\text{Tax}_{it}$ is the change in real per capita non-trade/non-resource tax collection, $\text{GovChange}_{i,t-1}$ is lagged government turnover, and $\mathbf{Z}_{it}$ includes 12 covariates.
+
+## Replication
+
+The original paper uses 13 Stata do-files to construct the panel. Our R replication yields N = 491 versus N = 873 in the published paper, due to missing data on the aid exposure variable. See `fiscal_state_replication_ivb.R` for the full data pipeline.
+
+```{r fiscal-data}
+ivb_fs <- read.csv("candidate_papers/fiscal_state_ivb_results.csv",
+                     stringsAsFactors = FALSE)
+
+fs_labels <- c(
+  "X_indep" = "Independence",
+  "X_inflation_ep" = "Hyperinflation",
+  "l1_civ_war_all_PRIO" = "Civil war (lag)",
+  "X_g_gdp_yoy" = "GDP growth",
+  "l1_drought_affected_merged" = "Drought (lag)",
+  "libdem_extra_vdem" = "Liberal democracy",
+  "X_secession" = "Secession",
+  "X_socialist" = "Socialist system",
+  "S_g5_unw_alliance_abs" = "Aid exposure",
+  "cr_market_accessXBOEinv" = "Credit market access",
+  "X_external_default_RR" = "Sovereign default",
+  "l1_int_war_all_PRIO" = "Int. war (lag)"
+)
+```
+
+```{r fiscal-comparison}
+comp_fs <- data.frame(
+  Quantity = c("N", "Coeff. on gov. turnover", "SE (gov. turnover)", "Adj. R-sq."),
+  Published = c("873", "-0.66", "---", "0.21"),
+  Replicated = c(as.character(ivb_fs$sample_n[1]),
+                  as.character(round(ivb_fs$beta_long[1], 3)),
+                  "Not available (pre-computed)",
+                  "0.234"),
+  stringsAsFactors = FALSE
+)
+kable(comp_fs,
+      caption = "Albers et al. (2023): Published vs. Replicated (Table 1, Col. 6)")
+```
+
+Note: Standard errors for the treatment coefficient are not available from the pre-computed IVB results. The replication uses a CSV of IVB decomposition components generated by `fiscal_state_replication_ivb.R`.
+
+## Collider Assessment: Literature Review
+
+For each control, we assess whether the outcome (change in fiscal capacity) plausibly causes that control. If $Y \to Z$, conditioning on $Z$ introduces collider bias.
+
+**Independence.** Despite producing the largest IVB (see below), independence is a structural/historical variable determined by colonial timing and geopolitical conditions. There is no plausible channel from *changes in fiscal capacity* to whether a country is independent. The large IVB reflects the strong mechanical association between independence events and fiscal capacity changes --- new states must build tax systems from scratch --- rather than a genuine collider channel. Independence is more plausibly a confounder or mediator than a collider. **Unlikely** to be a collider.
+
+**Hyperinflation.** The link from weak fiscal capacity to inflation is one of the best-established relationships in macroeconomics. @sargent_wallace1981 showed that in a "fiscally dominant" regime, governments with insufficient tax revenue resort to seigniorage (money creation), generating inflation. @catao_terrones2005 provide panel evidence across 107 countries (1960--2001) that fiscal deficits are a key determinant of inflation, especially in developing countries. Many African countries experienced hyperinflationary episodes precisely when fiscal capacity collapsed. Since changes in fiscal capacity (the outcome) directly affect inflation risk, and government turnover (the treatment) may also trigger inflation through policy instability, hyperinflation is a **strong** collider candidate.
+
+**GDP growth.** @besley_persson2009 and @besley_persson2011 document that fiscal capacity, legal capacity, and economic development form "development clusters": higher tax collection enables public goods provision that promotes growth. @johnson_koyama2017 find evidence of sharp, sustained GDP growth jumps following fiscal centralization. Since fiscal capacity improvements (the outcome) promote growth, and government turnover (the treatment) may also affect growth through policy uncertainty, GDP growth is a **moderate-to-strong** collider candidate.
+
+**Liberal democracy.** The fiscal bargaining hypothesis --- "no taxation without representation" --- is one of the oldest ideas in political economy. @bates_lien1985 formalize a model where revenue-seeking rulers offer political representation in exchange for tax compliance. @levi1988 develops this further in *Of Rule and Revenue*. @ross2004 tests the hypothesis cross-nationally, finding support for the link between non-resource taxation and democratic institutions. Since improvements in fiscal capacity may drive democratization through fiscal bargaining, and government turnover is inherently linked to political institutions, liberal democracy is a **moderate** collider candidate.
+
+**Other controls.** The remaining controls are unlikely colliders:
+
+- *Civil war (lagged)*: The lag structure makes genuine collider bias implausible, as fiscal capacity today cannot cause civil war in the prior period. IVB = +0.021 likely reflects confounding dynamics.
+- *Drought (lagged)*: An exogenous weather/climate variable. No channel from fiscal capacity to drought. **Not a collider.**
+- *Secession*: A structural event determined by ethno-political dynamics, not fiscal capacity. **Not a collider.**
+- *Socialist system*: Determined by ideological and geopolitical factors. **Not a collider.**
+- *Aid exposure*: A possible but weak channel via the substitution hypothesis [@moss_etal2006]: countries with higher fiscal capacity may receive less aid. Empirically negligible.
+- *Credit market access* and *sovereign default*: Both have plausible channels from fiscal capacity (higher revenue improves creditworthiness), but their empirical IVBs are small.
+- *International war (lagged)*: Determined by geopolitical dynamics. **Not a collider.**
+
+```{r fiscal-lit-summary}
+fs_lit <- data.frame(
+  Control = c("Independence", "Hyperinflation", "Civil war (lag)",
+              "GDP growth", "Drought (lag)", "Liberal democracy",
+              "Secession", "Socialist system", "Aid exposure",
+              "Credit market", "Sovereign default", "Int. war (lag)"),
+  `Y causes Z` = c("Unlikely (structural)", "Strong", "Unlikely (lag)",
+                     "Moderate-strong", "No (exogenous)", "Moderate",
+                     "Unlikely (structural)", "No (structural)", "Possible",
+                     "Moderate", "Moderate", "No"),
+  `Key reference` = c("---", "Sargent & Wallace 1981", "---",
+                        "Besley & Persson 2011", "---", "Bates & Lien 1985",
+                        "---", "---", "Moss et al. 2006",
+                        "Reinhart & Rogoff 2009", "Reinhart & Rogoff 2009", "---"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(fs_lit, caption = "Albers et al. (2023): Summary of collider evidence from the literature")
+```
+
+
+## IVB Decomposition
+
+```{r fiscal-ivb}
+tab_fs <- ivb_fs %>%
+  mutate(
+    label = fs_labels[candidate_collider],
+    check = ivb_formula - ivb_direct
+  ) %>%
+  arrange(desc(abs_ivb)) %>%
+  select(label, beta_short, beta_long, theta, pi, ivb_formula, abs_ivb, check)
+
+kable(tab_fs, digits = 4, row.names = FALSE,
+      caption = "Albers et al. (2023): IVB decomposition (Table 1, Col. 6)",
+      col.names = c("Candidate collider", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "|IVB|", "Check"))
+```
+
+```{r fiscal-plot, fig.height=5.5, fig.width=7}
+ivb_plot_fs <- ivb_fs %>%
+  mutate(label = fs_labels[candidate_collider]) %>%
+  arrange(ivb_formula)
+ivb_plot_fs$label <- factor(ivb_plot_fs$label, levels = ivb_plot_fs$label)
+
+par(mar = c(5, 12, 4, 2))
+barplot(
+  ivb_plot_fs$ivb_formula,
+  names.arg = ivb_plot_fs$label,
+  horiz = TRUE, las = 1,
+  col = ifelse(ivb_plot_fs$ivb_formula > 0, "steelblue", "coral"),
+  border = NA,
+  xlab = expression(paste("IVB = ", -hat(theta)^"*", " ", hat(pi))),
+  main = "IVB Decomposition: Albers, Jerven & Suesse (2023)"
+)
+abline(v = 0, lty = 2, col = "grey40")
+```
+
+## Discussion
+
+Independence produces the largest IVB ($-0.041$) but is not a collider: it is a structural/historical variable. This case illustrates that the IVB formula quantifies *arithmetic bias from inclusion* regardless of the underlying causal structure and must be paired with substantive knowledge.
+
+Among the plausible colliders identified in the literature review, hyperinflation produces the second-largest IVB (+0.029), consistent with the well-established fiscal-inflation nexus [@sargent_wallace1981]. GDP growth (+0.016) and liberal democracy ($-0.013$) produce moderate IVBs, consistent with the "development clusters" literature [@besley_persson2011] and the fiscal bargaining hypothesis [@bates_lien1985]. Together, these three plausible colliders account for a combined IVB of approximately +0.032.
+
+```{r fiscal-combined-summary}
+fs_combined <- data.frame(
+  Control = c("Independence", "Hyperinflation", "Civil war (lag)",
+              "GDP growth", "Drought (lag)", "Liberal democracy",
+              "Secession", "Socialist system", "Aid exposure",
+              "Credit market", "Sovereign default", "Int. war (lag)"),
+  IVB = c(-0.041, 0.029, 0.021, 0.016, -0.015, -0.013,
+          0.012, 0.007, 0.006, 0.006, -0.001, -0.001),
+  `Y causes Z` = c("Unlikely (structural)", "Strong", "Unlikely (lag)",
+                     "Moderate-strong", "No (exogenous)", "Moderate",
+                     "Unlikely (structural)", "No (structural)", "Possible",
+                     "Moderate", "Moderate", "No"),
+  `Key reference` = c("---", "Sargent & Wallace 1981", "---",
+                        "Besley & Persson 2011", "---", "Bates & Lien 1985",
+                        "---", "---", "Moss et al. 2006",
+                        "Reinhart & Rogoff 2009", "Reinhart & Rogoff 2009", "---"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(fs_combined,
+      caption = "Albers et al. (2023): Literature evidence and IVB magnitudes")
+```
+
+
+# Cross-Application Comparison
+
+```{r cross-comparison}
+# Find largest IVB for each paper
+cl_max_ols <- tab_cl_ols[which.max(abs(tab_cl_ols$IVB)), ]
+cl_max_fe <- tab_cl_fe[which.max(abs(tab_cl_fe$IVB)), ]
+lp_max <- tab_lp_t1[which.max(abs(tab_lp_t1$IVB)), ]
+pk_max <- tab_pk[which.max(abs(tab_pk$IVB)), ]
+fs_max_row <- ivb_fs[which.max(ivb_fs$abs_ivb), ]
+
+cross <- data.frame(
+  Paper = c(
+    "Claassen (2020, AJPS)",
+    "Claassen (2020, AJPS)",
+    "Leipziger (2024, AJPS)",
+    "Blair et al. (2023, APSR)",
+    "Albers et al. (2023, IO)"
+  ),
+  Spec = c("Pooled OLS", "Country FE", "TWFE", "Country FE", "Polity + period FE"),
+  `Largest |IVB|` = c(
+    sprintf("%.4f (%s)", cl_max_ols$IVB, cl_max_ols$Collider),
+    sprintf("%.4f (%s)", cl_max_fe$IVB, cl_max_fe$Collider),
+    sprintf("%.4f (%s)", lp_max$IVB, lp_max$Outcome),
+    sprintf("%.4f (%s)", pk_max$IVB, pk_max$Collider),
+    sprintf("%.4f (%s)", fs_max_row$ivb_formula, fs_labels[fs_max_row$candidate_collider])
+  ),
+  `IVB / beta (%)` = c(
+    sprintf("%.1f%%", 100 * abs(cl_max_ols$IVB) / abs(cl_max_ols$beta_long)),
+    sprintf("%.1f%%", 100 * abs(cl_max_fe$IVB) / abs(cl_max_fe$beta_long)),
+    sprintf("%.1f%%", 100 * abs(lp_max$IVB) / abs(lp_max$beta_long)),
+    sprintf("%.1f%%", 100 * abs(pk_max$IVB) / abs(pk_max$beta_long)),
+    sprintf("%.1f%%", 100 * abs(fs_max_row$ivb_formula) / abs(fs_max_row$beta_long))
+  ),
+  `Collider plausible` = c(
+    "Yes (mechanical + diffusion)",
+    "Yes (Acemoglu et al. 2019)",
+    "Yes (Grundler & Link 2024)",
+    "Yes, but lag protects",
+    "No (structural)"
+  ),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(cross,
+      caption = "Cross-application comparison: Largest IVB per paper")
+```
+
+## Summary of Patterns
+
+```{r cross-plot, fig.height=5, fig.width=8}
+# Collect all IVBs across papers
+all_ivbs <- rbind(
+  data.frame(paper = "Claassen\n(OLS)", control = tab_cl_ols$Collider,
+             ivb = tab_cl_ols$IVB, stringsAsFactors = FALSE),
+  data.frame(paper = "Claassen\n(FE)", control = tab_cl_fe$Collider,
+             ivb = tab_cl_fe$IVB, stringsAsFactors = FALSE),
+  data.frame(paper = "Leipziger\n(Table 1)", control = lp_outcome_labels,
+             ivb = tab_lp_t1$IVB, stringsAsFactors = FALSE),
+  data.frame(paper = "Blair et al.", control = tab_pk$Collider,
+             ivb = tab_pk$IVB, stringsAsFactors = FALSE),
+  data.frame(paper = "Albers et al.", control = fs_labels[ivb_fs$candidate_collider],
+             ivb = ivb_fs$ivb_formula, stringsAsFactors = FALSE)
+)
+
+# Boxplot
+papers <- unique(all_ivbs$paper)
+all_ivbs$paper_f <- factor(all_ivbs$paper, levels = papers)
+
+par(mar = c(5, 8, 4, 2))
+boxplot(ivb ~ paper_f, data = all_ivbs, horizontal = TRUE, las = 1,
+        col = "grey85", border = "grey40",
+        xlab = "IVB", main = "Distribution of IVBs Across Applications",
+        outcol = "coral", outpch = 16)
+abline(v = 0, lty = 2, col = "grey50")
+```
+
+Across four applications with a total of `r nrow(all_ivbs)` IVB estimates:
+
+1. **GDP per capita** is the most common and often the largest candidate collider. It appears as a control in three of four papers (Claassen, Leipziger, Blair et al.) and produces the largest or second-largest IVB in each case. The democracy $\to$ GDP channel [@acemoglu_etal2019] and the ethnic inequality $\to$ GDP channel [@grundler_link2024] are well-established.
+
+2. **IVB magnitudes are generally modest** (median |IVB| = `r round(median(abs(all_ivbs$ivb)), 4)`) but can reach 10--16% of the treatment coefficient. The largest proportional IVB is Leipziger's GDP per capita (16% attenuation), demonstrating that even a single collider can meaningfully shift conclusions.
+
+3. **Design features matter.** Blair et al.'s strategy of lagging controls one additional period beyond the treatment (3 vs. 2 years) provides substantial protection against collider bias, even for controls with documented causal links from the outcome.
+
+4. **Not all large IVBs reflect colliders.** Albers et al.'s independence variable produces the largest absolute IVB ($-0.041$) across all applications, but it is a structural/historical variable, not a collider. This underscores that the IVB formula quantifies *arithmetic bias from inclusion* regardless of the underlying causal structure, and must be paired with substantive knowledge.
+
+5. **Direction of bias.** When a plausible collider is included, the direction of IVB is informative: positive IVB attenuates the treatment effect (Leipziger, Albers et al. inflation/growth), while negative IVB amplifies it (Claassen). The sign depends on the product $-\hat\theta^* \cdot \hat\pi$ and is not predictable a priori.
+
+
+# References
