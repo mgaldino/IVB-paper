@@ -353,6 +353,33 @@ The key difference lies in the direction of the problem. With OVB, the researche
 
 A notable practical advantage of IVB is that its components are *always* estimable: the researcher has already included $Z$ in the regression (otherwise there would be no bias), so $\beta_2^{\star}$ is available, and $\phi_1$ comes from a simple auxiliary regression. By contrast, OVB requires observing the omitted variable---which, by definition, is often unavailable.
 
+## Extension to Panel Fixed Effects \label{sec:twfe}
+
+The cross-sectional result extends immediately to two-way fixed effects (TWFE) models without lagged dependent variables---the workhorse specification in comparative politics. Consider the correct model:
+\begin{equation}
+y_{it} = \alpha_i + \mu_t + \beta D_{it} + e_{it}
+\label{eq:twfe_short}
+\end{equation}
+and the misspecified model including a collider:
+\begin{equation}
+y_{it} = \alpha_i^{\star} + \mu_t^{\star} + \beta^{\star} D_{it} + \theta^{\star} Z_{it} + v_{it}
+\label{eq:twfe_long}
+\end{equation}
+
+By FWL, unit and time fixed effects are absorbed by projecting all variables onto the space spanned by the unit and time dummies. Let $\widetilde{y}_{it}$, $\widetilde{D}_{it}$, and $\widetilde{Z}_{it}$ denote the doubly-demeaned residuals. The argument from Proposition~\ref{prop:ivb_cs} applies to these residuals, yielding:
+
+\begin{corollary}[IVB under TWFE]
+\label{cor:ivb_twfe}
+In a TWFE model without lagged dependent variables, the bias from including a collider $Z_{it}$ is:
+\begin{equation}
+\text{IVB} = \beta^{\star} - \beta = -\theta^{\star} \times \pi
+\label{eq:ivb_twfe}
+\end{equation}
+where $\theta^{\star}$ is the coefficient on $Z_{it}$ in the long TWFE regression \eqref{eq:twfe_long} and $\pi$ is the coefficient on $D_{it}$ in the auxiliary TWFE regression $Z_{it} = \alpha_i' + \mu_t' + \pi D_{it} + \eta_{it}$.
+\end{corollary}
+
+The corollary has a substantive implication. Because unit fixed effects absorb any time-invariant component of the association between $D$ and $Z$, the auxiliary coefficient $\pi$ reflects only the \textit{within-unit} co-movement of treatment and collider. If $D$ and $Z$ are correlated primarily in levels across units (e.g., richer countries have better governance), unit fixed effects remove this correlation and $\pi$ is small. Similarly, $\theta^{\star}$ reflects only the within-unit partial association between $Z$ and $Y$. This is the algebraic basis for the empirical pattern documented in Section~\ref{sec:ivb_magnitude}: IVB tends to be modest in TWFE applications because fixed effects absorb the between-unit collider channels.
+
 ## Extension to ADL(1,0) via FWL \label{sec:adl10}
 
 We now extend the IVB formula to the dynamic models used in TSCS analysis. Consider an ADL(1,0) specification. The correct (``short'') model is:
@@ -574,15 +601,11 @@ The empirically prevalent case in which $Z$ is simultaneously a collider and a c
 
 The IVB formula tells a researcher *how much* bias results from including a specific collider. But a natural prior question is: under what structural conditions should we expect the IVB to be large or small? This question is especially relevant for TSCS research, where two-way fixed effects (TWFE) absorb unit-level and time-level variation, potentially shrinking the components of the IVB.
 
-We discuss three structural features of typical TSCS designs that help explain why empirical IVBs tend to be modest. The first two follow directly from the algebra of FWL projection under fixed effects; the third is documented with Monte Carlo simulations.
+We discuss two structural features of typical TSCS designs that help explain why empirical IVBs tend to be modest. The first follows directly from the algebra of Corollary~\ref{cor:ivb_twfe}; the second is documented with Monte Carlo simulations.
 
 ## Fixed Effects Absorb the Between-Unit Collider Channels \label{sec:mech_ab}
 
-The IVB is $-\hat\theta^{\star} \hat\pi$, where $\hat\pi$ comes from the auxiliary regression $Z \sim D + \text{FE}$ and $\hat\theta^{\star}$ from the long model. Under TWFE, unit fixed effects absorb any time-invariant component of the association between $D$ and $Z$ or between $Y$ and $Z$. This is a standard property of within-estimation, but its implication for IVB is worth stating explicitly.
-
-Suppose the collider depends on the treatment through both a between-unit and a within-unit channel: $Z_{it} = \gamma_D^{\text{btw}} \mu_i^D + \gamma_D^{\text{wth}} (D_{it} - \mu_i^D) + \gamma_Y Y_{it} + \eta_i + \mu_t + \nu_{it}$. Because $\gamma_D^{\text{btw}} \mu_i^D$ is collinear with the unit fixed effect $\eta_i$, it is absorbed, and the surviving auxiliary coefficient is $\pi = \gamma_D^{\text{wth}} + \gamma_Y \beta$---independent of $\gamma_D^{\text{btw}}$. An analogous argument applies to the $Y \to Z$ channel: $\theta^{\star}$ depends only on the within-unit association between $Y$ and $Z$, not on persistent cross-country differences.
-
-The practical implication is that even if $D$ and $Z$ are strongly correlated in the raw data, the IVB can be small if that correlation is primarily cross-sectional rather than temporal. In many TSCS applications in comparative politics, this is precisely the case: treatment variables like democratization or peacekeeping deployment vary primarily across countries in levels, and their within-country variation is modest.
+As shown in Corollary~\ref{cor:ivb_twfe}, the IVB under TWFE depends only on the within-unit components of $\theta^{\star}$ and $\pi$. If the association between $D$ and $Z$ is primarily cross-sectional (e.g., richer countries have better governance in levels), unit fixed effects absorb this association and $\pi$ is small. An analogous argument applies to $\theta^{\star}$: if the outcome--collider association is driven by persistent cross-country differences rather than year-to-year fluctuations, fixed effects remove it. In many TSCS applications in comparative politics, this is precisely the case: treatment variables like democratization or peacekeeping deployment vary primarily across countries in levels, and their within-country variation is modest.
 
 ## Few Switchers Inflate Standard Errors Relative to the IVB \label{sec:mech_c}
 
