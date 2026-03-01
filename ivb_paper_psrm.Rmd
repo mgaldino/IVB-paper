@@ -611,7 +611,7 @@ Table~\ref{tab:ivb_summary} reports the IVB only for controls classified as coll
 ivb_all <- read.csv("replication/standardized_ivb_metrics.csv",
                      stringsAsFactors = FALSE)
 
-# ---- Collider candidates identified via DAG reasoning (see Appendix G) ----
+# ---- Collider candidates identified via DAG reasoning (see Appendix F) ----
 collider_candidates <- list(
   "Claassen (FE)"         = "Log GDP p.c.",
   "Leipziger (SEI)"       = "Log GDP p.c.",
@@ -1173,18 +1173,7 @@ All simulations in this paper are implemented in R and embedded in the R Markdow
 The full simulation code is available in the companion file \texttt{sim\_ivb\_completa.R}.
 
 
-## Appendix E: Connection to Potential Outcomes \label{app:po}
-
-The IVB formula can be connected to the potential outcomes framework as follows. Under the standard assumptions of SUTVA and a linear constant-effect model, the potential outcomes are $Y_i(d) = \alpha + \beta_1 d + e_i$, where $\beta_1$ is the Average Treatment Effect (ATE). The observed outcome is $Y_i = Y_i(D_i) = \alpha + \beta_1 D_i + e_i$.
-
-When the researcher conditions on a collider $Z_i$---a variable that is caused by both $D_i$ and $Y_i$---the conditional independence assumption $Y_i(d) \perp\!\!\!\perp D_i \mid Z_i$ is violated. This is because conditioning on a common effect of $D$ and $Y$ creates a spurious association between treatment assignment and potential outcomes. In the language of potential outcomes, including a collider introduces selection bias *within strata of* $Z$.
-
-The IVB formula quantifies this selection bias. The term $\beta_2^{\star}$ reflects the (spurious) partial association between $Z$ and $Y$ conditional on $D$ in the misspecified model, while $\phi_1$ reflects the association between $D$ and $Z$ that arises because both are causes (or functions of causes) of $Z$. Their product, with a negative sign, equals the bias in the ATE estimate.
-
-This connection underscores a key insight: the IVB formula bridges the DAG-based and potential outcomes-based perspectives on causal inference. Where DAGs provide the qualitative diagnosis (conditioning on a collider violates $d$-separation), the formula provides the quantitative assessment (the bias equals $-\beta_2^{\star} \times \phi_1$), expressed entirely in terms of observable regression coefficients.
-
-
-## Appendix F: Variance of the IVB Estimator \label{app:variance}
+## Appendix E: Variance of the IVB Estimator \label{app:variance}
 
 The IVB diagnostic $\widehat{\text{IVB}} = -\hat{\theta}^{\star} \hat{\pi}$ is a product of two estimators. Its sampling variance can be approximated via the delta method. Write $\text{IVB} = -\theta^{\star}\pi$ and let $\hat{\theta}^{\star}$ and $\hat{\pi}$ denote the OLS estimators from the long model and the auxiliary regression, respectively. By the delta method:
 \begin{equation}
@@ -1203,7 +1192,7 @@ This upper bound is computable from standard regression output alone, without an
 We recommend the following two-step procedure: (1) compute the upper bound in Equation~\eqref{eq:se_ivb_bound} as a quick screening tool; (2) if the bound is inconclusive, run a cluster bootstrap that jointly resamples both regressions to obtain $\text{SE}(\widehat{\text{IVB}})$ and a confidence interval directly.
 
 
-## Appendix G: Control Classification and Full IVB Results \label{app:classification}
+## Appendix F: Control Classification and Full IVB Results \label{app:classification}
 
 Following the diagnostic recipe in Section~\ref{sec:recipe} (Step~0), we classify each control variable in the six replicated studies according to its causal role relative to the treatment ($D$) and outcome ($Y$). A control is classified as a **collider** when credible evidence from separate studies supports both $D \to Z$ and $Y \to Z$; as a **confounder** when the evidence supports $Z \to D$ and/or $Z \to Y$ (but not $D \to Z$); as a **mediator** when $D \to Z \to Y$; and as **predetermined/neutral** when no contemporaneous causal pathway is plausible (e.g., geographic or demographic variables, or lagged variables where the lag structure blocks the collider channel). Variables with evidence supporting both confounding and collider channels are labeled **collider + confounder**. The classification criteria are consistent with the sufficient conditions stated in Section~\ref{sec:caveats}.
 
