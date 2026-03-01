@@ -585,11 +585,11 @@ Z_{it} = \gamma_D D_{it} + \gamma_Y^{\text{btw}} \bar{Y}_i + \gamma_Y^{\text{wth
 $$
 then TWFE absorbs $\gamma_Y^{\text{btw}} \bar{Y}_i$ (since $\bar{Y}_i$ is time-invariant), and $\theta^{\star}$ in the long regression depends only on $\gamma_Y^{\text{wth}}$.
 
-```{r fig-heatmap-A, fig.cap="Mechanism A: $|\\text{IVB}/\\beta|$ depends on the within-unit channel ($\\gamma_D^{\\text{wth}}$, vertical axis), not the between-unit channel ($\\gamma_D^{\\text{btw}}$, horizontal axis). The horizontal bands confirm that FE absorbs the between component. Simulation: $N=200$, $T=30$, $\\beta=1$, 500 replications per scenario. \\label{fig:fig-heatmap-A}", fig.width=6, fig.height=5}
+```{r fig-heatmap-A, fig.cap="Mechanism A: $|\\text{IVB}/\\beta|$ depends on the within-unit channel ($\\gamma_D^{\\text{wth}}$, vertical axis), not the between-unit channel ($\\gamma_D^{\\text{btw}}$, horizontal axis). The horizontal bands confirm that FE absorbs the between component. Simulation: $N=200$, $T=30$, $\\beta=1$, 500 replications per scenario.", fig.width=6, fig.height=5}
 knitr::include_graphics("plots/v4_heatmap_A_btw_wth.png")
 ```
 
-```{r fig-heatmap-B, fig.cap="Mechanism B: $|\\text{IVB}/\\beta|$ depends on the within-unit channel of $Y \\to Z$ ($\\gamma_Y^{\\text{wth}}$), not the between-unit channel ($\\gamma_Y^{\\text{btw}}$). Analogous horizontal bands. \\label{fig:fig-heatmap-B}", fig.width=6, fig.height=5}
+```{r fig-heatmap-B, fig.cap="Mechanism B: $|\\text{IVB}/\\beta|$ depends on the within-unit channel of $Y \\to Z$ ($\\gamma_Y^{\\text{wth}}$), not the between-unit channel ($\\gamma_Y^{\\text{btw}}$). Analogous horizontal bands.", fig.width=6, fig.height=5}
 knitr::include_graphics("plots/v4_heatmap_B_btw_wth.png")
 ```
 
@@ -1349,7 +1349,7 @@ Democracy (V-Dem) & Weak & Weak & Predetermined & --- \\
 
 ### Full Mechanical IVB Decomposition
 
-Table~\ref{tab:ivb_full} reports the complete IVB decomposition for all 57 study-control combinations, regardless of collider plausibility. This table is provided for completeness and transparency; the substantive interpretation of any individual IVB as collider bias requires the causal reasoning documented in the classification tables above.
+Table~\ref{tab:ivb-full-table} reports the complete IVB decomposition for all 57 study-control combinations, regardless of collider plausibility. This table is provided for completeness and transparency; the substantive interpretation of any individual IVB as collider bias requires the causal reasoning documented in the classification tables above.
 
 ```{r ivb-full-table, cache=TRUE}
 # cache=TRUE: safe because standardized_ivb_metrics.csv is generated once and versioned.
@@ -1383,8 +1383,7 @@ kable(ivb_full[, c("paper", "collider", "IVB_fmt", "IVB_SE_fmt",
         "Full mechanical IVB decomposition. All controls are included ",
         "regardless of collider plausibility. IVB/$\\hat\\beta$ is reported ",
         "only when the treatment effect is significant ($|t| \\geq 1.96$); ",
-        "``---'' indicates $\\hat\\beta \\approx 0$ or SE unavailable. ",
-        "\\label{tab:ivb_full}"),
+        "``---'' indicates $\\hat\\beta \\approx 0$ or SE unavailable."),
       booktabs = TRUE, escape = FALSE,
       align = c("l", "l", "r", "r", "r"),
       longtable = TRUE) %>%
