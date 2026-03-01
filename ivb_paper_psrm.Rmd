@@ -25,6 +25,7 @@ header-includes:
   - \usepackage[round]{natbib}
   - \doublespacing
   - \newtheorem{proposition}{Proposition}
+  - \newtheorem{corollary}{Corollary}
   - \newtheorem{definition}{Definition}
   - \usepackage{geometry}
   - \geometry{margin=1in}
@@ -506,6 +507,20 @@ then for any target lag $k$:
 \]
 Hence, longer lags can attenuate IVB when the $\omega_{\ell k}$ terms are small, but they do not guarantee zero collider bias.
 
+A sharper result obtains when the treatment is autoregressive and the collider depends only on the contemporaneous treatment:
+
+\begin{corollary}[IVB Decay Under AR(1) Treatment]
+\label{cor:ivb_decay}
+Under the conditions of Proposition~\ref{prop:ivb_lag_sub}, suppose further that (i) the demeaned treatment follows a stationary AR(1) process, $\widetilde{D}_t = \rho_D \widetilde{D}_{t-1} + u_t$ with $|\rho_D| < 1$, and (ii) the collider depends only on the contemporaneous treatment, $\pi_\ell = 0$ for all $\ell \geq 1$. Then:
+\[
+\text{IVB}(k) \approx \text{IVB}(0) \cdot \rho_D^k.
+\]
+\end{corollary}
+
+\noindent \textit{Proof.} With $\pi_\ell = 0$ for $\ell \geq 1$, the general formula reduces to $\text{IVB}(k) = -\theta^{\star} \pi_0 \omega_{0k}$. Under AR(1) treatment, $\omega_{0k} = \text{Cov}(\widetilde{D}_t, \widetilde{D}_{t-k}) / \text{Var}(\widetilde{D}_{t-k}) = \rho_D^k$. The coefficient $\theta^{\star}$ is stable across $k$ because $D_{t-k}$ is a weak predictor of $Z_t$ when $k$ is large, so partitioning on $D_{t-k}$ barely affects the projection of $Y$ on $Z$. \hfill $\square$
+
+The corollary has immediate practical implications. For highly persistent treatments---such as democracy indices or GDP per capita, where $\rho_D \approx 0.95$---the bias decays slowly: $\text{IVB}(5) \approx 0.77 \times \text{IVB}(0)$. By contrast, for treatments with moderate autocorrelation ($\rho_D \approx 0.5$), the decay is rapid: $\text{IVB}(3) \approx 0.13 \times \text{IVB}(0)$. A useful rule of thumb is that $k^{\star} \approx \log(\text{SE}/|\text{IVB}(0)|) / \log(\rho_D)$ lags are needed for IVB to fall below one standard error of $\hat{\beta}$. An important limitation is that condition (ii) is restrictive: if $Z$ depends on lags of $D$ (i.e., $\pi_\ell \neq 0$ for some $\ell \geq 1$), the decay is governed by the weighted sum in the general formula and can be substantially slower. In the six empirical applications below, all treatments are highly persistent, which explains why lagging alone does not resolve the collider problem.
+
 ## A Practical Recipe \label{sec:recipe}
 
 We summarize the IVB formula as a simple diagnostic procedure for the applied researcher:
@@ -529,6 +544,7 @@ Record $\hat{\pi}$.
 \[
 \widehat{\text{IVB}} = -\hat{\theta}^{\star} \times \hat{\pi}
 \]
+The uncertainty of $\widehat{\text{IVB}}$ can be quantified via the delta method or cluster bootstrap; see Appendix~\ref{app:variance} for details and an upper bound on $\text{SE}(\widehat{\text{IVB}})$ that requires only standard regression output.
 \end{enumerate}
 
 If $|\widehat{\text{IVB}}|$ is large relative to the estimated treatment effect, the researcher has strong reason to exclude the collider from the specification. The sign of the IVB indicates the *direction* of the bias: whether including the collider attenuates or amplifies the treatment effect.
@@ -626,7 +642,7 @@ Table~\ref{tab:ivb_summary} reports the IVB only for controls classified as coll
 ivb_all <- read.csv("replication/standardized_ivb_metrics.csv",
                      stringsAsFactors = FALSE)
 
-# ---- Collider candidates identified via DAG reasoning (see Appendix F) ----
+# ---- Collider candidates identified via DAG reasoning (see Appendix G) ----
 collider_candidates <- list(
   "Claassen (FE)"         = "Log GDP p.c.",
   "Leipziger (SEI)"       = "Log GDP p.c.",
@@ -1199,7 +1215,26 @@ The IVB formula quantifies this selection bias. The term $\beta_2^{\star}$ refle
 This connection underscores a key insight: the IVB formula bridges the DAG-based and potential outcomes-based perspectives on causal inference. Where DAGs provide the qualitative diagnosis (conditioning on a collider violates $d$-separation), the formula provides the quantitative assessment (the bias equals $-\beta_2^{\star} \times \phi_1$), expressed entirely in terms of observable regression coefficients.
 
 
-## Appendix F: Control Classification and Full IVB Results \label{app:classification}
+## Appendix F: Variance of the IVB Estimator \label{app:variance}
+
+The IVB diagnostic $\widehat{\text{IVB}} = -\hat{\theta}^{\star} \hat{\pi}$ is a product of two estimators. Its sampling variance can be approximated via the delta method. Write $\text{IVB} = -\theta^{\star}\pi$ and let $\hat{\theta}^{\star}$ and $\hat{\pi}$ denote the OLS estimators from the long model and the auxiliary regression, respectively. By the delta method:
+\begin{equation}
+\text{Var}(\widehat{\text{IVB}}) \approx \pi^2 \, \text{Var}(\hat{\theta}^{\star}) + \theta^{\star 2} \, \text{Var}(\hat{\pi}) + 2\theta^{\star}\pi \, \text{Cov}(\hat{\theta}^{\star}, \hat{\pi}).
+\label{eq:var_ivb}
+\end{equation}
+The first two terms on the right-hand side are readily available from the standard output of the long regression ($\text{Var}(\hat{\theta}^{\star})$) and the auxiliary regression ($\text{Var}(\hat{\pi})$). The cross-covariance term $\text{Cov}(\hat{\theta}^{\star}, \hat{\pi})$ is not standard, since the two estimators come from different regressions. It can be estimated via seemingly unrelated regressions (SUR) or, more simply, via cluster bootstrap.
+
+For a conservative bound that avoids estimating the cross-covariance, apply the Cauchy--Schwarz inequality:
+\begin{equation}
+\text{SE}(\widehat{\text{IVB}}) \leq |\hat{\pi}| \cdot \text{SE}(\hat{\theta}^{\star}) + |\hat{\theta}^{\star}| \cdot \text{SE}(\hat{\pi}).
+\label{eq:se_ivb_bound}
+\end{equation}
+This upper bound is computable from standard regression output alone, without any additional estimation. If the bound is small relative to $\text{SE}(\hat{\beta})$, the researcher can conclude that the IVB is precisely estimated as small (or large). If the bound is inconclusive---i.e., the upper bound on $\text{SE}(\widehat{\text{IVB}})$ is of similar magnitude to $|\widehat{\text{IVB}}|$ itself---then a cluster bootstrap is recommended to obtain a tighter interval.
+
+We recommend the following two-step procedure: (1) compute the upper bound in Equation~\eqref{eq:se_ivb_bound} as a quick screening tool; (2) if the bound is inconclusive, run a cluster bootstrap that jointly resamples both regressions to obtain $\text{SE}(\widehat{\text{IVB}})$ and a confidence interval directly.
+
+
+## Appendix G: Control Classification and Full IVB Results \label{app:classification}
 
 Following the diagnostic recipe in Section~\ref{sec:recipe} (Step~0), we classify each control variable in the six replicated studies according to its causal role relative to the treatment ($D$) and outcome ($Y$). A control is classified as a **collider** when credible evidence from separate studies supports both $D \to Z$ and $Y \to Z$; as a **confounder** when the evidence supports $Z \to D$ and/or $Z \to Y$ (but not $D \to Z$); as a **mediator** when $D \to Z \to Y$; and as **predetermined/neutral** when no contemporaneous causal pathway is plausible (e.g., geographic or demographic variables, or lagged variables where the lag structure blocks the collider channel). Variables with evidence supporting both confounding and collider channels are labeled **collider + confounder**. The classification criteria are consistent with the sufficient conditions stated in Section~\ref{sec:caveats}.
 
