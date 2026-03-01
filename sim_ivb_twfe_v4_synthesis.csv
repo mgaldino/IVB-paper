@@ -1,0 +1,5 @@
+mechanism,n_scenarios,n_ivb_se_lt1,pct_ivb_se_lt1,median_ivb_pct,max_ivb_pct
+A,108,36,33.3,13.75,48.7
+B,72,24,33.3,12.48,44.15
+C,16,0,0,32.15,53.11
+D,16,0,0,19.22,52.95

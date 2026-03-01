@@ -16,6 +16,7 @@ header-includes:
   - \usepackage{amssymb}
   - \usepackage{amsthm}
   - \usepackage{booktabs}
+  - \usepackage{longtable}
   - \usepackage{tikz}
   - \usetikzlibrary{positioning, arrows.meta, calc, shapes.misc}
   - \usepackage{setspace}
@@ -28,7 +29,7 @@ header-includes:
   - \usepackage{geometry}
   - \geometry{margin=1in}
 abstract: |
-  The selection of control variables is a critical step in observational studies, yet standard heuristics can inadvertently lead researchers to include collider variables, introducing bias rather than removing it. While Directed Acyclic Graphs (DAGs) can diagnose whether a variable is a collider, they do not quantify the magnitude of the resulting bias. We derive the Included Variable Bias (IVB) formula---a closed-form expression that mirrors the classic Omitted Variable Bias (OVB) formula but addresses the opposite problem: the bias from erroneously including a variable. We show that $\text{IVB} = -\theta^{\star} \times \pi$, where both components are directly estimable from data. We extend the result from cross-sectional models to the Autoregressive Distributed Lag (ADL) specifications common in time-series cross-sectional (TSCS) analysis. We further show that the common practice of replacing a contemporaneous treatment with a longer lag does not mechanically eliminate IVB: bias persists to the extent that the treatment is autocorrelated across periods. Monte Carlo simulations confirm the formula's exactness across multiple data-generating processes, and we illustrate its application with an example from the civil war literature.
+  The selection of control variables is a critical step in observational studies, yet standard heuristics can inadvertently lead researchers to include collider variables, introducing bias rather than removing it. While Directed Acyclic Graphs (DAGs) can diagnose whether a variable is a collider, they do not quantify the magnitude of the resulting bias. We derive the Included Variable Bias (IVB) formula---a closed-form expression that mirrors the classic Omitted Variable Bias (OVB) formula but addresses the opposite problem: the bias from erroneously including a variable. We show that $\text{IVB} = -\theta^{\star} \times \pi$, where both components are directly estimable from data. We extend the result from cross-sectional models to the Autoregressive Distributed Lag (ADL) specifications common in time-series cross-sectional (TSCS) analysis. We further show that the common practice of replacing a contemporaneous treatment with a longer lag does not mechanically eliminate IVB: bias persists to the extent that the treatment is autocorrelated across periods. We characterize structural conditions---fixed effects absorbing between-unit variation, cross-sectional dominance in the treatment-collider and outcome-collider channels, few treatment switchers, measurement error in controls---that explain why IVB tends to be modest in typical panel applications. We illustrate the formula with six published studies spanning democratization, peacekeeping, fiscal capacity, infrastructure, and sovereign debt. For each study, we classify controls as collider candidates using DAG-based reasoning grounded in the published literature. Among theoretically motivated collider candidates, median IVBs are approximately 0.13 standard errors of the treatment effect. Only one candidate---GDP per capita in a growth regression---exceeds one standard error ($|\text{IVB}/\text{SE}| = 2.11$, corresponding to 58\% of the treatment effect).
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +39,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   fig.align = "center",
   fig.pos = "H",
-  cache = TRUE,
+  cache = FALSE,
   dpi = 300
 )
 
@@ -46,6 +47,10 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(kableExtra)
+library(fixest)
+library(data.table)
+
+source("replication/ivb_utils.R")
 
 theme_set(theme_minimal(base_size = 12))
 ```
@@ -54,9 +59,9 @@ theme_set(theme_minimal(base_size = 12))
 
 Applied researchers using observational data face a fundamental challenge: which variables should be included as controls in a regression model? The answer to this question is decisive for causal identification, yet the discipline's standard practices offer surprisingly little guidance for getting it right. Two widely used heuristics---what we call *control checking* and *confounding checking*---instruct researchers to include variables that cause the outcome or that jointly cause the treatment and the outcome. While these rules are sensible in many settings, they share a critical blind spot: they do not assess whether a candidate control variable is a collider, a variable that is caused by both the treatment and the outcome (or by the treatment and an unobserved common cause of the outcome). Including a collider in a regression opens a backdoor path and biases the estimate of the causal effect \citep{pearl2009causality, elwert2014endogenous}.
 
-The problem is especially acute in time-series cross-sectional (TSCS) research designs, which are ubiquitous in comparative politics and international relations \citep{beck1995what, franzese2007spatial}. In TSCS settings, researchers routinely lag their control variables to avoid reverse causality. This seemingly prudent practice can, paradoxically, create collider bias. When a lagged control variable is itself caused by the outcome and by an unobserved variable that also affects the outcome, conditioning on it opens a spurious path---a phenomenon we term ``foreign collider bias.''
+The problem is especially acute in time-series cross-sectional (TSCS) research designs, which are ubiquitous in comparative politics and international relations \citep{beck1995what}. In TSCS settings, researchers routinely lag their control variables to avoid reverse causality. This seemingly prudent practice can, paradoxically, create collider bias. When a lagged control variable is itself caused by the outcome and by an unobserved variable that also affects the outcome, conditioning on it opens a spurious path---a phenomenon we term ``foreign collider bias.''
 
-Directed Acyclic Graphs (DAGs) have become an increasingly recognized tool for diagnosing such problems \citep{pearl2018book, imbens2020potential}. A growing literature in political science has begun to apply DAGs to improve causal identification \citep{montgomery2018conditioning, blackwell2018make}. DAGs provide a clear, qualitative answer to the question of *whether* including a particular variable introduces bias. However, they are silent on the equally important question of *how much* bias results. A researcher who discovers that a control variable is a collider still does not know the magnitude or even the direction of the bias without additional tools.
+Directed Acyclic Graphs (DAGs) have become an increasingly recognized tool for diagnosing such problems \citep{pearl2009causality, imbens2020potential}. A growing literature in political science has begun to apply DAGs to improve causal identification \citep{montgomery2018conditioning, blackwell2018make}. DAGs provide a clear, qualitative answer to the question of *whether* including a particular variable introduces bias. However, they are silent on the equally important question of *how much* bias results. A researcher who discovers that a control variable is a collider still does not know the magnitude or even the direction of the bias without additional tools.
 
 This paper fills that gap. We derive the **Included Variable Bias (IVB)** formula---a closed-form expression for the bias that arises when a collider variable is erroneously included in a regression model. The formula takes a remarkably simple form:
 \begin{equation}
@@ -67,9 +72,11 @@ where $\theta^{\star}$ is the coefficient on the collider in the misspecified (`
 
 The IVB formula mirrors the well-known Omitted Variable Bias (OVB) formula, but addresses the symmetrically opposite problem. Where OVB quantifies the cost of leaving out a relevant confounder, IVB quantifies the cost of putting in an irrelevant---or, more precisely, harmful---collider. We show that this result holds not only in standard cross-sectional regression but extends naturally to the Autoregressive Distributed Lag (ADL) models that are the workhorse of TSCS analysis. The extension relies on the Frisch--Waugh--Lovell (FWL) theorem \citep{frisch1933partial, lovell1963seasonal} and yields the same functional form, with the key quantities now partialled out by the dynamic controls (lagged dependent variables and lagged treatments).
 
-We validate the formula through Monte Carlo simulations across three data-generating processes: a pure cross-section, an ADL(1,0) panel, and a substantive civil war DGP inspired by the empirical literature on political change and conflict. In every scenario, the formula predicts the empirical bias with exact precision.
+Beyond the formula itself, we investigate the structural conditions under which IVB is large or small in panel settings with fixed effects. Using Monte Carlo simulations, we show that two-way fixed effects (TWFE) absorb the between-unit component of the treatment-collider and outcome-collider channels, leaving only the within-unit variation to drive the IVB. This result explains why IVB tends to be modest in typical TSCS applications: when the association between the treatment and a candidate collider is primarily cross-sectional (e.g., richer countries have better governance in levels), fixed effects remove this association, and the residual within-unit IVB is small. Additional mechanisms---binary treatments with few switchers inflating standard errors, and measurement error in controls attenuating the collider coefficient---reinforce this pattern.
 
-The remainder of this paper is organized as follows. Section~\ref{sec:control} reviews the standard heuristics for selecting control variables and identifies their limitations. Section~\ref{sec:dags} introduces DAGs and illustrates collider bias in a TSCS context using a running example from the civil war literature. Section~\ref{sec:ivb} presents the core theoretical contribution: the derivation of the IVB formula for cross-sectional and ADL models, including a result showing that replacing the treatment with a longer lag does not mechanically eliminate collider bias. Section~\ref{sec:montecarlo} validates the formula through Monte Carlo simulations. Section~\ref{sec:application} provides a practical walkthrough of the formula using the civil war example. Section~\ref{sec:conclusion} concludes with recommendations for applied researchers.
+We apply the IVB formula to six published studies in comparative politics and international political economy. For each study, we classify every control variable as a collider, confounder, mediator, or predetermined variable using DAG-based reasoning grounded in the published literature. Among the 14 theoretically motivated collider candidates across six studies, only one produces an IVB exceeding one standard error of the treatment effect: GDP per capita in \citet{rogowski_etal2022}, with $|\text{IVB}/\text{SE}| = 2.11$, corresponding to 58\% of $\hat\beta$. The median $|\text{IVB}/\text{SE}|$ across collider candidates is approximately 0.13---well within sampling noise. We examine two cases in detail: \citet{leipziger2024}, where GDP per capita as a collider attenuates the democratization effect by approximately 16\% of $\hat\beta$ but only half a standard error, and \citet{rogowski_etal2022}, where the same variable generates the only IVB exceeding one standard error but its collider status is causally ambiguous.
+
+The remainder of this paper is organized as follows. Section~\ref{sec:control} reviews the standard heuristics for selecting control variables and identifies their limitations. Section~\ref{sec:dags} introduces DAGs and illustrates collider bias in a TSCS context using a running example from the civil war literature. Section~\ref{sec:ivb} presents the core theoretical contribution: the derivation of the IVB formula for cross-sectional and ADL models, including a result showing that replacing the treatment with a longer lag does not mechanically eliminate collider bias. Section~\ref{sec:ivb_magnitude} uses Monte Carlo simulations to identify the structural conditions that determine IVB magnitude in panel data. Section~\ref{sec:applications} applies the formula to six published studies. Section~\ref{sec:conclusion} concludes with recommendations for applied researchers.
 
 
 # The Control Variable Problem \label{sec:control}
@@ -102,16 +109,18 @@ Yet even the DAG approach, as typically used, has a limitation: it provides a \t
 
 ## Related Work on Collider Bias Quantification
 
-Several prior contributions have derived formulas for collider-related bias in specific settings. \citet{greenland2003quantifying} quantified collider-stratification bias in linear structural equation models, showing that conditioning on a common effect can induce associations between otherwise independent causes. \citet{pearl2013linear} provided a systematic treatment of bias formulas in linear models using path analysis, including expressions for collider bias that follow from Wright's path-tracing rules. \citet{ding2015adjust} derived closed-form bias formulas for the M-bias (collider) configuration, establishing conditions under which the bias from conditioning on a collider exceeds the bias from omitting a confounder. Most recently, \citet{jung2024mitigating} used the exact term ``included variable bias'' in the context of disparate impact estimation, focusing on the legal and fairness implications of conditioning on post-treatment variables.
+Several prior contributions have derived formulas for collider-related bias in specific settings. \citet{greenland2003quantifying} quantified collider-stratification bias in linear structural equation models, showing that conditioning on a common effect can induce associations between otherwise independent causes. \citet{pearl2013linear} provided a systematic treatment of bias formulas in linear models using path analysis, including expressions for collider bias that follow from Wright's path-tracing rules. \citet{ding2015adjust} derived closed-form bias formulas for the M-bias (collider) configuration using linear structural equation models (LSEMs) and path analysis. Their sensitivity analysis demonstrated that pure M-Bias tends to be a ``higher-order'' effect---a product of four structural correlation coefficients---that is typically small unless all four correlations are simultaneously large. They further analyzed the ``Butterfly-Structure,'' in which a variable is simultaneously a collider and a confounder, showing that conditioning on it reduces bias in approximately 75\% of the feasible parameter space for that specific configuration. Most recently, \citet{jung2024mitigating} used the exact term ``included variable bias'' in the context of disparate impact estimation, focusing on the legal and fairness implications of conditioning on post-treatment variables.
 
-Our paper builds on and extends this body of work in several ways. First, we package the collider bias formula explicitly as an OVB/IVB parallel---a pedagogical device that makes the result immediately accessible to applied researchers trained in the omitted variable bias tradition. Second, whereas prior formulas have been derived for cross-sectional or static settings, we extend the result to the Autoregressive Distributed Lag (ADL) models that dominate TSCS research in political science, and introduce the concept of ``foreign collider bias'' that arises from the temporal structure of panel data. Third, we distill the formula into a practical three-step diagnostic recipe that requires only standard regression output, lowering the barrier to routine use by applied political scientists.
+To the best of our knowledge, no prior work has derived the IVB formula for autoregressive distributed lag models or applied it as a diagnostic tool in TSCS research. The fact that none of the six published studies we replicate in Section~\ref{sec:applications}---all appearing in leading journals---computed or reported the IVB for any of their control variables suggests that the tool, despite its algebraic simplicity, is not obvious to applied researchers.
+
+Our paper builds on and extends this prior literature in several ways. First, whereas prior formulas are parameterized in terms of structural coefficients of the underlying LSEM---quantities that are typically unobserved and require full specification of the causal model---our FWL-based derivation expresses the bias in terms of regression coefficients that the applied researcher already has in hand ($\hat\theta^{\star}$ from the long regression and $\hat\pi$ from a simple auxiliary regression). This reparameterization is analogous to the contribution of \citet{cinelli2020making} for omitted variable bias: just as their sensitivity analysis recast the OVB in terms of partial $R^2$ values that researchers can benchmark, our formula recasts collider bias in terms of coefficients that researchers already report. The practical asymmetry is notable: whereas the OVB formula requires observing the omitted confounder---which, by definition, is typically unavailable---the IVB formula uses quantities that are already estimated, since the collider is by assumption included in the regression. Second, whereas prior formulas have been derived for cross-sectional or static settings, we extend the result to the Autoregressive Distributed Lag (ADL) models that dominate TSCS research in political science, and introduce the concept of ``foreign collider bias'' that arises from the temporal structure of panel data. Third, we distill the formula into a practical diagnostic recipe that requires only standard regression output, lowering the barrier to routine use by applied political scientists. Because the IVB formula is an algebraic identity of OLS, it holds exactly regardless of whether $D$ is continuous, binary, or discrete---unlike LSEM-based formulas, which require separate derivations for different variable types \citep{ding2015adjust}.
 
 
 # DAGs and Collider Bias \label{sec:dags}
 
 ## Preliminaries
 
-Directed Acyclic Graphs (DAGs) are part of an approach to causal inference first developed by \citet{wright1928tariff} and \citet{wright1934method}, and substantially advanced by the work of \citet{pearl2009causality} and collaborators \citep{pearl2018book}. DAGs have been applied in several domains, including epidemiology, computer science, and, more recently, political science \citep{imbens2020potential, yao2021survey}.
+Directed Acyclic Graphs (DAGs) are part of an approach to causal inference first developed by \citet{wright1928tariff} and \citet{wright1934method}, and substantially advanced by the work of \citet{pearl2009causality} and collaborators \citep{pearl2018book}. DAGs have been applied in several domains, including epidemiology, computer science, and, more recently, political science \citep{imbens2020potential}.
 
 All DAGs comprise three primary structures: chains, forks, and colliders (or inverted forks), shown in Figure~\ref{fig:three_structures}. Understanding these structures is essential for correct control variable selection.
 
@@ -242,7 +251,9 @@ It is plausible that civil war *causes* changes in democracy levels (countries t
 \label{fig:dag_collider}
 \end{figure}
 
-We call this \textit{foreign collider bias} because the collider problem arises from a causal pathway that the researcher discovers only by looking at the ``foreign'' literature on the determinants of democracy---a literature that is typically separate from the civil war literature motivating the original study. The standard heuristics for including controls review the literature on the \textit{outcome} and the \textit{treatment}, but they do not instruct the researcher to investigate whether the candidate control is itself caused by the treatment or outcome through an unobserved variable.
+We call this \textit{foreign collider bias} because the collider problem arises from a causal pathway that the researcher discovers only by looking at the ``foreign'' literature on the determinants of democracy---a literature that is typically separate from the civil war literature motivating the original study. We use ``foreign'' to denote that the relevant causal knowledge---that $D$ causes $Z$ and $Y$ causes $Z$---often resides in literatures \textit{outside} the researcher's substantive domain, not in the sense of cross-national. The phenomenon is not limited to economic variables: in studies of voter turnout ($Y$) and campaign spending ($D$), a researcher controlling for media coverage ($Z$) faces foreign collider bias if both spending and turnout causally affect media coverage---a relationship documented in the communications literature rather than the electoral behavior literature. The standard heuristics for including controls review the literature on the \textit{outcome} and the \textit{treatment}, but they do not instruct the researcher to investigate whether the candidate control is itself caused by the treatment or outcome through an unobserved variable.
+
+The concept of foreign collider bias has broad applicability in TSCS research. Consider a researcher studying the effect of democratization on ethnic inequality who controls for GDP per capita \citep{leipziger2024}. The ``domestic'' literature on ethnic inequality identifies GDP as a correlate of inequality and a plausible confounder. But the ``foreign'' literature on economic growth establishes that democracy causes GDP growth \citep{acemoglu_etal2019}, and that ethnic inequality causally reduces GDP \citep{grundler_link2024}. These two causal channels---$D \to Z$ and $Y \to Z$---make GDP per capita a collider as well as a confounder. Discovering this requires consulting the growth literature, not just the inequality literature. Similarly, in studies of public infrastructure and economic growth \citep{rogowski_etal2022}, GDP per capita is simultaneously the confounding variable that growth regressions must control for (conditional convergence) and a collider through the paper's core mechanism ($D \to Z$). Foreign collider bias is particularly insidious because researchers following best practices---reviewing the literature on potential confounders---may still miss it if they do not also investigate the determinants of each candidate control variable.
 
 This example illustrates the power of DAGs: by making the causal structure explicit, they reveal that Democracy Level is a collider and that conditioning on it biases the regression. But the DAG alone does not tell us \textit{how much} bias results. For that, we need a formula.
 
@@ -311,7 +322,7 @@ where $\beta_2^{\star}$ is the coefficient on $Z$ in the long regression \eqref{
 
 Both $\beta_2^{\star}$ and $\phi_1$ are directly estimable from data: run the long regression to obtain $\hat{\beta}_2^{\star}$, and regress $Z$ on $D$ to obtain $\hat{\phi}_1$. No knowledge of the structural parameters $\gamma_1$ or $\gamma_2$ is needed.
 
-We note that Proposition~\ref{prop:ivb_cs} follows algebraically from the Frisch--Waugh--Lovell theorem and the standard short-versus-long regression decomposition. Our contribution lies not in the algebra per se, but in (i)~naming and packaging this result as a diagnostic tool that mirrors OVB, (ii)~making the direct estimability of both components explicit, and (iii)~extending the result to the ADL models prevalent in TSCS research.
+We note that Proposition~\ref{prop:ivb_cs} follows algebraically from the Frisch--Waugh--Lovell theorem and the standard short-versus-long regression decomposition. Its simplicity, however, should not be mistaken for triviality. Prior work on collider bias quantification---including path-tracing formulas \citep{pearl2013linear}, structural equation model derivations \citep{greenland2003quantifying}, and the M-bias sensitivity analysis of \citet{ding2015adjust}---parameterizes the bias in terms of structural coefficients of the underlying data generating process, which are not directly observable. None of these contributions made the bridge to FWL or expressed the result in terms of regression coefficients that the applied researcher already has in hand. It is precisely the simplicity of the IVB formula that makes it (i)~immediately operational as a diagnostic tool, (ii)~extensible to the ADL models prevalent in TSCS research (Propositions~\ref{prop:ivb_adl}--\ref{prop:ivb_lag_sub}), and (iii)~a natural mirror of the OVB formula that applied researchers already use routinely.\footnote{The FWL-based derivation also extends straightforwardly beyond OLS. In two-stage least squares (2SLS) with a single instrument, the second stage is an OLS regression of $y$ on $\hat{D}$ and controls, so the IVB formula applies directly to the second-stage coefficients: $\text{IVB}_{\text{IV}} = -\hat\theta^{\star}_{\text{IV}} \times \hat\pi_{\text{IV}}$, where $\hat\pi_{\text{IV}}$ is the coefficient from regressing $Z$ on the instrumented treatment $\hat{D}$. For nonlinear models such as logistic regression, the linear probability model (LPM) provides a first-order approximation of the average marginal effect, and the IVB formula applied to the LPM coefficients approximates the collider bias in the AME. We leave formal treatment of these extensions to future work.}
 
 ## OVB versus IVB \label{sec:ovb_vs_ivb}
 
@@ -425,7 +436,15 @@ The generality of this result is noteworthy. Regardless of the number of lags in
 
 An important practical observation is that while the *form* of the bias is simple, the *magnitude* can vary substantially depending on the dynamics. When the treatment $D_t$ is highly predictable from lags, the residualized treatment $\tilde{D}_t$ has little variation, and $\pi$ can become unstable. When $Z_t$ is a post-treatment variable that responds to $y$ or to correlated shocks, both $\theta^{\star} \neq 0$ and $\pi \neq 0$ tend to arise mechanically.
 
-A further consideration arises in panels with unit fixed effects and short time dimensions. In such settings, the OLS estimates of ADL coefficients suffer from Nickell bias \citep{nickell1981biases}, which arises because the demeaned lagged dependent variable is mechanically correlated with the demeaned error term. The IVB formula remains an algebraic identity even in this setting---it correctly decomposes the difference between the short and long regression coefficients---but the components $\theta^{\star}$ and $\pi$ will themselves reflect both collider bias and Nickell bias. Researchers using fixed-effects ADL models should therefore be aware that the IVB diagnostic captures collider bias within the OLS framework as estimated, and that separate corrections for dynamic panel bias (such as GMM estimators) may be needed before the IVB components can be given a purely causal interpretation.
+## Interaction with Nickell Bias \label{sec:nickell}
+
+A further consideration arises in panels with unit fixed effects and short time dimensions. In such settings, the OLS estimates of ADL coefficients suffer from Nickell bias \citep{nickell1981biases}, which arises because the within-transformation creates a mechanical correlation between the demeaned lagged dependent variable $\tilde{y}_{i,t-1} = y_{i,t-1} - \bar{y}_i$ and the demeaned error term $\tilde{e}_{it} = e_{it} - \bar{e}_i$. The bias is of order $O(1/T)$: it can be severe when the time dimension is short (e.g., $T < 10$) but becomes negligible as $T$ grows \citep{judson_owen1999}.
+
+Because the IVB formula is an algebraic identity---it decomposes the finite-sample difference between two nested OLS regressions---it remains exactly valid even in the presence of Nickell bias. The identity $\hat{\beta}^{\star} - \hat{\beta} = -\hat{\theta}^{\star} \times \hat{\pi}$ holds by construction whenever both regressions are estimated by OLS on the same sample. However, the \textit{causal interpretation} of the components changes. In a panel with short $T$ and unit fixed effects, both $\hat{\theta}^{\star}$ and $\hat{\pi}$ reflect a mixture of the true collider relationship and the dynamic bias introduced by the within-transformation. The IVB diagnostic therefore captures collider bias \textit{within the OLS/FE framework as estimated}, not within an idealized framework free of dynamic panel bias.
+
+To build intuition, consider how the contamination operates. In an ADL model with unit fixed effects, the coefficient on the lagged dependent variable $y_{i,t-1}$ is biased downward (toward zero) when $T$ is small \citep{nickell1981biases}. This downward bias on the autoregressive parameter propagates to the other coefficients in the model, because the misestimated persistence of $y$ distorts the partial correlations among all regressors. In particular, the coefficient $\hat{\theta}^{\star}$ on the candidate collider $Z$ in the long model absorbs some of the ``missing'' persistence of $y$, and the auxiliary-regression coefficient $\hat{\pi}$ is similarly distorted whenever $Z$ co-moves with the lagged outcome. The net effect on the IVB product $-\hat{\theta}^{\star} \hat{\pi}$ is ambiguous in sign and depends on the specific DGP, but it is bounded by $O(1/T)$ just as the underlying Nickell bias is. Simulation evidence in \citet{judson_owen1999} suggests that the distortion becomes practically negligible once $T$ exceeds 20--30 periods.
+
+The practical implication is straightforward. In panels with long time series ($T \geq 20$--$30$), the Nickell bias is small relative to sampling variability, and the IVB components can be interpreted as reflecting primarily the collider structure. In panels with short $T$ (a common situation in comparative politics, where $T$ may be 5--15 periods), researchers should be aware that the IVB estimate conflates collider bias with dynamic panel bias. In such settings, bias-corrected estimators \citep{arellano_bond1991} or the half-panel jackknife may be needed before the IVB components can be given a purely collider-bias interpretation. Importantly, the \textit{direction} of the IVB is less affected by Nickell bias than its \textit{magnitude}: the sign of the product $-\hat{\theta}^{\star} \hat{\pi}$ tends to be informative about the direction of collider bias even when the magnitudes are contaminated by dynamic panel bias.
 
 ## Lagging the Treatment Is Not a Mechanical Cure \label{sec:lag_not_cure}
 
@@ -489,9 +508,11 @@ Hence, longer lags can attenuate IVB when the $\omega_{\ell k}$ terms are small,
 
 ## A Practical Recipe \label{sec:recipe}
 
-We summarize the IVB formula as a simple three-step procedure for the applied researcher:
+We summarize the IVB formula as a simple diagnostic procedure for the applied researcher:
 
 \begin{enumerate}
+\item[\textbf{Step 0.}] \textbf{Establish causal status.} Using a DAG or substantive domain expertise, establish that $Z$ is plausibly a collider---a variable caused by both $D$ and $Y$ (or by $D$ and an unobserved common cause of $Y$). If $Z$ is instead a confounder, the IVB formula quantifies omitted variable bias in the short model, and the \textit{long} model is correctly specified. The steps below are informative as a collider diagnostic only if $Z$'s collider status has been established through causal reasoning, not statistical testing. In Section~\ref{sec:applications}, we illustrate how to combine literature review with DAG reasoning to assess collider plausibility before computing the IVB.
+
 \item \textbf{Run the long regression.} Estimate the model that includes the suspected collider $Z$:
 \[
 y = \ldots + \theta^{\star} Z + \text{other controls} + v
@@ -514,335 +535,366 @@ If $|\widehat{\text{IVB}}|$ is large relative to the estimated treatment effect,
 
 ## Interpretation Caveats \label{sec:caveats}
 
-An important caveat concerns the interpretation of the IVB formula. The decomposition $\beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1$ is an algebraic identity: it holds whenever the short and long regressions are nested, regardless of the causal role of $Z$. The product $\beta_2^{\star} \times \phi_1$ will be non-zero whenever $Z$ is correlated with both $D$ and $y$ conditional on other controls---a condition satisfied not only when $Z$ is a collider, but also when $Z$ is a confounder or a mediator.
+An important caveat concerns the interpretation of the IVB formula. The decomposition $\beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1$ is an \textbf{algebraic identity}: it holds whenever the short and long regressions are nested, regardless of the causal role of $Z$. The formula quantifies the \textit{arithmetic} difference between two nested specifications; it does not, by itself, determine which specification is causally correct. The product $\beta_2^{\star} \times \phi_1$ will be non-zero whenever $Z$ is correlated with both $D$ and $y$ conditional on other controls---a condition satisfied not only when $Z$ is a collider, but also when $Z$ is a confounder or a mediator.
 
-The *causal* interpretation of this quantity---that it represents collider bias, and that the short regression recovers the correct causal effect---requires prior knowledge that $Z$ is indeed a collider. This knowledge must come from a DAG or from substantive domain expertise; the formula alone cannot supply it. If $Z$ is actually a confounder, the same algebraic decomposition gives the omitted variable bias in the short regression, and it is the *long* regression that is correctly specified. If $Z$ is a mediator, neither specification may recover the desired causal estimand without further assumptions.
+The three cases lead to fundamentally different conclusions:
 
-In short, the IVB formula complements DAGs but cannot substitute for them. The DAG tells the researcher *whether* $Z$ is a collider, and only then does the formula quantify the damage from conditioning on it. Researchers should therefore use the three-step recipe from Section~\ref{sec:recipe} only after having established---through causal reasoning, not statistical tests---that the variable in question is plausibly a collider.
+\begin{itemize}
+\item \textbf{$Z$ is a collider.} Then the short regression is correctly specified, the IVB formula gives the bias introduced by including $Z$, and the researcher should exclude $Z$. This is the case the formula is designed to diagnose.
+
+\item \textbf{$Z$ is a confounder.} Then the long regression is correctly specified, and the same algebraic decomposition gives the omitted variable bias in the short regression. In this case, excluding $Z$ \textit{introduces} bias rather than removing it. The formula is still informative---it tells the researcher how sensitive the treatment estimate is to including $Z$---but its sign is reversed: a large IVB is evidence that $Z$ is an important confounder, not that it is a harmful collider.
+
+\item \textbf{$Z$ is a mediator.} Then $Z$ lies on the causal path from $D$ to $Y$, and neither the short nor the long regression may recover the desired causal estimand without further assumptions \citep{acharya_etal2016}. The IVB formula captures the difference between the total effect and the direct effect, but interpreting this difference requires clarity about whether the target estimand is the total or direct effect.
+\end{itemize}
+
+Only the DAG determines which case applies. The IVB formula complements DAGs but cannot substitute for them: the graph tells the researcher \textit{whether} $Z$ is a collider, and only then does the formula quantify how much damage including it causes. We illustrate this interplay in Section~\ref{sec:applications}, where we combine literature review with DAG reasoning to assess collider plausibility before computing the IVB. The Rogowski et al.\ application in particular shows that a large IVB does not automatically imply collider bias---it may instead reflect appropriate deconfounding.
+
+Sufficient conditions for classifying $Z$ as a collider include: (i)~credible evidence from separate studies that $D$ causally affects $Z$ and $Y$ causally affects $Z$; (ii)~absence of evidence that $Z$ causally affects either $D$ or $Y$; and (iii)~the causal effect of $D$ on $Z$ and $Y$ on $Z$ operating through mechanisms that are not mediated by the other. When these conditions are not met---for instance, when $Z$ is simultaneously a confounder and a collider---the IVB formula still quantifies the arithmetic difference between specifications, but its causal interpretation requires additional assumptions (see \citealt{ding2015adjust} for the ``Butterfly-Structure'' case).
+
+The empirically prevalent case in which $Z$ is simultaneously a collider and a confounder deserves particular attention. \citet{ding2015adjust} analyzed one such configuration---the ``Butterfly-Structure''---in cross-sectional LSEMs, finding that conditioning on $Z$ reduces net bias in approximately 75\% of the feasible parameter space. However, this result is specific to a single structural configuration with particular symmetry assumptions. In TSCS settings with fixed effects, the landscape is richer: FE absorbs between-unit confounding while leaving within-unit collider channels intact, potentially shifting the trade-off in ways that depend on the panel structure. A systematic FWL-based derivation of when collider bias dominates confounding bias under TWFE---yielding analytical results rather than relying solely on simulation---is a promising direction for future work that would extend both our framework and that of \citet{ding2015adjust} to the panel setting.
 
 
-# Monte Carlo Validation \label{sec:montecarlo}
+# When Does IVB Matter in Panel Data? \label{sec:ivb_magnitude}
 
-We validate the IVB formula through Monte Carlo simulations across three data-generating processes (DGPs): a pure cross-section, an ADL(1,0) panel, and a substantive civil war DGP. In every case, we compare the empirical bias (the difference between the long and short regression estimates) to the bias predicted by the IVB formula. We run 500 replications for each DGP.
+The IVB formula tells a researcher *how much* bias results from including a specific collider. But a natural prior question is: under what structural conditions should we expect the IVB to be large or small? This question is especially relevant for TSCS research, where two-way fixed effects (TWFE) absorb unit-level and time-level variation, potentially shrinking the components of the IVB.
 
-## DGP 1: Cross-Section
+We use Monte Carlo simulations to identify four structural mechanisms that determine IVB magnitude in panel data with fixed effects. All simulations use $N = 200$ units, $T = 30$ periods, a true treatment effect $\beta = 1$, and 500 replications per scenario. We focus on the clean case ($\delta = 0$, no confounding through $Z$), so that any bias arises exclusively from the collider channel.
 
-The first DGP is a simple cross-sectional model with $n = 10{,}000$ observations. The treatment effect is $\beta_1 = 1$, and the collider is generated as $Z = 0.6 D + 0.4 Y + u$, where $u \sim \mathcal{N}(0,1)$.
+## Fixed Effects Absorb the Between-Unit Collider Channel \label{sec:mech_ab}
 
-```{r sim-crosssection, cache=TRUE}
-set.seed(42)
-n <- 10000
-nsim <- 500
 
-beta1_true <- 1
-gamma1 <- 0.6
-gamma2 <- 0.4
+The IVB identity is:
+$$
+\text{IVB} = \hat\beta_{\text{long}} - \hat\beta_{\text{short}} = -\hat\theta^{\star} \times \hat\pi
+$$
+where $\hat\theta^{\star}$ is the coefficient on $Z$ in the long model and $\hat\pi$ is the coefficient on $D$ in the auxiliary regression $Z \sim D + \text{FE}$. We now show that TWFE absorbs the between-unit component of both $\hat\pi$ and $\hat\theta^{\star}$, leaving only within-unit variation to drive the IVB.
 
-results_cs <- data.frame(
-  sim = 1:nsim,
-  beta_short = NA_real_,
-  beta_long = NA_real_,
-  bias_empirical = NA_real_,
-  bias_formula = NA_real_
-)
+**Mechanism A: The $D \to Z$ channel.** Suppose the collider $Z$ depends on $D$ through both a between-unit channel (cross-sectional correlation in levels) and a within-unit channel (temporal co-movement):
+$$
+Z_{it} = \gamma_D^{\text{btw}} \mu_i^D + \gamma_D^{\text{wth}} (D_{it} - \mu_i^D) + \gamma_Y Y_{it} + \eta_i + \mu_t + \nu_{it}
+$$
+where $\mu_i^D = T^{-1}\sum_t D_{it}$ is the time-invariant unit-level component of $D$. After TWFE absorbs unit fixed effects, the term $\gamma_D^{\text{btw}} \mu_i^D$ is removed (it is collinear with $\eta_i$). The surviving first-stage coefficient is:
+$$
+\pi = \gamma_D^{\text{wth}} + \gamma_Y \beta
+$$
+which is independent of $\gamma_D^{\text{btw}}$. In other words, the between-unit association between $D$ and $Z$---no matter how strong---does not contribute to $\pi$ after fixed effects, and therefore does not contribute to the IVB.
 
-for (i in 1:nsim) {
-  D <- rnorm(n)
-  e <- rnorm(n)
-  u <- rnorm(n)
+**Mechanism B: The $Y \to Z$ channel.** An analogous argument applies to the outcome channel. If $Z$ depends on $Y$ through both a between-unit and a within-unit channel:
+$$
+Z_{it} = \gamma_D D_{it} + \gamma_Y^{\text{btw}} \bar{Y}_i + \gamma_Y^{\text{wth}} (Y_{it} - \bar{Y}_i) + \eta_i + \mu_t + \nu_{it}
+$$
+then TWFE absorbs $\gamma_Y^{\text{btw}} \bar{Y}_i$ (since $\bar{Y}_i$ is time-invariant), and $\theta^{\star}$ in the long regression depends only on $\gamma_Y^{\text{wth}}$.
 
-  Y <- beta1_true * D + e
-  Z <- gamma1 * D + gamma2 * Y + u
-
-  mod_short <- lm(Y ~ D)
-  mod_long  <- lm(Y ~ D + Z)
-  mod_aux   <- lm(Z ~ D)
-
-  theta_star <- coef(mod_long)["Z"]
-  phi1       <- coef(mod_aux)["D"]
-
-  results_cs$beta_short[i]     <- coef(mod_short)["D"]
-  results_cs$beta_long[i]      <- coef(mod_long)["D"]
-  results_cs$bias_empirical[i] <- coef(mod_long)["D"] - coef(mod_short)["D"]
-  results_cs$bias_formula[i]   <- -theta_star * phi1
-}
+```{r fig-heatmap-A, fig.cap="Mechanism A: $|\\text{IVB}/\\beta|$ depends on the within-unit channel ($\\gamma_D^{\\text{wth}}$, vertical axis), not the between-unit channel ($\\gamma_D^{\\text{btw}}$, horizontal axis). The horizontal bands confirm that FE absorbs the between component. Simulation: $N=200$, $T=30$, $\\beta=1$, 500 replications per scenario. \\label{fig:fig-heatmap-A}", fig.width=6, fig.height=5}
+knitr::include_graphics("plots/v4_heatmap_A_btw_wth.png")
 ```
 
-## DGP 2: ADL(1,0) Panel
+```{r fig-heatmap-B, fig.cap="Mechanism B: $|\\text{IVB}/\\beta|$ depends on the within-unit channel of $Y \\to Z$ ($\\gamma_Y^{\\text{wth}}$), not the between-unit channel ($\\gamma_Y^{\\text{btw}}$). Analogous horizontal bands. \\label{fig:fig-heatmap-B}", fig.width=6, fig.height=5}
+knitr::include_graphics("plots/v4_heatmap_B_btw_wth.png")
+```
 
-The second DGP is an ADL(1,0) panel with $N = 200$ units and $T = 20$ periods. The treatment effect is $\beta = 1$, the autoregressive coefficient is $\rho = 0.5$, and the collider is generated as $Z_t = 0.6 D_t + 0.4 Y_t + u_t$.
+Figures~\ref{fig:fig-heatmap-A} and \ref{fig:fig-heatmap-B} display the simulation results. In both panels, the IVB forms clear **horizontal bands**: for a fixed within-unit parameter, the IVB is essentially constant as the between-unit parameter varies from 0 to 0.9. This confirms that fixed effects fully absorb the between-unit channels, and only the within-unit co-movement between ($D$, $Z$) and ($Y$, $Z$) matters for the IVB. In all simulation scenarios, the IVB computed from the formula $-\hat{\theta}^{\star} \hat{\pi}$ matches the empirical difference $\hat{\beta}_{\text{long}} - \hat{\beta}_{\text{short}}$ to machine precision, confirming the algebraic identity.
 
-```{r sim-adl-function, cache=TRUE}
-sim_adl_panel <- function(N, T_periods, beta, rho, delta_d, delta_y,
-                          seed = NULL) {
-  if (!is.null(seed)) set.seed(seed)
+The practical implication is direct: even if $D$ and $Z$ are strongly correlated in the raw data, the IVB can be small if that correlation is primarily cross-sectional (between countries) rather than temporal (within countries). In many TSCS applications in comparative politics, this is precisely the case. Treatment variables like democratization or peacekeeping deployment vary primarily across countries in levels, and their within-country variation is modest. Similarly, the correlation between outcomes (e.g., civil war, inequality) and controls (e.g., GDP, governance indices) is often driven by persistent cross-country differences rather than year-to-year fluctuations. Fixed effects remove these level differences, shrinking both $\pi$ and $\theta^{\star}$.
 
-  Y <- matrix(NA, N, T_periods)
-  D <- matrix(rnorm(N * T_periods), N, T_periods)
-  Z <- matrix(NA, N, T_periods)
+## Additional Mechanisms: Few Switchers and Measurement Error \label{sec:mech_cd}
 
-  Y[, 1] <- rnorm(N)
-  Z[, 1] <- delta_d * D[, 1] + delta_y * Y[, 1] + rnorm(N)
+Two additional mechanisms reinforce the pattern of modest IVBs in typical applications.
 
-  for (t in 2:T_periods) {
-    Y[, t] <- rho * Y[, t-1] + beta * D[, t] + rnorm(N)
-    Z[, t] <- delta_d * D[, t] + delta_y * Y[, t] + rnorm(N)
-  }
+**Binary treatment with few switchers.** In many TSCS studies, the treatment is binary and slow-moving: democratization, peacekeeping deployment, policy adoption. In such settings, most units are either always-treated or never-treated, and only a small fraction of ``switchers'' change treatment status during the observation period. Never-treated and always-treated units contribute zero within-unit variation in $D$, so all identification comes from the switchers. With fewer switchers, the standard error of $\hat\beta$ increases sharply, while the population IVB remains roughly constant. The ratio $|\text{IVB}/\text{SE}|$---the IVB measured in standard-error units---therefore \textit{decreases} as the number of switchers falls. In our simulations, reducing the fraction of switchers from 70\% to 10\% increases the standard error by a factor of 2--3, rendering the IVB statistically invisible even though it has the same population magnitude.
 
+**Measurement error in $Z$.** Socioeconomic control variables in long panels---GDP, inequality indices, governance scores---are measured with substantial error, especially in developing countries and in earlier decades. Classic errors-in-variables attenuation bias shrinks $\hat\theta^{\star}$ toward zero, mechanically reducing the IVB. In our simulations, adding measurement error with variance equal to the signal variance reduces $|\hat\theta^{\star}|$ by approximately 50\% and the IVB proportionally.
+
+## Summary: When Is IVB Small?
+
+In applications typical of comparative politics and international relations---TWFE panels with binary treatments, slow-moving variables, and imperfectly measured controls---all four mechanisms operate simultaneously. Fixed effects absorb the between-unit channels (Mechanisms A and B), few switchers inflate standard errors relative to the IVB (Mechanism C), and measurement error attenuates the collider coefficient (Mechanism D). These mechanisms are mutually reinforcing: a study can have a small IVB because of any one of them, and empirical studies typically exhibit all four.
+
+These simulation findings are consistent with the analytical results of \citet{ding2015adjust}, who showed in a cross-sectional LSEM that pure M-Bias is a ``higher-order'' effect---a product of four structural correlations---that tends to be small unless all four are simultaneously large. Our panel-specific mechanisms operate \textit{on top of} this higher-order nature: even when the structural correlations are non-trivial, TWFE absorbs between-unit variation, few switchers reduce precision, and measurement error attenuates coefficients, further shrinking the empirical IVB. The empirical applications in the next section confirm this pattern.
+
+
+# Empirical Applications \label{sec:applications}
+
+To assess the empirical relevance of included variable bias, we apply the IVB formula to six published studies spanning several substantive domains: democratization and public opinion \citep{claassen2020}, democracy and ethnic inequality \citep{leipziger2024}, UN peacekeeping and democratization \citep{blair_etal2022}, fiscal capacity in Africa \citep{albers_etal2023}, postal infrastructure and growth \citep{rogowski_etal2022}, and sovereign bond denomination \citep{ballard_rosa_etal2021}. For each study, we replicate the main TWFE or panel fixed-effects specification and compute the IVB decomposition for every control variable.
+
+Consistent with the diagnostic recipe in Section~\ref{sec:recipe}, we begin with Step~0: for each study, we classify every control variable as a collider, confounder, mediator, or predetermined/neutral variable, drawing on the published literature to assess whether credible evidence exists for both the $D \to Z$ and $Y \to Z$ channels. A control is classified as a collider candidate only when separate studies provide credible evidence that the treatment causes the control \textit{and} the outcome causes the control. The detailed classification tables, with supporting references, are reported in Appendix~\ref{app:classification}. The full mechanical IVB decomposition for all 57 study-control combinations---regardless of collider plausibility---is also available in Appendix~\ref{app:classification}.
+
+Table~\ref{tab:ivb_summary} reports the IVB only for controls classified as collider candidates. We use two complementary metrics. The primary metric is $|\text{IVB}/\text{SE}(\hat\beta)|$, which measures the bias in standard-error units. This metric is always well-defined (the standard error is bounded away from zero for any valid estimate) and has a natural benchmark: $|\text{IVB}/\text{SE}| > 1$ means the bias exceeds the sampling uncertainty of the treatment effect. As a secondary metric, we report $\text{IVB}/\hat\beta$ (in percent) when the treatment effect is statistically significant ($|t| \geq 1.96$), which gives the bias as a share of the estimated effect. When the treatment effect is not significant, $\text{IVB}/\hat\beta$ is reported as ``---'' because dividing by a quantity indistinguishable from zero produces uninformative ratios.
+
+```{r ivb-summary-table, cache=TRUE}
+# cache=TRUE: safe because standardized_ivb_metrics.csv is generated once and versioned.
+# If the CSV is regenerated, delete the cache or change chunk code to invalidate.
+ivb_all <- read.csv("replication/standardized_ivb_metrics.csv",
+                     stringsAsFactors = FALSE)
+
+# ---- Collider candidates identified via DAG reasoning (see Appendix F) ----
+collider_candidates <- list(
+  "Claassen (FE)"         = "Log GDP p.c.",
+  "Leipziger (SEI)"       = "Log GDP p.c.",
+  "Leipziger (SEI ext.)"  = c("Civil war", "GDP growth"),
+  "Blair et al."          = c("Foreign Aid", "GDP per capita", "Refugees/IDPs"),
+  "Albers et al."         = c("Hyperinflation", "GDP growth (YoY)",
+                               "Liberal democracy"),
+  "Rogowski et al."       = "Log GDP p.c.",
+  "Ballard-Rosa et al."   = c("Inflation crisis", "IMF program",
+                               "Sov. debt crisis")
+)
+
+# Build rows for collider candidates only
+cc_rows <- do.call(rbind, lapply(names(collider_candidates), function(p) {
+  zvars <- collider_candidates[[p]]
+  sub <- ivb_all[ivb_all$paper == p & ivb_all$collider %in% zvars, ]
+  if (nrow(sub) == 0) return(NULL)
+  # Determine significance: |beta_long / SE_beta| >= 1.96
+  sub$sig <- !is.na(sub$SE_beta) & abs(sub$beta_long / sub$SE_beta) >= 1.96
   data.frame(
-    id    = rep(1:N, each = (T_periods - 1)),
-    t     = rep(2:T_periods, times = N),
-    Y     = as.vector(Y[, 2:T_periods]),
-    D     = as.vector(D[, 2:T_periods]),
-    Z     = as.vector(Z[, 2:T_periods]),
-    Y_lag = as.vector(Y[, 1:(T_periods - 1)])
+    Study = p,
+    Collider = sub$collider,
+    IVB = sub$IVB,
+    IVB_SE = sub$IVB_over_SE,
+    IVB_pct = ifelse(sub$sig, sub$IVB_pct_beta, NA_real_),
+    stringsAsFactors = FALSE
   )
-}
-```
+}))
 
-```{r sim-adl, cache=TRUE}
-set.seed(99)
-nsim <- 500
-N <- 200
-T_periods <- 20
-beta_true <- 1
-rho_true <- 0.5
-delta_d <- 0.6
-delta_y <- 0.4
-
-results_adl <- data.frame(
-  sim = 1:nsim,
-  beta_short = NA_real_,
-  beta_long = NA_real_,
-  bias_empirical = NA_real_,
-  bias_formula = NA_real_
+# Display labels
+study_labels <- c(
+  "Claassen (FE)"        = "Claassen (2020, FE)",
+  "Leipziger (SEI)"      = "Leipziger (2024, SEI)",
+  "Leipziger (SEI ext.)" = "Leipziger (2024, ext.)",
+  "Blair et al."         = "Blair et al.\\ (2022)",
+  "Albers et al."        = "Albers et al.\\ (2023)",
+  "Rogowski et al."      = "Rogowski et al.\\ (2022)",
+  "Ballard-Rosa et al."  = "Ballard-Rosa et al.\\ (2021)"
 )
+cc_rows$Study_lbl <- study_labels[cc_rows$Study]
 
-for (i in 1:nsim) {
-  df <- sim_adl_panel(N, T_periods, beta_true, rho_true, delta_d, delta_y)
+# Format columns
+cc_rows$IVB_fmt     <- sprintf("%.4f", cc_rows$IVB)
+cc_rows$IVB_SE_fmt  <- ifelse(is.na(cc_rows$IVB_SE), "---",
+                               sprintf("%.2f", cc_rows$IVB_SE))
+cc_rows$IVB_pct_fmt <- ifelse(is.na(cc_rows$IVB_pct), "---",
+                               paste0(sprintf("%.1f", cc_rows$IVB_pct), "\\%"))
 
-  mod_short <- lm(Y ~ D + Y_lag, data = df)
-  mod_long  <- lm(Y ~ D + Y_lag + Z, data = df)
-  mod_aux   <- lm(Z ~ D + Y_lag, data = df)
-
-  theta_star <- coef(mod_long)["Z"]
-  pi_hat     <- coef(mod_aux)["D"]
-
-  results_adl$beta_short[i]     <- coef(mod_short)["D"]
-  results_adl$beta_long[i]      <- coef(mod_long)["D"]
-  results_adl$bias_empirical[i] <- coef(mod_long)["D"] - coef(mod_short)["D"]
-  results_adl$bias_formula[i]   <- -theta_star * pi_hat
-}
+kable(cc_rows[, c("Study_lbl", "Collider", "IVB_fmt",
+                    "IVB_SE_fmt", "IVB_pct_fmt")],
+      format = "latex", row.names = FALSE,
+      col.names = c("Study", "Collider candidate", "IVB",
+                     "$\\lvert\\text{IVB}/\\text{SE}\\rvert$", "IVB/$\\hat\\beta$ (\\%)"),
+      caption = paste0(
+        "IVB for theoretically motivated collider candidates across six studies. ",
+        "Controls are classified as collider candidates based on DAG reasoning ",
+        "(see Appendix~\\ref{app:classification}). ",
+        "IVB/SE measures the bias in standard-error units; values exceeding 1 ",
+        "indicate that the bias surpasses sampling uncertainty. ",
+        "IVB/$\\hat\\beta$ is reported only when the treatment effect is ",
+        "statistically significant ($|t| \\geq 1.96$); ``---'' indicates that ",
+        "$\\hat\\beta \\approx 0$ renders the ratio uninformative. ",
+        "For Albers et al., standard errors are unavailable from the published ",
+        "replication, so IVB/SE is not reported. ",
+        "The full mechanical decomposition for all 57 study-control combinations ",
+        "is in Appendix~\\ref{app:classification}. \\label{tab:ivb_summary}"),
+      booktabs = TRUE, escape = FALSE,
+      align = c("l", "l", "r", "r", "r")) %>%
+  kable_styling(latex_options = "hold_position")
 ```
 
-## DGP 3: Civil War with Foreign Collider Bias
+Three patterns emerge from the table. First, among the 14 collider candidates identified across six studies, only one produces an IVB exceeding one standard error of the treatment effect: log GDP per capita in \citet{rogowski_etal2022}, with $|\text{IVB}/\text{SE}| = 2.11$, corresponding to 58\% of $\hat\beta$. This is the only case in which the bias is both statistically and substantively relevant. Second, the median $|\text{IVB}/\text{SE}|$ across collider candidates (excluding \citealt{albers_etal2023}, where standard errors are unavailable) is approximately 0.13---the typical collider bias is about one-eighth of a standard error, well within sampling noise. Third, GDP per capita and related economic variables dominate the collider candidates across studies, consistent with their dual role as common effects of political treatments and socioeconomic outcomes.
 
-The third DGP is a substantive model based on the civil war example from Sections 3 and 6. The true effect of Political Change on Civil War is $\beta_{PC} = 5$. The model includes Per Capita Income as a confounder and a lagged dependent variable. Democracy Level is generated as a collider, caused by Civil War ($\gamma_{CW} = -0.6$) and an unobserved variable $U$ ($\gamma_U = 1.0$) that also affects Civil War ($\gamma_{U \to CW} = 0.5$).
+The IVB/SE metric avoids the pitfalls of percentage-of-$\hat\beta$ ratios when the treatment effect is near zero. For instance, in Claassen's FE specification, the treatment effect is not statistically significant ($\hat\beta = -0.016$, SE $= 0.216$), making $\text{IVB}/\hat\beta$ uninformative. The IVB/SE metric reveals that the bias is just 8\% of a standard error ($|\text{IVB}/\text{SE}| = 0.08$)---completely negligible. When the treatment effect \textit{is} significant, IVB/$\hat\beta$ provides useful complementary information about substantive magnitude: in \citet{rogowski_etal2022}, the IVB of 58\% of $\hat\beta$ indicates that more than half the estimated effect could reflect collider bias (though it could equally reflect appropriate deconfounding---see Section~\ref{sec:app_rogowski}).
 
-```{r sim-civilwar-function, cache=TRUE}
-sim_civil_war <- function(N, T_periods,
-                          beta_pc = 5,
-                          rho_cw = 0.3,
-                          rho_pc = 0.4,
-                          alpha_inc = 0.5,
-                          rho_inc = 0.8,
-                          gamma_cw_dem = -0.6,
-                          gamma_u_dem = 1,
-                          gamma_u_cw = 0.5,
-                          seed = NULL) {
-  if (!is.null(seed)) set.seed(seed)
+A caveat on cross-study comparisons: standard errors vary substantially across studies (from 0.005 in Rogowski et al.\ to 0.216 in Claassen's FE specification), reflecting differences in sample size, clustering structure, and treatment variation rather than differences in bias magnitude. The $|\text{IVB}/\text{SE}|$ benchmark is most informative \textit{within} a given study---as a measure of whether collider bias exceeds that study's own sampling uncertainty---and should be interpreted with caution when comparing across studies with very different precision levels.
 
-  CW  <- matrix(NA, N, T_periods)
-  PC  <- matrix(NA, N, T_periods)
-  Inc <- matrix(NA, N, T_periods)
-  Dem <- matrix(NA, N, T_periods)
-  U   <- matrix(rnorm(N * T_periods), N, T_periods)
+These aggregate results establish the empirical baseline. We now examine two studies in detail to illustrate how the IVB formula interacts with substantive reasoning about collider plausibility: \citet{leipziger2024}, where the IVB is modest and the collider interpretation is well supported, and \citet{rogowski_etal2022}, where the IVB is large but causally ambiguous. Full replication details for the remaining four studies are available in the Online Appendix.
 
-  PC[, 1]  <- rnorm(N)
-  Inc[, 1] <- rnorm(N, 10, 2)
-  CW[, 1]  <- beta_pc * PC[, 1] + alpha_inc * Inc[, 1] +
-               gamma_u_cw * U[, 1] + rnorm(N)
-  Dem[, 1] <- gamma_cw_dem * CW[, 1] + gamma_u_dem * U[, 1] + rnorm(N)
+## Application 1: Democracy and Ethnic Inequality \label{sec:app_leipziger}
 
-  for (t in 2:T_periods) {
-    Inc[, t] <- rho_inc * Inc[, t-1] + rnorm(N)
-    PC[, t]  <- rho_pc * PC[, t-1] + rnorm(N)
-    CW[, t]  <- rho_cw * CW[, t-1] + beta_pc * PC[, t] +
-                 alpha_inc * Inc[, t] + gamma_u_cw * U[, t] + rnorm(N)
-    Dem[, t] <- gamma_cw_dem * CW[, t] + gamma_u_dem * U[, t] + rnorm(N)
-  }
+\citet{leipziger2024} estimates the effect of democratic transitions on socioeconomic ethnic inequality using TWFE:
+$$
+\text{Ethnic Inequality}_{it} = \beta \, \text{Democracy}_{i,t-1} + \theta \, \text{GDP p.c.}_{i,t-1} + \delta_i + \gamma_t + \varepsilon_{it}
+$$
+where ethnic inequality is measured by three indices (V-Dem public services, nightlight-based income from Alesina et al., and education from Omoeva et al.), Democracy is a binary indicator based on the Lexical Index ($\geq 5$), and GDP per capita is the sole time-varying control in the baseline specification. Leipziger deliberately excludes additional controls from the baseline, citing ``the risk of posttreatment bias'' (p.\ 1347)---a concern consistent with the collider bias framework developed in this paper.
 
-  data.frame(
-    id      = rep(1:N, each = (T_periods - 1)),
-    t       = rep(2:T_periods, times = N),
-    CW      = as.vector(CW[, 2:T_periods]),
-    PC      = as.vector(PC[, 2:T_periods]),
-    Inc     = as.vector(Inc[, 2:T_periods]),
-    Dem     = as.vector(Dem[, 2:T_periods]),
-    CW_lag  = as.vector(CW[, 1:(T_periods - 1)]),
-    PC_lag  = as.vector(PC[, 1:(T_periods - 1)]),
-    Inc_lag = as.vector(Inc[, 1:(T_periods - 1)])
+```{r leipziger-data, cache=TRUE}
+dat_lp <- read.delim(
+  "replication/candidate_papers/leipziger_2024/Country-level_dataset.tab",
+  stringsAsFactors = FALSE
+)
+dat_lp$lexical_index_5 <- ifelse(dat_lp$lexical_index >= 5, 1,
+                                  ifelse(dat_lp$lexical_index <= 4, 0, NA))
+# Rescale V-Dem v2peapssoc to [0,1] using theoretical bounds [-3.135, 3.37]
+dat_lp$SEI <- (dat_lp$v2peapssoc - 3.37) / (-3.135 - 3.37)
+dat_lp <- dat_lp %>%
+  arrange(country_id, year) %>%
+  group_by(country_id) %>%
+  mutate(
+    L_lexical_index_5 = dplyr::lag(lexical_index_5, 1),
+    L_latent_gdppc_mean_log = dplyr::lag(latent_gdppc_mean_log, 1)
+  ) %>%
+  ungroup()
+dat_lp$year_f <- factor(dat_lp$year)
+dat_lp$country_f <- factor(dat_lp$country_id)
+```
+
+```{r leipziger-replication, cache=TRUE}
+mod_lp_sei <- feols(
+  SEI ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat_lp, vcov = ~country_id
+)
+```
+
+The replicated treatment coefficient is $\hat\beta = `r round(coef(mod_lp_sei)["L_lexical_index_5"], 3)`$ (SE = `r round(se(mod_lp_sei)["L_lexical_index_5"], 3)`, $N = `r format(mod_lp_sei$nobs, big.mark=",")`$), indicating that democratization reduces ethnic inequality in public services.
+
+### Collider Assessment
+
+Is GDP per capita a collider in this setting? The question requires consulting two literatures.
+
+First, does democracy (the treatment) cause GDP per capita? The evidence is strong. \citet{acemoglu_etal2019} use dynamic panel methods, system GMM, and regional democratization waves as instruments to estimate that democratization increases GDP per capita by approximately 20\% over 25 years, operating through investment, education, and reduced social conflict. \citet{papaioannou_siourounis2008} find approximately 1 percentage point of additional annual growth following democratization.
+
+Second, does ethnic inequality (the outcome) cause GDP per capita? The evidence is also strong. \citet{easterly_levine1997} showed that ethnic diversity explains poor growth performance in Africa through political instability and underinvestment in public goods. \citet{grundler_link2024} use instrumental variables based on the artificiality of subnational borders in Africa to estimate a \textit{causal} effect: moving from an equal distribution to complete concentration reduces GDP per capita by 12--15\%.
+
+Both channels---$D \to Z$ and $Y \to Z$---are supported by credible causal evidence, making GDP per capita a plausible collider. This is an instance of foreign collider bias: the researcher studying ethnic inequality must consult the growth economics literature to discover that GDP per capita is not merely a confounder but also a collider.
+
+### IVB Decomposition
+
+```{r leipziger-ivb, cache=TRUE}
+# vcov="iid" is intentional: IVB is an algebraic identity of point estimates,
+# independent of standard error computation. Clustered SEs are used only in
+# the replication models above for inference on the treatment effect.
+ivb_lp <- compute_ivb_multi(
+  data = dat_lp, y = "SEI", d_vars = "L_lexical_index_5",
+  z = "L_latent_gdppc_mean_log", w = character(),
+  fe = c("country_f", "year_f"), vcov = "iid"
+)
+r_lp <- ivb_lp$results
+```
+
+```{r leipziger-ivb-table}
+se_lp <- se(mod_lp_sei)["L_lexical_index_5"]
+tab_lp <- data.frame(
+  Component = c("$\\hat\\beta_{\\text{short}}$ (without GDP p.c.)",
+                "$\\hat\\beta_{\\text{long}}$ (with GDP p.c.)",
+                "$\\hat\\theta^*$ (GDP p.c.\\ in long model)",
+                "$\\hat\\pi$ (Democracy in auxiliary reg.)",
+                "IVB $= -\\hat\\theta^* \\times \\hat\\pi$",
+                "$\\lvert\\text{IVB}/\\text{SE}\\rvert$",
+                "$\\lvert\\text{IVB}\\rvert / \\lvert\\hat\\beta_{\\text{long}}\\rvert$"),
+  Value = c(round(r_lp$beta_short, 4),
+            round(r_lp$beta_long, 4),
+            round(r_lp$theta, 4),
+            round(r_lp$pi, 4),
+            round(r_lp$ivb_formula, 4),
+            round(abs(r_lp$ivb_formula) / se_lp, 2),
+            paste0(round(abs(r_lp$ivb_formula / r_lp$beta_long) * 100, 1), "\\%")),
+  stringsAsFactors = FALSE
+)
+kable(tab_lp, col.names = c("", "Estimate"), escape = FALSE,
+      caption = "IVB decomposition for Leipziger (2024): Democracy $\\to$ Ethnic Inequality (SEI), with GDP per capita as candidate collider.",
+      booktabs = TRUE, align = c("l", "r"))
+```
+
+GDP per capita produces an IVB of approximately `r round(r_lp$ivb_formula, 4)`, corresponding to $|\text{IVB}/\text{SE}| = `r round(abs(r_lp$ivb_formula) / se_lp, 2)`$---about half a standard error---and approximately `r round(abs(r_lp$ivb_formula / r_lp$beta_long) * 100, 0)`\% of the treatment effect. The direction is consistent with the literature: $\hat\theta^{\star} < 0$ (richer countries have less ethnic inequality) and $\hat\pi > 0$ (democracy increases income), so $\text{IVB} = -\hat\theta^{\star} \hat\pi > 0$, pushing the treatment coefficient toward zero. In other words, controlling for GDP per capita \textit{attenuates} the estimated effect of democratization on ethnic inequality. The short model (without GDP per capita) yields a somewhat larger effect.
+
+In the extended specification that includes additional controls, civil war is a second collider candidate: democracy reduces civil war risk \citep{cederman_etal2013} and ethnic inequality increases it \citep{cederman_etal2013}, satisfying both the $D \to Z$ and $Y \to Z$ channels. However, its IVB is negligible ($|\text{IVB}/\text{SE}| = 0.02$).
+
+This application illustrates two key points. First, even a single control retained for valid confounding-adjustment reasons can introduce a measurable IVB when it is also a collider. Leipziger's careful exclusion of other controls to avoid post-treatment bias was well motivated---but the one control that was retained (GDP per capita) is itself a candidate collider. Second, the IVB of approximately 16\% is substantively notable but does not threaten the main finding: at half a standard error, it falls well within sampling uncertainty. This is consistent with the structural mechanisms identified in Section~\ref{sec:ivb_magnitude}: TWFE absorbs the between-unit component of the democracy--GDP association, leaving only the modest within-unit co-movement to drive the IVB.
+
+
+## Application 2: Postal Infrastructure and Economic Growth \label{sec:app_rogowski}
+
+\citet{rogowski_etal2022} estimate the effect of public postal infrastructure on economic development using a TWFE country panel model. The main specification is:
+$$
+\text{GDP growth}_{i,t+1} = \beta \, \text{Post Offices}_{i,t-1} + \mathbf{Z}'_{it}\gamma + \delta_i + \mu_t + \varepsilon_{it}
+$$
+where GDP growth is the 5-year growth rate (one period forward), Post Offices is the log cumulative stock (5-year lag), and $\mathbf{Z}_{it}$ includes four controls: log GDP per capita (5-year lag), log population, urbanization rate, and Polity2 democracy score.
+
+```{r rogowski-data, cache=TRUE}
+dat_rg <- read.delim(
+  "replication/candidate_papers/post_office_2022/country_panel.tab",
+  stringsAsFactors = FALSE
+)
+dat_rg <- dat_rg %>%
+  arrange(country_id, trend) %>%
+  group_by(country_id) %>%
+  mutate(F_e_migdpgro_5yr = lead(e_migdpgro_5yr, 1)) %>%
+  ungroup()
+dat_rg$country_f <- factor(dat_rg$country_id)
+dat_rg$year_f <- factor(dat_rg$year)
+```
+
+```{r rogowski-replication, cache=TRUE}
+mod_rg <- feols(
+  F_e_migdpgro_5yr ~ upu_totalpo_ipo_ln_stock_1_5yr + e_migdppcln_5yr +
+    e_mipopula_ipo_ln + e_miurbaniz_ipo + e_polity2_ipo |
+    country_f + year_f,
+  data = dat_rg, vcov = ~country_id
+)
+```
+
+The replicated treatment coefficient is $\hat\beta = `r round(coef(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"], 4)`$ (SE = `r round(se(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"], 4)`, $N = `r format(mod_rg$nobs, big.mark=",")`$). Post offices have a statistically significant positive effect on subsequent GDP growth.
+
+### Collider Assessment
+
+The key collider candidate is log GDP per capita. The paper's core argument is that post offices facilitate economic development ($D \to Z$)---indeed, this is precisely the mechanism being tested. At the same time, GDP growth (the outcome) mechanically determines future GDP per capita levels ($Y \to Z$, through the accounting identity that growth cumulates into levels). This creates a collider structure: both $D$ and $Y$ cause $Z$.
+
+However, GDP per capita is \textit{simultaneously} a strong confounder in growth regressions, through conditional convergence: richer countries grow more slowly, holding other factors constant. This is a well-established empirical regularity in the growth literature \citep{acemoglu_etal2019}. Whether controlling for GDP per capita introduces collider bias (through the $D \to Z$ and $Y \to Z$ channels) or removes confounding bias (through the convergence channel) depends on the relative strength of these effects---a question the IVB formula alone cannot answer.
+
+### IVB Decomposition
+
+```{r rogowski-ivb, cache=TRUE}
+# vcov="iid" is intentional: IVB is an algebraic identity of point estimates,
+# independent of standard error computation. Clustered SEs are used only in
+# the replication models above for inference on the treatment effect.
+rg_d_var <- "upu_totalpo_ipo_ln_stock_1_5yr"
+rg_controls <- c("e_migdppcln_5yr", "e_mipopula_ipo_ln",
+                  "e_miurbaniz_ipo", "e_polity2_ipo")
+rg_labels <- c("Log GDP p.c.", "Log population", "Urbanization", "Polity2")
+
+tab_rg <- do.call(rbind, lapply(seq_along(rg_controls), function(j) {
+  z_var <- rg_controls[j]
+  w_vars <- setdiff(rg_controls, z_var)
+  res <- compute_ivb_multi(
+    data = dat_rg, y = "F_e_migdpgro_5yr", d_vars = rg_d_var,
+    z = z_var, w = w_vars,
+    fe = c("country_f", "year_f"), vcov = "iid"
   )
-}
+  r <- res$results
+  data.frame(Collider = rg_labels[j], beta_short = r$beta_short,
+             beta_long = r$beta_long, theta = r$theta, pi = r$pi,
+             IVB = r$ivb_formula,
+             pct = round(100 * r$ivb_formula / r$beta_long, 1),
+             stringsAsFactors = FALSE)
+}))
 ```
 
-```{r sim-civilwar, cache=TRUE}
-set.seed(321)
-nsim <- 500
-N <- 200
-T_periods <- 20
-beta_pc_true <- 5
-
-results_cw <- data.frame(
-  sim = 1:nsim,
-  beta_no_dem = NA_real_,
-  beta_with_dem = NA_real_,
-  bias_empirical = NA_real_,
-  bias_formula = NA_real_
-)
-
-for (i in 1:nsim) {
-  df <- sim_civil_war(N, T_periods, beta_pc = beta_pc_true)
-
-  mod_correct  <- lm(CW ~ PC + CW_lag + Inc, data = df)
-  mod_collider <- lm(CW ~ PC + CW_lag + Inc + Dem, data = df)
-  mod_aux      <- lm(Dem ~ PC + CW_lag + Inc, data = df)
-
-  theta_star <- coef(mod_collider)["Dem"]
-  pi_hat     <- coef(mod_aux)["PC"]
-
-  results_cw$beta_no_dem[i]      <- coef(mod_correct)["PC"]
-  results_cw$beta_with_dem[i]    <- coef(mod_collider)["PC"]
-  results_cw$bias_empirical[i]   <- coef(mod_collider)["PC"] - coef(mod_correct)["PC"]
-  results_cw$bias_formula[i]     <- -theta_star * pi_hat
-}
+```{r rogowski-ivb-table}
+se_rg <- se(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"]
+tab_rg$IVB_SE <- round(abs(tab_rg$IVB) / se_rg, 2)
+kable(tab_rg[, c("Collider", "beta_short", "beta_long", "theta", "pi",
+                   "IVB", "IVB_SE", "pct")],
+      digits = 4, row.names = FALSE,
+      caption = "IVB decomposition for Rogowski et al.\\ (2022): Post Offices $\\to$ GDP Growth.",
+      col.names = c("Control as $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB", "$\\lvert\\text{IVB}/\\text{SE}\\rvert$",
+                     "IVB/$\\hat\\beta$ (\\%)"),
+      booktabs = TRUE, escape = FALSE)
 ```
 
-## Results
+Log GDP per capita dominates the IVB decomposition, with $|\text{IVB}/\text{SE}| = `r tab_rg$IVB_SE[1]`$---the only case across all six studies where the collider bias exceeds one standard error of the treatment effect. This corresponds to approximately `r round(tab_rg$pct[1], 0)`\% of $\hat\beta_{\text{long}}$. Including GDP per capita \textit{inflates} the treatment effect from `r round(tab_rg$beta_short[1], 4)` (without GDP p.c.) to `r round(tab_rg$beta_long[1], 4)` (with GDP p.c.). The mechanism is clear: $\hat\theta^{\star} < 0$ (convergence---higher GDP per capita predicts lower subsequent growth) and $\hat\pi > 0$ (more post offices predict higher GDP per capita), so $\text{IVB} = -\hat\theta^{\star} \hat\pi > 0$. The other controls produce IVBs well below one standard error.
 
-Figure~\ref{fig:scatter_cs} displays the cross-sectional results. Each point represents one simulation replication, with the formula-predicted bias on the horizontal axis and the empirical bias on the vertical axis. All points fall exactly on the 45-degree line, confirming that the IVB formula predicts the bias with exact precision.
+### The Limits of the IVB Formula
 
-```{r fig-scatter-cs, fig.cap="Cross-section: Empirical bias versus IVB formula prediction across 500 simulations. All points fall on the 45-degree line, confirming the formula's exactness. \\label{fig:scatter_cs}", fig.width=6, fig.height=5}
-ggplot(results_cs, aes(x = bias_formula, y = bias_empirical)) +
-  geom_point(alpha = 0.3, size = 1, color = "grey30") +
-  geom_abline(intercept = 0, slope = 1, color = "firebrick", linewidth = 0.8) +
-  labs(
-    x = expression("Formula bias: " * -hat(beta)[2]^"*" * " " * hat(phi)[1]),
-    y = expression("Empirical bias: " * hat(beta)["long"] - hat(beta)["short"])
-  ) +
-  coord_equal() +
-  theme(plot.margin = margin(5, 10, 5, 5))
-```
+This application illustrates the crucial caveat from Section~\ref{sec:caveats}: **a large IVB does not automatically imply collider bias**. The 58\% IVB for GDP per capita could reflect either of two causal structures:
 
-Table~\ref{tab:mc_summary} summarizes the results across all three DGPs. In every scenario, the mean empirical bias and the mean formula-predicted bias coincide to at least three decimal places.
+\begin{itemize}
+\item If GDP per capita is primarily a \textbf{collider} (because post offices raise GDP through the paper's core mechanism, and growth mechanically cumulates into GDP levels), then including it biases the treatment effect upward, and the short model's estimate of `r round(tab_rg$beta_short[1], 4)` is closer to the truth.
 
-```{r tab-mc-summary}
-summary_tab <- data.frame(
-  Scenario = c("Cross-section", "ADL(1,0)", "Civil War"),
-  `True effect` = c(
-    beta1_true,
-    beta_true,
-    beta_pc_true
-  ),
-  `Mean estimate (with collider)` = c(
-    round(mean(results_cs$beta_long), 3),
-    round(mean(results_adl$beta_long), 3),
-    round(mean(results_cw$beta_with_dem), 3)
-  ),
-  `Mean empirical bias` = c(
-    round(mean(results_cs$bias_empirical), 3),
-    round(mean(results_adl$bias_empirical), 3),
-    round(mean(results_cw$bias_empirical), 3)
-  ),
-  `Mean formula bias` = c(
-    round(mean(results_cs$bias_formula), 3),
-    round(mean(results_adl$bias_formula), 3),
-    round(mean(results_cw$bias_formula), 3)
-  ),
-  check.names = FALSE
-)
+\item If GDP per capita is primarily a \textbf{confounder} (because richer countries both build more post offices and grow more slowly due to convergence), then excluding it biases the treatment effect downward, and the long model's estimate of `r round(tab_rg$beta_long[1], 4)` is closer to the truth.
+\end{itemize}
 
-kable(summary_tab,
-      format = "latex",
-      booktabs = TRUE,
-      caption = "Monte Carlo summary across three DGPs (500 replications each). The IVB formula predicts the empirical bias exactly in every scenario. \\label{tab:mc_summary}",
-      align = c("l", "c", "c", "c", "c")) %>%
-  kable_styling(latex_options = c("hold_position"))
-```
+In reality, GDP per capita is likely \textit{both} a confounder and a collider, and the net effect depends on the relative magnitudes of these channels. The IVB formula cannot resolve this ambiguity---it can only quantify the arithmetic difference between the two specifications. The researcher must use domain knowledge and causal reasoning to determine which specification is more appropriate.
 
-Figure~\ref{fig:density_cw} shows the distribution of the estimated effect of Political Change on Civil War with and without Democracy Level as a control. The correct specification (without the collider) is centered on the true effect of 5, while the misspecified model (with the collider) is shifted to the left, reflecting the negative IVB introduced by conditioning on Democracy Level.
-
-```{r fig-density-cw, fig.cap="Civil War DGP: Distribution of the estimated effect of Political Change on Civil War across 500 simulations. The correct specification (without Democracy Level, in blue) is centered on the true effect of 5. The misspecified model (with Democracy Level as collider, in red) is biased downward. \\label{fig:density_cw}", fig.width=7, fig.height=4.5}
-results_cw %>%
-  select(sim, beta_no_dem, beta_with_dem) %>%
-  pivot_longer(-sim, names_to = "model", values_to = "beta") %>%
-  mutate(model = ifelse(model == "beta_no_dem",
-                        "Without Democracy Level (correct)",
-                        "With Democracy Level (collider)")) %>%
-  ggplot(aes(x = beta, fill = model)) +
-  geom_density(alpha = 0.5) +
-  geom_vline(xintercept = beta_pc_true, linetype = "dashed", linewidth = 0.7) +
-  annotate("text", x = beta_pc_true + 0.05, y = 0,
-           label = paste0("True effect = ", beta_pc_true),
-           hjust = 0, vjust = -0.5, size = 3.5) +
-  labs(
-    x = expression(hat(beta)[PC]),
-    y = "Density",
-    fill = "Model"
-  ) +
-  scale_fill_manual(values = c("Without Democracy Level (correct)" = "steelblue",
-                                "With Democracy Level (collider)" = "firebrick")) +
-  theme(legend.position = "bottom")
-```
-
-The results are unambiguous: the IVB formula $\widehat{\text{IVB}} = -\hat{\theta}^{\star} \times \hat{\pi}$ matches the empirical bias *exactly* in every replication and every DGP. This is not an approximation; it is an algebraic identity that holds in finite samples whenever the OLS estimates are computed on the same data.
-
-
-# Application: Political Change and Civil War \label{sec:application}
-
-We now return to the civil war example to illustrate how a researcher would apply the IVB formula in practice. The scenario is as follows: the researcher has estimated an ADL model of Civil War on Political Change, controlling for Per Capita Income and lagged Civil War. A reviewer suggests adding Democracy Level as an additional control. The researcher suspects that Democracy Level may be a collider but wants to quantify the potential damage.
-
-Following the three-step recipe from Section~\ref{sec:recipe}:
-
-**Step 1: Run the long regression.** The researcher estimates:
-\[
-CW_{t+1} = \alpha^{\star} + \beta_{PC}^{\star} \, PC_t + \rho^{\star} \, CW_t + \alpha_{Inc}^{\star} \, Inc_t + \theta^{\star} \, Dem_{t+1} + v_t
-\]
-
-```{r application-demo, cache=TRUE}
-set.seed(42)
-df_app <- sim_civil_war(N = 200, T_periods = 20, beta_pc = 5)
-
-mod_correct  <- lm(CW ~ PC + CW_lag + Inc, data = df_app)
-mod_collider <- lm(CW ~ PC + CW_lag + Inc + Dem, data = df_app)
-mod_aux      <- lm(Dem ~ PC + CW_lag + Inc, data = df_app)
-
-beta_correct  <- round(coef(mod_correct)["PC"], 3)
-beta_collider <- round(coef(mod_collider)["PC"], 3)
-theta_star    <- round(coef(mod_collider)["Dem"], 3)
-pi_hat        <- round(coef(mod_aux)["PC"], 3)
-ivb_hat       <- round(-coef(mod_collider)["Dem"] * coef(mod_aux)["PC"], 3)
-```
-
-In this simulation draw, $\hat{\theta}^{\star} = `r theta_star`$. The coefficient is negative, reflecting the fact that civil war tends to reduce democracy levels. Including Democracy Level in the regression partially ``controls away'' the variation in Civil War that operates through this channel, distorting the estimate of the Political Change effect.
-
-**Step 2: Run the auxiliary regression.** The researcher estimates:
-\[
-Dem_{t+1} = a + \pi \, PC_t + \lambda \, CW_t + \delta \, Inc_t + \eta_t
-\]
-
-The estimated coefficient is $\hat{\pi} = `r pi_hat`$. This coefficient captures the partial association between Political Change and Democracy Level, net of lagged Civil War and Income.
-
-**Step 3: Compute the IVB.** The estimated bias is:
-\[
-\widehat{\text{IVB}} = -\hat{\theta}^{\star} \times \hat{\pi} = -(`r theta_star`) \times (`r pi_hat`) = `r ivb_hat`
-\]
-
-We can verify: the correct estimate (without Democracy Level) is $\hat{\beta}_{PC} = `r beta_correct`$, and the collider-contaminated estimate is $\hat{\beta}_{PC}^{\star} = `r beta_collider`$. The difference is $`r beta_collider` - `r beta_correct` = `r round(as.numeric(beta_collider) - as.numeric(beta_correct), 3)`$, which matches the IVB formula prediction.
-
-This example illustrates several practical lessons. First, the IVB formula allows researchers to *quantify* the bias from including a suspected collider, providing concrete numbers rather than a qualitative warning. Second, the sign of the bias is informative: in this case, including Democracy Level *attenuates* the estimated effect of Political Change on Civil War, pushing it toward zero. A researcher who inadvertently includes Democracy Level would underestimate the true effect. Third, the three-step procedure is simple enough to be implemented as a routine diagnostic check whenever a variable's causal status is uncertain.
-
-More broadly, the IVB formula serves as a bridge between DAG-based qualitative reasoning and the quantitative demands of applied research. The DAG tells the researcher that Democracy Level is a collider; the formula tells her exactly how much damage including it would cause.
+This case underscores that the IVB formula is a \textit{diagnostic} tool, not a decision rule. It tells the researcher exactly how much the treatment estimate changes when a candidate collider is included. Whether that change represents the introduction of bias (collider) or the removal of bias (confounder) requires a DAG.
 
 
 # Conclusion \label{sec:conclusion}
@@ -851,13 +903,15 @@ This paper makes three contributions to the methodology of causal inference in o
 
 Second, we show that the IVB formula extends naturally from cross-sectional models to the Autoregressive Distributed Lag (ADL) specifications that are the workhorse of time-series cross-sectional research in political science. The extension relies on the Frisch--Waugh--Lovell theorem and preserves the same functional form, with the key quantities now partialled out by the dynamic controls. This result is particularly relevant because TSCS settings are especially susceptible to collider bias: the practice of lagging control variables to avoid reverse causality can inadvertently create collider structures, a phenomenon we call ``foreign collider bias.'' A further corollary shows that the common practice of replacing a contemporaneous treatment with a longer lag does not mechanically cure IVB: because the treatment is typically autocorrelated, the collider retains a partial association with the lagged treatment, and bias persists. Longer lags may attenuate IVB when these autocorrelations decay, but they do not guarantee its elimination.
 
-Third, we provide a simple three-step diagnostic recipe that any applied researcher can implement. Whenever a variable's causal status is uncertain---is it a confounder that should be included, or a collider that should be excluded?---the researcher can run the long regression, run the auxiliary regression, and compute the IVB. If the estimated bias is large relative to the treatment effect, the researcher has quantitative grounds for excluding the variable.
+Third, we provide a diagnostic recipe that any applied researcher can implement, and we investigate both the structural conditions under which IVB is large and the empirical magnitude of IVB in published studies. Our simulations show that four mechanisms---fixed effects absorbing between-unit variation in the collider channels, binary treatments with few switchers, measurement error in the collider, and cross-sectional dominance in the $D \to Z$ or $Y \to Z$ pathways---can each attenuate IVB substantially. In typical TWFE applications in comparative politics, several of these mechanisms operate simultaneously, which helps explain why empirical IVBs are often modest. Across six published studies spanning democratization, peacekeeping, fiscal capacity, infrastructure, and sovereign debt, we classify each control variable using DAG-based reasoning grounded in the published literature and compute the IVB for theoretically motivated collider candidates. Among 14 such candidates across six studies, the median $|\text{IVB}/\text{SE}|$ is approximately 0.13---the typical collider bias is about one-eighth of a standard error, well within sampling noise. Only one candidate---GDP per capita in a growth regression \citep{rogowski_etal2022}---exceeds one standard error ($|\text{IVB}/\text{SE}| = 2.11$, corresponding to 58\% of $\hat\beta$), and even this case is causally ambiguous because GDP per capita is simultaneously a confounder. These conditions characterize the majority of TSCS designs in comparative politics, but researchers using cross-sectional data, short panels, or continuous treatments should expect potentially larger IVBs.
 
 Our work connects to and extends several strands of the literature. It complements \citet{cinelli2021crash}, who provide a systematic taxonomy of good and bad controls using DAGs, by adding a quantitative dimension: not just *whether* a control is bad, but *how bad* it is. It complements \citet{blackwell2018make}, who propose sequential g-estimation and marginal structural models as solutions to post-treatment bias in TSCS, by providing a diagnostic formula that does not require the researcher to adopt a different estimation framework. And it extends the OVB tradition exemplified by \citet{cinelli2020making}, who develop sensitivity analysis tools for omitted variable bias, to the symmetric problem of included variable bias.
 
-Several limitations deserve mention. The IVB formula is derived for linear models, which covers a large share of applied TSCS research---including OLS with panel-corrected standard errors, two-way fixed effects, and difference-in-differences designs with continuous outcomes. However, the Frisch--Waugh--Lovell theorem does not hold for nonlinear link functions, so the formula as stated does not apply to logistic or probit regression. This matters for studies with binary outcomes, such as civil war onset, where nonlinear specifications are standard. Future work should investigate whether the linear IVB provides a useful approximation in such settings or whether a separate nonlinear formula is needed. The formula also quantifies bias under the assumption that the researcher *knows* which variable is the collider; it does not help with the prior step of identifying colliders, for which DAGs remain essential. Additionally, we do not develop a formal sensitivity analysis framework for IVB---an extension that would allow researchers to assess how sensitive their results are to potential collider bias even when the collider is not directly observed.
+The empirical applications also highlight the importance of what we call ``foreign collider bias.'' In both replications, the candidate collider (GDP per capita) is a variable whose causal relationships with treatment and outcome are documented in literatures *outside* the focal study's domain. A researcher studying ethnic inequality or postal infrastructure may not spontaneously consult the literatures on democracy and economic growth or on convergence dynamics. Yet it is precisely these ``foreign'' literatures that reveal the collider structure. This suggests that the standard heuristic of reviewing the outcome and treatment literatures should be supplemented with systematic attention to the determinants of each control variable.
 
-This last limitation points to a natural direction for future work. Just as \citet{cinelli2020making} developed sensitivity analysis tools that extend the OVB formula to scenarios where the omitted variable is unobserved, a parallel development for IVB would allow researchers to ask: ``How strong would the collider relationship need to be to change my conclusions?'' We leave this extension for future research.
+Several limitations deserve mention. The IVB formula is derived for linear models, which covers a large share of applied TSCS research---including OLS with panel-corrected standard errors, two-way fixed effects, and difference-in-differences designs with continuous outcomes. However, the Frisch--Waugh--Lovell theorem does not hold for nonlinear link functions, so the formula as stated does not apply to logistic or probit regression. Future work should investigate whether the linear IVB provides a useful approximation in such settings or whether a separate nonlinear formula is needed. Critically, the IVB formula is an algebraic identity that quantifies the *arithmetic* difference between two nested specifications; only a DAG or substantive domain expertise can determine whether that difference represents collider bias, omitted variable bias, or mediation. The formula does not help with the prior step of identifying colliders, for which causal reasoning remains essential. Additionally, we do not develop a formal sensitivity analysis framework for IVB---an extension that would allow researchers to assess how sensitive their results are to potential collider bias even when the collider is not directly observed.
+
+These limitations point to two natural directions for future work. First, just as \citet{cinelli2020making} developed sensitivity analysis tools that extend the OVB formula to scenarios where the omitted variable is unobserved, a parallel development for IVB would allow researchers to ask: ``How strong would the collider relationship need to be to change my conclusions?'' Second, and more ambitiously, the FWL framework that underpins our formula could be extended to derive \textit{analytical} results for the case in which $Z$ is simultaneously a collider and a confounder under TWFE. \citet{ding2015adjust} analyzed this trade-off for a specific cross-sectional configuration (the Butterfly-Structure), but the TSCS setting introduces richer possibilities: fixed effects differentially absorb between-unit confounding and collider channels, potentially shifting the balance in ways that depend on the panel structure. An FWL-based derivation of when collider bias dominates confounding bias under TWFE---yielding closed-form conditions rather than relying solely on simulation---would provide applied researchers with stronger analytical guidance. We leave both extensions for future research. We also provide the \texttt{compute\_ivb\_multi()} function as supplementary material, enabling researchers to compute IVB decompositions for any TWFE specification with minimal effort.
 
 In the meantime, we encourage applied researchers to add the IVB formula to their diagnostic toolkit. The combination of DAGs for qualitative reasoning and the IVB formula for quantitative assessment provides a powerful framework for making informed decisions about control variable selection---decisions that are critical for the credibility of causal claims in observational research.
 
@@ -960,7 +1014,7 @@ The short model (by FWL applied to the regression of $y_t$ on $D_t$ and $y_{t-1}
 
 ## Appendix C: Additional Simulation Plots \label{app:plots}
 
-```{r fig-heatmap, fig.cap="Cross-section IVB as a function of the collider parameters $\\gamma_1$ (D $\\to$ Z) and $\\gamma_2$ (Y $\\to$ Z). The bias increases in magnitude with both parameters. \\label{fig:heatmap}", fig.width=6, fig.height=5}
+```{r fig-heatmap, cache=TRUE, fig.cap="Cross-section IVB as a function of the collider parameters $\\gamma_1$ (D $\\to$ Z) and $\\gamma_2$ (Y $\\to$ Z). The bias increases in magnitude with both parameters. \\label{fig:heatmap}", fig.width=6, fig.height=5}
 grid_params <- expand.grid(
   gamma1 = seq(0, 1, by = 0.2),
   gamma2 = seq(0, 1, by = 0.2)
@@ -998,6 +1052,56 @@ ggplot(grid_results, aes(x = factor(gamma1), y = factor(gamma2), fill = bias)) +
   )
 ```
 
+```{r appendix-adl-setup, cache=TRUE}
+# Setup for Appendix C ADL simulation plots
+# Note: delta_d/delta_y correspond to gamma_D/gamma_Y in Section 5 notation.
+# Different names are used here to distinguish the ADL DGP (Appendix D)
+# from the static TWFE DGP (Section 5).
+sim_adl_panel <- function(N, T_periods, beta, rho, delta_d, delta_y) {
+  rows <- list()
+  for (i in 1:N) {
+    D <- rnorm(T_periods)
+    e <- rnorm(T_periods)
+    u <- rnorm(T_periods)
+    Y <- numeric(T_periods)
+    Y[1] <- rnorm(1)
+    for (t in 2:T_periods) {
+      Y[t] <- rho * Y[t - 1] + beta * D[t] + e[t]
+    }
+    Z <- delta_d * D + delta_y * Y + u
+    rows[[i]] <- data.frame(
+      time = 1:T_periods, D = D, Y = Y,
+      Y_lag = c(NA, Y[-T_periods]), Z = Z
+    )
+  }
+  df <- do.call(rbind, rows)
+  df[!is.na(df$Y_lag), ]
+}
+
+# ADL simulation parameters (see Appendix D text for justification)
+N <- 200
+T_periods <- 20
+beta_true <- 1
+rho_val <- 0.5
+delta_d <- 0.6
+delta_y <- 0.4
+
+set.seed(42)
+results_adl <- do.call(rbind, lapply(1:500, function(s) {
+  df <- sim_adl_panel(N, T_periods, beta_true, rho_val, delta_d, delta_y)
+  mod_short <- lm(Y ~ D + Y_lag, data = df)
+  mod_long  <- lm(Y ~ D + Y_lag + Z, data = df)
+  mod_aux   <- lm(Z ~ D + Y_lag, data = df)
+  data.frame(
+    sim = s,
+    beta_short = coef(mod_short)["D"],
+    beta_long = coef(mod_long)["D"],
+    bias_empirical = coef(mod_long)["D"] - coef(mod_short)["D"],
+    bias_formula = -coef(mod_long)["Z"] * coef(mod_aux)["D"]
+  )
+}))
+```
+
 ```{r fig-adl-scatter, fig.cap="ADL(1,0): Empirical bias versus IVB formula prediction across 500 simulations. \\label{fig:adl_scatter}", fig.width=6, fig.height=5}
 ggplot(results_adl, aes(x = bias_formula, y = bias_empirical)) +
   geom_point(alpha = 0.3, size = 1, color = "grey30") +
@@ -1029,7 +1133,7 @@ results_adl %>%
   theme(legend.position = "bottom")
 ```
 
-```{r fig-rho-effect, fig.cap="ADL(1,0): Effect of the autoregressive parameter $\\rho$ on the magnitude of the IVB. Both the empirical bias and the formula prediction are shown. \\label{fig:rho_effect}", fig.width=7, fig.height=4.5}
+```{r fig-rho-effect, cache=TRUE, fig.cap="ADL(1,0): Effect of the autoregressive parameter $\\rho$ on the magnitude of the IVB. Both the empirical bias and the formula prediction are shown. \\label{fig:rho_effect}", fig.width=7, fig.height=4.5}
 rho_grid <- seq(0, 0.9, by = 0.1)
 
 set.seed(77)
@@ -1093,3 +1197,196 @@ When the researcher conditions on a collider $Z_i$---a variable that is caused b
 The IVB formula quantifies this selection bias. The term $\beta_2^{\star}$ reflects the (spurious) partial association between $Z$ and $Y$ conditional on $D$ in the misspecified model, while $\phi_1$ reflects the association between $D$ and $Z$ that arises because both are causes (or functions of causes) of $Z$. Their product, with a negative sign, equals the bias in the ATE estimate.
 
 This connection underscores a key insight: the IVB formula bridges the DAG-based and potential outcomes-based perspectives on causal inference. Where DAGs provide the qualitative diagnosis (conditioning on a collider violates $d$-separation), the formula provides the quantitative assessment (the bias equals $-\beta_2^{\star} \times \phi_1$), expressed entirely in terms of observable regression coefficients.
+
+
+## Appendix F: Control Classification and Full IVB Results \label{app:classification}
+
+Following the diagnostic recipe in Section~\ref{sec:recipe} (Step~0), we classify each control variable in the six replicated studies according to its causal role relative to the treatment ($D$) and outcome ($Y$). A control is classified as a **collider** when credible evidence from separate studies supports both $D \to Z$ and $Y \to Z$; as a **confounder** when the evidence supports $Z \to D$ and/or $Z \to Y$ (but not $D \to Z$); as a **mediator** when $D \to Z \to Y$; and as **predetermined/neutral** when no contemporaneous causal pathway is plausible (e.g., geographic or demographic variables, or lagged variables where the lag structure blocks the collider channel). Variables with evidence supporting both confounding and collider channels are labeled **collider + confounder**. The classification criteria are consistent with the sufficient conditions stated in Section~\ref{sec:caveats}.
+
+### Claassen (2020) --- $D$: public support, $Y$: liberal democracy
+
+\begin{table}[H]
+\centering
+\small
+\caption{Control classification for Claassen (2020).}
+\begin{tabular}{llllp{3cm}}
+\toprule
+Control & $D \to Z$ & $Y \to Z$ & Classification & Key references \\
+\midrule
+Log GDP p.c. & Weak (institutional) & Democracy $\to$ GDP & Collider (weak) & \citet{acemoglu_etal2019} \\
+GDP growth & Same channel & Same channel & Collider (weak) & \citet{acemoglu_etal2019} \\
+Regional democracy & Diffusion & Composition & Predetermined & --- \\
+\% Muslim & None & None (absorbed by FE) & Predetermined & --- \\
+Resource dep. & None & Resource curse is $Z \to Y$ & Confounder & \citet{ross2001} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+**Collider candidate for Table~\ref{tab:ivb_summary}**: Log GDP p.c. GDP growth shares the same mechanism but is excluded from the main table to avoid double-counting the same causal channel. Both GDP variables are classified as ``Collider (weak)'' because the $D \to Z$ channel (public support $\to$ GDP) is indirect and operates through institutional quality rather than a direct causal mechanism.
+
+### Leipziger (2024) --- $D$: binary democracy, $Y$: ethnic inequality (SEI)
+
+\begin{table}[H]
+\centering
+\small
+\caption{Control classification for Leipziger (2024).}
+\begin{tabular}{llllp{3cm}}
+\toprule
+Control & $D \to Z$ & $Y \to Z$ & Classification & Key references \\
+\midrule
+Log GDP p.c. & Democracy $\to$ GDP & Ethnic ineq. $\to$ GDP & \textbf{Collider} & \citet{acemoglu_etal2019}; \citet{grundler_link2024} \\
+Oil income p.c. & None & Geological & Predetermined & --- \\
+Civil war & Democracy $\to$ civil war & Ethnic ineq. $\to$ civil war & \textbf{Collider} & \citet{cederman_etal2013} \\
+Ethnic frac. & None & Demographic & Predetermined & --- \\
+GDP growth & Same channel as GDP p.c. & Same channel & \textbf{Collider} & \citet{acemoglu_etal2019} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+**Collider candidates**: Log GDP p.c. (baseline spec.), Civil war and GDP growth (extended spec.).
+
+### Blair et al. (2022) --- $D$: UN peacekeeping, $Y$: democratization
+
+\begin{table}[H]
+\centering
+\small
+\caption{Control classification for Blair et al.\ (2022).}
+\begin{tabular}{llllp{3cm}}
+\toprule
+Control & $D \to Z$ & $Y \to Z$ & Classification & Key references \\
+\midrule
+Population & Demographic & Demographic & Predetermined & --- \\
+Foreign Aid & PKO $\to$ bundled aid & Democracy $\to$ aid & \textbf{Collider} & \citet{bermeo2016} \\
+GDP p.c. & PKO $\to$ stability $\to$ GDP & Democracy $\to$ GDP & \textbf{Collider} & \citet{acemoglu_etal2019} \\
+Refugees/IDPs & PKO $\to$ fewer displaced & Democracy $\to$ less repression & \textbf{Collider + Confounder} & \citet{costalli_etal2024}; \citet{moore_shellman2004} \\
+Literacy & Education stock (decades) & Weak & Predetermined & --- \\
+Fuel exports & Geological & Geological & Predetermined & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+**Collider candidates**: Foreign Aid, GDP per capita, Refugees/IDPs. Refugees/IDPs is classified as collider + confounder: PKO mandates reduce displacement \citep[$D \to Z$;][]{costalli_etal2024} and democratization reduces refugee-generating repression \citep[$Y \to Z$;][]{moore_shellman2004}, but refugee crises also trigger PKO deployment ($Z \to D$), making the variable simultaneously a confounder (as with GDP per capita in \citealt{rogowski_etal2022}).
+
+### Albers et al. (2023) --- $D$: government turnover, $Y$: tax collection
+
+\begin{table}[H]
+\centering
+\small
+\caption{Control classification for Albers et al.\ (2023).}
+\begin{tabular}{llllp{3cm}}
+\toprule
+Control & $D \to Z$ & $Y \to Z$ & Classification & Key references \\
+\midrule
+Independence & Historical & Structural & Predetermined & --- \\
+Hyperinflation & Turnover $\to$ fiscal $\to$ inflation & Tax $\to$ fiscal balance & \textbf{Collider} & \citet{sargent_wallace1981} \\
+Civil war (lag) & Lag protects & Lag protects & Predetermined & --- \\
+GDP growth & Turnover $\to$ uncertainty $\to$ GDP & Tax $\to$ investment $\to$ GDP & \textbf{Collider} & --- \\
+Drought (lag) & Exogenous & Exogenous & Predetermined & --- \\
+Liberal democracy & Turnover $\to$ regime openness & Fiscal bargaining & \textbf{Collider (weak)} & \citet{besley_persson2011} \\
+Secession & Ethnic-political & Structural & Predetermined & --- \\
+Socialist & Ideological & Structural & Predetermined & --- \\
+Alliance (G5) & Weak & Weak & Predetermined & --- \\
+Market access & Weak & Creditworthiness & Ambiguous & --- \\
+Ext. default & Weak & Fiscal capacity & Ambiguous & --- \\
+Intl. war (lag) & Geopolitical & Geopolitical & Predetermined & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+**Collider candidates**: Hyperinflation, GDP growth (YoY), Liberal democracy. Note: standard errors for Albers et al.\ are not available from the published replication materials, so IVB/SE cannot be computed.
+
+### Rogowski et al. (2022) --- $D$: log post offices, $Y$: GDP growth
+
+\begin{table}[H]
+\centering
+\small
+\caption{Control classification for Rogowski et al.\ (2022).}
+\begin{tabular}{llllp{3cm}}
+\toprule
+Control & $D \to Z$ & $Y \to Z$ & Classification & Key references \\
+\midrule
+Log GDP p.c. & PO $\to$ GDP (paper's mechanism) & Growth $\to$ levels (identity) & \textbf{Collider + Confounder} & \citet{acemoglu_etal2019} \\
+Log population & Population $\to$ PO (demand) & Pop. $\to$ growth (Solow) & Confounder & --- \\
+Urbanization & Weak & Growth $\to$ urbanization & Weak & --- \\
+Polity2 & PO $\to$ democracy (slow) & Growth $\to$ democratization & Weak & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+**Collider candidate**: Log GDP p.c. (with caveat that it is simultaneously a confounder through conditional convergence; see Section~\ref{sec:app_rogowski}).
+
+### Ballard-Rosa et al. (2021) --- $D$: left government, $Y$: domestic-currency bonds
+
+\begin{table}[H]
+\centering
+\small
+\caption{Control classification for Ballard-Rosa et al.\ (2021).}
+\begin{tabular}{llllp{3cm}}
+\toprule
+Control & $D \to Z$ & $Y \to Z$ & Classification & Key references \\
+\midrule
+Inflation crisis & Left $\to$ inflation & Bonds $\to$ inflation expect. & \textbf{Collider} & \citet{hibbs1977}; \citet{alesina1987} \\
+IMF program & Left $\to$ fiscal policy $\to$ IMF & Bonds $\to$ fiscal crisis $\to$ IMF & \textbf{Collider} & \citet{vreeland2003}; \citet{eichengreen2005} \\
+Sov. debt crisis & Left $\to$ fiscal expansion $\to$ crisis & Bonds $\to$ currency mismatch $\to$ crisis & \textbf{Collider} & \citet{alesina_tabellini1990}; \citet{eichengreen2005} \\
+Log GDP p.c. & Left $\to$ GDP (weak, lagged) & Weak & Predetermined & --- \\
+GDP growth & Weak & Weak & Predetermined & --- \\
+Ext. debt/GDP & Weak & Weak & Predetermined & --- \\
+Curr. acct/GDP & Weak & Weak & Predetermined & --- \\
+Trade/GDP & Structural & Structural & Predetermined & --- \\
+Oil rents/GDP & Geological & Geological & Predetermined & --- \\
+FDI/GDP & Weak & Weak & Predetermined & --- \\
+US Treasury 10yr & Exogenous & Exogenous & Predetermined & --- \\
+Pegged XR & Structural & Weak & Predetermined & --- \\
+High CBI & Institutional & Weak & Predetermined & --- \\
+Chinn-Ito open. & Structural & Weak & Predetermined & --- \\
+Currency crisis & Weak & Weak & Predetermined & --- \\
+Democracy (V-Dem) & Weak & Weak & Predetermined & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+**Collider candidates**: Inflation crisis, IMF program, Sovereign debt crisis. All three share a common mechanism: left-government fiscal policies create fiscal stress ($D \to Z$; \citealt{alesina_tabellini1990}; \citealt{alesina1987}), while the currency denomination of sovereign bonds affects crisis vulnerability through balance-sheet mismatches ($Y \to Z$; \citealt{eichengreen2005}). For IMF programs specifically, \citet{vreeland2003} shows that domestic political factors---including government ideology---drive program participation beyond economic necessity.
+
+### Full Mechanical IVB Decomposition
+
+Table~\ref{tab:ivb_full} reports the complete IVB decomposition for all 57 study-control combinations, regardless of collider plausibility. This table is provided for completeness and transparency; the substantive interpretation of any individual IVB as collider bias requires the causal reasoning documented in the classification tables above.
+
+```{r ivb-full-table, cache=TRUE}
+# cache=TRUE: safe because standardized_ivb_metrics.csv is generated once and versioned.
+# If the CSV is regenerated, delete the cache or change chunk code to invalidate.
+ivb_full <- read.csv("replication/standardized_ivb_metrics.csv",
+                      stringsAsFactors = FALSE)
+
+# Add significance flag and formatted IVB/beta
+ivb_full$sig <- !is.na(ivb_full$SE_beta) &
+                abs(ivb_full$beta_long / ivb_full$SE_beta) >= 1.96
+ivb_full$IVB_pct_fmt <- ifelse(
+  ivb_full$sig,
+  paste0(sprintf("%.1f", ivb_full$IVB_pct_beta), "\\%"),
+  "---"
+)
+ivb_full$IVB_SE_fmt <- ifelse(
+  is.na(ivb_full$IVB_over_SE), "---",
+  sprintf("%.2f", ivb_full$IVB_over_SE)
+)
+ivb_full$IVB_fmt <- sprintf("%.4f", ivb_full$IVB)
+
+# Escape LaTeX special characters in text columns (e.g., "% Muslim" → "\% Muslim")
+ivb_full$collider <- gsub("%", "\\\\%", ivb_full$collider)
+
+kable(ivb_full[, c("paper", "collider", "IVB_fmt", "IVB_SE_fmt",
+                     "IVB_pct_fmt")],
+      format = "latex", row.names = FALSE,
+      col.names = c("Study", "Control", "IVB", "$\\lvert\\text{IVB}/\\text{SE}\\rvert$",
+                     "IVB/$\\hat\\beta$ (\\%)"),
+      caption = paste0(
+        "Full mechanical IVB decomposition. All controls are included ",
+        "regardless of collider plausibility. IVB/$\\hat\\beta$ is reported ",
+        "only when the treatment effect is significant ($|t| \\geq 1.96$); ",
+        "``---'' indicates $\\hat\\beta \\approx 0$ or SE unavailable. ",
+        "\\label{tab:ivb_full}"),
+      booktabs = TRUE, escape = FALSE,
+      align = c("l", "l", "r", "r", "r"),
+      longtable = TRUE) %>%
+  kable_styling(latex_options = c("repeat_header"), font_size = 9)
+```

@@ -1,185 +1,197 @@
-# Stage 3: Proofread Review -- Round 2
+# Stage 3: Proofread Review -- Round 2 (Delta Review)
 
-**Reviewer:** Proofread Reviewer Agent
-**Date:** 2026-02-10
-**File reviewed:** `ivb_paper_psrm.Rmd` and `references.bib`
-**Round 1 Score:** 64/100 (REPROVADO)
-
----
-
-## Verification of Round 1 Corrections
-
-### Correction #42 (CRITICAL): Backdoor path description in Figure 3 caption
-**Status: VERIFIED FIXED**
-
-The caption on line 241 now reads:
-> "Conditioning on $Dem_{t+1}$ opens the collider $CW_{t+1} \to Dem_{t+1} \leftarrow U$, creating a spurious association between $CW_{t+1}$ and $U$. Because $U$ also causes $CW_{t+1}$ (dashed arrow), this biases the estimate of the effect of Political Change on Civil War."
-
-This correctly identifies $Dem_{t+1}$ as the collider and accurately describes the spurious path mechanism. The Round 1 error (which described a collider at $CW_{t+1}$ instead of $Dem_{t+1}$) is fully resolved. No new issues introduced.
-
-### Corrections #5, #6: Hard-coded section numbers replaced with \ref{}
-**Status: VERIFIED FIXED**
-
-- Line 72: All six section references now use `Section~\ref{sec:...}` format.
-- Line 745: Now reads `Section~\ref{sec:recipe}`.
-- All referenced labels (`sec:control`, `sec:dags`, `sec:ivb`, `sec:montecarlo`, `sec:application`, `sec:conclusion`, `sec:recipe`) are defined in the document. No broken cross-references.
-
-### Corrections #7, #8: Figure cross-references added
-**Status: VERIFIED FIXED**
-
-- Line 116: `shown in Figure~\ref{fig:three_structures}`
-- Line 203: `Figure~\ref{fig:dag_collider} displays this structure.`
-- Both labels are defined. Properly uses `Figure~\ref{}` with non-breaking space.
-
-### Corrections #1, #2: Notation footnote
-**Status: VERIFIED FIXED**
-
-Line 66 now contains an inline footnote:
-> `^[In the cross-sectional derivation, $\theta^{\star}$ corresponds to $\beta_2^{\star}$ and $\pi$ corresponds to $\phi_1$; we use the ADL notation throughout the paper as it is the more general form.]`
-
-This uses valid R Markdown footnote syntax (`^[...]`), correctly maps the two notations, and is placed at a natural point after the formula description. No new issues introduced.
-
-### Corrections #19, #34, #45: Replaced ~ formula notation
-**Status: VERIFIED FIXED**
-
-- Line 421 (Proposition 3): Now reads `$Z_t = a + \pi_j D_{t-j} + W_t'\delta + \eta_t$` (proper equation with `=`).
-- Line 871 (Appendix B): Now reads as prose "the regression of $\tilde{y}_t$ on $\tilde{D}_t$ and $\tilde{Z}_t$" -- consistent with mathematical exposition style.
-- Line 898 (Appendix B extension): Now reads `$Z_t = a + \pi_j D_{t-j} + W_t'\delta + \eta_t$` (proper equation with `=`).
-
-All three instances consistent with the paper's equation notation convention.
-
-### Correction #39: Citation order
-**Status: VERIFIED FIXED**
-
-Line 155: `\citep{elwert2014endogenous, pearl2018book}` -- now chronological (2014, 2018). Previously was `\citep{pearl2018book, elwert2014endogenous}`.
-
-### Correction #4: [sic] added to quote
-**Status: VERIFIED FIXED**
-
-Line 83: `I include them as control [sic] to provide a fully specified model` -- properly signals the grammatical irregularity in the original source.
-
-### Corrections #10, #11, #20, #28, #46: Style fixes
-**Status: ALL VERIFIED FIXED**
-
-- #10 (line 89): "A slightly better heuristic" -> "A more targeted heuristic" -- precise academic register.
-- #11 (line 93): "this omission" -> "This shortcoming" -- eliminates ambiguity.
-- #20 (line 428): `\citet{nickell1981biases} bias` -> `Nickell bias \citep{nickell1981biases}` -- natural citation flow.
-- #28 (line 783): "naively" -> "inadvertently" -- avoids potentially pejorative language.
-- #46 (line 1016): `R~Markdown` -> `R Markdown` -- correct product name formatting.
-
-### Correction #38: Removed unused bib entries
-**Status: VERIFIED FIXED**
-
-Cross-referencing all 28 bib keys against all `\cite` commands in the manuscript:
-- 27 of 28 bib entries are directly cited via `\citep{}` or `\citet{}`.
-- The `dietrich2016donor` entry appears uncited by simple regex but IS cited on line 83 via `\citep[][p.~81]{dietrich2016donor}` (the optional page argument confused the initial regex check).
-- All 12 previously unused entries have been removed.
-- **Zero unused bib entries remain.**
-
-### New Issues Check
-**No new issues introduced by the corrections.** All edits are syntactically correct, LaTeX-compatible, and consistent with the surrounding text. The footnote on line 66 uses valid R Markdown syntax. The \ref{} cross-references all have matching \label{} definitions.
+**Reviewer:** Proofread Re-Reviewer Agent
+**Date:** 2026-03-01
+**File reviewed:** `ivb_paper_psrm.Rmd`
+**Round 1 report:** `stage3_proofread_round1_v2.md`
+**Round 1 Score:** 83/100 (REPROVADO)
 
 ---
 
-## Remaining Issues from Round 1 (Not Addressed)
+## Task
 
-The following issues from Round 1 were NOT in the scope of corrections applied. I re-evaluate each:
+Verify whether the 9 issues identified in Round 1 (v2) have been correctly fixed, and check for any new issues introduced by the fixes.
 
-### Grammar Issues (Remaining)
+---
 
-| # | Line | Issue | Deduction |
-|---|------|-------|-----------|
-| 15 | 203 | "there exist unobserved factors $U$" -- subject-verb agreement is borderline. "There exist" with plural "factors" is grammatically defensible (and common in mathematical writing). | 0 (no deduction; acceptable) |
-| 17 | 268 | "$\mathbb{E}[e^{\star} \mid D] \neq 0$" -- the conditioning set arguably should be $\mid D, Z$ since $e^{\star}$ is the error in a model that includes both $D$ and $Z$. However, the intended meaning (that marginally, $D$ is correlated with the misspecified error) is defensible as describing the consequence of the misspecification. | -2 (grammar, borderline but technically imprecise) |
+## Issue-by-Issue Verification
 
-### Consistency Issues (Remaining)
+### Issue #1 (Minor, -1): Abstract "below 0.15" vs "approximately 0.13"
 
-| # | Line | Issue | Deduction |
-|---|------|-------|-----------|
-| 22 | 457 | "non-zero" vs "nonzero" -- American style guides prefer "nonzero" (one word). Single occurrence. | -1 |
-| 36 | bib | `cinelli2021crash` key has `year={2022}` -- cosmetic key-year mismatch. The rendered citation will correctly show 2022. | -0.5 (downgraded to style nitpick; purely cosmetic, invisible to readers) |
+**Status: VERIFIED FIXED**
 
-### Style Issues (Remaining)
+Line 32 now reads:
+> "median IVBs are approximately 0.13 standard errors of the treatment effect"
 
-| # | Line | Issue | Deduction |
-|---|------|-------|-----------|
-| 3 | 55 | Very long sentence (6+ lines) defining colliders. Grammatically correct but dense. | -0.5 |
-| 9 | 57 | "ubiquitous" is a strong claim for TSCS designs. | -0.5 |
-| 13 | 105 | "used the exact term" -- could be more precise ("coined" vs "employed"). | -0.5 |
-| 14 | 107 | "pedagogical device" -- potentially dismissive of the analytical contribution. | -0.5 |
-| 18 | 340 | "channeled through the treatment-outcome relationship" -- slightly imprecise description of OVB. | -0.5 |
-| 21 | 428 | Long sentence (42 words with two em-dash parentheticals). | -0.5 |
-| 29 | 796 | Long sentence (40 words) about Blackwell & Glynn. | -0.5 |
-| 31 | 798 | "nonlinear link functions" -- borderline precision. | 0 (acceptable in GLM context) |
-| 33 | 818 | Appendix subsection levels (`##`) under `# Online Appendix` may render as A.1, A.2 instead of Appendix A, Appendix B. Needs verification in rendered output. | -1 (formatting) |
-| 35 | 1033 | "both are causes (or functions of causes) of $Z$" -- vague parenthetical. | -0.5 |
-| 43 | 107 | "lowering the barrier" -- informal register for academic writing. | -0.5 |
+This matches the body text on lines 77, 701, and 906, which all use "approximately 0.13". The number is now consistent throughout the manuscript.
+
+**Points recovered: +1**
+
+---
+
+### Issue #2 (Major, -3): Notation inconsistency on line 621
+
+**Status: VERIFIED FIXED**
+
+Line 621 now reads:
+> "The primary metric is $|\text{IVB}/\text{SE}(\hat\beta)|$, which measures the bias in standard-error units. [...] $|\text{IVB}/\text{SE}| > 1$ means the bias exceeds the sampling uncertainty"
+
+Both mentions now use the `|IVB/SE|` form (absolute value wrapping the entire ratio). The first mention includes `(\hat\beta)` for definitional clarity; the second omits it for brevity. This is standard practice and does not constitute an inconsistency. The previous problem -- where one mention used `|IVB|/SE` and the other used `|IVB/SE|` -- is resolved.
+
+**Points recovered: +3**
+
+---
+
+### Issue #3 (Major, -3): Notation on line 604
+
+**Status: VERIFIED FIXED**
+
+Line 604 now reads:
+> "The ratio $|\text{IVB}/\text{SE}|$---the IVB measured in standard-error units---therefore \textit{decreases}"
+
+This matches the dominant notation used throughout the paper (lines 32, 77, 621, 701, 797, 883, 906). The previous `|IVB|/SE` form has been replaced with `|IVB/SE|`.
+
+**Points recovered: +3**
+
+---
+
+### Issue #4 (Major, -3): Rogowski table column header formatting
+
+**Status: VERIFIED FIXED**
+
+Line 878 now reads:
+```
+"$|\\text{IVB}/\\text{SE}|$"
+```
+
+The `/SE` portion is now fully inside math mode as `\\text{SE}`, eliminating the mixed math/text rendering issue. The entire expression is wrapped in `$...$`.
+
+**Points recovered: +3**
+
+---
+
+### Issue #5 (Minor, -1): Inconsistent table column headers across tables
+
+**Status: VERIFIED FIXED**
+
+All four relevant table locations now use consistent notation for the IVB/SE column:
+
+| Table | Line | Column header | Status |
+|-------|------|--------------|--------|
+| Summary (kable) | 682 | `"$\|\\text{IVB}/\\text{SE}\|$"` | Consistent |
+| Leipziger (vertical) | 779 | `"$\|\\text{IVB}/\\text{SE}\|$"` (row label) | Consistent |
+| Rogowski (kable) | 878 | `"$\|\\text{IVB}/\\text{SE}\|$"` | Consistent |
+| Full table (kable) | 1377 | `"$\|\\text{IVB}/\\text{SE}\|$"` | Consistent |
+
+The Leipziger table is a vertical decomposition (Component / Value), so the IVB/SE appears as a row label rather than a column header, but the notation is the same.
+
+**Points recovered: +1**
+
+---
+
+### Issue #6 (Major, -3): Rogowski equation `\gamma_t` notation clash
+
+**Status: VERIFIED FIXED**
+
+Line 806 now reads:
+```
+\mathbf{Z}'_{it}\gamma + \delta_i + \mu_t + \varepsilon_{it}
+```
+
+The time fixed effect subscript has been changed from `\gamma_t` to `\mu_t`, eliminating the clash with the controls coefficient vector `\gamma` in the same equation. The `\mu_t` notation is also consistent with the simulation equations on lines 574 and 584.
+
+**Minor new inconsistency noted:** The Leipziger equation on line 713 still uses `\gamma_t` for time fixed effects: `\delta_i + \gamma_t + \varepsilon_{it}`. However, this is NOT a notation clash in context because the Leipziger equation does not use `\gamma` for any other purpose (it uses `\theta` for the GDP coefficient and `\beta` for the treatment). The `\gamma_t` is unambiguous there. Nevertheless, it creates a minor cross-equation inconsistency: time FE are `\mu_t` in some equations and `\gamma_t` in one other. This is a minor style issue (-0.5), not a major notation error.
+
+**Points recovered: +3**
+**New deduction: -0.5** (cross-equation inconsistency in time FE notation between Leipziger and Rogowski/simulation equations)
+
+---
+
+### Issue #7 (Minor, -1): "Confdr." abbreviation
+
+**Status: VERIFIED FIXED**
+
+Line 1261 now reads:
+> `\textbf{Collider + Confounder}`
+
+The abbreviation "Confdr." has been expanded to "Confounder", matching line 1268 which also uses "Confounder" in full.
+
+**Points recovered: +1**
+
+---
+
+### Issue #8 (Minor, -1): Uncited "Alesina et al." and "Omoeva et al."
+
+**Status: NOT FIXED**
+
+Line 715 still reads:
+> "nightlight-based income from Alesina et al., and education from Omoeva et al."
+
+These author mentions remain informal -- they lack `\citet{}` or `\citep{}` commands, and they do not include publication years. A reader cannot identify or look up these references without additional information. This is unchanged from Round 1.
+
+**Points recovered: 0**
+
+---
+
+### Issue #9 (Minor, -1): "four substantive domains"
+
+**Status: VERIFIED FIXED**
+
+Line 617 now reads:
+> "we apply the IVB formula to six published studies spanning several substantive domains"
+
+The overly specific "four" has been replaced with the more accurate "several", avoiding the confusion between the count of domains and the six distinct topics listed afterward.
+
+**Points recovered: +1**
+
+---
+
+## New Issues Introduced by Fixes
+
+### New Issue A (Minor, -0.5): Time FE notation inconsistency
+
+As noted under Issue #6, fixing the Rogowski equation to use `\mu_t` has created a minor inconsistency with the Leipziger equation on line 713, which still uses `\gamma_t` for time fixed effects. While not ambiguous in context (no `\gamma` clash in the Leipziger equation), it is a stylistic inconsistency across application subsections.
 
 ---
 
 ## Score Calculation
 
-**Starting score: 100**
+**Starting score:** 83 (Round 1)
 
-### Deductions for FIXED issues: 0
+| Issue | Severity | Fix status | Points recovered |
+|-------|----------|------------|-----------------|
+| #1 (Abstract "0.15") | Minor | FIXED | +1 |
+| #2 (Notation line 621) | Major | FIXED | +3 |
+| #3 (Notation line 604) | Major | FIXED | +3 |
+| #4 (Rogowski table header) | Major | FIXED | +3 |
+| #5 (Table headers standardized) | Minor | FIXED | +1 |
+| #6 (Rogowski `\gamma_t` clash) | Major | FIXED | +3 |
+| #7 ("Confdr." abbreviation) | Minor | FIXED | +1 |
+| #8 (Uncited Alesina/Omoeva) | Minor | NOT FIXED | 0 |
+| #9 ("four" domains) | Minor | FIXED | +1 |
+| **Subtotal recovered** | | | **+16** |
+| New Issue A (time FE notation) | Minor | NEW | -0.5 |
+| **Net adjustment** | | | **+15.5** |
 
-All corrections from Round 1 were properly applied. The following issues are fully resolved and no longer deducted:
-
-- ~~#42 (CRITICAL): -10~~ -> 0
-- ~~#5, #6 (Formatting): -2~~ -> 0
-- ~~#7, #8 (Formatting): -2~~ -> 0
-- ~~#1, #2 (Consistency): -1~~ -> 0
-- ~~#19, #34, #45 (Consistency): -1~~ -> 0
-- ~~#39 (Consistency): -1~~ -> 0
-- ~~#4 (Grammar): -2~~ -> 0
-- ~~#10, #11, #20, #28, #46 (Style): -2.5~~ -> 0
-- ~~#38 (Consistency): -1~~ -> 0
-
-### Deductions for REMAINING issues
-
-| Category | Issues | Count | Points Each | Total |
-|----------|--------|-------|-------------|-------|
-| Grammar | #17 (conditioning set) | 1 | -2 | -2 |
-| Consistency | #22 (non-zero hyphenation) | 1 | -1 | -1 |
-| Formatting | #33 (appendix section levels) | 1 | -1 | -1 |
-| Style | #36 (bib key mismatch, cosmetic) | 1 | -0.5 | -0.5 |
-| Style | #3, #9, #13, #14, #18, #21, #29, #35, #43 | 9 | -0.5 | -4.5 |
-
-**Total deductions: -2 - 1 - 1 - 0.5 - 4.5 = -9**
-
-### New issues introduced by corrections: 0
+**Final Score: 83 + 15.5 = 98.5 -> 98 (rounded down)**
 
 ---
 
-## Final Score: 100 - 9 = **91**
+## Summary
+
+Eight of nine issues from Round 1 have been correctly fixed. The fixes are clean and do not introduce any major new problems. The only unfixed item is Issue #8 (uncited "Alesina et al." and "Omoeva et al." on line 715), which remains a minor issue. One new minor inconsistency was introduced by the fix to Issue #6 (time FE notation differs between the Leipziger and Rogowski equations), but it is cosmetic rather than substantive.
+
+### Remaining Items (Low Priority)
+
+1. **Line 715**: Add formal citations for "Alesina et al." and "Omoeva et al." with `\citet{}` or at minimum add publication years.
+2. **Line 713**: Consider changing `\gamma_t` to `\mu_t` in the Leipziger equation for consistency with the Rogowski equation (line 806) and the simulation equations (lines 574, 584).
 
 ---
 
-## Verdict: APROVADO (91 / 100)
+## Verdict: APROVADO [98]
 
-The manuscript has significantly improved from Round 1 (64) to Round 2 (91), clearing the 90-point threshold for Stage 3 approval.
-
-### Summary of Improvement
-
-| Category | Round 1 Deductions | Round 2 Deductions | Improvement |
-|----------|-------------------|-------------------|-------------|
-| Critical errors | -10 | 0 | +10 |
-| Formatting | -6 | -1 | +5 |
-| Grammar | -6 | -2 | +4 |
-| Consistency | -7 | -1 | +6 |
-| Style | -7 | -5 | +2 |
-| **Total** | **-36** | **-9** | **+27** |
-
-### Remaining Items (Low Priority, Optional)
-
-These items do not block approval but could be addressed in a final polish:
-
-1. **Line 268**: Consider changing `$\mathbb{E}[e^{\star} \mid D] \neq 0$` to `$\mathbb{E}[e^{\star} \mid D, Z] \neq 0$` for precision.
-2. **Line 457**: Consider "nonzero" (one word) per American style conventions.
-3. **Line 818+**: Verify appendix section numbering renders as intended in the PDF.
-4. **Lines 55, 428, 796**: Consider splitting the three longest sentences for readability.
-5. **Line 107**: "pedagogical device" and "lowering the barrier" could use slightly more formal register.
+The manuscript clears the 90-point threshold comfortably. All four major issues from Round 1 have been resolved, and the remaining minor items do not affect the quality or clarity of the paper.
 
 ---
 
-*Report generated by Proofread Reviewer Agent (Round 2), 2026-02-10*
+*Report generated by Proofread Re-Reviewer Agent (Round 2), 2026-03-01*

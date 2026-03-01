@@ -1,138 +1,169 @@
 # Stage 3: Proofread Review -- Round 1
 
-**Reviewer:** Proofread Reviewer Agent
-**Date:** 2026-02-10
-**File reviewed:** `ivb_paper_psrm.Rmd` and `references.bib`
+**Reviewer:** Proofread Reviewer Agent (Claude Opus 4.6)
+**Date:** 2026-03-01
+**Files reviewed:** `ivb_paper_psrm.Rmd` (1389 lines) and `references.bib` (572 lines)
+
+---
+
+## Summary
+
+The manuscript is well written, with clear prose and rigorous mathematical exposition. The main issues are: (a) minor notation inconsistencies in how IVB/SE is typeset across sections, (b) a variable-name collision in the Rogowski equation, (c) four unused bibliography entries, and (d) a few minor grammar/style points. No critical broken references or wrong numbers were found. The "14 collider candidates" count, "57 study-control combinations" count, "0.13" median, and "2.11 / 58%" Rogowski outlier are all internally consistent across abstract, introduction, body, and conclusion.
 
 ---
 
 ## Issue Table
 
-| # | Line(s) | Current Text | Proposed Correction | Category |
-|---|---------|-------------|-------------------|----------|
-| 1 | 31 (abstract) | `$\text{IVB} = -\theta^{\star} \times \pi$` | Consider using the cross-section notation `$-\beta_2^{\star} \times \phi_1$` or explicitly stating this is the ADL notation. The abstract uses the ADL notation ($\theta^{\star}$, $\pi$) while the first derivation (Proposition 1, line 306) uses the cross-section notation ($\beta_2^{\star}$, $\phi_1$). A reader encountering the abstract formula first may be confused when the cross-section result uses different symbols. | Consistency (notation) |
-| 2 | 61 (Intro) | `$\text{IVB} = -\theta^{\star} \times \pi$` (eq:ivb_main) | Same as #1. The "main" equation label uses ADL notation but the first formal derivation uses different symbols. Either harmonize notation or add a brief note. | Consistency (notation) |
-| 3 | 55 | `...they do not assess whether a candidate control variable is a collider, a variable that is caused by both the treatment and the outcome (or by the treatment and an unobserved common cause of the outcome).` | The parenthetical "(or by the treatment and an unobserved common cause of the outcome)" is a good clarification but creates a very long sentence (6 lines). Consider splitting into two sentences for readability. | Style (sentence length) |
-| 4 | 83 | `I include them as control to provide` | This is a direct quote from Dietrich (2016), so it cannot be changed. However, the original text has a grammatical issue: "as control" should be "as controls" (plural). Consider adding `[sic]` after "control" to signal this is faithful to the original. | Grammar (in quotation) |
-| 5 | 72 | `Section 2 reviews...Section 3 introduces...Section 4 presents...Section 5 validates...Section 6 provides...Section 7 concludes` | Hard-coded section numbers. If sections are reordered or a section is added/removed, these will be wrong. Consider using `Section~\ref{sec:control}` etc. instead. | Formatting (cross-references) |
-| 6 | 745 | `Following the three-step recipe from Section 4.5:` | Hard-coded section number. Should be `Section~\ref{sec:recipe}` for robustness. | Formatting (cross-references) |
-| 7 | 152 | `\label{fig:three_structures}` | This figure label is defined but never referenced via `\ref{}` in the text body. The figure is introduced only by proximity, not by explicit cross-reference. Add something like "Figure~\ref{fig:three_structures} displays..." in the text before or after the figure. | Formatting (unused label) |
-| 8 | 242 | `\label{fig:dag_collider}` | Same issue: `fig:dag_collider` is defined but never referenced via `\ref{}` in the text. | Formatting (unused label) |
-| 9 | 57 | `...which are ubiquitous in comparative politics and international relations \citep{beck1995what, franzese2007spatial}` | The word "ubiquitous" is strong. Consider "common" or "widespread" unless you intend to assert near-universal use. | Style (word choice) |
-| 10 | 89 | `A slightly better heuristic is to survey the literature...` | "Slightly better" is informal and somewhat vague for academic writing. Consider "A more targeted heuristic" or "An improved heuristic." | Style (precision) |
-| 11 | 93 | `...this heuristic does not assess whether the researcher is inadvertently conditioning on a collider rather than a confounder. In the TSCS context, this omission is particularly dangerous because...` | "This omission" is ambiguous -- it could refer to the heuristic's failure to assess, or to the act of omitting a variable. Consider "This shortcoming" or "This gap in the heuristic" for clarity. | Style (ambiguity) |
-| 12 | 105 | `\citet{greenland2003quantifying} quantified collider-stratification bias in linear structural equation models, showing that conditioning on a common effect can induce associations between otherwise independent causes.` | Correct and clear. No change needed. | -- |
-| 13 | 105 | `\citet{gaebler2024mitigating} used the exact term ``included variable bias'' in the context of disparate impact estimation, focusing on the legal and fairness implications of conditioning on post-treatment variables.` | "used the exact term" -- consider "coined the term" or "employed the exact term" depending on whether they were the first to use it. If the authors of this paper introduced the term independently, this phrasing is fine. | Style (precision) |
-| 14 | 107 | `First, we package the collider bias formula explicitly as an OVB/IVB parallel---a pedagogical device that makes the result immediately accessible...` | "pedagogical device" could be perceived as dismissive of the contribution's substance. Consider "an analytical framework" or "a parallel framing." | Style (word choice) |
-| 15 | 203 | `If, in addition, there exist unobserved factors $U$ that affect both democracy levels and civil war---such as institutional quality, state capacity, or regional instability---then democracy level becomes a **collider**` | "there exist" should be "there exists" (subject-verb agreement: "there exists [a set of] unobserved factors $U$"). However, "there exist" is also acceptable if "factors" is treated as the subject. This is borderline; either form is defensible. | Grammar (borderline) |
-| 16 | 241 | `Conditioning on $Dem_{t+1}$ opens a spurious backdoor path $PC_t \to CW_{t+1} \leftarrow U \to Dem_{t+1}$` | The path notation mixes $\to$ and $\leftarrow$. Consider writing this as: `$PC_t \to CW_{t+1} \leftarrow U \to Dem_{t+1}$`. Actually, the path is: $PC_t$ causes $CW_{t+1}$, $U$ causes $CW_{t+1}$ (so the arrow is $U \to CW_{t+1}$, not $CW_{t+1} \leftarrow U$). The written path reads: "PC_t -> CW_{t+1} <- U -> Dem_{t+1}". This traces PC_t -> CW_{t+1}, then reverses to U (via collider at CW_{t+1}), then goes to Dem_{t+1}. But the spurious path should be through Dem_{t+1} as the collider, not CW_{t+1}. The path should arguably be: $PC_t \to CW_{t+1} \to Dem_{t+1} \leftarrow U \to CW_{t+1}$. This needs careful verification against the DAG. | Consistency (path notation) |
-| 17 | 268 | `$\mathbb{E}[e^{\star} \mid D] \neq 0$ in general` | Technically the error in the misspecified model has $\mathbb{E}[e^{\star} \mid D, Z] \neq 0$, not $\mathbb{E}[e^{\star} \mid D] \neq 0$. The conditioning set in the long regression includes both $D$ and $Z$. The statement that $\mathbb{E}[e^{\star} \mid D] \neq 0$ may or may not hold depending on the DGP. What matters is that conditioning on $Z$ (through inclusion in the regression) induces bias. | Consistency (conditioning set) |
-| 18 | 340 | `OVB captures the effect of an omitted common cause channeled through the treatment-outcome relationship, while IVB captures the spurious association created by conditioning on a common effect.` | "channeled through the treatment-outcome relationship" is slightly imprecise. OVB captures the bias from an omitted common cause channeled through the *association between the omitted variable and the treatment*. Consider revising for precision. | Style (precision) |
-| 19 | 421 | `$Z_t \sim D_{t-j} + W_t$` | The tilde `~` notation (as a formula operator from R's `lm()`) is used here. In the rest of the paper, regression equations use `=` signs. This is a minor inconsistency -- the `~` notation appears twice (here and line 898). | Consistency (notation) |
-| 20 | 428 | `\citet{nickell1981biases} bias` | "Nickell bias" or "Nickell (1981) bias" -- the current phrasing `\citet{nickell1981biases} bias` will render as "Nickell (1981) bias". This is grammatically acceptable but slightly awkward. Consider "Nickell bias \citep{nickell1981biases}" or "the bias identified by \citet{nickell1981biases}". | Style (citation flow) |
-| 21 | 428 | `...the IVB formula remains an algebraic identity even in this setting---it correctly decomposes the difference between the short and long regression coefficients---but the components $\theta^{\star}$ and $\pi$ will themselves reflect both collider bias and Nickell bias.` | This sentence is 42 words with two em-dash parentheticals. It is grammatically correct but very dense. Consider splitting. | Style (sentence length) |
-| 22 | 457 | `The product $\beta_2^{\star} \times \phi_1$ will be non-zero whenever $Z$ is correlated with both $D$ and $y$ conditional on other controls` | "non-zero" vs "nonzero" -- American academic style typically uses "nonzero" (one word, no hyphen). The paper uses "non-zero" on this line. Check journal style. | Consistency (hyphenation) |
-| 23 | 459 | `If $Z$ is actually a confounder, the same algebraic decomposition gives the omitted variable bias in the short regression, and it is the *long* regression that is correctly specified.` | Clear and correct. No change. | -- |
-| 24 | 470 | `The first DGP is a simple cross-sectional model with $n = 10{,}000$ observations.` | Good use of `{,}` for thousands separator. Consistent throughout. | -- |
-| 25 | 580 | `The true effect of Political Change on Civil War is $\beta_{PC} = 5$.` | The number "5" appears as a digit. This is fine in the mathematical/simulation context. Consistent with other instances. | -- |
-| 26 | 663 | `Figure~\ref{fig:scatter_cs} displays the cross-sectional results.` | Good use of `~\ref{}`. Consistent. | -- |
-| 27 | 738 | `This is not an approximation; it is an algebraic identity that holds in finite samples whenever the OLS estimates are computed on the same data.` | Excellent sentence. No change. | -- |
-| 28 | 783 | `A researcher who naively includes Democracy Level would underestimate the true effect.` | "naively" could be perceived as pejorative toward applied researchers. Consider "inadvertently" or "unknowingly." | Style (tone) |
-| 29 | 796 | `It complements \citet{blackwell2018make}, who propose sequential g-estimation and marginal structural models as solutions to post-treatment bias in TSCS, by providing a diagnostic formula that does not require the researcher to adopt a different estimation framework.` | Long sentence (40 words). Grammatically correct but dense. Consider splitting after "TSCS" with a new sentence starting "Our formula provides a diagnostic..." | Style (sentence length) |
-| 30 | 798 | `...much of the substantive literature on civil war onset employs logit or probit specifications.` | Good and precise. No change. | -- |
-| 31 | 798 | `The Frisch--Waugh--Lovell theorem, on which the IVB derivation relies, does not hold for nonlinear link functions, so the IVB formula as stated does not apply to logistic or probit regression.` | "nonlinear link functions" -- consider "nonlinear models" since the FWL issue is not solely about link functions but about the linearity of the projection. However, "link functions" is common in GLM parlance and is acceptable. | Style (precision, borderline) |
-| 32 | 806 | `\bibliography{references}` | The file is `references.bib`, so `\bibliography{references}` is correct (no `.bib` extension needed). Good. | -- |
-| 33 | 818 | `## Appendix A: Full Cross-Section Derivation` | The Appendix sections use "##" (subsection level) under "# Online Appendix". This means they will be numbered as subsections (A.1, A.2, etc.) rather than separate appendix sections (A, B, C). This may or may not match the intended formatting given `\appendix` resets counters. Verify rendered output. | Formatting (section levels) |
-| 34 | 871 | `$\tilde{y}_t \sim \tilde{D}_t + \tilde{Z}_t$` | Same `~` formula notation inconsistency as issue #19. | Consistency (notation) |
-| 35 | 1033 | `...both are causes (or functions of causes) of $Z$.` | "both are causes (or functions of causes) of $Z$" -- this says $D$ and $Y$ are causes of $Z$, but the parenthetical "functions of causes" is vague. Consider "both are causes of $Z$ (or correlated with its causes)" for clarity. | Style (precision) |
-| 36 | bib:64-73 | `cinelli2021crash` key with `year={2022}` | The citation key suggests 2021 but the actual publication year is 2022. This is a cosmetic bib inconsistency; the rendered output will show "2022" correctly. Consider renaming key to `cinelli2022crash` for tidiness, or leave as is. | Consistency (bib key) |
-| 37 | bib:202-210 | `imai2021matching` key with `year={2023}` | Same issue: key says 2021, year is 2023. Not cited in manuscript, so no impact on paper. | Consistency (bib key) |
-| 38 | bib (multiple) | 12 entries in `references.bib` are never cited in the manuscript: `angrist2009mostly`, `bell2015explaining`, `callaway2021difference`, `clark2015should`, `dechaisemartin2020two`, `goldberger1991course`, `imbens2004nonparametric`, `imai2019should`, `imai2021matching`, `newman2019mass`, `white2011causal`, `wooldridge2010econometric` | Remove unused entries from `references.bib` or cite them in the manuscript. Unused bib entries will not appear in the rendered bibliography (BibTeX only includes cited entries), but they add clutter to the source file. | Consistency (bibliography) |
-| 39 | 155 | `\citep{pearl2018book, elwert2014endogenous}` | The citation order within `\citep{}` is not chronological (Pearl 2018 before Elwert 2014). Standard practice is chronological order within a single `\citep{}` call. Should be `\citep{elwert2014endogenous, pearl2018book}`. | Consistency (citation order) |
-| 40 | 85 | `\citep{hahn2004functional, pearl2013linear, cinelli2021crash}` | Citation order is chronological (2004, 2013, 2022). Good. | -- |
-| 41 | 55 | `\citep{pearl2009causality, elwert2014endogenous}` | Citation order is chronological (2009, 2014). Good. | -- |
-| 42 | 241-242 | `Conditioning on $Dem_{t+1}$ opens a spurious backdoor path $PC_t \to CW_{t+1} \leftarrow U \to Dem_{t+1}$` | Revisiting issue #16 more carefully: The spurious path from conditioning on the collider $Dem_{t+1}$ should be: the backdoor path from $PC_t$ to $CW_{t+1}$ via $U$ and $Dem_{t+1}$. With $Dem_{t+1}$ as the collider (caused by $CW_{t+1}$ and $U$), conditioning on it opens: $PC_t \to CW_{t+1} \to Dem_{t+1} \leftarrow U \dashrightarrow CW_{t+1}$. The path as written ($PC_t \to CW_{t+1} \leftarrow U \to Dem_{t+1}$) actually describes a collider at $CW_{t+1}$, not at $Dem_{t+1}$. This appears to be a **substantive error** in the path description. The collider in the DAG is $Dem_{t+1}$, not $CW_{t+1}$. The spurious path from conditioning on $Dem_{t+1}$ should be: $U \to Dem_{t+1} \leftarrow CW_{t+1}$, which when conditioned on $Dem_{t+1}$ creates an association $U - CW_{t+1}$, biasing the estimate of $PC_t \to CW_{t+1}$ because $U$ also affects $CW_{t+1}$ directly. | Critical (path description) |
-| 43 | 107 | `...we distill the formula into a practical three-step diagnostic recipe that requires only standard regression output, lowering the barrier to routine use by applied political scientists.` | The phrase "lowering the barrier" is slightly informal. Consider "making it accessible for routine use by." | Style (register) |
-| 44 | 360 | `Define the set of ``legitimate'' controls $W_t = (1, y_{t-1})$` | Using backtick-style LaTeX quotes is correct. Consistent with other uses. | -- |
-| 45 | 898 | `$Z_t \sim D_{t-j} + W_t$` | Same `~` formula notation as #19 and #34. Three occurrences total. | Consistency (notation) |
-| 46 | 1016 | `...embedded in the R~Markdown source file.` | `R~Markdown` uses a non-breaking space tilde between R and Markdown. This should be either "R Markdown" (two words, regular space) or "RMarkdown" (one word). The tilde here would render as a non-breaking space, which is unusual for a product name. | Formatting (product name) |
+| # | Line(s) | Current Text | Proposed Correction | Category | Severity |
+|---|---------|-------------|---------------------|----------|----------|
+| 1 | 621 | Two different notations in one sentence: first `$\|\text{IVB}\|/\text{SE}(\hat\beta)$` (abs value on IVB only, SE with argument), then `$\|\text{IVB}/\text{SE}\| > 1$` (abs value around entire ratio, SE without argument) | Pick one notation and use it consistently. Recommended: `$\|\text{IVB}/\text{SE}\|$` throughout, since SE is always positive and the shorter form is used more frequently (lines 32, 77, 701, 705, 797, 906). | Notation | Major (-3) |
+| 2 | 883 | `$\|\text{IVB}\|/\text{SE} = ...`$ (abs value on IVB only, SE without argument, no hat-beta) | Should match the chosen convention from issue #1. Currently a third variant. | Notation | Major (-3) |
+| 3 | 878 | Column header `"$\|\\text{IVB}\|$/SE"` -- SE is outside math mode | Should be fully in math mode, e.g., `"$\|\\text{IVB}\|/\\text{SE}$"` to match other table headers. | Formatting | Minor (-1) |
+| 4 | 779 | `$\\lvert\\text{IVB}\\rvert / \\text{SE}(\\hat\\beta)$` uses `\lvert`/`\rvert` | The rest of the paper uses `\|` for absolute value. Should be consistent: either always `\lvert`/`\rvert` or always `\|`. | Notation | Minor (-1) |
+| 5 | 806 | `\mathbf{Z}'_{it}\gamma + \delta_i + \gamma_t` -- `\gamma` is used both as the coefficient vector on controls and as the time fixed effect subscript | Rename one: e.g., use `\boldsymbol{\psi}` or `\boldsymbol{\lambda}` for the control coefficient vector, or use `\mu_t` for time FE (as in other equations in the paper, e.g., line 574 uses `\mu_t`). | Notation | Major (-3) |
+| 6 | 32 (abstract) | "median IVBs are below 0.15 standard errors" | Body (line 701) and conclusion (line 906) say "approximately 0.13". The abstract's "below 0.15" is not wrong but is imprecise. For consistency, consider "approximately 0.13 standard errors" or "below 0.15 standard errors (median approximately 0.13)" in the abstract. | Consistency | Minor (-1) |
+| 7 | 604 | `$\|\text{IVB}\|/\text{SE}$` (abs value on IVB only) | This is the "Mechanism C" discussion. Should match the chosen convention from issue #1. | Notation | (counted in #1) |
+| 8 | 703 | "The IVB/SE metric avoids the pitfalls..." and "The IVB/SE metric reveals..." -- plain text "IVB/SE" not in math mode | These informal references to the metric are acceptable in running prose but could be formatted as `$\text{IVB}/\text{SE}$` for consistency with the rest of the paper. | Formatting | Minor (-1) |
+| 9 | references.bib | `franzese2007spatial` -- defined in .bib but never cited in the manuscript | Remove from .bib or add a citation. Unused entries generate no LaTeX error with natbib but clutter the bibliography source. | Reference | Minor (-1) |
+| 10 | references.bib | `yao2021survey` -- defined in .bib but never cited in the manuscript | Same as #9. | Reference | Minor (-1) |
+| 11 | references.bib | `angrist_pischke2009` -- defined in .bib but never cited in the manuscript | Same as #9. | Reference | Minor (-1) |
+| 12 | references.bib | `stasavage2005` -- defined in .bib but never cited in the manuscript | Same as #9. | Reference | Minor (-1) |
+| 13 | 90 | `I include them as control [sic] to provide a fully specified model` | The `[sic]` is correctly present -- good. No change needed. | -- | -- |
+| 14 | 125 | "All DAGs comprise three primary structures: chains, forks, and colliders (or inverted forks), shown in Figure~\ref{fig:three_structures}." | Good -- this correctly references the figure label. No issue. | -- | -- |
+| 15 | 596 | `Figures~\ref{fig:fig-heatmap-A} and \ref{fig:fig-heatmap-B}` | These reference R chunk-generated figures from chunks named `fig-heatmap-A` and `fig-heatmap-B`. In RMarkdown with bookdown-style cross-referencing, chunk-based figure labels take the form `fig:chunk-name`. However, with standard `pdf_document` output (not `bookdown::pdf_document2`), `\ref{fig:fig-heatmap-A}` will NOT resolve because `knitr::include_graphics` with `fig.cap` does not automatically generate `\label{}` tags in standard `pdf_document`. The figure captions at lines 588 and 592 do not contain explicit `\label{}` commands. These cross-references will produce "??" in the compiled PDF. | Critical (-5) |
+| 16 | 596 | Same line: references to `fig:fig-heatmap-B` | Same issue as #15. Both heatmap figure cross-references will be broken. | (counted in #15) |
+| 17 | 77 | "Among the 14 theoretically motivated collider candidates across six studies" | Verified: counting from the `collider_candidates` list (lines 630-640): Claassen(1) + Leipziger SEI(1) + Leipziger ext.(2) + Blair(3) + Albers(3) + Rogowski(1) + Ballard-Rosa(3) = 14. Correct. | -- | -- |
+| 18 | 694 | "all 57 study-control combinations" | This claim depends on `standardized_ivb_metrics.csv` containing exactly 57 rows. Cannot verify the CSV count from the manuscript alone, but the claim is used consistently at lines 619, 694, and 1352. | -- | -- |
+| 19 | 279 | `$\mathbb{E}[e^{\star} \mid D] \neq 0$` | Strictly, the relevant statement is `$\mathbb{E}[e^{\star} \mid D, Z] \neq 0$` since the long regression conditions on both D and Z. The text says "conditioning on the collider Z opens a spurious path" which implies the issue arises when Z is included. The conditioning set in the statement is incomplete. However, one could argue the statement is about the marginal (unconditional on Z) error, which would be non-zero due to the collider path. This is a subtle point; the current wording is defensible but imprecise. | Consistency | Minor (-1) |
+| 20 | 714 | Leipziger equation uses `\delta_i` for unit FE and `\gamma_t` for time FE | Consistent within this equation (no collision), but at line 806 `\gamma` and `\gamma_t` clash. This equation is fine on its own. | -- | -- |
+| 21 | 1057-1058 | Comment says "delta_d/delta_y correspond to gamma_D/gamma_Y in Section 5 notation" | Good documentation. The naming difference between Appendix C/D code and Section 5 text is acknowledged in the comment. | -- | -- |
+| 22 | 32 (abstract) | "We characterize structural conditions---fixed effects absorbing between-unit variation, few treatment switchers, measurement error in controls---" | The conclusion (line 906) lists four mechanisms: "fixed effects absorbing between-unit variation in the collider channels, binary treatments with few switchers, measurement error in the collider, and cross-sectional dominance in the D->Z or Y->Z pathways". The abstract lists only three, omitting "cross-sectional dominance." | Consistency | Minor (-1) |
+| 23 | 906 (conclusion) | "four mechanisms---fixed effects absorbing between-unit variation in the collider channels, binary treatments with few switchers, measurement error in the collider, and cross-sectional dominance in the $D \to Z$ or $Y \to Z$ pathways" | The fourth mechanism ("cross-sectional dominance") is arguably the same as "fixed effects absorbing between-unit variation" stated differently. The abstract's three-item list and the conclusion's four-item list describe the same content with different granularity. This is minor but could confuse a careful reader. | Consistency | Minor (-1) |
+| 24 | 71 | Footnote: "In the cross-sectional derivation, $\theta^{\star}$ corresponds to $\beta_2^{\star}$ and $\pi$ corresponds to $\phi_1$; we use the ADL notation throughout the paper as it is the more general form." | Good -- this footnote addresses the notation discrepancy between the abstract/intro (ADL notation) and Section 4.1 (cross-section notation). However, "we use the ADL notation throughout the paper" is slightly inaccurate since Section 4.1 uses cross-section notation ($\beta_2^{\star}$, $\phi_1$). More precise: "we use the ADL notation in all subsequent sections." | Consistency | Minor (-1) |
+| 25 | 1261 | "Collider + Confdr." -- abbreviation "Confdr." | Should be "Confounder" (spelled out) for consistency with other table entries, or at minimum "Confndr." The abbreviation "Confdr." is unusual and could be misread. | Formatting | Minor (-1) |
+| 26 | 919-920 | `\bibliographystyle{apsr}` and `\bibliography{references}` | Uses natbib with APSR style. This is standard. The .bib file is named `references.bib`, matching the `\bibliography{references}` call. No issue. | -- | -- |
+| 27 | 164 | `\citep{elwert2014endogenous, pearl2018book}` | Verified: both keys exist in .bib. No issue. | -- | -- |
+| 28 | All | All `\citep{}`, `\citet{}`, and `\citealt{}` keys | Verified against references.bib. All citation keys used in the manuscript resolve to entries in the .bib file. No dangling references found. | -- | -- |
+| 29 | All | Section cross-references (`\ref{sec:...}`, `\ref{eq:...}`, `\ref{prop:...}`, `\ref{tab:...}`, `\ref{fig:...}`, `\ref{app:...}`) | All `\label{}` targets used in `\ref{}` commands have corresponding definitions, with the exception of issue #15 (fig:fig-heatmap-A and fig:fig-heatmap-B, which depend on R chunk label generation that may not work with standard pdf_document). All other cross-references are sound. | -- | -- |
+| 30 | 77 | "We examine two cases in detail: \citet{leipziger2024}, where GDP per capita as a collider attenuates the democratization effect by approximately 16\% of $\hat\beta$ but only half a standard error" | The inline R code at line 795 computes `round(abs(r_lp$ivb_formula / r_lp$beta_long) * 100, 0)` and the table at line 787 computes the same ratio. The hardcoded "16%" and "half a standard error" in the introduction must match the computed values. If the data or replication code changes, these hardcoded numbers could become stale. Consider using inline R for these intro claims, or add a comment flagging them as hardcoded. | Consistency | Minor (-1) |
+| 31 | 32 (abstract), 77 (intro), 906 (concl.) | "six published studies" | Verified: Claassen 2020, Leipziger 2024, Blair et al. 2022, Albers et al. 2023, Rogowski et al. 2022, Ballard-Rosa et al. 2021 = 6 studies. The `collider_candidates` list has 7 entries, but "Leipziger (SEI)" and "Leipziger (SEI ext.)" are two specifications from the same study. Correct. | -- | -- |
+| 32 | 617 | "spanning four substantive domains: democratization and public opinion, democracy and ethnic inequality, UN peacekeeping and democratization, fiscal capacity in Africa, postal infrastructure and growth, and sovereign bond denomination" | The text says "four substantive domains" but lists six study topics. These six topics could be grouped into four domains, but the grouping is not made explicit. Consider either saying "six substantive areas" or explicitly naming the four domains. | Consistency | Minor (-1) |
+| 33 | 1225 | "Collider candidate for Table~\ref{tab:ivb_summary}: Log GDP p.c." -- sentence continues: "GDP growth shares the same mechanism but is excluded from the main table to avoid double-counting the same causal channel." | But in the `collider_candidates` R code (line 631), only "Log GDP p.c." is listed for "Claassen (FE)", which matches this explanation. However, the Claassen classification table (line 1217) also classifies GDP growth as "Collider (weak)". The text explains the exclusion, so this is fine. No issue. | -- | -- |
+| 34 | 574 | `Z_{it} = \gamma_D^{\text{btw}} \mu_i^D + \gamma_D^{\text{wth}} (D_{it} - \mu_i^D) + \gamma_Y Y_{it} + \eta_i + \mu_t + \nu_{it}` | Here `\mu_i^D` is the unit mean of D and `\mu_t` is the time fixed effect, while `\eta_i` is the unit fixed effect. This notation is internally consistent within Section 5. No collision. | -- | -- |
+| 35 | 443 | "The identity $\hat{\beta}^{\star} - \hat{\beta} = -\hat{\theta}^{\star} \times \hat{\pi}$ holds by construction" | Uses hat notation for sample quantities, consistent with the discussion being about finite-sample OLS. Good. | -- | -- |
 
 ---
 
-## Summary of Issues by Category
+## Detailed Notes on Specific Categories
 
-### Critical Formatting / Substantive Issues
-- **#42**: The backdoor path description in Figure 3's caption appears to trace a collider at $CW_{t+1}$ rather than at $Dem_{t+1}$, which contradicts the DAG structure being described. This needs careful verification.
+### A. Grammar and Typos
 
-### Formatting Issues (cross-references, LaTeX)
-- **#5, #6**: Hard-coded section numbers instead of `\ref{}` cross-references (2 instances)
-- **#7, #8**: Figures with `\label{}` defined but never cross-referenced via `\ref{}` (2 instances)
-- **#33**: Appendix subsection levels may not render as intended
-- **#46**: `R~Markdown` non-breaking space in product name
+No significant grammatical errors or typos were found in the prose. The writing is polished and precise. The `[sic]` at line 90 is correctly placed. Punctuation around em-dashes, en-dashes, and LaTeX formatting is consistent.
 
-### Consistency Issues
-- **#1, #2**: Notation mismatch between abstract/intro formula and first derivation ($\theta^{\star}/\pi$ vs $\beta_2^{\star}/\phi_1$)
-- **#19, #34, #45**: `~` (tilde) formula notation vs `=` sign notation (3 occurrences)
-- **#22**: "non-zero" vs "nonzero" hyphenation
-- **#36, #37**: Bib key-year mismatches (2 entries)
-- **#38**: 12 unused bib entries
-- **#39**: Non-chronological citation order within `\citep{}`
+### B. LaTeX/RMarkdown Cross-References
 
-### Grammar Issues
-- **#4**: "as control" (should be "as controls") in direct quote -- consider `[sic]`
-- **#15**: "there exist" vs "there exists" (borderline, defensible either way)
-- **#17**: Conditioning set in error expectation statement
+**Critical issue (Issue #15):** The references `\ref{fig:fig-heatmap-A}` and `\ref{fig:fig-heatmap-B}` at line 596 rely on automatic label generation from R chunk names. With standard `pdf_document` output (as specified in the YAML header at line 9), `knitr::include_graphics()` with `fig.cap` does not generate `\label{}` tags. These cross-references will produce "??" in the compiled PDF unless:
+- The output format is switched to `bookdown::pdf_document2`, or
+- Explicit `\label{fig:fig-heatmap-A}` tags are added inside the `fig.cap` strings.
 
-### Style Issues
-- **#3, #21, #29**: Long/dense sentences (3 instances)
-- **#9**: "ubiquitous" -- strong claim
-- **#10**: "slightly better" -- informal
-- **#11**: "this omission" -- ambiguous referent
-- **#13**: "used the exact term" -- could be more precise
-- **#14**: "pedagogical device" -- potentially dismissive
-- **#18**: "channeled through the treatment-outcome relationship" -- imprecise
-- **#20**: `\citet{nickell1981biases} bias` -- awkward citation flow
-- **#28**: "naively" -- potentially pejorative
-- **#31**: "nonlinear link functions" -- borderline precision
-- **#35**: "functions of causes" -- vague
-- **#43**: "lowering the barrier" -- informal register
+All other cross-references (`\ref{sec:...}`, `\ref{eq:...}`, `\ref{prop:...}`, `\ref{tab:...}`, `\ref{app:...}`) are correctly paired with `\label{}` definitions.
 
----
+### C. Notation Consistency
 
-## Score Calculation
+The main notation issue is the IVB/SE metric, which is written in at least three different ways:
+1. `$|\text{IVB}/\text{SE}|$` -- absolute value around ratio (most common: abstract, intro, conclusion, line 701)
+2. `$|\text{IVB}|/\text{SE}(\hat\beta)$` -- absolute value on IVB only, SE with argument (line 621)
+3. `$|\text{IVB}|/\text{SE}$` -- absolute value on IVB only, SE without argument (line 883)
+4. `$\lvert\text{IVB}\rvert / \text{SE}(\hat\beta)$` -- lvert/rvert delimiters (line 779)
 
-**Starting score: 100**
+All are mathematically equivalent, but the visual inconsistency is distracting. Recommend standardizing on form #1 throughout.
 
-| Deduction | Count | Points Each | Total |
-|-----------|-------|-------------|-------|
-| Critical formatting/substantive error (#42) | 1 | -10 | -10 |
-| Formatting issues (#5, #6, #7, #8, #33, #46) | 6 | -1 | -6 |
-| Grammar issues (#4, #15, #17) | 3 | -2 | -6 |
-| Consistency issues (#1-2 as one, #19/34/45 as one, #22, #36, #37, #38, #39) | 7 | -1 | -7 |
-| Style nitpicks (#3, #9, #10, #11, #13, #14, #18, #20, #21, #28, #29, #31, #35, #43) | 14 | -0.5 | -7 |
+The $\gamma$ collision at line 806 (Rogowski equation) is a notation bug that should be fixed before submission.
 
-**Final Score: 100 - 10 - 6 - 6 - 7 - 7 = 64**
+### D. Citation Consistency
 
----
+All 50+ citation keys in the manuscript resolve to entries in `references.bib`. No dangling citations.
 
-## Verdict: REPROVADO (64 / 100)
+Four .bib entries are never cited:
+- `franzese2007spatial`
+- `yao2021survey`
+- `angrist_pischke2009`
+- `stasavage2005`
 
-### Key Actions Required
+With natbib, these unused entries will not appear in the compiled bibliography (only cited works are included), so they do not cause errors. However, they add clutter to the source file.
 
-1. **[CRITICAL] Verify and fix the backdoor path description in Figure 3's caption (line 241-242).** The path `$PC_t \to CW_{t+1} \leftarrow U \to Dem_{t+1}$` describes a collider at $CW_{t+1}$, but the text and DAG identify $Dem_{t+1}$ as the collider. This is the single most important issue.
+Two entries that are cited via `\citealt{}` (not `\citet{}` or `\citep{}`):
+- `\citealt{albers_etal2023}` at line 701
+- `\citealt{ding2015adjust}` at lines 552, 554
+- `\citealt{rogowski_etal2022}` at line 1268
+- `\citealt{alesina_tabellini1990}` at line 1348
+- `\citealt{alesina1987}` at line 1348
+- `\citealt{eichengreen2005}` at line 1348
 
-2. **[HIGH] Replace hard-coded section numbers with `\ref{}` cross-references** (lines 72, 745). This prevents broken references if sections are reordered.
+All verified present in .bib. `\citealt{}` produces author-year without parentheses, appropriate for its uses inside parenthetical contexts.
 
-3. **[HIGH] Add `\ref{}` cross-references for Figures 1 and 3** (labels `fig:three_structures` and `fig:dag_collider`), which are defined but never referenced in the text.
+### E. Number Consistency
 
-4. **[MEDIUM] Harmonize notation between the abstract/introduction formula and the cross-section derivation.** Either use the same symbols throughout or add an explicit note explaining the two notations.
+| Claim | Abstract (L32) | Intro (L77) | Body | Conclusion (L906) | Status |
+|-------|----------------|-------------|------|-------------------|--------|
+| Number of studies | 6 | 6 | 6 (L617) | 6 | OK |
+| Collider candidates | -- | 14 | 14 (L701) | 14 | OK |
+| Median IVB/SE | "below 0.15" | -- | "approx 0.13" (L701) | "approx 0.13" | Minor discrepancy in precision |
+| Rogowski IVB/SE | 2.11 | 2.11 | 2.11 (L701) | 2.11 | OK |
+| Rogowski IVB % | 58% | 58% | 58% (L701, 887) | 58% | OK |
+| Study-control combos | -- | -- | 57 (L619, 694) | -- | OK |
+| Domains | -- | -- | "four" (L617) but lists 6 topics | -- | See issue #32 |
 
-5. **[MEDIUM] Replace `~` formula notation with `=` in the three occurrences** (lines 421, 871, 898) for consistency with the rest of the paper.
+### F. New Content Quality (Appendix F, IVB/SE narrative, cross-study caveat)
 
-6. **[LOW] Clean up bib file**: remove 12 unused entries and consider fixing key-year mismatches.
+**Appendix F classification tables (lines 1202-1349):** The tables are well structured with consistent column layout (Control, D->Z, Y->Z, Classification, Key references). Each table has a LaTeX caption and uses `\toprule`/`\midrule`/`\bottomrule` formatting. The classification criteria are clearly stated at line 1204. One minor formatting issue: "Collider + Confdr." at line 1261 uses a nonstandard abbreviation.
 
-7. **[LOW] Address style issues**: long sentences, informal register in several places, and minor wording improvements as detailed in the table above.
+**IVB/SE narrative (lines 621-705):** The two-metric framework (IVB/SE as primary, IVB/beta% as secondary) is clearly motivated and well executed. The explanation of why IVB/beta is unreliable when beta is near zero (line 703, Claassen example) is a strong addition.
+
+**Cross-study caveat paragraph (line 705):** Well written and appropriately cautious. The specific numerical example (SE range from 0.005 to 0.216) grounds the caveat concretely.
 
 ---
 
-*Report generated by Proofread Reviewer Agent, 2026-02-10*
+## Scoring
+
+Starting score: **100**
+
+| Deduction | Issue | Points |
+|-----------|-------|--------|
+| Critical | #15: Broken figure cross-references (fig:fig-heatmap-A, fig:fig-heatmap-B) with standard pdf_document | -5 |
+| Major | #1: IVB/SE notation inconsistency (3+ variants) | -3 |
+| Major | #2: Additional IVB/SE variant at line 883 | -3 |
+| Major | #5: gamma collision in Rogowski equation | -3 |
+| Minor | #3: SE outside math mode in table header | -1 |
+| Minor | #4: lvert/rvert vs pipe for absolute value | -1 |
+| Minor | #6: Abstract "below 0.15" vs body "approx 0.13" | -1 |
+| Minor | #8: Plain-text "IVB/SE" in prose | -1 |
+| Minor | #9-12: Four unused .bib entries | -1 |
+| Minor | #19: Conditioning set E[e* | D] vs E[e* | D,Z] | -1 |
+| Minor | #22-23: Three vs four mechanisms (abstract vs conclusion) | -1 |
+| Minor | #24: "throughout the paper" footnote slightly inaccurate | -1 |
+| Minor | #25: "Confdr." abbreviation | -1 |
+| Minor | #30: Hardcoded "16%" in intro | -1 |
+| Minor | #32: "four domains" but six topics listed | -1 |
+
+**Total deductions: -26**
+
+**Final score: 74**
+
+---
+
+## Verdict
+
+**REPROVADO [74]**
+
+### Priority fixes (to reach 90+):
+
+1. **[Critical, +5]** Fix figure cross-references at line 596. Either switch to `bookdown::pdf_document2` output or add explicit `\label{fig:fig-heatmap-A}` and `\label{fig:fig-heatmap-B}` inside the `fig.cap` strings of the respective R chunks at lines 588 and 592.
+
+2. **[Major, +9]** Standardize IVB/SE notation throughout. Recommend `$|\text{IVB}/\text{SE}|$` as the canonical form (already the most common). Update lines 604, 621, 779, 878, and 883 to match.
+
+3. **[Major, +3]** Fix the `\gamma` collision in the Rogowski equation at line 806. Replace `\gamma` (control coefficient vector) with a different symbol (e.g., `\boldsymbol{\lambda}`) or replace `\gamma_t` (time FE) with `\mu_t` (matching the notation used at line 574).
+
+4. **[Minor, +5]** Harmonize the abstract's mechanism count (3) with the conclusion's (4), clarify "four substantive domains" at line 617, and align the abstract's "below 0.15" with the body's "approximately 0.13".
+
+Fixing items 1-3 alone would bring the score to 91, passing the threshold.

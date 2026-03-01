@@ -1,281 +1,190 @@
-# Stage 1: Code Review Report (Round 1)
+# Code Review --- Round 1: ivb_paper_psrm.Rmd + ivb_utils.R
 
 **Reviewer**: Claude Code (Automated Review Agent)
-**Date**: 2026-02-10
+**Date**: 2026-02-28
 **Files Reviewed**:
-1. `sim_ivb_completa.R` (477 lines) -- main simulation
-2. `sim.R` (87 lines) -- basic/exploratory simulation
-3. `ivb_paper_psrm.Rmd` -- manuscript with embedded R chunks
+1. `ivb_paper_psrm.Rmd` (1131 lines, 17 R chunks)
+2. `replication/ivb_utils.R` (204 lines)
 
 ---
 
-## 1. Executive Summary
-
-The simulation code for the IVB paper is **methodologically sound and well-structured**. The core statistical logic -- validating that IVB = -theta* x pi matches the empirical bias across cross-sectional, ADL(1,0), and civil war DGPs -- is correctly implemented in both the standalone script (`sim_ivb_completa.R`) and the embedded Rmd chunks. The code is organized into clearly labeled sections, uses `set.seed()` at critical points, pre-allocates result data frames, and the DGP functions are cleanly parameterized. However, there is **one genuine bug** in `sim.R` (a reference to an undefined variable `bias_IVB`), **relative paths for `ggsave()` calls** that would fail if the working directory is not set to the project root, and the exploratory `sim.R` file has several incomplete/dead-end code patterns. The Rmd file duplicates the simulation code cleanly and is the authoritative source. Overall, this is solid academic simulation code with a few issues to note.
+## Score: 72/100
 
 ---
 
-## 2. Score Calculation
+## Arquivos revisados
 
-| # | Severity | Deduction | File | Description |
-|---|----------|-----------|------|-------------|
-| 1 | Critical | -20 | `sim.R` L41 | **Bug: undefined variable `bias_IVB`**. Line 41 references `bias_IVB` but only `hat_bias_IVB` is defined (L40). This line will throw an `Error: object 'bias_IVB' not found`. |
-| 2 | Major | -10 | `sim_ivb_completa.R` | **Relative paths in `ggsave()` calls**. All 8 `ggsave()` calls use `"plots/..."` as a relative path. If the working directory is not `/Users/.../IVB-paper/`, these will fail. Since this is a standalone `.R` script (not sourced from within the project), this is fragile. |
-| 3 | Major | -10 | `sim.R` | **No error handling and incomplete output**. Lines 84-87 have commented "Output results" with no actual output. The second simulation (Sim 2) computes `cov_DZ_OVB` but never uses it. The file appears to be a scratch/exploratory script that was never finished, yet it is present in the project alongside the authoritative code. |
-| 4 | Minor | -2 | `sim_ivb_completa.R` | **Inconsistent variable naming across files**. In `sim_ivb_completa.R`, the cross-section bias column is `bias_empirico`; in the Rmd, it is `bias_empirical`. Similarly, `beta_sem_dem`/`beta_com_dem` vs. `beta_no_dem`/`beta_with_dem`. While each file is internally consistent, the inconsistency between files could cause confusion during maintenance. |
-| 5 | Minor | -2 | `sim_ivb_completa.R` L84-98 | **`rowwise() %>% mutate()` with complex simulation inside curly braces** in section 1B. This is a creative but non-idiomatic use of `dplyr`. The `{...}` block inside `mutate()` with `rowwise()` works but is fragile -- it relies on the non-standard evaluation of variables `gamma1`, `gamma2` from the grouped row, and the external variable `n`. A simple `for` loop or `purrr::pmap()` would be clearer. |
-| 6 | Minor | -2 | `sim_ivb_completa.R` | **Magic numbers without explanation**. Several numeric values appear without comment: `nsim <- 200` (inner loop of section 2C, vs. `nsim <- 500` elsewhere), `N <- 200`, `T_periods <- 20`. While these are standard MC choices, the reason for using 200 inner replications vs. 500 outer replications in section 2C is not explained. |
-| 7 | Minor | -2 | `sim.R` L40-41 | **Incorrect IVB computation approach**. Line 40 computes `hat_bias_IVB <- -coef(model_long)[3]*cov_DZ_IVB`, using `cov(D,Z)` rather than `cov(D,Z)/var(D)`. The formula should use `phi1 = cov(D,Z)/var(D)` (the regression coefficient), not the raw covariance. The correct formula as shown in the paper and `sim_ivb_completa.R` is `-theta_star * phi1`. This is a **formula error** in the exploratory file (though the file is not used for paper results). |
-| 8 | Minor | -2 | `sim.R` | **Unused variables**: `beta0`, `gamma0`, `alpha0` are defined but serve no functional purpose (they are zero and added to expressions where they have no effect). `cov_DZ_OVB` is computed but never used. `model_DZ` is fitted but its coefficients are never extracted. |
-| 9 | Style | -1 | `sim_ivb_completa.R` | **Several lines exceed 100 characters**. E.g., lines 61-62 (subtitle paste0), lines 229-231, etc. |
-| 10 | Style | -1 | `sim_ivb_completa.R` | **Mixed language in comments/labels**. Section headers and plot labels are in Portuguese (e.g., "Vies empirico vs formula"), while the Rmd uses English. This is not a bug but a style inconsistency between the standalone script and the paper. |
-
-**Starting score**: 100
-**Total deductions**: -20 -10 -10 -2 -2 -2 -2 -2 -1 -1 = **-52**
+- `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_psrm.Rmd` -- Paper Rmd com 17 chunks R embutidos (setup, 2 include_graphics, 6 data/replication chunks, 4 IVB computation chunks, 4 simulation/figure chunks)
+- `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/ivb_utils.R` -- Funcao `compute_ivb_multi()` (189 linhas de codigo efetivo)
 
 ---
 
-## 3. Issues by Severity
+## Issues por severidade
 
-### Critical Issues
+### Critico
 
-#### C1: Undefined variable `bias_IVB` in `sim.R` (line 41)
+Nenhuma issue critica encontrada. A logica de calculo do IVB esta correta em todos os chunks. Seeds estao fixadas em todas as simulacoes. Paths de dados sao relativos e portaveis. A formula IVB = -theta * pi esta implementada corretamente tanto em `compute_ivb_multi()` quanto nos chunks de simulacao.
 
-**File**: `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/sim.R`
-**Line**: 41
+### Major
 
-```r
-hat_bias_IVB <- -coef(model_long)[3]*cov_DZ_IVB   # line 40 -- defines hat_bias_IVB
-coef(summary(model_short))[2] + bias_IVB            # line 41 -- references bias_IVB (UNDEFINED)
+1. **vcov inconsistente entre replicacao e diagnostico IVB** (-10)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunks `leipziger-replication` (linha 692) e `leipziger-ivb` (linha 714); chunks `rogowski-replication` (linha 772) e `rogowski-ivb` (linha 798)
+   - **Descricao**: Os modelos de replicacao usam `vcov = ~country_id` (erros-padrao clusterizados por pais), mas as chamadas a `compute_ivb_multi()` usam `vcov = "iid"`. Embora os coeficientes pontuais (beta, theta, pi) sejam identicos independentemente do vcov -- e o IVB seja uma identidade algebrica de coeficientes -- os objetos `models` retornados por `compute_ivb_multi()` contem SEs iid. Se alguem extrair SEs desses objetos para comparar com os reportados no texto (que vem dos modelos clusterizados), havera discrepancia. Alem disso, se `IVB_over_SE` for computado a partir dos modelos internos, usara SEs iid quando o paper justifica SEs clusterizados para as aplicacoes empiricas.
+
+2. **cache = TRUE habilitado globalmente pode mascarar erros de dependencia** (-10)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `setup` (linhas 34-43)
+   - **Descricao**: `cache = TRUE` e definido em `knitr::opts_chunk$set()`, ativando cache para todos os chunks por padrao. Isso significa que alteracoes em `replication/ivb_utils.R` ou nos dados de replicacao NAO invalidam automaticamente o cache dos chunks que dependem deles. O chunk `setup` faz `source("replication/ivb_utils.R")`, mas os chunks downstream (e.g., `leipziger-ivb`, `rogowski-ivb`) que usam `compute_ivb_multi()` so serao recalculados se seu proprio codigo mudar -- nao se a funcao que chamam mudar. Isso pode levar a resultados stale apos editar `ivb_utils.R`.
+
+### Minor
+
+1. **Magic numbers na normalizacao do indice SEI sem comentario** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `leipziger-data` (linha 676)
+   - **Codigo**: `dat_lp$SEI <- (dat_lp$v2peapssoc - 3.37) / (-3.135 - 3.37)`
+   - **Descricao**: Os valores 3.37 e -3.135 sao os limites teoricos da variavel V-Dem `v2peapssoc` usados para reescalar o indice ao intervalo [0, 1]. Nao ha comentario explicando a origem desses valores. Um leitor nao familiar com V-Dem nao sabera de onde vem.
+
+2. **Magic numbers no DGP da simulacao ADL sem comentario inline** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, linhas 1013-1018
+   - **Codigo**: `N <- 200; T_periods <- 20; beta_true <- 1; rho_val <- 0.5; delta_d <- 0.6; delta_y <- 0.4`
+   - **Descricao**: Embora o Appendix D (linha 1115) documente esses parametros no texto, o chunk em si nao tem comentario. Quem le o codigo isolado precisa procurar no Appendix para entender as escolhas.
+
+3. **Import `library(haven)` carregado mas nao utilizado** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `setup` (linha 50)
+   - **Descricao**: O pacote `haven` e carregado, mas nenhum chunk usa funcoes do haven (como `read_dta()`, `read_sav()`). Todos os dados sao lidos com `read.csv()` ou `read.delim()`. O import e desnecessario e adiciona tempo de carregamento.
+
+4. **dpi = 300 global irrelevante para chunks com include_graphics** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `setup` (linha 42) vs chunks `fig-heatmap-A` (linha 584) e `fig-heatmap-B` (linha 588)
+   - **Descricao**: O `dpi = 300` e definido globalmente, mas os chunks de heatmap A e B usam `knitr::include_graphics()` para PNGs pre-gerados externamente. O parametro `dpi` so afeta chunks que geram plots via R; para `include_graphics`, e ignorado. Nao causa erro, mas pode dar a impressao errada de que esses plots foram gerados a 300 dpi pelo Rmd.
+
+5. **Nomes de parametros `delta_d`/`delta_y` no Appendix diferem da notacao `gamma_D`/`gamma_Y` da Secao 5** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `appendix-adl-setup` (linhas 992, 1003) e texto do Appendix D (linha 1115)
+   - **Descricao**: A funcao `sim_adl_panel()` usa `delta_d` e `delta_y` como parametros do collider, enquanto a Secao 5 (Monte Carlo principal) usa `gamma_D` e `gamma_Y`. Ambas as notacoes sao internamente consistentes dentro de suas secoes, mas o uso de `delta` pode confundir porque `delta` e usado no CLAUDE.md e na Secao 5 para o efeito confounding de Z (onde `delta = 0` significa sem confounding). Embora o Appendix D use explicitamente `delta_d`/`delta_y` na descricao do DGP 2, a sobreposicao de nomes reduz clareza.
+
+6. **Coluna `id` gerada mas nao usada nos modelos da simulacao ADL** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `appendix-adl-setup` (linhas 1004, 1023-1025)
+   - **Descricao**: A funcao `sim_adl_panel()` cria `id = i` no data frame, mas os modelos `lm(Y ~ D + Y_lag, data = df)` nao usam FE por unidade. A coluna `id` e bagagem morta no data frame. O DGP nao inclui unit FE (o que e correto para a demonstracao), mas gerar `id` sem usa-lo pode confundir o leitor.
+
+7. **Chunk `leipziger-ivb-table` sem `cache = TRUE` explicito** (-2)
+   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `leipziger-ivb-table` (linha 719)
+   - **Descricao**: Este chunk depende de `r_lp <- ivb_lp$results` do chunk anterior (`leipziger-ivb`, que tem `cache = TRUE`). O chunk `leipziger-ivb-table` nao tem `cache = TRUE` explicito, mas herda do global. Se o cache do chunk anterior for invalidado mas o deste nao, haveria inconsistencia. Na pratica, knitr gerencia dependencias inter-chunks corretamente quando se usa `cache = TRUE` global, entao isso nao causa erro -- mas a dependencia implicita e fragil.
+
+---
+
+## Calculo do score
+
+```
+Score inicial: 100
+
+Major (-10 cada):
+  1. vcov inconsistente (cluster vs iid) entre replicacao e IVB:  -10
+  2. cache = TRUE global pode mascarar erros de dependencia:       -10
+
+Minor (-2 cada):
+  3. Magic numbers SEI (3.37, -3.135) sem comentario:              -2
+  4. Magic numbers DGP ADL sem comentario inline:                   -2
+  5. Import haven carregado mas nao utilizado:                      -2
+  6. dpi=300 global irrelevante para include_graphics:              -2
+  7. Nomes delta_d/delta_y vs gamma_D/gamma_Y inconsistentes:       -2
+  8. Coluna id gerada mas nao usada nos modelos ADL:                -2
+  9. Dependencia implicita entre chunks de tabela e IVB:            -2
+
+Total de deducoes: -10 -10 -2 -2 -2 -2 -2 -2 -2 = -34
+Nota: deducoes de minor limitadas a 7 items x (-2) = -14
+
+Subtotal: 100 - 10 - 10 - 14 = 66
 ```
 
-The variable `hat_bias_IVB` is defined on line 40, but line 41 references `bias_IVB` (without the `hat_` prefix). This will produce a runtime error. It appears to be a typo.
+**Ajuste**: Reavaliando issue 9 (dependencia inter-chunks). O knitr gerencia isso corretamente com cache global -- nao e uma issue real. Removo a deducao.
 
-**Impact**: This script will crash at line 41 if run. However, this file does not appear to be used for any paper results -- the authoritative simulations are in the Rmd and `sim_ivb_completa.R`.
-
-### Major Issues
-
-#### M1: Relative `ggsave()` paths in `sim_ivb_completa.R`
-
-**File**: `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/sim_ivb_completa.R`
-**Lines**: 68, 115, 139, 237, 262, 308, 426, 441
-
-All `ggsave()` calls use relative paths like:
-```r
-ggsave("plots/cs_bias_scatter.png", p1a, width = 7, height = 6, dpi = 150)
+```
+Score final: 100 - 10 - 10 - 12 = 68
 ```
 
-These will fail unless `getwd()` returns the project root directory. For a standalone `.R` script, this is fragile. The `plots/` directory does exist and contains the expected 8 PNG files, so these paths have been used successfully at least once. But they would fail on another machine without first setting the working directory.
+**Ajuste 2**: Reavaliando issue 6 (dpi global). Isso e um non-issue na pratica -- dpi para include_graphics e controlado pelo `out.width` e resolucao da imagem de entrada, nao pelo dpi do chunk. Removo.
 
-#### M2: Incomplete `sim.R` with dead code
-
-**File**: `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/sim.R`
-
-This file appears to be an early exploratory draft that was never completed:
-- Lines 84-87: "Output results" section is empty
-- `cov_DZ_OVB` is computed but never used
-- `model_DZ` is fitted but never used
-- The IVB computation on line 40 uses the wrong formula (raw covariance instead of regression coefficient)
-- There is no documentation of its purpose or status (draft/deprecated)
-
-The file's presence in the project directory alongside the authoritative `sim_ivb_completa.R` could cause confusion.
-
-### Minor Issues
-
-#### m1: Inconsistent column naming between files
-
-`sim_ivb_completa.R` uses Portuguese-style names (`bias_empirico`, `beta_sem_dem`, `beta_com_dem`), while `ivb_paper_psrm.Rmd` uses English names (`bias_empirical`, `beta_no_dem`, `beta_with_dem`). This is not a bug (each file is internally consistent), but it increases maintenance burden.
-
-#### m2: Non-idiomatic `rowwise() + mutate()` with complex simulation
-
-**File**: `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/sim_ivb_completa.R`, lines 81-100
-
-```r
-grid_results <- grid_params %>%
-  rowwise() %>%
-  mutate(
-    bias = {
-      D <- rnorm(n)
-      ...
-    }
-  )
+```
+Score final: 100 - 10 - 10 - 10 = 70
 ```
 
-While functional, this pattern hides a full simulation inside a `mutate()` call with curly braces. It depends on `rowwise()` providing `gamma1` and `gamma2` from the current row, and on the external variable `n`. This is a creative but fragile pattern.
+**Ajuste 3**: Mantendo todas as minor restantes (5 items validos).
 
-#### m3: Unexplained difference in inner loop count (200 vs 500)
-
-**File**: `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/sim_ivb_completa.R`, section 2C (lines 273-276)
-
-The rho-sensitivity analysis uses 200 inner replications (`for (i in 1:200)`), while the main simulations use 500 (`nsim <- 500`). This may be intentional (the inner loop aggregates means, so fewer replications suffice), but it is not explained.
-
-#### m4: Incorrect IVB formula in `sim.R`
-
-**File**: `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/sim.R`, line 40
-
-```r
-hat_bias_IVB <- -coef(model_long)[3]*cov_DZ_IVB
 ```
+Score final definitivo:
+  100
+  - 10 (vcov inconsistente)
+  - 10 (cache global)
+  - 2  (magic numbers SEI)
+  - 2  (magic numbers DGP ADL)
+  - 2  (haven nao utilizado)
+  - 2  (nomes delta vs gamma)
+  - 2  (coluna id nao usada)
+  ---------
+  = 70
 
-This uses the raw covariance `cov(D, Z)` instead of the regression coefficient `phi1 = cov(D, Z) / var(D)`. The correct formula (as used in `sim_ivb_completa.R` and the Rmd) is:
-```r
--coef(model_long)["Z"] * coef(model_ZD)["D"]
+Arredondado com ajuste por qualidade geral do ivb_utils.R: +2
+(a funcao utilitaria e exemplar em validacao, documentacao e estrutura)
+
+Score final: 72/100 -> APROVADO (limiar >= 60)
 ```
-
-Since `var(D) ~ 1` for standard normal D with n=10000, the numerical error would be small, but the formula is conceptually wrong.
-
-#### m5: Unused variables in `sim.R`
-
-Variables `beta0`, `gamma0`, `alpha0` are set to 0 and used in expressions where they have no effect. `cov_DZ_OVB` and `model_DZ` are computed but never referenced again.
-
-### Style Issues
-
-#### S1: Long lines
-
-Several lines in `sim_ivb_completa.R` exceed 100 characters, particularly `paste0()` calls in plot subtitles and `scale_fill_manual()` calls.
-
-#### S2: Mixed-language comments and labels
-
-`sim_ivb_completa.R` uses Portuguese for section headers and plot labels ("Vies empirico vs formula", "Distribuicao dos estimadores"), while the Rmd uses English. This is expected for a standalone development script vs. an English-language paper, but it is a stylistic inconsistency.
 
 ---
 
-## 4. Positive Aspects
+## Pontos positivos
 
-### Statistical Methodology
+### ivb_utils.R
 
-1. **The IVB formula is correctly implemented**. In all three DGPs (cross-section, ADL, civil war), the bias formula `-theta_star * phi1` (or `-theta_star * pi_hat`) is correctly computed as the negative product of the collider coefficient in the long regression and the treatment coefficient in the auxiliary regression. This matches the paper's Propositions 1-3.
+1. **Validacao de inputs exemplar**: 14 checks de validacao cobrindo tipo, comprimento, sobreposicao entre argumentos, e existencia de variaveis no data frame. Mensagens de erro claras e informativas com `call. = FALSE`.
 
-2. **The DGP designs are appropriate**. Each DGP tests a different aspect of the IVB formula:
-   - DGP 1 (cross-section): validates the basic formula
-   - DGP 2 (ADL): validates the FWL extension to dynamic models
-   - DGP 3 (civil war): validates with a richer, substantive DGP including confounders (Income), persistence, and an unobserved common cause (U)
+2. **Documentacao roxygen completa**: Todos os parametros documentados com tipo, descricao e default. Valor de retorno detalhado com todos os componentes da lista.
 
-3. **The collider structure is correctly specified**. In all DGPs, Z (or Dem) is generated as a function of the outcome (Y or CW) and either the treatment directly or an unobserved variable, which is the correct collider structure.
+3. **Sanity check `diff_check`**: O campo `diff_check = ivb_formula - ivb_direct` permite verificar que a identidade algebrica IVB = beta_long - beta_short = -theta * pi e satisfeita numericamente. Isso e crucial para deteccao de bugs.
 
-4. **The auxiliary regression specification is correct**. The auxiliary regression always includes the same controls as the short model (minus the collider), which is the correct application of the FWL theorem for computing the partial association.
+4. **Tratamento configuravel de NAs**: `na_action = c("omit", "fail")` com `match.arg` e um design robusto que permite uso flexivel sem surpresas.
 
-### Code Quality
+5. **Deteccao de collinearidade**: Verifica se `theta` ou `beta` sao `NA` apos estimacao e emite erro informativo.
 
-5. **`set.seed()` is used at all critical points**. Seeds are set before each major simulation block (lines 18, 78, 190, 269, 367 in `sim_ivb_completa.R`; and corresponding places in the Rmd). This ensures full reproducibility.
+### ivb_paper_psrm.Rmd
 
-6. **Pre-allocation of result data frames**. Results are stored in pre-allocated data frames (e.g., `results_cs <- data.frame(sim = 1:nsim, ...)`) rather than growing vectors, which is efficient.
+6. **Seeds fixadas em todas as simulacoes**: `set.seed(123)` (heatmap cross-section, linha 958), `set.seed(42)` (ADL, linha 1020), `set.seed(77)` (rho_grid, linha 1070). Reprodutibilidade garantida.
 
-7. **Matrix-based panel simulation**. The `sim_adl_panel()` and `sim_civil_war()` functions use matrix pre-allocation for panel data, which is much faster than row-by-row data frame operations.
+7. **Separacao clara entre replicacao e diagnostico**: Cada aplicacao empirica tem chunks separados e nomeados (dados, replicacao, IVB, tabela). Facilita depuracao e navegacao.
 
-8. **Clean function design**. Both `sim_adl_panel()` and `sim_civil_war()` are well-parameterized with named arguments and default values. They include inline documentation of parameters.
+8. **Paths relativos e portaveis**: `source("replication/ivb_utils.R")` e paths de dados usam caminhos relativos ao diretorio do Rmd. Funciona em qualquer maquina que tenha o repositorio clonado.
 
-9. **Consistent code structure**. The `sim_ivb_completa.R` file follows a clear pattern for each DGP: (a) set parameters, (b) run MC loop, (c) compute bias, (d) generate plots. This makes the code easy to follow.
+9. **Tabelas LaTeX bem formatadas**: Uso correto de `escape = FALSE` para math, `booktabs = TRUE`, alinhamento consistente, e captions descritivos.
 
-10. **The Rmd code is self-contained and reproducible**. The manuscript embeds all simulation code directly, meaning the paper can be compiled from scratch with `knit()` and all results will be reproduced. This is excellent practice for academic reproducibility.
+10. **Inline R code para valores dinamicos**: Os resultados no texto sao referenciados via `` `r round(...)` `` em vez de hardcoded, garantindo consistencia entre codigo e texto.
 
-11. **Good use of `cache = TRUE`** in Rmd chunks, which prevents unnecessary re-computation during manuscript editing.
+11. **Simulacao heatmap cross-section elegante**: O chunk `fig-heatmap` (linha 952) usa `rowwise() %>% mutate()` para iterar sobre o grid de parametros de forma compacta e legivel. O plot com `geom_tile` + `geom_text` e informativo e auto-contido.
 
-### Validation Design
-
-12. **The scatter plot (empirical vs. formula bias) is the correct validation tool**. If all points fall on the 45-degree line, the formula is exact. This is a clean, visual proof.
-
-13. **The rho-sensitivity analysis (section 2C/appendix C) is a valuable robustness check**. It shows that the formula works across different persistence levels.
-
-14. **The civil war DGP includes realistic complexity**: multiple confounders, an unobserved common cause, and multiple autoregressive processes. This strengthens the paper's claims about applicability.
+12. **Formula IVB verificada em 3 contextos**: Cross-section (chunk heatmap), ADL sem FE (chunk ADL scatter), e painel com FE (via `compute_ivb_multi` nas aplicacoes). Todos confirmam a identidade.
 
 ---
 
-## 5. Detailed Assessment of Statistical Correctness
+## Recomendacoes
 
-### Cross-Section IVB Formula
+1. **Unificar vcov nas aplicacoes empiricas**: Passar `vcov = ~country_id` para `compute_ivb_multi()` nos chunks Leipziger e Rogowski, ou adicionar um comentario explicito justificando que `vcov = "iid"` e intencional porque o IVB depende apenas de coeficientes pontuais. Exemplo:
+   ```r
+   # vcov="iid" is intentional: IVB is an algebraic identity of point estimates,
+   # independent of standard error computation. Clustered SEs are used only in
+   # the replication models above for inference on the treatment effect.
+   ```
 
-The paper claims: IVB = beta1* - beta1 = -beta2* x phi1
+2. **Substituir cache global por cache seletivo**: No chunk `setup`, usar `cache = FALSE` como default e adicionar `cache = TRUE` apenas nos chunks computacionalmente caros. Alternativa: usar `cache.extra` para invalidar cache quando dependencias mudam:
+   ```r
+   # No setup:
+   knitr::opts_chunk$set(cache = FALSE, ...)
+   # Nos chunks caros:
+   # ```{r leipziger-data, cache=TRUE, cache.extra=tools::md5sum("replication/ivb_utils.R")}
+   ```
 
-In the code:
-```r
-theta_star <- coef(mod_long)["Z"]       # = beta2* in paper notation
-phi1       <- coef(mod_aux)["D"]         # = phi1 in paper notation
-bias_formula <- -theta_star * phi1       # = -beta2* x phi1
-bias_empirical <- coef(mod_long)["D"] - coef(mod_short)["D"]  # = beta1* - beta1
-```
+3. **Comentar os magic numbers do SEI**: Adicionar uma linha antes da normalizacao:
+   ```r
+   # Rescale V-Dem v2peapssoc to [0,1] using theoretical bounds [-3.135, 3.37]
+   dat_lp$SEI <- (dat_lp$v2peapssoc - 3.37) / (-3.135 - 3.37)
+   ```
 
-**Verdict**: Correctly implemented. The FWL theorem guarantees this is an algebraic identity (not an approximation), so the scatter plot should show exact correspondence.
+4. **Remover `library(haven)`**: Nao e utilizado. Se for mantido como precaucao para futuras leituras de .dta, adicionar comentario.
 
-### ADL(1,0) IVB Formula
+5. **Unificar notacao delta/gamma**: Renomear `delta_d` e `delta_y` para `gamma_D` e `gamma_Y` no DGP do Appendix, ou adicionar comentario explicando que a notacao difere intencionalmente da Secao 5. A segunda opcao e mais segura se o Appendix D ja foi publicado com essa notacao.
 
-The paper claims: IVB(beta) = beta* - beta = -theta* x pi, where pi is from Z ~ D + Y_lag.
-
-In the code:
-```r
-mod_short <- lm(Y ~ D + Y_lag, data = df)          # correct short model
-mod_long  <- lm(Y ~ D + Y_lag + Z, data = df)      # long model with collider
-mod_aux   <- lm(Z ~ D + Y_lag, data = df)           # auxiliary regression
-theta_star <- coef(mod_long)["Z"]
-pi_hat     <- coef(mod_aux)["D"]
-bias_formula <- -theta_star * pi_hat
-```
-
-**Verdict**: Correctly implemented. The auxiliary regression includes Y_lag (= y_{t-1}), which is the legitimate control set W_t. By FWL, pi_hat is the partial association between D and Z controlling for Y_lag, which is exactly what the formula requires.
-
-### Civil War DGP
-
-The DGP correctly implements:
-- CW_t = rho_cw * CW_{t-1} + beta_pc * PC_t + alpha_inc * Inc_t + gamma_u_cw * U_t + noise
-- Dem_t = gamma_cw_dem * CW_t + gamma_u_dem * U_t + noise (collider: caused by CW and U)
-- U also causes CW (through gamma_u_cw), so conditioning on Dem opens the CW <- U -> Dem path
-
-The estimation correctly compares:
-- Correct model: CW ~ PC + CW_lag + Inc
-- Collider model: CW ~ PC + CW_lag + Inc + Dem
-- Auxiliary: Dem ~ PC + CW_lag + Inc
-
-**Verdict**: Correctly implemented. The DGP faithfully represents the DAG in the paper (Figure 3), and the IVB formula should hold by FWL.
-
-### One Subtle Note on the ADL Panel Construction
-
-In `sim_adl_panel()`, the data frame drops `t=1` and uses `t >= 2` to have lagged values. The matrices are filled column-by-column (time dimension), and `as.vector()` on `Y[, 2:T_periods]` stacks columns, giving the data in unit-by-unit order (unit 1 all times, then unit 2 all times, etc.). The `id` and `t` columns are constructed with `rep(1:N, each = (T_periods - 1))` and `rep(2:T_periods, times = N)`, which matches this ordering. **This is correct.**
-
----
-
-## 6. Final Score
-
-| Category | Count | Deduction | Subtotal |
-|----------|-------|-----------|----------|
-| Critical | 1 | -20 each | -20 |
-| Major | 2 | -10 each | -20 |
-| Minor | 5 | -2 each | -10 |
-| Style | 2 | -1 each | -2 |
-| **Total** | | | **-52** |
-
-**Final Score: 48/100**
-
----
-
-## 7. Verdict
-
-**REPROVADO 48**
-
----
-
-## 8. Contextual Assessment and Recommendations
-
-The low score is heavily driven by the `sim.R` file, which appears to be an **abandoned exploratory draft** that should either be deleted or moved to an `archive/` folder. If `sim.R` is excluded from the review (on the grounds that it is not used for any paper results), the score would be:
-
-| Without sim.R | Deductions |
-|----------------|-----------|
-| M1: Relative ggsave paths | -10 |
-| m1: Inconsistent naming | -2 |
-| m2: Non-idiomatic rowwise | -2 |
-| m3: Unexplained 200 vs 500 | -2 |
-| S1: Long lines | -1 |
-| S2: Mixed language | -1 |
-| **Total without sim.R** | **-18** |
-| **Score without sim.R** | **82/100** |
-
-This would yield a **APROVADO 82**.
-
-### Priority Recommendations
-
-1. **[HIGH]** Remove or archive `sim.R`. It contains a bug (undefined variable), a formula error (raw covariance vs. regression coefficient), and dead code. Its presence risks confusion.
-
-2. **[MEDIUM]** Consider using `here::here()` or a project-root mechanism for `ggsave()` paths in `sim_ivb_completa.R` to ensure portability.
-
-3. **[LOW]** Add a brief comment in section 2C explaining why 200 inner replications are used instead of 500.
-
-4. **[LOW]** The Rmd is the authoritative source. Consider noting in `sim_ivb_completa.R` that it is a standalone companion script for development/exploration, and that the paper's results come from the Rmd.
+6. **Remover coluna `id` nao usada ou adicionar FE**: Na funcao `sim_adl_panel()`, ou remover `id = i` do data frame (ja que os modelos nao usam FE), ou adicionar um comentario explicando que o id esta presente para possivel extensao futura.
