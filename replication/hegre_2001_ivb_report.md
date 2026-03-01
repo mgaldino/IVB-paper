@@ -12,9 +12,11 @@
 
 This paper is the running example used in Sections 2.2–2.3 of the IVB paper to motivate collider bias and "foreign collider bias." The core concern is that Democracy Level (`demo`) may be a collider when included alongside Proximity of Regime Change (`prc`) in a civil war onset equation.
 
-## Methodological Note
+## Methodological Note — Illustrative Exercise Only
 
-The original specification uses **Cox Proportional Hazards** (`stcox` in Stata), not OLS or TWFE. Since the IVB formula is derived for linear models via FWL, we approximate the original specification using a **Linear Probability Model (LPM) with Two-Way Fixed Effects** (country + year FE), restricted to post-1946 observations (matching the main specification in Table 2 of the paper). This is the MPL (Modelo de Probabilidade Linear) approximation for nonlinear models.
+The original specification uses **Cox Proportional Hazards** (`stcox` in Stata), not OLS or TWFE. The IVB formula is derived for linear models via FWL and does not extend to Cox PH models: the partial likelihood estimation, the nonparametric baseline hazard, and the risk-set structure have no FWL analogue. There is no theoretical result guaranteeing that a linear approximation captures the magnitude or even the direction of collider bias in a Cox PH model.
+
+This exercise uses a **Linear Probability Model (LPM) with Two-Way Fixed Effects** (country + year FE) as an entirely different model applied to the same data. It is **illustrative only** and does not constitute a replication of the original study. Unlike the six studies in the paper — where the IVB formula is applied to the same model class used by the original authors — here we estimate a fundamentally different model. The results below should not be cited as evidence about the magnitude of collider bias in the original Cox PH specification.
 
 ## Specification
 
@@ -79,6 +81,6 @@ Max |IVB_formula − IVB_direct| = 5.64 × 10⁻¹⁸. Identity holds to machine
 
 ## Summary
 
-The Hegre et al. (2001) civil war study — the running example in the IVB paper — produces negligible IVBs across all controls. The candidate collider at the heart of the example (democracy level) has |IVB|/SE = 0.10. This is consistent with the pattern observed across the other six replicated studies: in TWFE panel settings with slow-moving variables, IVBs tend to be small because fixed effects absorb between-unit variation.
+This illustrative exercise applies the IVB formula to a LPM TWFE model estimated on the Hegre et al. (2001) data. All IVBs are negligible (max |IVB|/SE = 0.27), including the candidate collider at the heart of the paper's running example (democracy level, |IVB|/SE = 0.10).
 
-**Caveat**: This replication uses a LPM TWFE approximation of the original Cox PH model. The IVB formula does not directly apply to Cox models. The LPM results should be interpreted as an approximation that captures the direction and rough magnitude of the biases.
+**Important limitation**: These results apply to the LPM TWFE model, which is a completely different model from the Cox PH used in the original paper. The IVB formula does not apply to Cox PH models, and no theoretical result connects the LPM IVB to the collider bias in the original specification. This exercise is not included in the paper's empirical applications for this reason.
