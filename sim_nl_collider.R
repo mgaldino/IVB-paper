@@ -5,20 +5,24 @@
 # DGP:
 #   D_t = alpha^D_i + gamma_D Z_{t-1} + rho_D D_{t-1} + u_t
 #   Y_t = alpha^Y_i + beta D_t + gamma_Y Z_{t-1} + rho_Y Y_{t-1} + e_t
-#   Z_t = alpha^Z_i + delta_D D_t + [delta_D2 D_t^2 | delta_log4 log(1+D_t^4)]
+#   Z_t = alpha^Z_i + delta_D D_t + f_nl(D_t)
 #         + delta_Y Y_t + [delta_Y2 Y_t^2]
 #         + rho_Z Z_{t-1} + nu_t
 #
-# Two non-linearity types:
-#   poly2: quadratic D^2 in collider channel
-#   log4:  log(1 + D^4) — saturation non-linearity (bounded growth)
-#          log(1+D^4) grows logarithmically for large |D|, avoiding explosion.
-#          Qualitatively different from polynomial: saturates instead of diverging.
+# Four non-linearity types:
+#   poly2:     D^2 — unbounded, explodes at high nl_strength
+#   log4:      log(1 + D^4) — saturation non-linearity (bounded growth)
+#   softpoly2: D^2 / (1 + (D/c)^2) — bounded, ~D^2 near origin, -> c^2
+#   power1.5:  sign(D)*|D|^1.5 — super-linear, sub-quadratic, unbounded
+#              but derivative grows only as sqrt(|D|)
+#
+# All calibrated so that at D = sd_D_within, the non-linear contribution
+# = nl_strength * delta_D * sd_D_within (ensures direct comparability).
 #
 # Researcher always estimates LINEAR models (TWFE, ADL).
 # Question: How much does non-linearity in the collider channel increase IVB?
 #
-# Grid: nl_type x nl_strength x nl_Y x rho_Z ~ 20 scenarios x 500 reps
+# Grid: nl_type x nl_strength x nl_Y x rho_Z ~ 42 scenarios x 500 reps
 # ============================================================================
 
 library(data.table)
@@ -50,7 +54,8 @@ cat(sprintf("  sd(Y_within) = %.4f (avg over rho_Z = 0.5, 0.7)\n\n", sd_Y_within
 sim_nl_collider <- function(N, TT, T_burn, beta, rho_Y, rho_D,
                             gamma_D, gamma_Y, delta_D, delta_Y,
                             rho_Z, sigma_aZ,
-                            delta_D2, delta_log4, delta_Y2) {
+                            delta_D2, delta_log4, delta_softpoly2,
+                            delta_power15, c_soft, delta_Y2) {
   T_sim <- TT + T_burn
 
   alpha_D <- rnorm(N, 0, 1)
@@ -71,7 +76,10 @@ sim_nl_collider <- function(N, TT, T_burn, beta, rho_Y, rho_D,
       D[t] <- alpha_D[i] + gamma_D * Z[t-1] + rho_D * D[t-1] + u
       Y[t] <- alpha_Y[i] + beta * D[t] + gamma_Y * Z[t-1] + rho_Y * Y[t-1] + e
       Z[t] <- alpha_Z[i] + delta_D * D[t] +
-              delta_D2 * D[t]^2 + delta_log4 * log(1 + D[t]^4) +
+              delta_D2 * D[t]^2 +
+              delta_log4 * log(1 + D[t]^4) +
+              delta_softpoly2 * (D[t]^2 / (1 + (D[t] / c_soft)^2)) +
+              delta_power15 * (sign(D[t]) * abs(D[t])^1.5) +
               delta_Y * Y[t] + delta_Y2 * Y[t]^2 +
               rho_Z * Z[t-1] + nu
 
@@ -98,47 +106,82 @@ sim_nl_collider <- function(N, TT, T_burn, beta, rho_Y, rho_D,
   dt
 }
 
+# ---- Calibration constants for stabilized non-linearities ----
+c_soft <- 2 * sd_D_within  # softpoly2 saturation scale
+
+# At D = sd_D_within, each f(D) is calibrated so that:
+#   delta_nl * f(sd_D) = nl_strength * delta_D * sd_D
+# This ensures direct comparability across nl_types.
+
+# softpoly2: f(D) = D^2/(1+(D/c)^2); f(sd_D) = sd_D^2/(1+(sd_D/c)^2) = sd_D^2/(1+0.25) = 0.8*sd_D^2
+# => delta_sp2 = nl_strength * delta_D * sd_D / (0.8 * sd_D^2) = nl_strength * delta_D * 1.25 / sd_D
+softpoly2_adj <- 1.25  # = 1 + (sd_D/c)^2 = 1 + 0.25 = 1.25; equivale a 1/0.8
+
+# power1.5: f(D) = sign(D)*|D|^1.5; f(sd_D) = sd_D^1.5
+# => delta_p15 = nl_strength * delta_D * sd_D / sd_D^1.5 = nl_strength * delta_D / sqrt(sd_D)
+
+cat(sprintf("  Calibration: c_soft = %.4f, softpoly2_adj = %.4f\n\n", c_soft, softpoly2_adj))
+
 # ---- Grid ----
 grid_raw <- CJ(
-  nl_type     = c("poly2", "log4"),
-  nl_strength = c(0, 0.5, 1.0, 2.0),
+  nl_type     = c("poly2", "log4", "softpoly2", "power1.5"),
+  nl_strength = c(0, 0.1, 0.2, 0.5, 1.0, 2.0),
   nl_Y        = c(FALSE, TRUE),
   rho_Z       = c(0.5, 0.7)
 )
 
 # Remove redundant combinations:
-# - When nl_strength=0: nl_type and nl_Y are irrelevant -> keep one row per rho_Z
-# - When nl_Y=TRUE: only poly2 (NL-1c uses polynomial only)
+# - nl_strength=0: keep one baseline row per rho_Z
+# - nl_strength=0.1, 0.2: only poly2 (frontier of stability mapping)
+# - nl_Y=TRUE: only poly2 and softpoly2 (NL-1c variants)
+# - log4 and power1.5: nl_Y=FALSE only
 grid <- grid_raw[
-  (nl_strength == 0 & nl_type == "poly2" & nl_Y == FALSE) |  # baseline: 2 rows
-  (nl_strength > 0 & nl_Y == FALSE) |                         # NL-1a: 6 x 2 = 12 rows
-  (nl_strength > 0 & nl_Y == TRUE & nl_type == "poly2")       # NL-1c: 3 x 2 = 6 rows
+  (nl_strength == 0 & nl_type == "poly2" & nl_Y == FALSE) |          # baseline: 2
+  (nl_strength %in% c(0.1, 0.2) & nl_type == "poly2" & !nl_Y) |     # poly2 frontier: 4
+  (nl_strength %in% c(0.5, 1.0, 2.0) & nl_type == "poly2" & !nl_Y) | # poly2 NL-1a: 6
+  (nl_strength %in% c(0.5, 1.0, 2.0) & nl_type == "poly2" & nl_Y) |  # poly2 NL-1c: 6
+  (nl_strength %in% c(0.5, 1.0, 2.0) & nl_type == "log4" & !nl_Y) |  # log4: 6
+  (nl_strength %in% c(0.5, 1.0, 2.0) & nl_type == "softpoly2" & !nl_Y) | # softpoly2 NL-1a: 6
+  (nl_strength %in% c(0.5, 1.0, 2.0) & nl_type == "softpoly2" & nl_Y) |  # softpoly2 NL-1c: 6
+  (nl_strength %in% c(0.5, 1.0, 2.0) & nl_type == "power1.5" & !nl_Y)    # power1.5: 6
 ]
 
 # Compute calibrated non-linear coefficients
-# poly2: at D = sd_D, D^2 * delta_D2 = k * D * delta_D => delta_D2 = k * delta_D / sd_D
+# poly2: delta_D2 = nl_strength * delta_D / sd_D
 grid[, delta_D2 := fifelse(nl_type == "poly2" & nl_strength > 0,
                            nl_strength * P$delta_D / sd_D_within, 0)]
-# log4: at D = sd_D, log(1+D^4) * delta_log4 = k * D * delta_D
-#       => delta_log4 = k * delta_D * sd_D / log(1 + sd_D^4)
+# log4: delta_log4 = nl_strength * delta_D * sd_D / log(1 + sd_D^4)
 grid[, delta_log4 := fifelse(nl_type == "log4" & nl_strength > 0,
                              nl_strength * P$delta_D * sd_D_within / log(1 + sd_D_within^4), 0)]
-# Y^2 for NL-1c (poly2 only)
+# softpoly2: delta_sp2 = nl_strength * delta_D * 1.25 / sd_D
+grid[, delta_softpoly2 := fifelse(nl_type == "softpoly2" & nl_strength > 0,
+                                  nl_strength * P$delta_D * softpoly2_adj / sd_D_within, 0)]
+# power1.5: delta_p15 = nl_strength * delta_D / sqrt(sd_D)
+grid[, delta_power15 := fifelse(nl_type == "power1.5" & nl_strength > 0,
+                                nl_strength * P$delta_D / sqrt(sd_D_within), 0)]
+# Y^2 for NL-1c (poly2 and softpoly2)
 grid[, delta_Y2 := fifelse(nl_Y == TRUE & nl_strength > 0,
                            nl_strength * P$delta_Y / sd_Y_within, 0)]
 
+# Assertion: each non-baseline row activates exactly one NL term in D->Z
+n_active <- grid[nl_strength > 0, (delta_D2 != 0) + (delta_log4 != 0) +
+                                   (delta_softpoly2 != 0) + (delta_power15 != 0)]
+stopifnot("Each scenario must activate exactly one NL D-term" = all(n_active == 1))
+
 cat(sprintf("Grid: %d scenarios\n", nrow(grid)))
-print(grid[, .(nl_type, nl_strength, nl_Y, rho_Z, delta_D2, delta_log4, delta_Y2)])
+print(grid[, .(nl_type, nl_strength, nl_Y, rho_Z, delta_D2, delta_log4, delta_softpoly2, delta_power15, delta_Y2)])
 
 # ---- Run ----
 cat("\n")
 cat(rep("=", 71), "\n", sep = "")
-cat("SIM NL-COLLIDER: Non-linear D->Z (poly2 + log4) and optionally Y->Z\n")
+cat("SIM NL-COLLIDER: Non-linear D->Z (poly2 + log4 + softpoly2 + power1.5) and optionally Y->Z\n")
 cat(rep("=", 71), "\n\n")
 cat(nrow(grid), "scenarios x", N_REPS, "reps\n")
 cat("DGP: beta=1, rho_Y=0.5, rho_D=0.5, gamma_D=0.15, gamma_Y=0.2\n")
 cat("     delta_D=0.1, delta_Y=0.1, N=100, T=30, T_burn=100\n")
 cat(sprintf("     sd_D_within=%.4f, sd_Y_within=%.4f (from pilot)\n\n", sd_D_within, sd_Y_within))
+
+set.seed(2026100)  # isolate main simulation RNG from pilot
 
 all_res <- vector("list", nrow(grid))
 elapsed_times <- numeric(nrow(grid))
@@ -147,13 +190,15 @@ scale_stats <- vector("list", nrow(grid))
 t0_total <- proc.time()
 
 for (g in 1:nrow(grid)) {
-  nlt <- grid$nl_type[g]
-  nls <- grid$nl_strength[g]
-  nly <- grid$nl_Y[g]
-  rz  <- grid$rho_Z[g]
-  dD2 <- grid$delta_D2[g]
-  dl4 <- grid$delta_log4[g]
-  dY2 <- grid$delta_Y2[g]
+  nlt  <- grid$nl_type[g]
+  nls  <- grid$nl_strength[g]
+  nly  <- grid$nl_Y[g]
+  rz   <- grid$rho_Z[g]
+  dD2  <- grid$delta_D2[g]
+  dl4  <- grid$delta_log4[g]
+  dsp2 <- grid$delta_softpoly2[g]
+  dp15 <- grid$delta_power15[g]
+  dY2  <- grid$delta_Y2[g]
 
   cat(sprintf("[%d/%d] type=%s nl_str=%.1f nl_Y=%s rho_Z=%.2f ... ",
               g, nrow(grid), nlt, nls, nly, rz))
@@ -168,7 +213,7 @@ for (g in 1:nrow(grid)) {
   for (s in 1:N_REPS) {
     dt <- sim_nl_collider(P$N, P$TT, P$T_burn, P$beta, P$rho_Y, P$rho_D,
                           P$gamma_D, P$gamma_Y, P$delta_D, P$delta_Y,
-                          rz, P$sigma_aZ, dD2, dl4, dY2)
+                          rz, P$sigma_aZ, dD2, dl4, dsp2, dp15, c_soft, dY2)
     if (is.null(dt)) {
       n_discarded <- n_discarded + 1L
       next
