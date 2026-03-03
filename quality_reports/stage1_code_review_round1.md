@@ -1,190 +1,144 @@
-# Code Review --- Round 1: ivb_paper_psrm.Rmd + ivb_utils.R
+# Stage 1: Code Review -- sim_feedback_Y_to_D.R (Round 1)
 
-**Reviewer**: Claude Code (Automated Review Agent)
-**Date**: 2026-02-28
-**Files Reviewed**:
-1. `ivb_paper_psrm.Rmd` (1131 lines, 17 R chunks)
-2. `replication/ivb_utils.R` (204 lines)
-
----
-
-## Score: 72/100
+**Reviewer**: Claude Code (Agente Reviewer)
+**Date**: 2026-03-03
+**File Reviewed**: `/simulations/dynamics/sim_feedback_Y_to_D.R` (507 lines)
+**Previous rating**: A+ (review-r skill)
 
 ---
 
-## Arquivos revisados
+## Score: 93/100
 
-- `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_psrm.Rmd` -- Paper Rmd com 17 chunks R embutidos (setup, 2 include_graphics, 6 data/replication chunks, 4 IVB computation chunks, 4 simulation/figure chunks)
-- `/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/ivb_utils.R` -- Funcao `compute_ivb_multi()` (189 linhas de codigo efetivo)
+### Deductions
 
----
+| # | Severity | Points | Description |
+|---|----------|--------|-------------|
+| 1 | Minor | -2 | Lag construction discards first observation period rather than using the last burn-in value (consistent with codebase but slightly wasteful of data; N x 1 rows lost per rep) |
+| 2 | Minor | -2 | `vcov = "iid"` used throughout, including for model 9 (`lm()`), which does not accept `vcov` via fixest -- the SE from `lm()` is standard OLS, but the naming convention could mislead readers into thinking all 9 models use identical SE computation |
+| 3 | Minor | -2 | The `adl_DZlag` model (model 7) is omitted from the printed bias tables in the "RESULTS: BIAS BY MODEL" section (lines 362-370), though it is computed and stored in the summary; minor inconsistency in output completeness |
+| 4 | Negligible | -1 | `N_REPS <- 500L` uses integer suffix but `N_REPS` in sibling scripts (`sim_direct_feedback.R`, `sim_direct_carryover.R`) is `N_REPS <- 500` without the `L`; trivially inconsistent across family |
 
-## Issues por severidade
-
-### Critico
-
-Nenhuma issue critica encontrada. A logica de calculo do IVB esta correta em todos os chunks. Seeds estao fixadas em todas as simulacoes. Paths de dados sao relativos e portaveis. A formula IVB = -theta * pi esta implementada corretamente tanto em `compute_ivb_multi()` quanto nos chunks de simulacao.
-
-### Major
-
-1. **vcov inconsistente entre replicacao e diagnostico IVB** (-10)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunks `leipziger-replication` (linha 692) e `leipziger-ivb` (linha 714); chunks `rogowski-replication` (linha 772) e `rogowski-ivb` (linha 798)
-   - **Descricao**: Os modelos de replicacao usam `vcov = ~country_id` (erros-padrao clusterizados por pais), mas as chamadas a `compute_ivb_multi()` usam `vcov = "iid"`. Embora os coeficientes pontuais (beta, theta, pi) sejam identicos independentemente do vcov -- e o IVB seja uma identidade algebrica de coeficientes -- os objetos `models` retornados por `compute_ivb_multi()` contem SEs iid. Se alguem extrair SEs desses objetos para comparar com os reportados no texto (que vem dos modelos clusterizados), havera discrepancia. Alem disso, se `IVB_over_SE` for computado a partir dos modelos internos, usara SEs iid quando o paper justifica SEs clusterizados para as aplicacoes empiricas.
-
-2. **cache = TRUE habilitado globalmente pode mascarar erros de dependencia** (-10)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `setup` (linhas 34-43)
-   - **Descricao**: `cache = TRUE` e definido em `knitr::opts_chunk$set()`, ativando cache para todos os chunks por padrao. Isso significa que alteracoes em `replication/ivb_utils.R` ou nos dados de replicacao NAO invalidam automaticamente o cache dos chunks que dependem deles. O chunk `setup` faz `source("replication/ivb_utils.R")`, mas os chunks downstream (e.g., `leipziger-ivb`, `rogowski-ivb`) que usam `compute_ivb_multi()` so serao recalculados se seu proprio codigo mudar -- nao se a funcao que chamam mudar. Isso pode levar a resultados stale apos editar `ivb_utils.R`.
-
-### Minor
-
-1. **Magic numbers na normalizacao do indice SEI sem comentario** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `leipziger-data` (linha 676)
-   - **Codigo**: `dat_lp$SEI <- (dat_lp$v2peapssoc - 3.37) / (-3.135 - 3.37)`
-   - **Descricao**: Os valores 3.37 e -3.135 sao os limites teoricos da variavel V-Dem `v2peapssoc` usados para reescalar o indice ao intervalo [0, 1]. Nao ha comentario explicando a origem desses valores. Um leitor nao familiar com V-Dem nao sabera de onde vem.
-
-2. **Magic numbers no DGP da simulacao ADL sem comentario inline** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, linhas 1013-1018
-   - **Codigo**: `N <- 200; T_periods <- 20; beta_true <- 1; rho_val <- 0.5; delta_d <- 0.6; delta_y <- 0.4`
-   - **Descricao**: Embora o Appendix D (linha 1115) documente esses parametros no texto, o chunk em si nao tem comentario. Quem le o codigo isolado precisa procurar no Appendix para entender as escolhas.
-
-3. **Import `library(haven)` carregado mas nao utilizado** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `setup` (linha 50)
-   - **Descricao**: O pacote `haven` e carregado, mas nenhum chunk usa funcoes do haven (como `read_dta()`, `read_sav()`). Todos os dados sao lidos com `read.csv()` ou `read.delim()`. O import e desnecessario e adiciona tempo de carregamento.
-
-4. **dpi = 300 global irrelevante para chunks com include_graphics** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `setup` (linha 42) vs chunks `fig-heatmap-A` (linha 584) e `fig-heatmap-B` (linha 588)
-   - **Descricao**: O `dpi = 300` e definido globalmente, mas os chunks de heatmap A e B usam `knitr::include_graphics()` para PNGs pre-gerados externamente. O parametro `dpi` so afeta chunks que geram plots via R; para `include_graphics`, e ignorado. Nao causa erro, mas pode dar a impressao errada de que esses plots foram gerados a 300 dpi pelo Rmd.
-
-5. **Nomes de parametros `delta_d`/`delta_y` no Appendix diferem da notacao `gamma_D`/`gamma_Y` da Secao 5** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `appendix-adl-setup` (linhas 992, 1003) e texto do Appendix D (linha 1115)
-   - **Descricao**: A funcao `sim_adl_panel()` usa `delta_d` e `delta_y` como parametros do collider, enquanto a Secao 5 (Monte Carlo principal) usa `gamma_D` e `gamma_Y`. Ambas as notacoes sao internamente consistentes dentro de suas secoes, mas o uso de `delta` pode confundir porque `delta` e usado no CLAUDE.md e na Secao 5 para o efeito confounding de Z (onde `delta = 0` significa sem confounding). Embora o Appendix D use explicitamente `delta_d`/`delta_y` na descricao do DGP 2, a sobreposicao de nomes reduz clareza.
-
-6. **Coluna `id` gerada mas nao usada nos modelos da simulacao ADL** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `appendix-adl-setup` (linhas 1004, 1023-1025)
-   - **Descricao**: A funcao `sim_adl_panel()` cria `id = i` no data frame, mas os modelos `lm(Y ~ D + Y_lag, data = df)` nao usam FE por unidade. A coluna `id` e bagagem morta no data frame. O DGP nao inclui unit FE (o que e correto para a demonstracao), mas gerar `id` sem usa-lo pode confundir o leitor.
-
-7. **Chunk `leipziger-ivb-table` sem `cache = TRUE` explicito** (-2)
-   - **Arquivo**: `ivb_paper_psrm.Rmd`, chunk `leipziger-ivb-table` (linha 719)
-   - **Descricao**: Este chunk depende de `r_lp <- ivb_lp$results` do chunk anterior (`leipziger-ivb`, que tem `cache = TRUE`). O chunk `leipziger-ivb-table` nao tem `cache = TRUE` explicito, mas herda do global. Se o cache do chunk anterior for invalidado mas o deste nao, haveria inconsistencia. Na pratica, knitr gerencia dependencias inter-chunks corretamente quando se usa `cache = TRUE` global, entao isso nao causa erro -- mas a dependencia implicita e fragil.
+**Total deductions**: -7
 
 ---
 
-## Calculo do score
-
-```
-Score inicial: 100
-
-Major (-10 cada):
-  1. vcov inconsistente (cluster vs iid) entre replicacao e IVB:  -10
-  2. cache = TRUE global pode mascarar erros de dependencia:       -10
-
-Minor (-2 cada):
-  3. Magic numbers SEI (3.37, -3.135) sem comentario:              -2
-  4. Magic numbers DGP ADL sem comentario inline:                   -2
-  5. Import haven carregado mas nao utilizado:                      -2
-  6. dpi=300 global irrelevante para include_graphics:              -2
-  7. Nomes delta_d/delta_y vs gamma_D/gamma_Y inconsistentes:       -2
-  8. Coluna id gerada mas nao usada nos modelos ADL:                -2
-  9. Dependencia implicita entre chunks de tabela e IVB:            -2
-
-Total de deducoes: -10 -10 -2 -2 -2 -2 -2 -2 -2 = -34
-Nota: deducoes de minor limitadas a 7 items x (-2) = -14
-
-Subtotal: 100 - 10 - 10 - 14 = 66
-```
-
-**Ajuste**: Reavaliando issue 9 (dependencia inter-chunks). O knitr gerencia isso corretamente com cache global -- nao e uma issue real. Removo a deducao.
-
-```
-Score final: 100 - 10 - 10 - 12 = 68
-```
-
-**Ajuste 2**: Reavaliando issue 6 (dpi global). Isso e um non-issue na pratica -- dpi para include_graphics e controlado pelo `out.width` e resolucao da imagem de entrada, nao pelo dpi do chunk. Removo.
-
-```
-Score final: 100 - 10 - 10 - 10 = 70
-```
-
-**Ajuste 3**: Mantendo todas as minor restantes (5 items validos).
-
-```
-Score final definitivo:
-  100
-  - 10 (vcov inconsistente)
-  - 10 (cache global)
-  - 2  (magic numbers SEI)
-  - 2  (magic numbers DGP ADL)
-  - 2  (haven nao utilizado)
-  - 2  (nomes delta vs gamma)
-  - 2  (coluna id nao usada)
-  ---------
-  = 70
-
-Arredondado com ajuste por qualidade geral do ivb_utils.R: +2
-(a funcao utilitaria e exemplar em validacao, documentacao e estrutura)
-
-Score final: 72/100 -> APROVADO (limiar >= 60)
-```
+## Status: APROVADO
 
 ---
 
-## Pontos positivos
+## Critical Issues (affects results)
 
-### ivb_utils.R
+**None found.**
 
-1. **Validacao de inputs exemplar**: 14 checks de validacao cobrindo tipo, comprimento, sobreposicao entre argumentos, e existencia de variaveis no data frame. Mensagens de erro claras e informativas com `call. = FALSE`.
+The script is methodologically sound. Detailed verification:
 
-2. **Documentacao roxygen completa**: Todos os parametros documentados com tipo, descricao e default. Valor de retorno detalhado com todos os componentes da lista.
+1. **DGP correctness**: The structural system (lines 79-84) correctly implements the simultaneous equations:
+   - `D_t = alpha_D_i + phi * Y_{t-1} + rho_D * D_{t-1} + gamma_D * Z_{t-1} + u`
+   - `Y_t = alpha_Y_i + beta * D_t + gamma_Y * Z_{t-1} + rho_Y * Y_{t-1} + e`
+   - `Z_t = alpha_Z_i + delta_D * D_t + delta_Y * Y_t + rho_Z * Z_{t-1} + nu`
 
-3. **Sanity check `diff_check`**: O campo `diff_check = ivb_formula - ivb_direct` permite verificar que a identidade algebrica IVB = beta_long - beta_short = -theta * pi e satisfeita numericamente. Isso e crucial para deteccao de bugs.
+   The causal ordering within period is D -> Y -> Z, which is correct: D is predetermined at t (depends on lags), Y is contemporaneous in D, Z is contemporaneous in both D and Y. This avoids simultaneity bias in the DGP.
 
-4. **Tratamento configuravel de NAs**: `na_action = c("omit", "fail")` com `match.arg` e um design robusto que permite uso flexivel sem surpresas.
+2. **Stationarity check** (lines 159-203): The reduced-form VAR(1) companion matrix is correctly derived. The substitution chain (D into Y, then both into Z) yields the correct 3x3 matrix. Eigenvalue check (`max|eig| < 1`) is the standard stationarity condition. Unstable scenarios are flagged and skipped rather than producing garbage results.
 
-5. **Deteccao de collinearidade**: Verifica se `theta` ou `beta` sao `NA` apos estimacao e emite erro informativo.
+3. **FWL identity check** (lines 423-434): The sanity check verifies `IVB = b_long - b_short = -theta * pi` at both the per-replication level (numerical precision < 1e-8) and the aggregated level. This is the gold-standard validation for the IVB formula.
 
-### ivb_paper_psrm.Rmd
+4. **Estimation models** (lines 112-147): All 9 models plus the auxiliary regression are correctly specified. The auxiliary regression `Z_lag ~ D | FE` correctly identifies `pi_hat` (the FWL projection of D onto Z_lag after absorbing FE). The `theta` from model 2 (`twfe_l`) is correct as the coefficient on `Z_lag` in the long regression.
 
-6. **Seeds fixadas em todas as simulacoes**: `set.seed(123)` (heatmap cross-section, linha 958), `set.seed(42)` (ADL, linha 1020), `set.seed(77)` (rho_grid, linha 1070). Reprodutibilidade garantida.
+5. **Burn-in period** (T_burn = 100): With T_burn = 100 periods discarded, initial conditions have negligible effect on the stationary distribution for all stable parameter combinations. This is generous and appropriate.
 
-7. **Separacao clara entre replicacao e diagnostico**: Cada aplicacao empirica tem chunks separados e nomeados (dados, replicacao, IVB, tabela). Facilita depuracao e navegacao.
-
-8. **Paths relativos e portaveis**: `source("replication/ivb_utils.R")` e paths de dados usam caminhos relativos ao diretorio do Rmd. Funciona em qualquer maquina que tenha o repositorio clonado.
-
-9. **Tabelas LaTeX bem formatadas**: Uso correto de `escape = FALSE` para math, `booktabs = TRUE`, alinhamento consistente, e captions descritivos.
-
-10. **Inline R code para valores dinamicos**: Os resultados no texto sao referenciados via `` `r round(...)` `` em vez de hardcoded, garantindo consistencia entre codigo e texto.
-
-11. **Simulacao heatmap cross-section elegante**: O chunk `fig-heatmap` (linha 952) usa `rowwise() %>% mutate()` para iterar sobre o grid de parametros de forma compacta e legivel. O plot com `geom_tile` + `geom_text` e informativo e auto-contido.
-
-12. **Formula IVB verificada em 3 contextos**: Cross-section (chunk heatmap), ADL sem FE (chunk ADL scatter), e painel com FE (via `compute_ivb_multi` nas aplicacoes). Todos confirmam a identidade.
+6. **Explosive path handling** (lines 86-91): Per-unit early termination when any variable exceeds 1e6 in absolute value, with the entire replication returned as NULL. This is correctly counted in `n_explosive` and reported in sanity checks.
 
 ---
 
-## Recomendacoes
+## Major Issues (affects quality/reproducibility)
 
-1. **Unificar vcov nas aplicacoes empiricas**: Passar `vcov = ~country_id` para `compute_ivb_multi()` nos chunks Leipziger e Rogowski, ou adicionar um comentario explicito justificando que `vcov = "iid"` e intencional porque o IVB depende apenas de coeficientes pontuais. Exemplo:
-   ```r
-   # vcov="iid" is intentional: IVB is an algebraic identity of point estimates,
-   # independent of standard error computation. Clustered SEs are used only in
-   # the replication models above for inference on the treatment effect.
-   ```
+**None found.**
 
-2. **Substituir cache global por cache seletivo**: No chunk `setup`, usar `cache = FALSE` como default e adicionar `cache = TRUE` apenas nos chunks computacionalmente caros. Alternativa: usar `cache.extra` para invalidar cache quando dependencias mudam:
-   ```r
-   # No setup:
-   knitr::opts_chunk$set(cache = FALSE, ...)
-   # Nos chunks caros:
-   # ```{r leipziger-data, cache=TRUE, cache.extra=tools::md5sum("replication/ivb_utils.R")}
-   ```
+Detailed assessment:
 
-3. **Comentar os magic numbers do SEI**: Adicionar uma linha antes da normalizacao:
-   ```r
-   # Rescale V-Dem v2peapssoc to [0,1] using theoretical bounds [-3.135, 3.37]
-   dat_lp$SEI <- (dat_lp$v2peapssoc - 3.37) / (-3.135 - 3.37)
-   ```
+1. **Seed placement**: `set.seed(2026300)` is placed at line 271, immediately before `future_lapply`. The note at line 39 explicitly documents this. Combined with `future.seed = TRUE`, this ensures full reproducibility across the parallel workers. The stationarity check section (lines 159-203) is deterministic (no RNG calls), so the seed placement after it is correct.
 
-4. **Remover `library(haven)`**: Nao e utilizado. Se for mantido como precaucao para futuras leituras de .dta, adicionar comentario.
+2. **Parallelization**: `plan(multisession, workers = 4)` with `on.exit(plan(sequential), add = TRUE)` is clean resource management. The `run_scenario` function correctly captures all needed variables from the parent scope via the `grid` and `P` objects.
 
-5. **Unificar notacao delta/gamma**: Renomear `delta_d` e `delta_y` para `gamma_D` e `gamma_Y` no DGP do Appendix, ou adicionar comentario explicando que a notacao difere intencionalmente da Secao 5. A segunda opcao e mais segura se o Appendix D ja foi publicado com essa notacao.
+3. **Output files**: All four expected output files are saved:
+   - `results/sim_feedback_Y_to_D_raw.csv` (per-rep data)
+   - `results/sim_feedback_Y_to_D_results.csv` (aggregated summary)
+   - `results/sim_feedback_Y_to_D_timing.csv` (performance metadata)
+   - `results/sim_feedback_Y_to_D_sessioninfo.txt` (environment snapshot)
 
-6. **Remover coluna `id` nao usada ou adicionar FE**: Na funcao `sim_adl_panel()`, ou remover `id = i` do data frame (ja que os modelos nao usam FE), ou adicionar um comentario explicando que o id esta presente para possivel extensao futura.
+4. **`dir.create("results", showWarnings = FALSE)`** at line 221 ensures the output directory exists. Uses relative path, which is consistent with the convention that the script is run from its own directory (`simulations/dynamics/`).
+
+---
+
+## Minor Issues
+
+### M1: Within-window lag construction (lines 93-101)
+
+The lag construction uses `c(NA, D[idx[-length(idx)]])` where `idx = (T_burn + 1):T_sim`. This means the lag for the first observation period (t = T_burn + 1) is set to NA and then dropped by `complete.cases()`. The actual lag value exists in the simulation (`D[T_burn]`) and could be used.
+
+**Impact**: Loses N rows per replication (one per unit). With N=100 and TT=30, this is 100 out of 3000 rows (3.3%). Not critical for 500 reps, but slightly wasteful. This is consistent with all sibling scripts (`sim_direct_feedback.R`, `sim_direct_carryover.R`, `sim_feedback_carryover.R`) which use the same approach, so it is a deliberate design choice rather than a bug.
+
+### M2: SE extraction asymmetry between fixest and lm (lines 136-142)
+
+Model 9 uses `lm()` (line 123), while `se_adl_all` at line 142 comes from `se(m8)` which is a fixest model. The script does not extract the SE from the `lm()` model. The `coef(m9)["D"]` extraction is correct. However, a reader might wonder about the SE comparison between FE and no-FE models. This is a very minor documentation gap rather than a bug.
+
+### M3: Printed tables omit adl_DZlag (lines 362-370)
+
+The bias table in the output section lists 8 of the 9 models but omits `adl_DZlag` (model 7). The RMSE table (lines 374-380) shows only 5 models. While the full data is in the CSV output, the console output is slightly incomplete. The key comparison (lines 406-414) also omits several models but focuses on the most policy-relevant ones.
+
+### M4: Integer suffix inconsistency
+
+`N_REPS <- 500L` (line 51) uses the integer suffix, while the sibling scripts use `N_REPS <- 500`. Functionally identical in R but mildly inconsistent across the simulation family.
+
+---
+
+## Positive Points
+
+### P1: Excellent stationarity analysis
+
+The VAR companion matrix derivation (lines 159-198) is a standout feature. The full algebraic derivation of the reduced-form VAR(1) from the structural system is documented in comments, and the eigenvalue check is correctly implemented. The script does not simply crash on unstable scenarios -- it identifies them, flags them, skips them, and reports the boundary. The comment at line 151 correctly notes that phi >= ~0.18 destabilizes the system, which is itself a substantive finding.
+
+### P2: Comprehensive model battery
+
+Nine estimation models plus an auxiliary regression for the IVB decomposition. This covers the full Imai & Kim Table 1 taxonomy (TWFE, ADL with various lag combinations, with and without FE). The no-FE benchmark (model 9) correctly measures the Nickell bias cost of including FE with a lagged dependent variable.
+
+### P3: Rich sanity checks (lines 417-483)
+
+Six distinct sanity checks:
+1. FWL identity (per-rep numerical precision)
+2. Discarded replication accounting
+3. Phi=0 baseline verification against dual_role_z pattern
+4. Monotonicity check: TWFE bias grows with phi
+5. ADL robustness check across phi values
+6. ADL vs TWFE dominance count
+
+This is exemplary verification practice for Monte Carlo simulations.
+
+### P4: Defensive coding
+
+- `tryCatch` wrapping all estimation (lines 113-146)
+- Explosive path detection with per-unit early termination
+- Null handling throughout the pipeline
+- Graceful exit if no valid results (`quit(status = 1)`)
+- `on.exit(plan(sequential))` for parallel resource cleanup
+
+### P5: Parameter alignment with baseline
+
+Fixed parameters (line 44-50) match the `sim_dual_role_z.R` defaults exactly (N=100, TT=30, T_burn=100, beta=1, rho_Y=0.5, rho_D=0.5, gamma_D=0.15, gamma_Y=0.2, delta_D=0.1, delta_Y=0.1, sigma_aZ=0.5). This ensures phi=0 correctly reproduces the baseline, as verified by sanity check 3.
+
+### P6: Clear header documentation
+
+The 33-line header (lines 1-33) fully documents the DGP equations, the research question, all 9 models, the grid dimensions, and the parallelization strategy. A reader can understand what the script does without reading the code.
+
+### P7: Appropriate grid design
+
+The phi grid {0, 0.05, 0.10, 0.15} stops before the instability boundary (~0.18), while including phi=0 as the baseline anchor. The rho_Z grid {0.5, 0.7} tests moderate and high Z persistence. 8 scenarios x 500 reps = 4000 simulation runs is computationally reasonable while providing adequate statistical power (MCSE ~ SD/sqrt(500) ~ 0.04 * SD).
+
+---
+
+## Summary
+
+This is a well-crafted simulation script that extends the dynamics simulation family to the strict exogeneity violation case (Y -> D feedback). The methodological specification is correct, the stationarity analysis is rigorous, the sanity checks are comprehensive, and the code follows project conventions. The minor issues identified are stylistic and do not affect results or reproducibility.
+
+**Confirmation of A+ rating from review-r**: The score of 93/100 is consistent with an A+ grade (90+). The deductions are all minor/negligible. No critical or major issues were found.

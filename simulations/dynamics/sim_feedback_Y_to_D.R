@@ -28,7 +28,7 @@
 #   9. adl_all_nofe Y ~ D + D_lag + Y_lag + Z_lag      (no FE — benchmark)
 #   + auxiliary:    Z_lag ~ D | FE  (for theta* and pi)
 #
-# Grid: phi x rho_Z = 5 x 2 = 10 scenarios x 500 reps
+# Grid: phi x rho_Z = 4 x 2 = 8 scenarios x 500 reps
 # Parallelized: future_lapply, 4 workers
 # ============================================================================
 
@@ -36,7 +36,8 @@ library(data.table)
 library(fixest)
 library(future.apply)
 
-set.seed(2026)
+# Note: RNG seed is set at line ~250 (set.seed(2026300)) just before future_lapply.
+# The stationarity check section below is deterministic (no RNG needed).
 
 # ---- Fixed parameters ----
 # Match dual_role_z defaults so phi=0 reproduces baseline
@@ -64,9 +65,11 @@ sim_feedback <- function(N, TT, T_burn, beta, rho_Y, rho_D,
   for (i in 1:N) {
     explosive <- FALSE
     D <- Y <- Z <- numeric(T_sim)
+    # Simple initialization (matches dual_role_z.R).
+    # With T_burn=100, any initialization converges well before observation window.
     D[1] <- alpha_D[i] + rnorm(1)
-    Y[1] <- alpha_Y[i] + beta * D[1] + rnorm(1)
-    Z[1] <- alpha_Z[i] + delta_D * D[1] + delta_Y * Y[1] + rnorm(1)
+    Y[1] <- alpha_Y[i] + rnorm(1)
+    Z[1] <- alpha_Z[i] + rnorm(1)
 
     for (t in 2:T_sim) {
       u  <- rnorm(1)
@@ -144,9 +147,12 @@ est_feedback_models <- function(dt) {
 }
 
 
-# ---- Grid: 5 x 2 = 10 scenarios ----
+# ---- Grid: 4 x 2 = 8 scenarios ----
+# phi=0.20 and above produce explosive DGPs with these parameter values
+# (max|eig| > 1 in the VAR companion matrix). This is itself a key finding:
+# feedback phi >= ~0.18 destabilizes the system, providing the boundary condition.
 grid <- CJ(
-  phi   = c(0, 0.05, 0.1, 0.2, 0.3),
+  phi   = c(0, 0.05, 0.10, 0.15),
   rho_Z = c(0.5, 0.7)
 )
 
@@ -161,7 +167,10 @@ grid <- CJ(
 #   Y_t = β·ρ_D D_{t-1} + (ρ_Y + β·φ) Y_{t-1} + (β·γ_D + γ_Y) Z_{t-1}
 #   Z_t = (δ_D+δ_Y·β)·ρ_D D_{t-1} + ((δ_D+δ_Y·β)·φ + δ_Y·ρ_Y) Y_{t-1}
 #         + ((δ_D+δ_Y·β)·γ_D + δ_Y·γ_Y + ρ_Z) Z_{t-1}
+# Stationarity check: skip (not abort) unstable scenarios.
+# Unstable scenarios document the boundary condition for the paper.
 cat("Stationarity check (3x3 VAR companion matrix eigenvalues):\n")
+stable_flag <- logical(nrow(grid))
 for (g in 1:nrow(grid)) {
   ph <- grid$phi[g]
   rz <- grid$rho_Z[g]
@@ -182,14 +191,17 @@ for (g in 1:nrow(grid)) {
   ), nrow = 3, byrow = TRUE)
 
   max_eig <- max(abs(eigen(A, only.values = TRUE)$values))
+  stable_flag[g] <- max_eig < 1
   cat(sprintf("  [%2d] phi=%.2f rho_Z=%.2f  max|eig|=%.4f %s\n",
-              g, ph, rz, max_eig, ifelse(max_eig >= 1, "UNSTABLE!", "OK")))
-  if (max_eig >= 1) {
-    stop(sprintf("Unstable DGP at grid row %d: phi=%.2f, rho_Z=%.2f, max|eig|=%.4f",
-                 g, ph, rz, max_eig))
-  }
+              g, ph, rz, max_eig,
+              ifelse(stable_flag[g], "OK", "UNSTABLE — will skip")))
 }
-cat(sprintf("  All %d scenarios stable (max|eig| < 1).\n\n", nrow(grid)))
+grid[, stable := stable_flag]
+n_stable <- sum(stable_flag)
+n_unstable <- sum(!stable_flag)
+cat(sprintf("  Stable: %d/%d scenarios. Unstable (skipped): %d.\n\n",
+            n_stable, nrow(grid), n_unstable))
+if (n_stable == 0) stop("No stable scenarios in grid. Adjust parameters.")
 
 cat(sprintf("Grid: %d scenarios x %d reps\n", nrow(grid), N_REPS))
 cat(sprintf("DGP: beta=%.1f, rho_Y=%.1f, rho_D=%.1f, gamma_D=%.2f, gamma_Y=%.2f\n",
@@ -215,6 +227,12 @@ run_scenario <- function(g) {
   ph <- grid$phi[g]
   rz <- grid$rho_Z[g]
 
+  # Skip unstable scenarios
+
+  if (!grid$stable[g]) {
+    return(list(res = NULL, n_explosive = 0L, n_est_failed = 0L, skipped = TRUE))
+  }
+
   n_explosive  <- 0L
   n_est_failed <- 0L
   reps_list    <- vector("list", N_REPS)
@@ -239,13 +257,15 @@ run_scenario <- function(g) {
 
   reps_list <- reps_list[!vapply(reps_list, is.null, logical(1))]
   if (length(reps_list) == 0) {
-    return(list(res = NULL, n_explosive = N_REPS, n_est_failed = 0L))
+    return(list(res = NULL, n_explosive = N_REPS, n_est_failed = 0L,
+                skipped = FALSE))
   }
 
   res_g <- data.table::rbindlist(reps_list)
   res_g[, `:=`(phi = ph, rho_Z = rz)]
 
-  list(res = res_g, n_explosive = n_explosive, n_est_failed = n_est_failed)
+  list(res = res_g, n_explosive = n_explosive, n_est_failed = n_est_failed,
+       skipped = FALSE)
 }
 
 set.seed(2026300)
@@ -260,16 +280,28 @@ cat(sprintf("\nTotal time: %.1fs (parallel, 4 workers)\n", elapsed))
 all_res           <- lapply(par_out, `[[`, "res")
 explosive_counts  <- vapply(par_out, `[[`, integer(1), "n_explosive")
 est_failed_counts <- vapply(par_out, `[[`, integer(1), "n_est_failed")
+skipped_flags     <- vapply(par_out, `[[`, logical(1), "skipped")
 discarded_counts  <- explosive_counts + est_failed_counts
 
 for (g in 1:nrow(grid)) {
-  cat(sprintf("[%2d/%d] phi=%.2f rho_Z=%.2f  explosive: %d  est_failed: %d  total_disc: %d/%d\n",
-              g, nrow(grid), grid$phi[g], grid$rho_Z[g],
-              explosive_counts[g], est_failed_counts[g],
-              discarded_counts[g], N_REPS))
+  if (skipped_flags[g]) {
+    cat(sprintf("[%2d/%d] phi=%.2f rho_Z=%.2f  SKIPPED (unstable DGP)\n",
+                g, nrow(grid), grid$phi[g], grid$rho_Z[g]))
+  } else {
+    cat(sprintf("[%2d/%d] phi=%.2f rho_Z=%.2f  explosive: %d  est_failed: %d  total_disc: %d/%d\n",
+                g, nrow(grid), grid$phi[g], grid$rho_Z[g],
+                explosive_counts[g], est_failed_counts[g],
+                discarded_counts[g], N_REPS))
+  }
 }
 
 results <- rbindlist(all_res[!vapply(all_res, is.null, logical(1))])
+
+if (nrow(results) == 0) {
+  cat("ERROR: No valid results. All reps failed (explosive or estimation error).\n")
+  cat("Check DGP parameters and stationarity.\n")
+  quit(status = 1)
+}
 
 
 # ---- Summary ----
@@ -305,9 +337,14 @@ summ <- results[, {
   out
 }, by = .(phi, rho_Z)]
 
-# Add explosive counts
+# Add discarded counts (only for stable scenarios that were actually run)
 disc_dt <- data.table(grid[, .(phi, rho_Z)],
-                      n_explosive = explosive_counts)
+                      n_explosive = explosive_counts,
+                      n_est_failed = est_failed_counts,
+                      n_discarded = discarded_counts,
+                      skipped = skipped_flags)
+disc_dt <- disc_dt[skipped == FALSE]
+disc_dt[, skipped := NULL]
 summ <- merge(summ, disc_dt, by = c("phi", "rho_Z"), all.x = TRUE)
 
 
@@ -322,7 +359,7 @@ for (rz in c(0.5, 0.7)) {
   s <- summ[rho_Z == rz]
 
   cat("BIAS (estimate - beta_true):\n")
-  bias_tab <- s[, .(phi, n_sims, n_explosive,
+  bias_tab <- s[, .(phi, n_sims, n_discarded,
     `TWFE_s`    = round(twfe_s_bias, 4),
     `TWFE_l`    = round(twfe_l_bias, 4),
     `ADL_Ylag`  = round(adl_Ylag_bias, 4),
@@ -396,9 +433,16 @@ max_formula_err <- summ[, max(abs(mean_ivb - mean_ivb_formula))]
 cat(sprintf("1b. Max scenario-level |mean_IVB - mean(-theta*pi)|: %.6f (should be ~0)\n",
             max_formula_err))
 
-# 2. Explosive count
-cat(sprintf("2. Explosive/failed: total %d (should be 0 or very low)\n",
-            sum(explosive_counts)))
+# 2. Discarded breakdown (explosive vs estimation failures, among stable scenarios)
+stable_idx <- which(!skipped_flags)
+cat(sprintf("2. Stable scenarios: %d/%d. Unstable (skipped): %d.\n",
+            length(stable_idx), nrow(grid), sum(skipped_flags)))
+cat(sprintf("   Explosive: total %d. Estimation failed: total %d. (both should be 0 or very low)\n",
+            sum(explosive_counts[stable_idx]), sum(est_failed_counts[stable_idx])))
+if (length(stable_idx) > 0) {
+  cat(sprintf("   Max discarded per scenario: %d/%d\n",
+              max(discarded_counts[stable_idx]), N_REPS))
+}
 
 # 3. phi=0 baseline: TWFE_s bias should match dual_role_z pattern
 # (OVB from omitting Z_lag with confounder channels active)
@@ -411,11 +455,18 @@ if (nrow(baseline) > 0) {
 }
 
 # 4. TWFE bias should grow with phi (strict exogeneity violation)
-cat("4. TWFE_s bias by phi (expect monotonic growth in |bias|):\n")
+# Programmatic check: |bias(phi=max)| > |bias(phi=0)| for each rho_Z
+cat("4. TWFE_s |bias| growth with phi:\n")
 for (rz in c(0.5, 0.7)) {
-  s <- summ[rho_Z == rz, .(phi, bias = round(twfe_s_bias, 4))]
-  cat(sprintf("   rho_Z=%.1f: ", rz))
-  cat(paste0("phi=", s$phi, ":", s$bias, collapse = "  "), "\n")
+  s <- summ[rho_Z == rz]
+  b0   <- abs(s[phi == 0,   twfe_s_bias])
+  bmax <- abs(s[phi == max(grid$phi), twfe_s_bias])
+  ok <- bmax > b0
+  cat(sprintf("   rho_Z=%.1f: |bias(phi=0)|=%.4f  |bias(phi=%.1f)|=%.4f  %s\n",
+              rz, b0, max(grid$phi), bmax, ifelse(ok, "OK (grew)", "WARNING")))
+  # Also print full series
+  cat(sprintf("     series: %s\n",
+              paste0("phi=", s$phi, ":", round(s$twfe_s_bias, 4), collapse = "  ")))
 }
 
 # 5. ADL_all should be more robust than TWFE (at least for moderate phi)

@@ -1,248 +1,240 @@
-# Devil's Advocate Report -- Round 1 (Manuscript Review)
+# Stage 2: Devil's Advocate -- ivb_paper_psrm.Rmd (Round 1)
 
-**Manuscrito avaliado**: `ivb_paper_psrm.Rmd`
-**Data da revisao**: 2026-02-28
-**Revisor**: Devil's Advocate (Stage 2)
-**Target journal**: Political Science Research and Methods (PSRM)
-
----
-
-## Score: 62/100 -> REPROVADO
+**Date**: 2026-03-03
+**Manuscript**: `ivb_paper_psrm.Rmd` (1238 lines)
+**Focus**: Newly added Sections 4.3--4.5, updated abstract/conclusion/limitations.
+**Prior version**: This file overwrites the 2026-02-28 round 1 report with a new review focused on the new sections.
 
 ---
 
-## Resumo do argumento central
+## Score: 46/100
 
-O paper deriva uma formula fechada para o Included Variable Bias (IVB = -theta* x pi), que quantifica o vies introduzido ao incluir uma variavel colisor em regressao. A formula e estendida de cross-section para modelos ADL usados em TSCS. Simulacoes Monte Carlo mostram que o IVB tende a ser pequeno em aplicacoes tipicas com TWFE (fixed effects absorvem variacao between, poucos switchers inflam SE, erro de medida atenua theta*). Seis estudos publicados sao replicados, encontrando IVBs medianos abaixo de 5%, embora GDP per capita gere IVBs de ate 58%.
+| # | Severity | Deduction | Section | Issue |
+|---|----------|-----------|---------|-------|
+| 1 | Critical | -20 | 4.3 | Multiple factual mismatches between text and simulation code/data |
+| 2 | Critical | -20 | 4.5 | Reports results for phi=0.15 that was never simulated |
+| 3 | Major | -10 | 4.4 / Conclusion | "at most 25%" TWFE IVB increase claim contradicted by data (actual: up to 40%) |
+| 4 | Minor | -2 | Abstract / Sec 4 / Conclusion | "over 300 DGP configurations" not verifiable from cited sims (~168) |
+| 5 | Minor | -2 | 4.5 | "phi >= 0.18 explosive" threshold not derivable from simulations |
 
----
+**Total deductions: -54. Score: 46/100**
 
-## Vulnerabilidades por severidade
-
-### Critico
-
-**1. A formula IVB e uma identidade algebrica trivial, nao uma contribuicao substantiva original (Secoes 3.1-3.2)**
-
-Deducao: -20
-
-A formula IVB = beta_long - beta_short = -theta* x pi e uma consequencia direta e bem conhecida do teorema FWL e da decomposicao short-vs-long regression. O proprio paper reconhece isso na Secao 3.1 (linha 323): "Our contribution lies not in the algebra per se." Porem, a Proposition 1 apresenta isso como um resultado formal com caixa e prova. Um referee hostil dira: "Isto e a formula de OVB lida ao contrario -- nao ha proposicao nova aqui, apenas uma reinterpretacao pedagogica de algebra conhecida." O paper de Pearl (2013) ja contem expressoes para collider bias em modelos lineares usando path analysis, e Ding & Miratrix (2015) derivaram formulas fechadas para M-bias. O paper precisa de uma defesa muito mais forte de por que empacotar uma identidade conhecida como "IVB formula" constitui uma contribuicao metodologica para PSRM.
-
-A comparacao com OVB na Tabela 1 e pedagogicamente util, mas pode ser lida por um referee como evidencia de que o resultado e trivial: se a unica diferenca entre IVB e OVB e "trocar short por long e adicionar um sinal negativo", entao nao ha insight novo.
-
-**Sugestao de fix**: (a) Reforcar a contribuicao como mudanca de frame cognitivo que muda a pratica aplicada -- mostrar que nenhum dos 6 estudos replicados (todos recentes, top journals) fez este calculo, demonstrando que a ferramenta nao e obvia para pesquisadores aplicados; (b) enfatizar que a extensao para ADL (Propositions 2-3) e genuinamente nova e nao aparece em Pearl (2013) nem em Ding & Miratrix (2015); (c) considerar rebaixar a Proposition 1 para "Observation" ou "Remark" e reservar o status de proposition para os resultados ADL e lag-substitution; (d) expandir a Secao 1.4 (Related Work) para ser mais precisa sobre exatamente o que Pearl (2013) e Ding & Miratrix (2015) cobrem e o que nao cobrem.
+## Status: REPROVADO
 
 ---
 
-**2. A Secao 5 (simulacoes) referencia figuras v4 cujo pipeline de validacao esta incompleto (Secao 5)**
+## Critical Vulnerabilities
 
-Deducao: -20
+### V1 (Critical, -20): Section 4.3 -- Multiple factual mismatches with simulation code and data
 
-O manuscrito inclui `knitr::include_graphics("plots/v4_heatmap_A_btw_wth.png")` e `plots/v4_heatmap_B_btw_wth.png` (linhas 585, 589). Segundo o CLAUDE.md do projeto, as simulacoes v4 estao em status "ESCRITA, NAO REVISADA, NAO RODADA" e o review de codigo esta PENDENTE. Embora os PNGs existam no diretorio plots/, o codigo que os gerou (sim_ivb_twfe_v4.R + sim_ivb_twfe_v4_figures.R) nao passou por review formal. A Secao 5 faz claims substantivas cruciais ("horizontal bands confirm that FE absorbs the between component") baseadas nessas figuras. Se o codigo v4 contiver bugs -- especialmente no DGP de mecanismos A/B que separa gamma_D_btw e gamma_D_wth -- toda a narrativa da Secao 5 esta comprometida.
+**Location**: Line 592, Section 4.3 "ADL Specifications Reduce Residual IVB"
 
-Agravante: a Secao 5 e central para o argumento do paper. Sem ela, o paper se reduz a "aqui esta uma formula" + "ela da numeros pequenos em 6 estudos". A Secao 5 fornece a explicacao *por que* os numeros sao pequenos. Se a explicacao esta baseada em simulacoes nao-validadas, o paper perde sua espinha dorsal analitica.
+The text states:
+> "Across 48 scenarios with binary staggered treatment ($N = 200$, $T = 30$, 500 replications), TWFE without $Z$ exhibits bias of 86--169% of $\beta$"
 
-**Sugestao de fix**: Completar o pipeline de review do codigo v4 antes de submeter. Adicionar sanity checks explicitos no texto (e.g., "the IVB computed from the formula matches the empirical difference beta_long - beta_short to machine precision in all 212 scenarios"). Documentar a provenance dos plots e garantir reprodutibilidade.
+Three factual errors verified against the code and data:
 
----
-
-### Major
-
-**3. O paper nao oferece nenhum criterio operacional para distinguir colisores de confounders na pratica (Secoes 3.6, 6)**
-
-Deducao: -10
-
-A Secao 3.6 ("Interpretation Caveats") reconhece honestamente que a formula IVB e uma identidade que vale independentemente de Z ser colisor, confounder, ou mediador. O paper diz que "only the DAG determines which case applies." Porem, o paper NAO oferece ferramentas para construir ou validar o DAG. Nas aplicacoes empiricas (Secao 6), a classificacao de GDP per capita como colisor vs. confounder e baseada em revisao narrativa da literatura -- e o proprio paper admite que no caso Rogowski a classificacao e "causally ambiguous" (linha 822).
-
-Um referee dira: "Se a formula so funciona como diagnostico de colisor quando voce ja sabe o DAG, e construir o DAG e o problema dificil, qual e a contribuicao pratica? Voce esta dando ao pesquisador a resposta para uma pergunta que ele so pode fazer depois de ja ter resolvido o problema principal."
-
-**Sugestao de fix**: (a) Ser mais explicito sobre condicoes suficientes para classificar Z como colisor (e.g., existencia de evidencia causal crivel de D->Z e Y->Z em estudos separados, ausencia de evidencia de Z->Y e Z->D); (b) reframe a formula como ferramenta de *sensitivity analysis* que vale independentemente do status causal de Z -- "quanto muda o resultado se eu incluo/excluo Z?" e uma pergunta util mesmo sem saber se Z e colisor; (c) considerar um framework de partial identification: quando o status de Z e ambiguo, o efeito verdadeiro esta entre beta_short e beta_long.
-
----
-
-**4. A conclusao "IVBs are typically modest" pode ser uma profecia autorrealizavel (Secoes 5, 6)**
-
-Deducao: -10
-
-A Secao 5 argumenta que quatro mecanismos tornam o IVB pequeno em paineis tipicos. A Secao 6 confirma com medianas abaixo de 5%. Porem ha varios problemas com esta claim:
-
-(a) **Selection bias nos estudos**: Os seis estudos empiricos sao todos TWFE com paineis longos (T >> 20), exatamente o caso onde os mecanismos A-D predizem IVBs pequenos. O paper nao examina estudos com T curto, tratamentos continuos, ou dados sem FE -- onde o IVB poderia ser grande. A generalizacao de 6 estudos TWFE para "typical TSCS applications" e indevida.
-
-(b) **DGP limpo**: Nas simulacoes, delta=0 (Z e colisor puro, sem confounding). Na pratica, Z e quase sempre simultaneamente colisor e confounder (o paper reconhece isso na Secao 3.6). Os IVBs simulados nao capturam o trade-off entre vies de colisor e vies de variavel omitida.
-
-(c) **Diluicao por controles irrelevantes**: O fato de que "median IVB < 5%" depende de contar todos os controles em cada estudo. A maioria dos controles nao e plausivelmente um colisor (e.g., Literacy em Blair et al., % Muslim em Claassen), entao nao e surpreendente que seu IVB seja pequeno. A metrica mais relevante e o IVB dos controles que sao plausivelmente colisores -- e nesses casos (GDP p.c.), o IVB chega a 16-58%.
-
-**Sugestao de fix**: (a) Incluir pelo menos um estudo com T curto ou sem FE; (b) separar na tabela-resumo os controles "plausivelmente colisores" dos "implausively colisores" e reportar medianas separadas; (c) ser mais cauteloso na conclusao: "IVBs are modest *in TWFE panels with long T and slow-moving binary treatments*" em vez de generalizar para "typical TSCS applications."
-
----
-
-**5. O conceito de "foreign collider bias" e mal definido e potencialmente confuso (Secao 2.2)**
-
-Deducao: -10
-
-O paper introduz "foreign collider bias" como um conceito original (linhas 252-254), definindo-o como colisor bias que so e descoberto consultando literaturas "foreign" ao estudo focal. Porem:
-
-(a) **Nao e um tipo novo de bias**: O mecanismo causal e identico ao collider bias "domestico." A novidade e puramente epistemica (o pesquisador precisa ler outra literatura), nao estrutural. Um referee dira: "Isto nao e um conceito novo -- e apenas observar que pesquisadores as vezes nao percebem colisores."
-
-(b) **A terminologia pode confundir**: Leitores podem pensar que "foreign" se refere a bias entre paises, ou bias importado de outra estimativa, ou algo especifico de relacoes internacionais.
-
-(c) **Sem evidencia de que e comum ou severo**: O paper nao demonstra sistematicamente que "foreign collider bias" e empiricamente mais comum ou mais severo do que collider bias identificado pela literatura "domestica."
-
-**Sugestao de fix**: (a) Renomear para algo mais descritivo como "hidden collider bias" ou "cross-domain collider bias"; (b) reduzir as claims sobre novidade conceitual e focar na implicacao pratica: pesquisadores devem investigar os determinantes de cada variavel de controle; (c) alternativamente, manter o nome mas defini-lo com mais rigor e dar mais exemplos de outros dominios.
-
----
-
-**6. As aplicacoes empiricas tratam TODOS os controles como candidatos a colisor sem justificativa causal individual (Secao 6)**
-
-Deducao: -10
-
-Na Tabela 1 e no texto, o paper computa o IVB para cada controle "treating each control variable in turn as a candidate collider" (linha 613). Para a maioria dos controles, nao ha justificativa causal de que sejam colisores. Exemplos: Literacy em Blair et al. -- nao ha razao para crer que peacekeeping causa Literacy; % Muslim em Claassen -- nao ha razao para crer que public mood causa % Muslim; Fuel exports em Blair et al. -- nao ha razao para crer que democratization causa fuel exports.
-
-Isso cria dois problemas: (a) infla artificialmente o N de "controles testados" na tabela, diluindo as medianas e reforçando a narrativa de "IVBs are typically modest"; (b) pode dar ao leitor a falsa impressao de que o IVB foi avaliado para colisores reais quando na verdade foi computado mecanicamente para todos os regressores sem raciocinio causal.
-
-O paper e internamente inconsistente neste ponto: a Secao 3.6 enfatiza que a formula so tem interpretacao de colisor quando o DAG confirma o status de colisor, mas a Secao 6 ignora isso e aplica a formula indiscriminadamente.
-
-**Sugestao de fix**: Para cada estudo, fornecer uma breve justificativa causal de quais controles sao plausivelmente colisores (com base nas literaturas sobre D->Z e Y->Z). Computar IVBs para todos os controles como exercicio algebrico, mas na discussao e na tabela-resumo, separar "collider-plausible" de "mechanically computed" e reportar estatisticas separadas.
-
----
-
-### Minor
-
-**1. O abstract promete mais do que o paper entrega sobre "structural conditions" (Abstract vs. Secao 5)**
-
-Deducao: -3
-
-O abstract afirma: "We identify structural conditions -- fixed effects absorbing between-unit variation, few treatment switchers, measurement error in controls -- that explain why IVB tends to be modest." Para os mecanismos A e B, ha uma derivacao algebrica informal (pi depende de gamma_D_wth, nao gamma_D_btw). Porem, para os mecanismos C (switchers) e D (measurement error), o paper apenas mostra resultados de simulacao sem derivacao formal. A palavra "identify" implica uma demonstracao rigorosa que nao esta presente para todos os mecanismos.
-
----
-
-**2. A Proposition 4 (lag substitution) e tecnicamente correta mas praticamente vazia (Secao 3.5)**
-
-Deducao: -3
-
-A Proposition 4 mostra que substituir D_t por D_{t-k} nao elimina o IVB mecanicamente. Porem, a proposicao diz apenas que o IVB depende dos omega_{lk} (projecoes de D_{t-l} em D_{t-k}), sem nenhuma orientacao sobre quando os omega sao grandes ou pequenos, nem estimativas empiricas. O resultado e "lagging doesn't mechanically cure IVB" -- correto mas pouco informativo. Nao diz ao pesquisador se lagar o tratamento ajuda *na pratica* nem em que condicoes.
-
----
-
-**3. A interacao com Nickell bias e discutida mas nao verificada empiricamente (Secao 3.4)**
-
-Deducao: -3
-
-A Secao 3.4 discute como Nickell bias contamina theta* e pi quando T e pequeno e conclui que o efeito e "bounded by O(1/T)." Porem, nas aplicacoes empiricas, o paper nao verifica se os T efetivos dos estudos replicados (apos missing data) sao suficientemente grandes para que a contaminacao Nickell seja negligenciavel. Nao ha simulacoes com T pequeno para ilustrar a magnitude do problema.
-
----
-
-**4. Nenhuma aplicacao empirica usa o modelo ADL -- todas usam TWFE estatico (Secao 6)**
-
-Deducao: -3
-
-O paper dedica esforco substancial para estender a formula IVB ao ADL(1,0) e ADL(p,q) (Secoes 3.3-3.4, Propositions 2-3). Porem, nenhuma das seis aplicacoes empiricas inclui um lagged dependent variable. Todas as replicacoes usam feols com country + year FE sem LDV. Isso deixa a extensao ADL como resultado puramente teorico sem validacao empirica. Um referee perguntara: "Se a extensao ADL e uma contribuicao central, por que nao aplicar a formula a um estudo com LDV?"
-
----
-
-**5. Ausencia de standard errors ou intervalos de confianca para o IVB estimado (Secoes 5-6)**
-
-Deducao: -3
-
-O paper computa IVB = -theta_hat * pi_hat pontualmente, mas nunca reporta a incerteza desta estimativa. Como IVB e um produto de dois estimadores, sua distribuicao amostral nao e trivial. Sem intervalos de confianca, o leitor nao pode avaliar se um IVB de "5% do efeito" e significativamente diferente de zero. O paper de Cinelli & Hazlett (2020), citado como referencia para OVB sensitivity analysis, fornece bounds -- o IVB poderia se beneficiar de algo analogo.
-
----
-
-**6. O Appendix E (Potential Outcomes) e superficial e nao adiciona insight (Appendix E)**
-
-Deducao: -3
-
-O Appendix E tenta conectar IVB ao framework de potential outcomes, mas a conexao e meramente verbal: "conditioning on a collider violates conditional independence." Nao ha derivacao formal no framework PO, nem resultado novo. O appendix pode ser visto como padding por um referee exigente. Se mantido, deveria ser substantivamente aprofundado ou removido.
-
----
-
-**7. A Tabela 1 (summary) tem dados potencialmente enganosos para Claassen (FE) (Secao 6)**
-
-Deducao: -3
-
-Os dados empiricos mostram que Claassen (FE) tem IVB_pct_beta = 104% para Log GDP p.c. Isso ocorre porque beta_long e proximo de zero (-0.016) e o IVB (-0.016) e da mesma magnitude. Reportar "104%" como porcentagem de um efeito quase nulo e enganoso -- sugere um IVB enorme quando na verdade ambos beta e IVB sao minusculos em magnitude absoluta. O texto reconhece isso parcialmente ("where the treatment effect nearly vanishes"), mas a tabela em si sera mal interpretada por leitores que nao lerem o texto atentamente. Considere adicionar uma nota a tabela ou usar metricas alternativas (IVB/SE ou IVB/SD_Y) quando beta_long esta proximo de zero.
-
----
-
-## Calculo do score
-
+**1. N=200 is wrong.** The simulation code (`simulations/v4_mechanisms/sim_mechC_adl.R`, line 43) sets `N = 100`:
+```r
+P <- list(N = 100, TT = 30, T_burn = 100, beta = 1, ...)
 ```
-Score: 100
-Critico:
-  - Identidade algebrica trivial como contribuicao principal: -20
-  - Figuras v4 baseadas em simulacoes nao-validadas: -20
-Major:
-  - Nenhum criterio operacional para distinguir colisor de confounder: -10
-  - Conclusao "IVBs modest" potencialmente autorrealizavel: -10
-  - "Foreign collider bias" mal definido: -10
-  - Aplicacoes tratam todos controles como colisores sem justificativa: -10
-Minor:
-  - Abstract overpromises sobre "structural conditions": -3
-  - Proposition 4 praticamente vazia: -3
-  - Nickell bias discutida mas nao verificada: -3
-  - Nenhuma aplicacao ADL empirica: -3
-  - Sem SEs para IVB estimado: -3
-  - Appendix E superficial: -3
-  - Claassen (FE) 104% enganoso na tabela: -3
+The text says N=200. This is a simple factual error.
 
-Score bruto: 100 - 40 - 40 - 21 = -1 (cap at minimum)
+**2. Bias lower bound 86% is wrong.** The actual minimum TWFE short bias across 48 mechC_adl scenarios is **77.3%** (prob_switch=0.7, delta_D=0.1, delta_Y=0, rho_Z=0.5). The five smallest values are:
+- 77.3%, 78.5%, 81.8%, 82.1%, 83.7%
 
-Ajuste: As deducoes criticas sao genuinas mas tem mitigantes:
-  (1) O problema de "trivialidade" depende da reacao do referee -- ha argumentos fortes
-      para rebater, e a extensao ADL e o conceito de foreign collider bias sao originais.
-      Mas a defesa precisa ser mais forte no manuscrito. Ajuste: -20 -> -15
-  (2) O problema das simulacoes v4 e operacional -- pode ser resolvido completando o
-      pipeline antes da submissao. Mas enquanto nao for resolvido, a Secao 5 esta em
-      risco. Ajuste: -20 -> -15
-  (3) Major #5 (foreign collider bias): Tem merito como conceito heuristico mesmo que
-      a terminologia seja questionavel. Ajuste: -10 -> -7
+The correct range is **77--169%**, not 86--169%.
 
-Score final: 100 - 15 - 15 - 10 - 10 - 7 - 10 - 3 - 3 - 3 - 3 - 3 - 3 - 3 = 62/100
+**3. DGP description doesn't match the simulation.** The text describes:
+> "a dual-role $Z$ that is simultaneously a confounder ($Z_{t-1} \to D_t$, $Z_{t-1} \to Y_t$) and a collider"
 
-Score final: 62/100 -> REPROVADO (threshold: 70/100)
+But the mechC_adl simulation has **exogenous binary D** with no $Z \to D$ feedback. The code header (line 14) explicitly states: "D is exogenous binary -- no Z -> D feedback." The treatment equation is simply `D_it = 1(t >= T_i*)` (staggered adoption). There is no $Z_{t-1} \to D_t$ channel. The confounding operates only through $Z_{t-1} \to Y_t$.
+
+This matters for interpretation: the text claims to simulate a "dual-role Z" (both confounder and collider), but the actual DGP has Z as a one-way confounder (via $Z_{t-1} \to Y_t$) and collider (via $D_t \to Z_t \leftarrow Y_t$), without the Z-to-D feedback that would make it a "full" dual-role variable. The separate `sim_dual_role_z_8models.R` DOES have Z-to-D feedback, but that has 10 scenarios (not 48) with continuous D (not binary staggered).
+
+**Recommendation**: REESCREVER.
+- Fix N to 100
+- Fix bias range to 77--169%
+- Accurately describe the DGP: Z is a confounder via $Z_{t-1} \to Y_t$ only (not $Z_{t-1} \to D_t$), and D is exogenous binary with staggered adoption
+
+
+### V2 (Critical, -20): Section 4.5 -- Reports results for phi=0.15 that was never simulated
+
+**Location**: Lines 600--606, Section 4.5 "Feedback from Outcomes to Treatment"
+
+The text states:
+> "with $\phi \in \{0, 0.05, 0.10, 0.15\}$"
+
+and:
+
+> "TWFE bias grows monotonically with $\phi$: from 43% of $\beta$ at $\phi = 0$ to 80% at $\phi = 0.15$ (with $\rho_Z = 0.5$)"
+
+**Problems verified against code and data:**
+
+1. **phi=0.15 was never simulated.** The simulation grid (`simulations/dynamics/sim_direct_feedback.R`, line 98-99):
+```r
+grid <- CJ(
+  phi   = c(0, 0.05, 0.1),
+  rho_Z = c(0.5, 0.7)
+)
 ```
+The code header (line 11) states: "phi=0.2 and rho_Z=0.85 excluded -- VAR system is non-stationary." Only 6 scenarios were simulated, not 8.
+
+2. **The "80% at phi=0.15 with rho_Z=0.5" number is not in the data.** The actual TWFE short biases are:
+
+| phi | rho_Z | TWFE short bias |
+|-----|-------|----------------|
+| 0 | 0.5 | 43.2% |
+| 0 | 0.7 | 50.8% |
+| 0.05 | 0.5 | 55.7% |
+| 0.05 | 0.7 | 65.7% |
+| 0.10 | 0.5 | **68.6%** |
+| 0.10 | 0.7 | **80.4%** |
+
+The 80% figure comes from phi=0.1, rho_Z=**0.7** -- not phi=0.15, rho_Z=0.5 as claimed. The text attributes a specific result to the wrong parameter combination.
+
+3. **The claim "for phi >= 0.18 approximately, the system becomes explosive"** cannot be verified. The sim only tested phi in {0, 0.05, 0.1}. The specific threshold 0.18 appears to be interpolated or guessed.
+
+**Recommendation**: REESCREVER.
+- Correct phi grid to {0, 0.05, 0.10}
+- Report actual numbers: "from 43% at phi=0 to 69% at phi=0.1 (rho_Z=0.5), and from 51% to 80% at phi=0.1 (rho_Z=0.7)"
+- Change explosive threshold to: "For phi=0.2, the system becomes non-stationary" (matching the code comment) or compute the eigenvalue threshold analytically
+
+
+## Major Vulnerabilities
+
+### V3 (Major, -10): Section 4.4 and Conclusion -- "at most 25%" TWFE IVB increase claim is wrong
+
+**Location**: Line 598 (Section 4.4) and Line 908 (Conclusion)
+
+The text states:
+> "Even TWFE IVB grows by at most 25% relative to the linear case" (Section 4.4)
+
+And the conclusion repeats:
+> "bounded nonlinearities in the collider channel increase IVB by at most 25%"
+
+**This claim is contradicted by the NL simulation data** (`simulations/nonlinearity/results/sim_nl_collider_results.csv`). For bounded nonlinearities at T=30:
+
+| NL type | Bounded? | Strength | rho_Z | TWFE IVB change vs linear baseline |
+|---------|----------|----------|-------|------------------------------------|
+| invlogit | Yes (0 to 1) | 2 | 0.5 | **+40.1%** |
+| tanh | Yes (-1 to 1) | 2 | 0.5 | **+37.4%** |
+| invlogit | 2 | 0.7 | | **+27.5%** |
+| tanh | 1 | 0.5 | | +17.6% |
+| log4 | Yes (concave) | 2 | 0.5 | +12.5% |
+| softpoly2 | Yes (bounded) | 2 | 0.5 | +21.7% |
+
+Both invlogit (inverse logistic, bounded by [0,1]) and tanh (bounded by [-1,1]) are unambiguously "bounded" nonlinearities. At strength=2, they produce TWFE IVB increases of **37--40%** -- well above 25%.
+
+The ADL-all-lags result (< 3% bias) IS correct across all NL types and IS well-supported. The error is specifically in the TWFE IVB percentage claim.
+
+**Note**: The 25% figure may hold for specific NL types (e.g., log2, log4 at moderate strengths) but not universally for all bounded nonlinearities at all tested strengths.
+
+**Recommendation**: REESCREVER.
+- Option A: Change "at most 25%" to "typically less than 40% for bounded nonlinearities" (actual worst case across bounded types)
+- Option B: Qualify which bounded NL types and strengths the 25% applies to
+- Option C (recommended): Drop the TWFE percentage claim entirely and focus on the ADL result, which is the stronger and more policy-relevant finding: "For bounded nonlinearities, the ADL model with all lags remains robust: bias stays below 3% of beta"
+
+
+## Minor Vulnerabilities
+
+### V4 (Minor, -2): Abstract / Section 4 / Conclusion -- "over 300 DGP configurations" not verifiable
+
+**Location**: Lines 33 (abstract), 576 (Section 4 intro), 908 (conclusion)
+
+The simulations directly cited in Sections 4.2--4.5 total approximately 168 configurations:
+- mechC_adl (Section 4.2-4.3): 48
+- dual_role_z_8models (Section 4.3): 10
+- nl_collider (Section 4.4): 81
+- nl_interact (Section 4.4): 10
+- nl_carryover (Section 4.4): 13
+- direct_feedback (Section 4.5): 6
+
+Reaching 300 requires counting diagnostic simulations, sensitivity analyses, and dual_role_z variants not discussed in the paper body. The v1 simulation (600 configs) is explicitly described as "tautological."
+
+**Recommendation**: REESCREVER. Either (a) report the precise number from cited simulations ("approximately 170 DGP configurations") or (b) specify what "over 300" includes, e.g., "including sensitivity analyses in the online appendix."
+
+
+### V5 (Minor, -2): Section 4.5 -- "phi >= 0.18 approximately, explosive" threshold imprecise
+
+**Location**: Line 604
+
+> "For $\phi \geq 0.18$ (approximately), the joint dynamic system $(D, Y, Z)$ becomes explosive"
+
+The simulation only tested phi in {0, 0.05, 0.1}. The code excludes phi=0.2 with a comment about non-stationarity. The specific threshold 0.18 is not derived from any eigenvalue computation in the code, nor tested in simulation. It appears to be interpolated or asserted without verification.
+
+**Recommendation**: REESCREVER. Either compute the companion matrix eigenvalue threshold analytically and report it precisely, or soften to: "For $\phi = 0.2$, the system becomes non-stationary, defining the boundary of our simulation grid."
+
 
 ---
 
-## Contra-argumentos que um referee levantaria
+## Strengths
 
-### 1. "Isto nao e uma proposicao nova -- e a formula de OVB lida ao contrario"
+### S1: Strong theoretical core (Sections 2--3)
+The IVB formula derivation, OVB/IVB comparison table, extensions to ADL(p,q), and the lag-substitution proposition are clean, well-structured, and genuinely novel in their combination. The FWL-based approach is elegant.
 
-**Como rebater**: (a) Enfatizar que a contribuicao principal nao e a algebra cross-sectional, mas a *extensao para ADL* (Propositions 2-3), que e genuinamente nova e nao aparece em Pearl (2013) nem em Ding & Miratrix (2015); (b) demonstrar que a formula nao e obvia na pratica -- nenhum dos 6 estudos replicados fez este calculo, apesar de serem publicados em top journals; (c) a reparametrizacao em termos estimaveis (vs. coeficientes estruturais do LSEM) e uma contribuicao pratica real, assim como Cinelli & Hazlett (2020) contribuiram ao reparametrizar OVB sensitivity analysis; (d) a assimetria pratica e importante: OVB requer observar a variavel omitida (geralmente impossivel), enquanto IVB usa quantidades ja estimadas.
+### S2: Honest interpretation caveats (Section 3.8)
+The three-case discussion (collider vs. confounder vs. mediator) is unusually careful. The butterfly-structure discussion connecting to Ding & Miratrix (2015) and the future-work paragraph on simultaneous collider-confounder under TWFE show intellectual honesty.
 
-### 2. "A formula so funciona se voce ja sabe que Z e um colisor, e esse e o problema dificil"
+### S3: ADL robustness result is robust and well-supported
+Across ALL simulation families -- mechC_adl (48 configs), 8models (10 configs), nl_collider (81 configs), and direct_feedback (6 configs) -- the ADL with all lags keeps bias below 3% of beta. This is verified against the data and is the paper's strongest new empirical finding.
 
-**Como rebater**: (a) Conceder parcialmente e reframing: a formula e uma ferramenta de *sensitivity analysis* complementar ao DAG, nao um substituto; (b) mesmo sem certeza sobre o DAG, reportar o IVB e informativo -- mostra quanto o resultado muda se Z for de fato um colisor; (c) em casos ambiguos (como Rogowski), a formula quantifica o custo de cada decisao, permitindo ao pesquisador ser transparente; (d) a situacao e analoga ao OVB: a formula de OVB tambem requer saber que a variavel e um confounder, mas ninguem questiona sua utilidade.
+### S4: Empirical applications are well-executed
+The six-study replication with DAG-based classification tables (Appendix E) is thorough. The Leipziger deep dive (modest IVB, well-supported collider interpretation) and Rogowski deep dive (large IVB, causally ambiguous) are effective contrasts that demonstrate intellectual honesty.
 
-### 3. "Se IVBs sao tipicamente modestos, por que devemos nos importar?"
+### S5: "Foreign collider bias" concept
+The naming and framing -- requiring consultation of literatures "foreign" to the researcher's domain -- is a genuine conceptual contribution that will resonate with applied researchers.
 
-**Como rebater**: (a) "Tipicamente modesto" nao significa "sempre modesto" -- GDP per capita gera IVBs de 16-58% em estudos reais; (b) a propria demonstracao de que IVBs sao modestos em TWFE e uma contribuicao, porque calibra quantitativamente preocupacoes que a literatura de DAGs expressa qualitativamente; (c) o paper mapeia as condicoes de fronteira: quando os mecanismos A-D nao operam (cross-section, T curto, tratamento continuo, Z bem medido), IVBs podem ser grandes; (d) a ferramenta permite que pesquisadores individuais verifiquem se *seu* estudo especifico tem um IVB preocupante.
+### S6: Section 4.1 (FE absorption) is clean algebra
+The argument follows directly from Corollary 1 with no simulation needed. This is the most defensible mechanism in Section 4.
 
-### 4. "As simulacoes assumem delta=0 (colisor puro), o que e irrealista"
+### S7: Appropriate caveats on few-switchers (Section 4.2)
+The text correctly warns that small |IVB/SE| does not mean the bias is harmless, since the population IVB is constant regardless of switcher count. This prevents misinterpretation.
 
-**Como rebater**: (a) delta=0 isola o mecanismo de colisor para atribuicao limpa; (b) o caso misto e discutido na Secao 3.6 citando Ding & Miratrix (2015); (c) adicionar simulacoes com delta != 0 e uma extensao natural -- reconhecer como limitacao e propor para trabalho futuro; (d) na pratica, o pesquisador pode computar IVB como bound superior do vies de colisor quando desconhece o componente de confounding.
-
-### 5. "Os resultados empiricos sao baseados em selecao nao-aleatoria de estudos"
-
-**Como rebater**: (a) Os estudos cobrem 4 dominios substantivos distintos (democratizacao, peacekeeping, fiscal capacity, infraestrutura/crescimento, divida soberana); (b) sao estudos com dados acessiveis para replicacao; (c) TWFE com paineis longos e o design dominante em CP e IR; (d) reconhecer a limitacao e convidar outros pesquisadores a aplicar a formula a seus proprios estudos usando a funcao compute_ivb_multi().
-
-### 6. "Pearl (2013) ja tinha formulas para collider bias em modelos lineares"
-
-**Como rebater**: O paper ja cita Pearl (2013) na Secao 1.4. A distincao e tridimensional: (a) Pearl usa coeficientes estruturais do LSEM (nao-observaveis), o IVB formula usa coeficientes de regressao (observaveis); (b) Pearl nao estende ao ADL; (c) Pearl nao fornece uma receita diagnostica pratica para pesquisadores de CP/IR. A analogia e com a contribuicao de Cinelli & Hazlett (2020) vis-a-vis a formula classica de OVB: a formula ja existia, mas a operacionalizacao como ferramenta pratica e a contribuicao.
 
 ---
 
-## Recomendacoes prioritarias
+## Parsimony Assessment
 
-1. **[CRITICO] Validar o pipeline de simulacao v4 antes de submeter.** Completar o review de codigo (sim_ivb_twfe_v4.R + sim_ivb_twfe_v4_figures.R), rodar as simulacoes, verificar sanity checks (formula = empirical difference em todos os cenarios), e documentar a provenance dos plots. Sem isso, a Secao 5 e a reivindicacao central sobre "IVB modesto em TWFE" nao tem base solida. Esta e a correcao com maior impacto no score.
+### Should any section be CUT?
 
-2. **[CRITICO] Reforcar a defesa da contribuicao em relacao a trabalhos previos.** O paper precisa convencer o referee de que nao esta apenas renomeando uma identidade conhecida. Sugestoes concretas: (a) expandir a Secao 1.4 para ser precisa sobre o que Pearl (2013) e Ding & Miratrix (2015) derivam e onde param; (b) enfatizar que nenhum dos 6 estudos replicados computou o IVB; (c) considerar rebaixar Proposition 1 para "Observation" e manter Propositions 2-4 como contribuicoes formais originais; (d) adicionar uma frase explicita: "To the best of our knowledge, no prior work has derived the IVB formula for ADL models or applied it as a diagnostic in TSCS research."
+**Section 4.2 (few switchers)**: The weakest of the five mechanisms. The insight ("few switchers inflate SE relative to constant IVB") is straightforward, and the caveat ("but population IVB is constant, so this doesn't mean bias is harmless") largely undermines the reassurance. Consider CUTTING or folding into a single paragraph within Section 4.1. Current contribution does not justify a standalone subsection.
 
-3. **[MAJOR] Reformular as aplicacoes empiricas com raciocinio causal explicito.** Para cada estudo, identificar quais controles sao plausivelmente colisores (com justificativa D->Z e Y->Z) e quais nao sao. Reportar estatisticas separadas para "collider-plausible" e "mechanically computed." Isso resolve simultaneamente a inconsistencia interna (Secao 3.6 vs. Secao 6) e a diluicao das medianas.
+**Section 4.4 (NL robustness)**: Keep but rewrite. The ADL robustness result is valuable; the TWFE percentage claim must be corrected. Focus on the ADL finding.
 
-4. **[MAJOR] Adicionar ao menos uma aplicacao empirica com modelo ADL** para validar as Propositions 2-3. Considerar um dos estudos ja replicados que poderia ser re-estimado com LDV, ou um estudo adicional que use ADL nativamente.
+**Section 4.5 (feedback)**: Keep but rewrite with correct numbers. Connects well to Imai & Kim framework.
 
-5. **[MAJOR] Moderar a claim "IVBs are typically modest."** Qualificar explicitamente que esta conclusao se aplica a TWFE com T longo e tratamento binario. Discutir quando o IVB pode ser grande (cross-section, T curto, tratamento continuo, Z bem medido, Z fortemente causado por D e Y within-unit).
+**Appendix C (simulation code)**: Currently describes v1 DGPs (cross-section, ADL, civil war) that do not match the Section 4 simulations. Should be updated or removed.
 
-6. **[MINOR] Adicionar incerteza ao IVB estimado** -- pelo menos delta method ou bootstrap para as aplicacoes empiricas, ou uma discussao explicita de por que SEs para IVB nao sao reportados.
 
-7. **[MINOR] Reconsiderar a terminologia "foreign collider bias."** Se mantida, definir com mais rigor e distinguir claramente do conceito generico de collider bias. Se abandonada, descrever como um padrao empirico sem nome proprio.
+---
+
+## Consistency Check: Abstract -- Body -- Conclusion
+
+| Claim | Abstract | Body | Conclusion | Verified? |
+|-------|----------|------|------------|-----------|
+| IVB = -theta* x pi | Yes | Yes | Yes | CORRECT |
+| >300 DGP configs | Yes (L33) | Yes (L576) | Yes (L908) | **WRONG** (~168 from cited sims) |
+| ADL bias < 3% of beta | Yes | Yes | Yes | CORRECT (verified against data) |
+| Bounded NL: at most 25% | -- | Yes (L598) | Yes (L908) | **WRONG** (up to 40%) |
+| phi in {0,.05,.10,.15} | -- | Yes (L604) | -- | **WRONG** (phi=0.15 not simulated) |
+| TWFE 43% to 80% at phi=0.15 | -- | Yes (L604) | -- | **WRONG** (80% is at phi=0.1, rho_Z=0.7) |
+| N=200, T=30 for Sec 4.3 sim | -- | Yes (L592) | -- | **WRONG** (N=100 in code) |
+| 14 collider candidates | Yes | Yes | Yes | CORRECT |
+| Median IVB/SE ~ 0.13 | Yes | Yes | Yes | CORRECT |
+| Only Rogowski > 1 SE | Yes | Yes | Yes | CORRECT |
+| Five mechanisms | -- | Yes (L576) | Yes (L908) | CORRECT |
+| Bias < 1% for feedback (ADL) | -- | Yes (L604) | Yes (L908) | CORRECT (verified) |
+
+
+---
+
+## Recommendations Summary (Priority Order)
+
+1. **URGENT -- V1**: Fix Section 4.3 factual errors (N=100, bias range 77--169%, DGP description)
+2. **URGENT -- V2**: Fix Section 4.5 fabricated phi=0.15 results (correct grid, numbers, and threshold)
+3. **HIGH -- V3**: Fix "at most 25%" TWFE IVB claim in Section 4.4 and Conclusion
+4. **MEDIUM -- V4**: Verify "over 300 DGP" count or change to actual number
+5. **LOW -- V5**: Soften or verify explosive threshold claim
+6. **LOW**: Update Appendix C to describe actual Section 4 DGPs
+7. **OPTIONAL**: Consider cutting Section 4.2 for parsimony
