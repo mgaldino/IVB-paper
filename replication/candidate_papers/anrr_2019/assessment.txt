@@ -1,0 +1,292 @@
+=========================================================================
+IVB CANDIDATE ASSESSMENT
+Acemoglu, Naidu, Restrepo & Robinson (2019, JPE)
+"Democracy Does Cause Growth"
+=========================================================================
+
+Paper: Journal of Political Economy, Vol. 127, No. 1, pp. 47-100
+DOI: 10.1086/700936
+
+=========================================================================
+STEP 1: DATA DOWNLOAD STATUS
+=========================================================================
+
+PARTIAL SUCCESS:
+- Paper PDF downloaded from BU Economics website (746 KB)
+  Saved to: ANRR_2019_revised.pdf
+- Official JPE replication data (Stata .dta and .do files) could NOT be
+  downloaded -- the journals.uchicago.edu supplementary materials page
+  returns HTTP 403 (Forbidden), likely due to paywall/institutional access
+  requirements.
+- The GitHub repo (skriptum/DDCG) is a CLASS PROJECT replicating AJR 2001
+  (Colonial Origins), NOT the ANRR 2019 paper.
+- The democracyData R package contains only the democracy measure (8 cols),
+  not the full replication dataset with GDP, controls, etc.
+
+ACTION NEEDED: Download replication data manually from:
+  https://www.journals.uchicago.edu/doi/suppl/10.1086/700936
+  (requires institutional access to University of Chicago Press journals)
+
+=========================================================================
+STEP 2: PAPER ASSESSMENT FOR IVB ANALYSIS
+=========================================================================
+
+----- 2.1 IDENTIFICATION STRATEGY -----
+
+The paper uses THREE identification strategies:
+  (A) Dynamic linear panel model (within estimator / FE-OLS) -- Tables 2-4
+  (B) Semi-parametric treatment effects (propensity score) -- Table 5
+  (C) Instrumental variables (regional democracy waves) -- Table 6
+
+The BASELINE specification (Equation 1) is:
+
+  y_ct = beta * D_ct + sum_{j=1}^{p} gamma_j * y_{ct-j} + alpha_c + delta_t + epsilon_ct
+
+where:
+  - y_ct = log GDP per capita (country c, year t)
+  - D_ct = dichotomous democracy measure (0/1)
+  - y_{ct-j} = lags of log GDP per capita (typically 4 lags)
+  - alpha_c = country fixed effects
+  - delta_t = year fixed effects
+
+CRITICAL: The BASELINE specification (Table 2) has NO time-varying
+controls beyond lags of GDP itself. The only regressors are:
+  - Democracy (binary treatment)
+  - Lags of log GDP per capita
+  - Country FE + Year FE
+
+----- 2.2 DOES THE PAPER HAVE OLS/FE SPECIFICATIONS? -----
+
+YES. Table 2, Columns 1-4 use the "within estimator" (i.e., OLS with
+country and year fixed effects):
+  - Col 1: 1 lag of GDP (N=6,790, 175 countries)
+  - Col 2: 2 lags of GDP (N=6,642, 175 countries)
+  - Col 3: 4 lags of GDP -- PREFERRED specification (N=6,336, 175 countries)
+      Democracy coefficient: 0.787 (se=0.226)
+      Long-run effect: 21.24% (se=7.21%)
+  - Col 4: 8 lags of GDP (N=5,688, 175 countries)
+
+Columns 5-8: Arellano-Bond GMM (not OLS -- excluded)
+Columns 9-12: HHK estimator (not OLS -- excluded)
+
+Table 3: Same as Table 2 but with GDP GROWTH RATE as dependent variable.
+  Within estimator in Cols 1-4 is also OLS/FE.
+
+Table 4: ROBUSTNESS with additional covariates (within estimator = OLS/FE):
+  - Col 1: Baseline (same as Table 2, Col 3)
+  - Col 2: GDP in 1960 quintiles x year effects
+  - Col 3: Soviet dummies
+  - Col 4: Lags of unrest (4 lags)
+  - Col 5: Lags of trade (4 lags of import+exports/GDP)
+  - Col 6: Lags of financial flows
+  - Col 7: Lags of demographic structure (log pop, share <16, share >64)
+  - Col 8: Region x regime x year effects
+
+----- 2.3 WHAT ARE THE CONTROL VARIABLES? -----
+
+In the BASELINE (Table 2, Col 3):
+  - 4 lags of log GDP per capita (continuous, time-varying)
+  - Country FE (absorbed)
+  - Year FE (absorbed)
+
+In the ROBUSTNESS (Table 4, Panel A within estimator):
+  Col 4 adds: 4 lags of social unrest dummy
+  Col 5 adds: 4 lags of trade share (imports+exports)/GDP
+  Col 6 adds: 4 lags of net foreign assets/GDP
+  Col 7 adds: 4 lags of log population + share pop <16 + share pop >64
+
+----- 2.4 COLLIDER ASSESSMENT FOR IVB -----
+
+For IVB, we need controls Z where:
+  - D (democracy) --> Z  (treatment causes the control)
+  - Y (GDP growth) --> Z  (outcome causes the control)
+  - Possibly also Z --> Y and Z --> D (confounder role)
+
+ASSESSMENT OF EACH CONTROL:
+
+(a) LAGS OF LOG GDP PER CAPITA (y_{ct-1}, ..., y_{ct-4}):
+    - These are LAGGED values of the outcome variable
+    - D --> Z: Democracy at t could affect GDP at t+1, so past democracy
+      affects current GDP lags. But D_ct does not cause y_{ct-1} through
+      y_{ct-4} because those are PRIOR to treatment time.
+    - Y --> Z: GDP at t does not cause GDP at t-1 through t-4 (temporal
+      ordering prevents this).
+    - VERDICT: NOT COLLIDERS. These are predetermined/lagged variables.
+      They are confounders (past GDP affects both future democracy and
+      future GDP), not colliders. Standard conditioning variable.
+
+    HOWEVER, there is a subtlety: in a DYNAMIC panel, the lags of the
+    dependent variable create a complex relationship. The Nickell bias
+    is well-known. But this is not the same as IVB/collider bias.
+
+(b) LAGS OF UNREST (Table 4, Col 4):
+    - D --> Z: Democracy could affect unrest (democracy may reduce or
+      increase social unrest). Table 7 shows democracy reduces unrest
+      (coef = -7.832, within).
+    - Y --> Z: GDP growth could affect unrest (economic crises trigger
+      protests). Plausible reverse causation.
+    - Z --> D: Unrest can trigger democratization (Arab Spring).
+    - Z --> Y: Unrest reduces GDP growth.
+    - VERDICT: POSSIBLE COLLIDER + CONFOUNDER (dual role). However,
+      these are LAGGED unrest values (t-1 to t-4), not contemporaneous.
+      Lagged unrest is plausibly predetermined relative to current D and
+      current Y, reducing collider concerns.
+
+(c) LAGS OF TRADE (Table 4, Col 5):
+    - D --> Z: Democracy could increase trade openness. Table 7 shows
+      positive but imprecise effect (coef=0.689, se=1.409).
+    - Y --> Z: GDP growth increases trade (mechanical: denominator
+      effect, and richer countries trade more).
+    - Z --> D: Trade openness could affect democratization (exposure to
+      democratic norms, economic interests).
+    - Z --> Y: Trade affects GDP growth.
+    - VERDICT: POSSIBLE COLLIDER + CONFOUNDER. But again these are
+      LAGGED values. The authors themselves note: "these specifications
+      need to be interpreted with some caution since trade and financial
+      flows are endogenous to democracy."
+
+(d) LAGS OF FINANCIAL FLOWS (Table 4, Col 6):
+    - Similar logic to trade. Dual collider + confounder role possible.
+    - But LAGGED values reduce concern.
+
+(e) LAGS OF DEMOGRAPHIC STRUCTURE (Table 4, Col 7):
+    - D --> Z: Democracy could affect population growth (through health
+      policy, fertility policy). Slow-moving variable.
+    - Y --> Z: GDP affects demographics (demographic transition).
+    - VERDICT: Very slow-moving, largely predetermined. WEAK COLLIDER
+      concern at best.
+
+----- 2.5 KEY PROBLEM: BASELINE HAS NO TIME-VARYING CONTROLS -----
+
+*** THIS IS THE CRITICAL ISSUE FOR IVB ***
+
+The BASELINE specification (Table 2) -- which is the paper's MAIN
+result -- includes ONLY:
+  1. Democracy (binary treatment)
+  2. Lags of log GDP per capita
+  3. Country FE + Year FE
+
+There are NO continuous time-varying controls that could serve as
+colliders in the baseline specification. The lags of GDP are part of the
+dynamic structure of the model, not "included variables" in the IVB sense.
+
+The ROBUSTNESS specifications (Table 4) DO add time-varying controls,
+but:
+  - These are all LAGGED values (t-1 through t-4), not contemporaneous
+  - They are included specifically as robustness checks
+  - The paper shows the baseline results are NOT sensitive to including
+    them (the democracy coefficient barely changes)
+  - The authors treat these as potential confounders, not mechanisms
+
+----- 2.6 WHAT ABOUT TABLE 7 (MECHANISMS)? -----
+
+Table 7 estimates equation (7): m_ct = beta*D_ct + gamma*y_{ct-j} +
+eta*m_{ct-j} + alpha_c + delta_t + epsilon_ct
+
+This regresses MECHANISM VARIABLES on democracy:
+  Col 1: Log investment share --> Democracy coef = 2.391 (se=1.114)
+  Col 2: Log TFP --> Democracy coef = -0.205 (se=0.276)
+  Col 3: Economic reforms index --> Democracy coef = 0.687 (se=0.348)
+  Col 4: Log trade share --> Democracy coef = 0.689 (se=1.409)
+  Col 5: Log tax share --> Democracy coef = 3.311 (se=0.338)
+  Col 6: Log primary enrollment --> Democracy coef = 1.042 (se=0.338)
+  Col 7: Log secondary enrollment --> Democracy coef = 1.345 (se=0.610)
+  Col 8: Log child mortality --> Democracy coef = -0.253 (se=0.063)
+  Col 9: Unrest dummy --> Democracy coef = -7.832 (se=2.185)
+
+These are CHANNEL regressions (D --> Z, not Y ~ D + Z), so they could
+potentially provide the pi values for IVB computation if we had a
+specification that included these as controls in a GDP regression.
+
+HOWEVER, there is no specification in the paper that simultaneously:
+  (a) regresses GDP on democracy AND
+  (b) includes these mechanism variables as controls
+
+The authors deliberately AVOID controlling for mechanisms in the GDP
+equation because they recognize these are channels/mediators, not
+confounders.
+
+=========================================================================
+STEP 3: VERDICT
+=========================================================================
+
+*** VERDICT: BAD CANDIDATE FOR IVB ANALYSIS ***
+
+REASONS:
+
+1. NO TIME-VARYING CONTROLS IN BASELINE SPECIFICATION
+   The main specification (Table 2, Col 3) controls only for lags of GDP,
+   country FE, and year FE. There are no "included variables" Z that could
+   be colliders. The IVB formula IVB = -theta* x pi requires a control
+   variable Z in the regression Y ~ D + Z + W, and no such Z exists in
+   the baseline.
+
+2. ROBUSTNESS CONTROLS ARE ALL LAGGED
+   Table 4 adds lagged values of unrest, trade, financial flows, and
+   demographics. Because these are lagged (t-1 to t-4), they are
+   plausibly predetermined and less susceptible to collider bias. The
+   temporal ordering weakens the Y --> Z_lag channel that is essential
+   for collider bias.
+
+3. TREATMENT IS BINARY (0/1)
+   The democracy variable D_ct is dichotomous, not continuous. While FWL
+   still applies algebraically, the interpretation of pi (coefficient of D
+   in regression Z ~ D + W) with a binary treatment is a mean difference,
+   which may not fit the IVB framework as naturally.
+
+4. MAIN ESTIMATORS INCLUDE GMM/IV
+   The paper's preferred specifications involve GMM (Arellano-Bond) and
+   HHK estimators in addition to within-OLS. The IV specifications in
+   Table 6 use regional democracy waves as instruments. IVB analysis
+   requires pure OLS/FE specifications.
+
+5. NO SPECIFICATION WITH MECHANISMS AS CONTROLS
+   The paper intentionally does NOT include mechanism variables
+   (investment, trade, schooling, etc.) as controls in the GDP regression.
+   Table 7 only shows D --> mechanism regressions. Without a "long
+   regression" that includes both D and mechanisms as regressors of GDP,
+   we cannot compute theta*.
+
+WHAT WOULD MAKE IT A GOOD CANDIDATE:
+   If the paper had a specification like:
+     y_ct = beta*D_ct + theta*investment_ct + theta*trade_ct +
+            theta*schooling_ct + gamma*y_{ct-j} + alpha_c + delta_t + e_ct
+
+   Then investment, trade, and schooling would be plausible colliders
+   (caused by both D and Y), and we could compute IVB. But this
+   specification does NOT exist in the paper.
+
+=========================================================================
+SPECIFIC TABLE/COLUMN REFERENCES
+=========================================================================
+
+Best OLS/FE specification for any IVB attempt:
+  Table 4, Panel A, Columns 4-7 (within estimator with added covariates)
+
+  But the controls added are:
+  - Col 4: Lagged unrest (weak collider, lagged)
+  - Col 5: Lagged trade (weak collider, lagged)
+  - Col 6: Lagged financial flows (weak collider, lagged)
+  - Col 7: Lagged demographics (very weak collider, lagged)
+
+  The democracy coefficient barely moves from 0.787 (baseline) to
+  0.595-0.926 across these specifications, confirming the controls
+  have little impact.
+
+BEST (least bad) candidate specification:
+  Table 4, Panel A, Column 5 (within estimator + lags of trade)
+  - Democracy coef: 0.595 (se=0.264) vs. baseline 0.787 (se=0.226)
+  - Trade is most plausible collider (D->trade and Y->trade)
+  - But trade is LAGGED, weakening collider channel
+
+=========================================================================
+FINAL ASSESSMENT: BAD
+=========================================================================
+This paper is a BAD candidate for IVB analysis because:
+(a) The baseline specification has no time-varying controls beyond GDP lags
+(b) All robustness controls are lagged, reducing collider concerns
+(c) Mechanism variables are analyzed separately, never included as
+    controls in the GDP equation
+(d) The treatment is binary
+(e) The paper's design is explicitly dynamic panel, not
+    selection-on-observables with a rich set of controls

@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Ideação v2: Lead do Paper IVB — Pós-DA</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Ideação v2: Lead do Paper IVB — Pós-DA</h1>
+</header>
+<h1 id="ideação-v2-lead-do-paper-ivb-pós-da">Ideação v2: Lead do Paper
+IVB — Pós-DA</h1>
+<p><strong>Data</strong>: 2026-03-02 <strong>Inputs</strong>:
+ideation_paper_lead.md (v1), da_lead_b_report.md,
+nl_simulation_report.md (unificado)</p>
+<hr />
+<h2 id="avaliação-do-da-ponto-a-ponto">1. Avaliação do DA: ponto a
+ponto</h2>
+<h3 id="o-que-o-da-acertou">O que o DA acertou</h3>
+<p><strong>1. O “debate” é overstated (Seção 1 do DA).</strong> O DA tem
+razão que não existe um “debate ativo” com Blackwell &amp; Glynn de um
+lado e Imai &amp; Kim do outro. Os dois papers abordam failure modes
+diferentes. Blackwell &amp; Glynn tratam de post-treatment bias quando Z
+é afetado pelo tratamento; Imai &amp; Kim tratam de strict exogeneity
+violation em TWFE estático. Framing como “debate” é vulnerável a um
+reviewer que conheça os dois papers.</p>
+<p><strong>2. O manuscrito está escrito como Lead A (Seção 4.4 do
+DA).</strong> Reescrever para Lead B exige reestruturação real do paper,
+não apenas cosmética.</p>
+<p><strong>3. Collider puro vs caso misto precisa ser formalizado (Seção
+4.3 do DA).</strong> O DA tem razão que essa distinção está como caveat
+quando deveria ser resultado central.</p>
+<p><strong>4. D binário é um problema (implícito na Seção 2.3 do
+DA).</strong> O DA apontou que o paper só testava tratamento contínuo.
+As simulações v4 Mecanismo C agora confirmam: IVB é 16–53% de β com D
+binário. Isso é uma exceção real.</p>
+<p><strong>5. As NL simulations deveriam estar no paper (Seção 6.7 do
+DA).</strong> Correto.</p>
+<h3 id="o-que-o-da-errou">O que o DA errou</h3>
+<p><strong>1. “Precisa simular MSM/SNMM” (Seção 2, 4.1, 6.1, 7a do DA) —
+ERRADO.</strong></p>
+<p>Este é o erro central do DA. A claim do paper <strong>não é</strong>
+“ADL domina MSM em RMSE”. A claim é: “o post-treatment bias que motiva
+Blackwell &amp; Glynn a recomendar MSM é empiricamente pequeno.”</p>
+<p>Isso é uma distinção crucial. Não precisamos comparar ADL vs MSM
+diretamente. Precisamos mostrar que <strong>o problema que motivou a
+recomendação de MSM é negligível</strong>.</p>
+<p><strong>Verificação direta em Blackwell &amp; Glynn
+(2018):</strong></p>
+<p>O paper de BG2018 é explícito sobre o mecanismo:</p>
+<blockquote>
+<p>“The root of the bias in the ADL approach is the nature of
+time-varying covariates, Z_it. […] when Z_it is post-treatment to lagged
+treatment, conditioning on it will induce post-treatment bias for the
+effect of lagged treatment, because conditioning will open a back-door
+path from Z_it through U_i to Y_it.” (p. 1078)</p>
+</blockquote>
+<blockquote>
+<p>“In this setting, there is no way to estimate the direct effect of
+lagged treatment without bias with a single ADL model.” (p. 1073)</p>
+</blockquote>
+<p>A recomendação de MSM/SNMM segue diretamente: “We focus on two
+methods […] that can estimate the effect of treatment histories without
+bias and under weaker assumptions than common TSCS models.”
+(p. 1067)</p>
+<p><strong>O argumento de BG é linear:</strong> post-treatment bias no
+ADL → MSM/SNMM como solução. Se quantificamos esse post-treatment bias e
+mostramos que é pequeno (&lt;1% de β), o <strong>motivo</strong> para
+adotar MSM/SNMM perde força. Não precisamos rodar MSM — precisamos
+mostrar que o problema que MSM resolve é negligível.</p>
+<p><strong>Por que não simular MSM?</strong> Razões técnicas e
+conceituais: - FWL não se aplica a IPTW/MSM → não conseguimos decompor o
+bias em IVB vs outros componentes - Comparar RMSE não separa bias de
+variância (bias-variance trade-off) → RMSE menor de ADL não prova que o
+bias é menor, pode ser apenas menor variância - MSM/IPTW com FE é
+problemático (BG2018 footnote 13: “This requirement makes it difficult
+to apply IPTW to fixed-effects settings”) - O paper não claim “ADL &gt;
+MSM”. Claim: “o post-treatment bias do ADL é pequeno”</p>
+<p><strong>2. “A fórmula não pode distinguir colliders de confounders”
+(Limitação 1 do DA) — PARCIALMENTE ERRADO.</strong></p>
+<p>O DA está correto que a fórmula sozinha não distingue, mas o paper
+nunca claim isso. O paper diz explicitamente que é preciso um DAG
+primeiro (Step 0). A fórmula é um <strong>complemento
+quantitativo</strong> ao DAG, não um substituto. O DA trata isso como
+fraqueza quando é o design intencional.</p>
+<p><strong>3. “Blackwell &amp; Glynn são sobre estimands diferentes
+(dynamic treatment regimes)” (Seção 5.2 do DA) — PARCIALMENTE
+ERRADO.</strong></p>
+<p>Sim, BG2018 discutem treatment histories e step response functions.
+Mas o <strong>core argument sobre bias</strong> é sobre o efeito
+defasado (lagged effect) do tratamento em um período, não sobre
+treatment regimes complexos. Citação direta: “we focus on a simple case
+where we are only interested in the first two lags of treatment”
+(p. 1073). E nas simulações de BG, o estimand é τ_l(t,1) — o lagged
+effect de um período, que é exatamente o que ADL estima.</p>
+<p>O DA exagera o escopo do argumento de BG para invalidar o paper. Na
+prática, a maioria dos pesquisadores em CP quer estimar contemporaneous
+effects e lagged effects simples, não treatment regimes.</p>
+<p><strong>4. “IVB é apenas uma fonte de bias” (Limitação 2 do DA) —
+CORRETO MAS IRRELEVANTE.</strong></p>
+<p>Sim, ADL+FE tem IVB + Nickell bias + funcional form misspec. Mas as
+simulações MOSTRAM o bias total do ADL_all (não só o IVB), e ele é
+&lt;0.5% de β. O report mede bias total, não só IVB. O DA confunde “a
+fórmula mede só IVB” com “as simulações medem só IVB”. As simulações
+medem bias total do estimador.</p>
+<h3 id="o-que-o-da-não-verificou">O que o DA não verificou</h3>
+<p><strong>1. A leitura de Blackwell &amp; Glynn.</strong> O DA não leu
+BG2018 para verificar se o argumento “post-treatment bias motiva MSM”
+está correto. Está. É a tese central do paper.</p>
+<p><strong>2. Os resultados v4 Mecanismo C.</strong> Os resultados
+existiam mas não estavam no report na hora do DA. Agora estão.</p>
+<hr />
+<h2 id="o-que-muda-com-esta-análise">2. O que muda com esta análise</h2>
+<h3 id="claims-que-sobrevivem-ao-da">Claims que sobrevivem ao DA</h3>
+<ol type="1">
+<li><p><strong>“O post-treatment bias identificado por Blackwell &amp;
+Glynn é empiricamente negligível sob linearidade e tratamento
+contínuo.”</strong> — Suportado por simulações (ADL_all bias &lt; 0.5%),
+6 aplicações empíricas (median |IVB/SE| = 0.13), e teoria (FE absorve
+between, erro de medida atenua θ*).</p></li>
+<li><p><strong>“A fórmula IVB quantifica exatamente o post-treatment
+bias de Blackwell &amp; Glynn.”</strong> — IVB = −θ*·π é a expressão FWL
+do post-treatment bias. O que BG chamam de “bias from conditioning on
+Z_it” é exatamente o que a fórmula mede.</p></li>
+<li><p><strong>“ADL(all lags) + FE é o melhor modelo linear em bias E
+RMSE.”</strong> — Confirmado em todas as simulações (NL, DGP variations,
+feedback, carryover).</p></li>
+<li><p><strong>“A fronteira bounded/unbounded delimita quando o
+resultado vale.”</strong> — 8 funções NL testadas, fronteira é
+abrupta.</p></li>
+</ol>
+<h3 id="claims-que-não-sobrevivem">Claims que NÃO sobrevivem</h3>
+<ol type="1">
+<li><del>“Resolvemos o debate TSCS”</del> → Não há debate ativo.
+Reframe.</li>
+<li><del>“ADL domina MSM”</del> → Nunca simulamos MSM e não precisamos.
+Reframe.</li>
+<li><del>“IVB é sempre pequeno”</del> → Com D binário, IVB é 16-53% de β
+(Mecanismo C).</li>
+</ol>
+<h3 id="claims-que-precisam-ser-adicionadas">Claims que precisam ser
+adicionadas</h3>
+<ol type="1">
+<li><strong>“Com tratamento binário, o IVB pode ser grande.”</strong> —
+Mecanismo C: |IVB/SE| = 1.67-12.73. Isso delimita a claim e é
+honesto.</li>
+<li><strong>“O post-treatment bias de BG é exatamente o IVB (sob
+linearidade).”</strong> — Essa é a bridge formal que o paper
+precisa.</li>
+</ol>
+<hr />
+<h2 id="nova-sugestão-de-lead-b-e-b-refinado">3. Nova sugestão de lead:
+B’ + E (B refinado)</h2>
+<h3 id="pitch-em-uma-frase">Pitch em uma frase</h3>
+<blockquote>
+<p>“Blackwell &amp; Glynn (2018) identificaram que o ADL tem
+post-treatment bias quando covariáveis são afetadas pelo tratamento. Nós
+derivamos a fórmula exata desse bias, mostramos que é pequeno na grande
+maioria das aplicações em CP, e delimitamos quando não é.”</p>
+</blockquote>
+<h3 id="por-que-b-e-não-b-original">Por que B’ e não B original</h3>
+<p>Lead B original dizia “resolvemos o debate TSCS”. Lead B’ diz algo
+mais preciso e defensável:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Lead B (original)</th>
+<th>Lead B’ (refinado)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“Há um debate, nós resolvemos”</td>
+<td>“Há um problema identificado, nós quantificamos”</td>
+</tr>
+<tr>
+<td>Implica BG vs IK como antagonistas</td>
+<td>Trata BG como precursores cujo problema quantificamos</td>
+</tr>
+<tr>
+<td>Precisa rodar MSM para provar dominância</td>
+<td>Precisa apenas mostrar que o bias é pequeno</td>
+</tr>
+<tr>
+<td>Vulnerável a “que debate?”</td>
+<td>Vulnerável apenas a “já sabíamos” (mais fácil de defender)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="por-que-e-se-mantém">Por que E se mantém</h3>
+<p>A unificação (post-treatment bias = collider bias = strict exogeneity
+violation) continua sendo a contribuição teórica elegante que dá
+substância ao paper. Sem E, o paper é “computamos um número e ele é
+pequeno”. Com E, o paper é “três problemas que pareciam diferentes são o
+mesmo, e podemos quantificá-lo”.</p>
+<h3 id="estrutura-proposta">Estrutura proposta</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Seção</th>
+<th>Conteúdo</th>
+<th>Papel no argumento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Intro</strong></td>
+<td>O problema da seleção de controles em TSCS. BG2018 mostram que ADL
+tem post-treatment bias quando covariáveis são afetadas por tratamento.
+Mas quão grande é esse bias?</td>
+<td><strong>Motivação: problema real, nunca quantificado</strong></td>
+</tr>
+<tr>
+<td><strong>2. Framework</strong></td>
+<td>DAGs + collider bias. Unificação: post-treatment bias (BG), collider
+bias (Pearl), strict exogeneity violation (IK) são o mesmo
+fenômeno.</td>
+<td><strong>Contribuição teórica: bridge/unificação</strong></td>
+</tr>
+<tr>
+<td><strong>3. A fórmula IVB</strong></td>
+<td>Derivação cross-section + ADL+FE. IVB = −θ*·π. A fórmula quantifica
+exatamente o post-treatment bias de BG.</td>
+<td><strong>Contribuição metodológica: a ferramenta</strong></td>
+</tr>
+<tr>
+<td><strong>4. Por que o IVB é pequeno</strong></td>
+<td>(a) FE absorve between (Mec A/B), (b) erro de medida atenua θ* (Mec
+D), (c) variáveis em CP são lentas. Álgebra + simulações v4.</td>
+<td><strong>Resultado principal 1: explicação estrutural</strong></td>
+</tr>
+<tr>
+<td><strong>5. Quando o IVB NÃO é pequeno</strong></td>
+<td>(a) NL unbounded → IVB amplifica (8 tipos, fronteira abrupta). (b) D
+binário → IVB = 16-53% (Mec C). (c) Interação forte.</td>
+<td><strong>Resultado principal 2: boundary conditions</strong></td>
+</tr>
+<tr>
+<td><strong>6. Aplicações empíricas</strong></td>
+<td>6 estudos, 14 collider candidates. Median</td>
+<td>IVB/SE</td>
+</tr>
+<tr>
+<td><strong>7. Conclusão</strong></td>
+<td>ADL+FE é a escolha prática para tratamento contínuo em painéis com T
+≥ 10. O post-treatment bias de BG é negligível nesse setting. Com D
+binário, use a fórmula para diagnosticar.</td>
+<td><strong>Take-away prático</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="o-que-muda-vs-paper-atual-lead-a">O que muda vs paper atual
+(Lead A)</h3>
+<ol type="1">
+<li><p><strong>Primeiro parágrafo</strong>: não começa com “which
+controls to include” — começa com “Blackwell &amp; Glynn (2018) showed
+that ADL models produce biased estimates of lagged treatment effects
+when time-varying covariates are affected by treatment. They recommend
+MSM/SNMM as alternatives. But how large is this bias in
+practice?”</p></li>
+<li><p><strong>Seção 2 (Framework)</strong> ganha a unificação
+BG/IK/Pearl como resultado formal, não como aside.</p></li>
+<li><p><strong>Seção 4 (novo)</strong> incorpora os mecanismos v4
+(A/B/D) como explicação de por que IVB é pequeno — sai de caveat e vira
+resultado.</p></li>
+<li><p><strong>Seção 5 (novo)</strong> incorpora as simulações NL +
+Mecanismo C como boundary conditions — sai de apêndice e vira seção
+principal.</p></li>
+<li><p><strong>Foreign collider bias</strong> é downweighted mas não
+eliminado — é um exemplo dentro da seção DAGs, não uma contribuição
+standalone.</p></li>
+<li><p><strong>Cinelli &amp; Hazlett</strong>: o DA sugere comparar com
+a sensitivity analysis deles. Resposta: a fórmula IVB é o
+<strong>complemento simétrico</strong> do OVB formula que Cinelli &amp;
+Hazlett usam. Eles fazem sensitivity para OVB; nós quantificamos IVB
+diretamente (porque o collider está <strong>incluído</strong>, não
+omitido, então temos os dados). Isso é uma contribuição clara, não uma
+competição.</p></li>
+</ol>
+<h3 id="como-responder-às-objeções-do-da">Como responder às objeções do
+DA</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Objeção DA</th>
+<th>Resposta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“Precisa simular MSM”</td>
+<td>Não. A claim é “o bias que motiva MSM é pequeno”, não “ADL &gt;
+MSM”.</td>
+</tr>
+<tr>
+<td>“Não há debate”</td>
+<td>Concordo. Reframe de “resolver debate” para “quantificar um problema
+real”.</td>
+</tr>
+<tr>
+<td>“Fórmula não distingue collider de confounder”</td>
+<td>By design. DAG primeiro, fórmula depois.</td>
+</tr>
+<tr>
+<td>“BG é sobre estimands (treatment regimes)”</td>
+<td>Parcialmente. BG focam em lagged effects simples nas simulações e
+aplicação. Treatment regimes é extensão.</td>
+</tr>
+<tr>
+<td>“Bounded/unbounded vira contra o paper”</td>
+<td>Não. É a <strong>delimitação precisa</strong> que referees querem. E
+em CP, variáveis são bounded.</td>
+</tr>
+<tr>
+<td>“6 aplicações são TWFE com slow-moving vars”</td>
+<td>Expandir com pelo menos 1 aplicação com T curto ou D contínuo.</td>
+</tr>
+<tr>
+<td>“Comparar com Cinelli &amp; Hazlett”</td>
+<td>IVB é o complemento simétrico do OVB. Explicitar.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="targets-e-riscos">4. Targets e riscos</h2>
+<h3 id="target-journals-em-ordem-de-ambição">Target journals (em ordem
+de ambição)</h3>
+<ol type="1">
+<li><strong>Political Analysis</strong> — fit natural. Paper
+metodológico com aplicações empíricas. Audience: metodólogos de CP.</li>
+<li><strong>PSRM</strong> — backup forte. Mais espaço para
+simulações.</li>
+<li><strong>AJPS</strong> — ambicioso mas viável se a seção empírica for
+expandida e o bridge BG/IK/Pearl for enfatizado como contribuição para a
+disciplina.</li>
+</ol>
+<h3 id="riscos-residuais">Riscos residuais</h3>
+<ol type="1">
+<li><p><strong>“So what?” — “ADL+FE já é o default”</strong>: Resposta:
+sim, mas ninguém sabia QUANTO post-treatment bias ele tem. Agora
+sabemos: &lt;1% de β. Isso justifica formalmente a prática
+existente.</p></li>
+<li><p><strong>“Isso é FWL, todo mundo sabe”</strong>: Resposta: FWL é o
+mecanismo, o RESULTADO é que o post-treatment bias de BG é negligível.
+Ninguém sabia isso antes.</p></li>
+<li><p><strong>“E o D binário?”</strong>: Resposta: é a boundary
+condition honesta. Com D binário, use a fórmula. Se |IVB/SE| &gt; 1,
+considere alternativas. Falta: testar se ADL(all lags) salva o cenário
+binário.</p></li>
+<li><p><strong>“MSM/SNMM nunca foram testados”</strong>: Resposta: a
+claim não é sobre ADL vs MSM. É sobre o tamanho do post-treatment bias.
+Se o bias é pequeno, a motivação para MSM é fraca. Explicitar isso no
+paper para antecipar o reviewer.</p></li>
+</ol>
+<hr />
+<h2 id="próximos-passos">5. Próximos passos</h2>
+<ol type="1">
+<li><p><strong>Rodar ADL(all lags) nos cenários v4 Mecanismo C (D
+binário)</strong> — preencher a lacuna mais crítica. Se ADL_all salva, a
+claim se fortalece muito.</p></li>
+<li><p><strong>Reescrever a intro com o lead B’+E</strong> — abrir com
+BG2018 e o post-treatment bias, não com “which controls to
+include”.</p></li>
+<li><p><strong>Formalizar a unificação BG/IK/Pearl</strong> como
+proposição ou resultado na Seção 2.</p></li>
+<li><p><strong>Promover as simulações NL e v4</strong> para seções
+principais (4 e 5).</p></li>
+<li><p><strong>Explicitar no paper</strong> que a claim NÃO é “ADL &gt;
+MSM” mas sim “o post-treatment bias que motiva MSM é pequeno”. Antecipar
+a objeção do reviewer.</p></li>
+<li><p><strong>Considerar adicionar 1 aplicação empírica</strong> com T
+curto ou tratamento contínuo para diversificar.</p></li>
+<li><p><strong>Tratar Cinelli &amp; Hazlett</strong> como complemento
+simétrico, não como competidor.</p></li>
+</ol>
+<hr />
+<h2 id="o-teste-de-uma-frase">6. O teste de uma frase</h2>
+<p>Se um reviewer perguntar “qual é a contribuição?”, a resposta é:</p>
+<blockquote>
+<p>“Blackwell &amp; Glynn (2018) showed that ADL models have
+post-treatment bias. We derive the exact formula for that bias, show
+it’s empirically negligible in the vast majority of TSCS applications in
+political science, and identify the precise conditions under which it is
+not.”</p>
+</blockquote>
+<p>Se isso não for suficiente para Political Analysis, nada é.</p>
+<p>Sources: - <a
+href="https://mattblackwell.org/files/papers/causal-tscs.pdf">Blackwell
+&amp; Glynn (2018)</a></p>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB">
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>404 File not Found - WRAP: Warwick Research Archive Portal</title>
+		<link rel="icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    
+                <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">// <!-- No script --></script>
+	
+
+		<script type="text/javascript">
+// <![CDATA[
+var eprints_http_root = "https://wrap.warwick.ac.uk";
+var eprints_http_cgiroot = "https://wrap.warwick.ac.uk/cgi";
+var eprints_oai_archive_id = "wrap.warwick.ac.uk";
+var eprints_logged_in = false;
+var eprints_logged_in_userid = 0; 
+var eprints_logged_in_username = ""; 
+var eprints_logged_in_usertype = ""; 
+// ]]></script>
+    <style type="text/css">.ep_logged_in { display: none }</style>
+    <link type="text/css" rel="stylesheet" href="/style/auto-3.4.5.css?1745574906" />
+    <script src="/javascript/auto-3.4.5.js?1755520643" type="text/javascript">
+//padder
+</script>
+    <!--[if lte IE 6]>
+        <link rel="stylesheet" type="text/css" href="/style/ie6.css" />
+   <![endif]-->
+    <meta name="Generator" content="EPrints 3.4.5" />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta http-equiv="Content-Language" content="en" />
+    <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript">
+//padder
+</script><script type="text/javascript">
+// <![CDATA[
+google.load("visualization", "48", {packages:["corechart", "geochart"]});
+// ]]></script><link href="https://wrap.warwick.ac.uk/" rel="Top" />
+    <link href="https://wrap.warwick.ac.uk/sword-app/servicedocument" rel="Sword" />
+    <link href="https://wrap.warwick.ac.uk/id/contents" rel="SwordDeposit" />
+    <link rel="Search" type="text/html" href="https://wrap.warwick.ac.uk/cgi/search" />
+    <link href="https://wrap.warwick.ac.uk/cgi/opensearchdescription" type="application/opensearchdescription+xml" title="WRAP: Warwick Research Archive Portal" rel="Search" />
+    
+
+		<meta name="theme-color" content="#fff" />
+
+
+		<!-- Adding Open Sans font via Google Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet" type="text/css" />
+		<!-- Boostrap -->
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no" />
+		<!-- bootstrap_import -->
+		
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+                <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js">// <!-- No script --></script>
+	
+		<!-- /bootstrap_import -->
+
+		<!-- Addition CSS to make bootstrap fit eprints -->
+		<link rel="stylesheet" href="/bootstrap_assets/Styles/main.css" />
+		<link rel="stylesheet" href="/bootstrap_assets/Styles/bs_overrides.css" />
+		<link rel="stylesheet" href="/bootstrap_assets/Styles/ep_overrides.css" />
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+		<!-- jQuery-observe (https://github.com/kapetan/jquery-observe). Solution for DOM changes that create buttons -->
+		<script src="https://cdn.rawgit.com/kapetan/jquery-observe/master/jquery-observe.js">// <!-- No script --></script>
+
+		 <!-- Expander -->
+		<script src="/bootstrap_assets/Scripts/jquery.expander.min.js">// <!-- No script --></script>
+
+    
+	
+    
+        
+		<!--  This is where the bootstrap theme for customisation goes -->
+		<!--link rel="stylesheet" href="{$config{rel_path}}/bootstrap_assets/Styles/BS_theme/default-bootstrap-theme.css" /-->
+		<style type="text/css">
+			
+/* some CSS for branding header could go here, though the main CSS files would make more sense */
+	
+		</style>
+
+        <script src="/javascript/clipboard.min.js">// <!-- No script --></script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-D8LNN7HHGW">// <!-- No script --></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-D8LNN7HHGW');
+        </script>
+	</head>
+	<body>
+		<script>jQuery('body').append('<div id="blocker"></div>');</script>
+		
+
+        <header>
+<div class="container">
+
+	
+		<div class="row warwick-crest-nav-section">
+			<div class="col-sm-4">
+                    <a class="logo" href="https://warwick.ac.uk/">
+					<img alt="University of Warwick logo" src="/images/warwick_logo.png" />
+            </a>
+			</div>
+			<div class="col-sm-8">
+				<ul id="warwick-header-nav" class="pull-right">
+                        <li><a class="warwick-header-nav-link" href="https://warwick.ac.uk/study">Study</a><span class="vertical-bar">|</span></li>
+                        <li><a class="warwick-header-nav-link" href="https://warwick.ac.uk/research">Research</a><span class="vertical-bar">|</span></li>
+                        <li><a class="warwick-header-nav-link" href="https://warwick.ac.uk/business">Business</a><span class="vertical-bar">|</span></li>
+                        <li><a class="warwick-header-nav-link" href="https://warwick.ac.uk/alumni">Alumni</a><span class="vertical-bar">|</span></li>
+                        <li><a class="warwick-header-nav-link" href="https://warwick.ac.uk/news">News</a><span class="vertical-bar">|</span></li>
+                        <li><a class="warwick-header-nav-link" href="https://warwick.ac.uk/engagement">Engagement</a></li>
+
+				</ul>
+				<div class="clearfix"></div>
+				<ul id="ep_tm_menu_tools" role="toolbar" class="ep_tm_key_tools"><li class="ep_tm_key_tools_item"><a href="/cgi/users/home" class="ep_tm_key_tools_item_link">Login</a></li></ul>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+
+         <ul class="ep_tm_menu">
+                <li>
+                    <a class="ep_tm_menu_link" href="/">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a class="ep_tm_menu_link" href="/information.html">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a class="ep_tm_menu_link" href="/view/" menu="ep_tm_menu_browse">
+                    Browse
+                  </a>
+                  <ul id="ep_tm_menu_browse" style="display:none;">
+                    <li>
+                      <a class="navHead" href="/view/year/">
+                        Browse by 
+                        Year
+                      </a>
+                    </li>
+                   <li>
+                      <a class="navHead" href="/view/author_id">
+                        Browse by 
+                        Warwick Author
+                      </a>
+                    </li>
+                    <li>
+                      <a class="navHead" href="/view/divisions/">
+                        Browse by 
+                        Department
+                      </a>
+                    </li>
+                    <li>
+                      <a class="navHead" href="/view/rioxx_funders/">
+                        Browse by 
+                        Funders
+                      </a>
+                    </li>
+                    <li>
+                      <a class="navHead" href="/view/theses/">
+                        Browse by 
+                        Theses by Department
+                      </a>
+                    </li>
+                   </ul>
+                </li>
+                <li><a class="ep_tm_menu_link" href="/cgi/search/advanced">Advanced Search</a></li>
+              </ul>
+			</div>
+
+            <div class="col-sm-6 navbar-search">
+              
+    <form id="warwick_top_searchbar" class="navbar-form pull-right" role="search" accept-charset="utf-8" method="get" action="/cgi/simply_advanced_search">
+      <div class="input-group">
+        <select name="target_field" id="simply_advanced_searchbar_term_selection" class="form-control" aria-label="Select field">&gt;
+          
+            <option value="alt_title/title">Title</option>
+          
+            <option value="creators_name">Author</option>
+          
+            <option value="date">Official Date</option>
+          
+        </select>
+        <input type="search" aria-label="Search" class="form-control" id="navbar-search" name="value_for_simply_advanced_search" placeholder="Search Repository" />
+        <span class="input-group-btn">
+          <button id="btn-search" class="btn btn-default" value="Search" type="submit" name="simply_advanced_action_search">Search</button>
+        </span>
+      </div>
+    </form>
+     
+            </div>
+    </div>
+    </div>
+	</header>
+
+    <div class="container">
+	<div class="row">
+		<main id="page" class="col-sm-12 col-xs-12">
+			<div>
+				<h1 class="page-title">
+					404 File not Found
+				</h1>
+				<p>Could not find the file: <code>/id/eprint/167665/7/WRAP-UN-peacekeeping-democratization-conflict-affected-Di-Salvatore-2022.pdf</code></p><p>The file you are trying to access may be related to this item:</p><p>
+
+
+    <!-- LWOOD 10-12-2017 removed stop for stop added in initial field -->
+    Blair, Robert, Di Salvatore, Jessica and Smidt, Hannah M.<!--.-->
+  
+
+(2022)
+
+<a href="https://wrap.warwick.ac.uk/id/eprint/167665/"><em>UN peacekeeping and democratization in conflict-affected countries.</em></a>
+
+
+    American Political Science Review, 117
+       (4).
+    
+     1308 -1326.
+    
+    <!-- LWOOD 10-12-2017 add DOI -->
+    <!-- <if test="issn"> ISSN <print expr="issn"/></if> -->
+     doi:<a href="https://doi.org/10.1017/S0003055422001319" target="_blank">10.1017/S0003055422001319</a>
+     ISSN 0003-0554.
+    <!-- 2023-01-21 LWOOD REFcompliance icon/or value TEST -->
+    <!-- <if test="hoa_compliant"> hoa: <print expr="hoa_compliant"/></if> -->
+    <!-- <if test="full_text_status = 'public'"> [ 🗎 <print expr="full_text_status"/>]. </if> -->
+   <!-- <if test="hoa_compliant gt 510">[ (✓) hoa:<print expr="hoa_compliant"/> ] </if> -->
+    <!-- <if test="hoa_gold = 'TRUE'">[ (🔓): <print expr="hoa_gold"/> ].</if> -->
+<!-- end 2023-01-21 LWOOD REFcompliance icon TEST -->
+  
+
+
+  
+
+
+</p><p>If you reached this page by following a link within the repository, please contact the <a href="mailto:wrap@warwick.ac.uk">WRAP: Warwick Research Archive Portal administration</a>.  Otherwise, please check that you have typed the URL in correctly, or contact the person or site that supplied you with this URL.</p>
+			</div>
+		</main>
+	</div>
+
+	<hr />
+
+	<footer>
+		<div class="row">
+			<div class="col-sm-5">
+                <ul id="footer-nav">
+                    <li><a class="footer-link" href="/accessibility.html">Accessibility</a><span class="vertical-bar">|</span></li>
+                    <li><a class="footer-link" href="https://warwick.ac.uk/services/library/research-support/warwick-research-publications/warwick-research-publications-policies/">Policies</a><span class="vertical-bar">|</span></li>
+                    <li><a class="footer-link" href="https://warwick.ac.uk/terms/cookies/">Cookies</a><span class="vertical-bar">|</span></li>
+                    <li><a class="footer-link" href="/contact.html">Contact Us</a></li>
+				</ul>
+				<p><span>©</span> Copyright University of Warwick</p>
+			</div>
+            <div class="col-sm-2">
+            </div>
+			<div class="col-sm-4">
+                    <p class="footer-text">Powered by <a class="footer-link" href="http://eprints.org/software/">EPrints3</a>, managed by <a href="https://www.cosector.com" target="_blank">CoSector, University of London</a>.</p>
+			</div>
+		</div>
+	</footer>
+
+</div>
+
+
+
+
+
+
+
+    
+        
+
+		<!-- Scripts to override some eprints defaults and allow the default bootstrap to style everything -->
+		<script src="/bootstrap_assets/Scripts/buttons.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/menu.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/forms.js">// <!-- No script --></script>
+
+		<!--script src="https://rawgit.com/UEL-LLS/eprints-jquery-scripts/master/ep_toolbox.js" /-->
+		<script src="/bootstrap_assets/Scripts/workflow.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/workflow_icons.js">// <!-- No script --></script>
+
+		<!-- testing a script to convert some of eprints old school tables in to divs that can be easily manipluated by bootstrap -->
+
+		<!-- script to make more things panels -->
+		<script src="/bootstrap_assets/Scripts/ep_toolbox.js">// <!-- No script --></script>
+
+		<!-- script to make the admin settings look better -->
+		<script src="/bootstrap_assets/Scripts/admin_menus.js">// <!-- No script --></script>
+
+		<!-- script to make the tabs above stuff look better -->
+		<script src="/bootstrap_assets/Scripts/tabs.js">// <!-- No script --></script>
+
+
+		<script src="/bootstrap_assets/Scripts/table-destroyer.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/ep_search_control.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/bazaar-styler.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/ep_warnings.js">// <!-- No script --></script>
+		<script src="/bootstrap_assets/Scripts/adv_search.js">// <!-- No script --></script>
+
+
+		<!-- important script to allow bootstrap.js to hide things, without Prototype getting upset and throwing a hissy fit. -->
+		<!-- from https://gist.github.com/andyhausmann/56ae58af55b14ecd56df -->
+		<script>
+		jQuery(document).ready( function() {
+			var isBootstrapEvent = false;
+			if (window.jQuery) {
+				var all = jQuery('*');
+				jQuery.each(['hide.bs.dropdown',
+					'hide.bs.collapse',
+					'hide.bs.modal',
+					'hide.bs.tooltip',
+					'hide.bs.popover'], function(index, eventName) {
+					all.on(eventName, function( event ) {
+						isBootstrapEvent = true;
+					});
+				});
+			}
+			var originalHide = Element.hide;
+			Element.addMethods({
+				hide: function(element) {
+					if(isBootstrapEvent) {
+						isBootstrapEvent = false;
+						return element;
+					}
+					return originalHide(element);
+				}
+			});
+		});
+		</script>
+		<script>
+			jQuery(document).ready(function() {
+				jQuery('#blocker').remove();
+			});
+                </script>
+	</body>
+</html>

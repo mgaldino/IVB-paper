@@ -1,0 +1,1649 @@
+When Should We Use Unit Fixed Effects Regression
+Models for Causal Inference with Longitudinal
+Data?
+Kosuke Imai              Harvard University
+In Song Kim              Massachusetts Institute of Technology
+
+
+      Abstract: Many researchers use unit fixed effects regression models as their default methods for causal inference with
+      longitudinal data. We show that the ability of these models to adjust for unobserved time-invariant confounders comes at
+      the expense of dynamic causal relationships, which are permitted under an alternative selection-on-observables approach.
+      Using the nonparametric directed acyclic graph, we highlight two key causal identification assumptions of unit fixed effects
+      models: Past treatments do not directly influence current outcome, and past outcomes do not affect current treatment.
+      Furthermore, we introduce a new nonparametric matching framework that elucidates how various unit fixed effects
+      models implicitly compare treated and control observations to draw causal inference. By establishing the equivalence
+      between matching and weighted unit fixed effects estimators, this framework enables a diverse set of identification strategies
+      to adjust for unobservables in the absence of dynamic causal relationships between treatment and outcome variables. We
+      illustrate the proposed methodology through its application to the estimation of GATT membership effects on dyadic trade
+      volume.
+
+      Replication Materials: The data, code, and any additional materials required to replicate all analyses in this arti-
+      cle are available on the American Journal of Political Science Dataverse within the Harvard Dataverse Network, at:
+      https://doi.org/10.7910/DVN/YUM3K8.
+
+
+
+
+U
+           nit fixed effects regression models are widely              Butler 2007). In contrast, our work builds upon a small
+           used for causal inference with longitudinal or              literature on the use of linear fixed effects models for
+           panel data in the social sciences (e.g., Angrist            causal inference with longitudinal data in econometrics
+and Pischke 2009). Many researchers use these models to                and statistics (e.g., Arkhangelsky and Imbens 2018; Sobel
+adjust for unobserved, unit-specific and time-invariant                2006; Wooldridge 2005a).
+confounders when estimating causal effects from obser-                      Specifically, we show that the ability of unit fixed
+vational data. In spite of this widespread practice, much              effects regression models to adjust for unobserved time-
+methodological discussion of unit fixed effects models in              invariant confounders comes at the expense of dynamic
+political science has taken place from model-based per-                causal relationships between treatment and outcome vari-
+spectives (often assuming linearity), with little attention            ables, which are allowed to exist under an alternative
+to the causal identification assumptions (e.g., Beck 2001;             selection-on-observables approach (e.g., Robins, Hernán,
+Bell and Jones 2015; Clark and Linzer 2015; Wilson and                 and Brumback 2000). Our analysis highlights two key
+
+
+
+Kosuke Imai is Professor of Government and of Statistics, Harvard University, 1737 Cambridge Street, Institute for Quantitative Social
+Science, Cambridge, MA 02138 (imai@harvard.edu; https://imai.fas.harvard.edu). In Song Kim is Associate Professor, Department of
+Political Science, Massachusetts Institute of Technology, Cambridge, MA 02142 (insong@mit.edu).
+The methods described in this article can be implemented via the open-source statistical software wfe: Weighted
+Linear Fixed Effects Estimators for Causal Inference, available through the Comprehensive R Archive Network
+(http://cran.r-project.org/package=wfe). The initial draft of this article was entitled “On the Use of Linear Fixed Effects Regression
+Estimators for Causal Inference” (July 2011). We thank Alberto Abadie, Mike Bailey, Neal Beck, Matias Cattaneo, Naoki Egami, Erin
+Hartman, Danny Hidalgo, Rocio Titiunik, Yuki Shiraito, and Teppei Yamamoto for helpful comments.
+American Journal of Political Science, Vol. 63, No. 2, April 2019, Pp. 467–490
+
+C2019, Midwest Political Science Association                                                                     DOI: 10.1111/ajps.12417
+
+                                                                                                                                       467
+                                                                                                                          15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+468                                                                                      KOSUKE IMAI AND IN SONG KIM
+
+
+causal identification assumptions that are required un-     2015; Humphreys 2009; Solon, Haider, and Wooldridge
+der fixed effects models and yet are often overlooked by    2015). The proposed methodology is freely available
+applied researchers: (1) past treatments do not directly    as an R package, wfe: Weighted Linear Fixed
+influence current outcome, and (2) past outcomes do         Effects Estimators for Causal Inference,
+not affect current treatment. Unlike most of the exist-     at the Comprehensive R Archive Network (https://cran.r-
+ing discussions of unit fixed effects regression models     project.org/package=wfe).
+that assume linearity, we use the directed acyclic graph          Finally, we illustrate the proposed methodology by
+(DAG) framework (Pearl 2009) that can represent a wide      applying it to the controversy regarding the causal effects
+class of nonparametric structural equation models, en-      of General Agreement on Tariffs and Trade (GATT) mem-
+compassing linear and other unit fixed effects models as    bership on dyadic trade (Rose 2004; Tomz, Goldstein, and
+special cases.                                              Rivers 2007). Despite the substantive disagreement, there
+     In addition, we propose a new analytical frame-        exists a remarkable methodological consensus among re-
+work that directly connects unit fixed effects models to    searchers in the literature, all of whom endorse the use of
+matching methods (e.g., Ho et al. 2007; Rubin 2006;         linear fixed effects regression models. We critically exam-
+Stuart 2010). The framework makes explicit how coun-        ine the causal identification assumptions of the models
+terfactual outcomes are estimated under unit fixed ef-      used in previous studies and also consider an alterna-
+fects regression models. A simple but important insight     tive identification strategy. We show that the empirical
+is that the comparison of treated and control observa-      conclusions are highly dependent on the choice of causal
+tions must occur within the same unit and across time       identification assumptions.
+periods in order to adjust for unobserved, unit-specific          Due to space constraints, this article does not study
+and time-invariant confounders. We establish this fact by   linear regression models with unit and time fixed effects
+proving the equivalence between within-unit matching        (i.e., two-way linear fixed effects models). Imai, Kim, and
+estimators and weighted linear unit fixed effects regres-   Wang (2018) further extend our matching framework to
+sion estimators. In particular, the result implies that     these models. The two-way linear fixed effects models
+the counterfactual outcome for a treated observation        are closely related to the difference-in-differences (DiD)
+in a given time period is estimated using the observed      identification strategy. The DiD estimator is based on
+outcomes of different time periods of the same unit.        the comparison of treated and control units within the
+Since such a comparison is valid only when no causal        same time period under the assumption of parallel time
+dynamics exist, this finding underscores the important      trend between the treated and control units. Formally,
+limitation of linear regression models with unit fixed      Imai, Kim, and Wang (2018) show that a class of match-
+effects.                                                    ing estimators, which apply the DiD estimator after ad-
+     Although linear unit fixed effects models must         justing for treatment history and confounders, is equiv-
+assume the absence of causal dynamics to adjust for         alent to the weighted two-way linear fixed effects mod-
+unobserved time-invariant confounders, we further           els and derives the exact formula for regression weights.
+improve these models by relaxing the linearity assump-      Thus, unlike linear regression models with unit fixed ef-
+tion. Our matching framework incorporates a diverse         fects, two-way fixed effects models can allow for causal
+set of identification strategies to address unobservables   dynamics under the additional assumption of parallel
+under the assumption that the treatment and outcome         trend.
+variables do not influence each other over time. We also
+derive the weighted linear unit fixed effects regression
+estimator that is equivalent to a within-unit matching
+estimator. This equivalence allows us to construct            Causal Identification Assumptions
+simple model-based standard errors instead of more
+complex and computationally intensive standard errors       We study the causal identification assumptions of regres-
+proposed in the literature (e.g., Abadie and Imbens 2006,   sion models with unit fixed effects. While we begin our
+2012; Otsu and Rai 2017). In addition, we can use the       discussion by describing the basic linear regression model
+model-based specification test to assess the appropri-      with unit fixed effects, our analysis is conducted under a
+ateness of the linearity assumption in unit fixed effects   more general, nonparametric setting based on the di-
+regression models (White 1980a). Our theoretical results    rected acyclic graphs (DAGs) and potential outcomes
+also extend the weighted regression results available in    frameworks (Imbens and Rubin 2015; Pearl 2009). We
+the literature for causal inference with cross-section      show that the ability of unit fixed effects models to ad-
+data to longitudinal studies (e.g., Aronow and Samii        just for unobserved time-invariant confounders comes
+                                                                                                                                              15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                        469
+
+at the expense of dynamic causal relationships between               do not contribute to the estimation of ␤. Thus, under
+treatment and outcome variables.                                     LIN − FE, the causal estimand is the following average
+                                                                     treatment effect among the units with some variation in
+                                                                     the treatment status:
+  The Linear Unit Fixed Effects Regression                                         ␶ = E(Yi t (1) − Yi t (0) | C i = 1),   (4)
+                   Model                                                                  T
+                                                                     where C i = 1{0 < t=1 X i t < T }. Under LIN − FE,
+Throughout this article, for the sake of simplicity, we              this quantity is represented by ␤ (i.e., ␤ = ␶ ), because
+assume a balanced longitudinal data set of N units and               of the assumed linearity for potential outcomes, that is,
+T time periods with no missing data. We also assume                  Yi t (x) = ␣i + ␤x + ⑀i t .
+a simple random sampling of units from a population
+with T fixed. For each unit i at time t, we observe the
+outcome variable Yi t and the binary treatment variable                   Nonparametric Causal Identification
+X i t ∈ {0, 1}. The most basic linear regression model with                           Analysis
+unit fixed effects is based on the following specification:
+                                                                     To understand the fundamental causal assumptions of
+                   Yi t = ␣i + ␤X i t + ⑀i t ,                (1)
+                                                                     unit fixed effects models, we conduct a nonparametric
+for each i = 1, 2, . . . , N and t = 1, 2, . . . , T , where ␣i is   identification analysis that avoids any parametric restric-
+a fixed but unknown intercept for unit i and ⑀i t is a dis-          tion. Specifically, we relax the linearity assumption of
+turbance term for unit i at time t with E(⑀i t ) = 0. In this        LIN − FE (i.e., Equation 1). We also generalize mean in-
+model, the unit fixed effect ␣i captures a vector of unob-           dependence (i.e., Equation 2) to statistical independence.
+served time-invariant confounders in a flexible manner.              The resulting model is the following nonparametric fixed
+That is, we define each fixed effect as ␣i = h(Ui ), where           effects model (NP − FE).
+Ui represents a vector of unobserved time-invariant con-
+                                                                     Assumption 1 (Nonparametric Fixed Effects Model). For
+founders and h(·) is an arbitrary and unknown function.
+                                                                     each i = 1, 2, . . . , N and t = 1, 2, . . . , T ,
+     Typically, the strict exogeneity of the disturbance
+term ⑀i t is assumed to identify ␤. Formally, this assump-                              Yi t = g (X i t , Ui , ⑀i t ) and              (5)
+tion can be written as
+                                                                                              ⑀i t ⊥⊥ {Xi , Ui },                      (6)
+                    E(⑀i t | Xi , ␣i ) = 0,                   (2)
+                                                                     where g (·) can be any function.
+for each i = 1, 2, . . . , N, and t = 1, 2, . . . , T , where Xi
+is a T × 1 vector of treatment variables for unit i . Since ␣i           Note that NP − FE includes LIN − FE as a special
+can be any function of Ui , this assumption is equivalent            case.1 Unlike LIN − FE, NP − FE does not assume a
+to E(⑀i t | Xi , Ui ) = 0.                                           functional form and enables all effects to vary across
+     We refer to this model based on Equations 1 and 2 as            observations.
+LIN − FE. The least squares estimate of ␤ is obtained by                 We examine causal assumptions of NP − FE
+regressing the deviation of the outcome variable from its            using the directed acyclic graphs (DAGs). Pearl (2009)
+mean on the deviation of the treatment variable from its             shows that a DAG can formally represent a nonpara-
+mean:                                                                metric structural equation model (NPSEM), avoiding
+                            N  T
+                                                                    functional-form and distributional assumptions while
+      ␤ˆ LIN−FE = argmin              (Yi t − Y i )                  enabling general forms of effect heterogeneity.2 The
+                      ␤     i =1 t=1                                 DAG in Figure 1 graphically represents the NPSEM that
+                                                     2              corresponds to NP − FE. For simplicity, the DAG only
+                                   − ␤(X i t − X i ) , (3)
+             T                           T                         describes the causal relationships for three time periods,
+where X i = t=1    X i t /T and Y i = t=1      Yi t /T . If the      but we assume that the same relationships apply to all time
+data are generated according to LIN − FE, then ␤ˆ LIN−FE
+is unbiased for ␤.                                                   1
+                                                                      Although mean independence does not necessarily imply statis-
+     The parameter ␤ is interpreted as the average con-              tical independence, in most cases researchers have no substantive
+temporaneous effect of X i t on Yi t . Formally, let Yi t (x)        justification to assume the former rather than the latter. Under the
+                                                                     assumption of statistical independence, LIN − FE is a special case
+represent the potential outcome for unit i at time t under           of NP − FE.
+the treatment status X i t = x for x = 0, 1, where the ob-           2
+                                                                       More precisely, NP − FE implies X i t = f (X i 1 , . . . , X i,t−1 ,
+served outcome equals Yi t = Yi t (X i t ). Equation 3 shows         Ui , ␩i t ), where ␩i t is an exogenous disturbance term and f (·) is
+that units with no variation in the treatment variable               any function.
+                                                                                                                                            15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+470                                                                                                      KOSUKE IMAI AND IN SONG KIM
+
+
+        FIGURE 1 Directed Acyclic Graph                                   Assumption (c) Past outcomes do not directly affect
+                 for Regression Models                                    current treatment.
+                 with Unit Fixed Effects                                  Assumption (d) Past treatments do not directly
+                 Based on Three Time                                      affect current outcome.
+                 Periods
+                                                                     No additional arrows can be added to the DAG with-
+                                                                out making it inconsistent with NP − FE. In particular,
+            Yi1              Yi2             Yi3                no additional arrows that point to X i t can be included in
+                                                                the DAG without violating the strict exogeneity assump-
+                                                                tion of ⑀i t under NP − FE. The existence of any such ar-
+                                                                row, which must originate from past outcomes Yi t  where
+                                                                t  < t, would imply a possible correlation between ⑀i t 
+            Xi1             Xi2              Xi3
+                                                                and X i t .3
+                                                                     Next, we adopt the potential outcomes framework.
+                                                                While DAGs illuminate the entire causal structure, the
+                                                                potential outcomes framework clarifies the assumptions
+                                                                about treatment assignment mechanisms. First, the right-
+                             Ui
+                                                                hand sides of Equations 1 and 5 include the contempo-
+                                                                raneous value of the treatment but not its past values,
+        Note: Solid circles represent observed                  implying that past treatments do not directly affect cur-
+        outcome Yi t and treatment X i t variables,             rent outcome. We call this restriction the assumption of
+        whereas a gray dashed circle represents                 no carryover effect,4 corresponding to Assumption (d)
+        a vector of unobserved, unit-specific and               described above.
+        time-invariant confounders Ui . The solid
+        arrows indicate the possible existence of               Assumption 2 (No carryover effect). For each i =
+        causal relationships, whereas the absence               1, 2, . . . , N and t = 1, 2, . . . , T , the potential outcome
+        of such arrows represents the lack of                   is given by
+        causal relationships. DAGs are also as-                          Yi t (X i 1 , X i 2 , . . . , X i,t−1 , X i t ) = Yi t (X i t ).
+        sumed to contain all relevant, observed
+                                                                     To better understand the assumed treatment assign-
+        and unobserved, variables.
+                                                                ment mechanism, we consider a randomized experiment
+                                                                to which NP − FE is applicable. This experiment can be
+                                                                described as follows: For any given unit i , we random-
+periods even when there are more than three time periods        ize the treatment X i 1 at time 1, and for the next time
+(i.e., T > 3). In this DAG, the observed variables, X i t       period 2, we randomize the treatment X i 2 conditional on
+and Yi t , are represented by solid circles, whereas a dashed   the realized treatment at time 1—that is, X i 1 , but without
+gray circle represents the unobserved time-invariant con-       conditioning on the previous outcome Yi 1 . More gener-
+founders, Ui . The solid black arrows indicate the possible     ally, at time t, we randomize the current treatment X i t
+existence of direct causal effects, whereas the absence of      conditional on the past treatments X i 1 , X i 2 , . . . , X i,t−1 .
+such arrows represents the assumption of no direct causal       The critical assumptions are that there exists no unob-
+effect. In addition, DAGs are assumed to contain all rele-      served time-varying confounder (Assumption a) and that
+vant, observed and unobserved, variables. Therefore, this       the treatment assignment probability at time t cannot
+DAG assumes the absence of unobserved time-varying              depend on its past realized outcomes Yi t  where t  < t
+confounders.                                                    (Assumption c). However, the treatment assignment
+      The DAG in Figure 1 shows that Assumption 1 of            probability may vary across units as a function of unob-
+NP − FE can be understood as the following set of state-        served time-invariant characteristics Ui . We can formalize
+ments, each of which is represented by the absence of           this treatment assignment mechanism as follows.
+corresponding nodes or arrows:
+                                                                3
+                                                                  This is because Yi t acts as a collider on any path between ⑀i t and
+                                                                {Xi , Ui }.
+         Assumption (a) No unobserved time-varying con-
+                                                                4
+         founder exists.                                         These models are based on the usual assumption of no spillover
+                                                                effect that the outcome of a unit is not affected by the treatments
+         Assumption (b) Past outcomes do not directly affect    of other units (Rubin 1990). The assumption of no spillover effect
+         current outcome.                                       is made throughout this article.
+                                                                                                                                                             15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                                       471
+
+Assumption 3 (Sequential Ignorability with Unob-                              possibility by including lagged treatment variables in
+served Time-Invariant Confounders.). For each i =                             LIN − FE. Here, we consider the following model with
+1, 2, . . . , N,                                                              one time period lag:
+     {Yi t (1), Yi t (0)}t=1
+                         T
+                             ⊥⊥ X i 1 | Ui ,                                                Yi t = ␣i + ␤1 X i t + ␤2 X i,t−1 + ⑀i t .               (7)
+                                 ..                                           The model implies that the potential outcome can be
+                                  .
+                                                                              written as a function of the contemporaneous and pre-
+     {Yi t (1), Yi t (0)}t=1
+                         T
+                             ⊥⊥ X i t  | X i 1 , . . . , X i,t  −1 , Ui ,   vious treatments, that is, Yi t (X i,t−1 , X i t ), rather than
+                                 ..                                           the contemporaneous treatment alone, partially relaxing
+                                  .                                           Assumption 2.
+     {Yi t (1), Yi t (0)}t=1
+                         T
+                             ⊥⊥ X i t | X i 1 , . . . , X i,T −1 , Ui .            The DAG in Figure 2(b) generalizes the above model
+                                                                              and depicts an NPSEM in which a treatment possibly
+     Thus, Assumption 2 corresponds to Assumption d                           affects all future outcomes as well as current outcome.
+of NP − FE and is implied by equation 1 of LIN − FE.                          This NPSEM is a modification of NP − FE, replacing
+In addition, Assumption 3 corresponds to Assump-                              Equation 5 with the following alternative model for the
+tions (a) and (c) of NP − FE and the strict exogene-                          outcome:
+ity assumption of LIN − FE given in Equation 2 (see
+Appendix A.1 for a proof).                                                                     Yi t = g (X i 1 , . . . , X i t , Ui , ⑀i t ).        (8)
+                                                                              It can be shown that under this NPSEM, Assumption 3
+                                                                              still holds.6 The only difference between the DAGs in
+    Which Causal Identification Assumptions                                   Figures 1 and 2(b) is that in the latter, we must adjust
+               Can Be Relaxed?                                                for the past treatments because they confound the causal
+It is well known that the assumption of no unobserved                         relationship between the current treatment and outcome.
+time-varying confounder (Assumption a) is difficult to                              In general, however, we cannot nonparametrically
+relax under the fixed effects models. Therefore, we con-                      adjust for all past treatments and unobserved time-
+sider the other three identification assumptions shared                       invariant confounders Ui at the same time. By nonpara-
+by LIN − FE and NP − FE (Assumptions b, c, and d)                             metric adjustment, we mean that researchers match ex-
+in turn.                                                                      actly on confounders. To nonparametrically adjust for Ui ,
+     First, note that we did not mention Assumption (b)                       the comparison of treated and control observations must
+under the potential outcomes framework. Indeed, this                          be done across different time periods within the same
+assumption—past outcomes do not directly affect current                       unit. The problem is that no two observations within a
+outcome—can be relaxed without compromising causal                            unit, measured at different time periods, share the same
+identification. To see this, suppose that past outcomes                       treatment history. Such adjustment must be done by com-
+directly affect current outcome as in Figure 2(a). Even                       paring observations across units within the same time
+under this scenario, past outcomes do not confound the                        period, and yet doing so makes it impossible to adjust for
+causal relationship between current treatment and cur-                        unobserved time-invariant variables.
+rent outcome so long as we condition on past treatments                             Therefore, in practice, researchers assume that only
+and unobserved time-invariant confounders. The reason                         a small number of past treatments matter. Indeed, a fre-
+is that past outcomes do not directly affect current treat-                   quent practice is to adjust for one time period lag. Under
+ment. Thus, there is no need to adjust for past outcomes                      this assumption, multiple observations within the same
+even when they directly affect current outcome.5 The exis-                    unit may share the identical but partial treatment his-
+tence of such a relationship, however, may necessitate the                    tory even though they are measured at different points in
+adjustment of standard errors, for example, via-cluster                       time. Under the linear regression framework, researchers
+robust standard errors.                                                       conduct a parametric adjustment by simply including a
+     Next, we entertain the scenario in which past treat-                     small number of past treatments, as done in Equation 7.
+ments directly affect current outcome (i.e., relaxing As-                     However, typically the number of lagged treatments to
+sumption d). Typically, applied researchers address this
+                                                                              6
+                                                                               The result follows from the application of the adjustment criteria
+5
+ The application of the adjustment criteria (Shpitser, VanderWeele,           (Shpitser, VanderWeele, and Robins 2010), in which any noncausal
+and Robins 2010) implies that these additional causal relationships           path between ⑀i t and {Xi , Ui } contains a collider Yi t . This result also
+do not violate Assumption 3 since every noncausal path between                holds even if past outcomes affect current outcomes (i.e., without
+the treatment X i t and any outcome Yi t  is blocked where t = t  .        Assumption b).
+                                                                                                                                                 15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+472                                                                                                         KOSUKE IMAI AND IN SONG KIM
+
+
+                  FIGURE 2 Identification Assumptions of Regression Models with Unit
+                           Fixed Effects
+
+
+                          Yi1               Yi2               Yi3               Yi1               Yi2               Yi3
+
+
+
+
+                         Xi1               Xi2               Xi3                Xi1               Xi2              Xi3
+
+
+
+
+                                            Ui                                                    Ui
+
+                   (a) past outcome aﬀects current outcome               (b) past treatments aﬀect current outcome
+
+
+
+
+                                                                                Yi1               Yi2               Yi3
+                          Yi1               Yi2               Yi3
+
+
+
+
+                                                                                Xi1               Xi2              Xi3
+                         Xi1               Xi2               Xi3
+
+
+
+
+                                                                                                  Ui
+                                            Ui
+
+                                                                       (d) past outcomes aﬀect both current outcome
+                  (c) past outcomes aﬀect current treatment
+                                                                       and treatment
+
+                  Note: Identification is not compromised when past outcomes affect current outcome
+                  (panel a). However, the other two scenarios (panels b and c) violate the strict exogeneity
+                  assumption. To address the possible violation of strict exogeneity shown in panel (c),
+                  researchers often use an instrumental variable approach, shown in panel (d), in which
+                  past outcomes affect both current outcome and treatment but Yi 1 is assumed not to
+                  directly affect Yi 3 .
+
+be included is arbitrarily chosen and is rarely justified on               existence of causal relationships between past outcomes
+substantive grounds.7                                                      and current treatment implies a correlation between past
+     Finally, we consider relaxing the assumption that past                disturbance terms and current treatment.8 This lack of
+outcomes do not directly affect current treatment (As-                     feedback effects over time represents another key causal
+sumption c). This scenario is depicted as Figure 2(c). It                  assumption required for the unit fixed effects models.
+is immediate that Assumption 3 is violated because the                          To address this issue, the model that has attracted
+                                                                           much attention is the following linear unit fixed effects
+7
+                                                                           model with a lagged outcome variable:
+ One exception is the setting where the treatment status changes
+only once in the same direction (e.g., from the control to treatment                     Yi t = ␣i + ␤X i t + ␳ Yi,t−1 + ⑀i t .           (9)
+condition). While adjusting for the previous treatment is sufficient
+in this case, there may exist a time trend in outcome, which con-          8
+                                                                            For example, there is an unblocked path from X i 2 to ⑀i 1 through
+founds the causal relationship between treatment and outcome.              Yi 1 .
+                                                                                                                                                             15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                                        473
+
+TABLE 1 Identification Assumptions of Various Estimators
+
+                                                                       Time-Invariant Past Outcomes Affect Past Treatments Affect
+                                                             Linearity Unobservables Current Treatment       Current Outcome
+Yi t = ␣i + ␤X i t + ⑀i t                                        Yes               Allowed              Not allowed                 Not allowed
+Yi t = ␣i + ␤X i t + ␳ Yi,t−1 + ⑀i t                             Yes               Allowed                Allowed                   Not allowed
+Yi t = ␣i + ␤1 X i t + ␤2 X i,t−1 + ⑀i t                         Yes               Allowed              Not allowed                   Allowed
+Yi t = ␣i + ␤1 X i t + ␤2 X i,t−1 + ␳ Yi,t−1 + ⑀i t              Yes               Allowed            Partially allowed           Partially allowed
+Marginal structural models                                       No               Not allowed             Allowed                     Allowed
+
+
+
+Figure 2(d) presents a DAG that corresponds to this                                  Brumback 2000).10 The key decision for applied re-
+model. The standard identification strategy commonly                                 searchers is then whether, in a given substantive prob-
+employed for this model is based on instrumental vari-                               lem, they believe causal dynamics is more important than
+ables (e.g., Arellano and Bond 1991). The results of Brito                           time-invariant unobserved confounders.
+and Pearl (2002) imply that we can identify the average                                   Table 1 summarizes the identification assumptions
+causal effect of X i 3 on Yi 3 by using X i 1 , X i 2 , and Yi 1 as                  of various estimators considered in this section. The
+instrumental variables while conditioning on Ui and Yi 2 .9                          standard linear regression model with unit fixed effects
+However, the validity of each instrument depends on the                              allows for the existence of time-invariant unobservables
+assumed absence of its direct causal effect on the outcome                           but does not allow causal dynamics. By including lagged
+variable (i.e., direct effects of Yi 1 , X i 1 , and X i 2 on Yi 3 ).                outcome and treatment variables, one can allow either
+Unfortunately, in practice, these assumptions are often                              past outcomes to affect current treatment or past treat-
+made without a substantive justification.                                            ments to affect current outcome. However, allowing both
+      In sum, three key causal identification assumptions                            types of causal dynamics requires an instrumental vari-
+are required for LIN − FE and its nonparametric gen-                                 able approach, in which past outcomes, after a certain
+eralization NP − FE. The assumption of no unobserved                                 number of lags, are assumed not to directly affect current
+time-varying confounder is well appreciated by applied                               outcome. Finally, the selection-on-observable approach
+researchers. However, many fail to recognize two addi-                               based on marginal structural models can nonparamet-
+tional assumptions required for the unit fixed effects re-                           rically identify causal effects in the presence of causal
+gression models: Past treatments do not affect current                               dynamics, but this is done under the assumption of no
+outcome and past outcomes do not affect current treat-                               time-invariant unobservables.
+ment. The former can be partially relaxed by assuming
+that only a small number of lagged treatment variables
+affect the outcome. The use of instrumental variables                                     Adjusting for Observed Time-Varying
+is a popular approach to relax the latter assumption,                                                 Confounders
+but under this approach we must instead assume that
+some lagged outcome variables do not directly affect                                 Finally, we consider the adjustment of observed time-
+current outcome. Unfortunately, researchers rarely jus-                              varying confounders under fixed effects regression
+tify these alternative identification strategies on substan-                         models. Since fixed effects models can only adjust for
+tive grounds.                                                                        unobserved confounders that are time-invariant, applied
+      Finally, although this article focuses upon models                             researchers often measure a vector of observed time-
+with time-invariant unobservables, we emphasize a key                                varying confounders Zi t to improve the credibility of
+trade-off between causal dynamics and time-invariant                                 assumptions.11 We show here that the main conclusion
+unobservables. An alternative selection-on-observable                                of the above identification analysis remains unchanged
+approach allows for the existence of such dynamic causal                             even if we include these additional observed time-varying
+relationships even though it assumes the absence of                                  confounders as covariates of the fixed effects regression
+time-invariant unobservables (see Robins, Hernán, and                               10
+                                                                                        See Blackwell (2013) and Blackwell and Glynn (2018) for recent
+                                                                                     articles that introduce relevant modeling techniques under the as-
+9                                                                                    sumption of selection-on-observables to political science.
+  If X i 1 and X i 2 directly affect Yi 3 , then only Yi 1 can serve as a valid
+                                                                                     11
+instrument. If past outcomes do not affect current outcome, then                      Note that Zi t is assumed to be causally prior to the current treat-
+we can use both Yi 1 and Yi 2 as instruments.                                        ment X i t .
+                                                                                                                                                     15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+474                                                                                                               KOSUKE IMAI AND IN SONG KIM
+
+
+      FIGURE 3 Directed Acyclic Graph for                                         confounders need to be adjusted because they do not di-
+               Regression Models with Unit                                        rectly affect current outcome Yi t .
+               Fixed Effects and Observed                                                Now, suppose that the observed time-varying con-
+               Time-Varying Confounders                                           founders Zi t directly affect future and current outcomes
+               Based on Three Time Periods                                        Yi t  where t  ≥ t. In this case, we need to adjust for the
+                                                                                  past values of the observed time-varying confounders as
+                 Yi1                 Yi2                Yi3                       well as their contemporaneous values. This can be done
+                                                                                  by including the relevant lagged confounding variables,
+                                                                                  (that is, Zi t  with t  < t, in fixed effects regression mod-
+                                                                                  els. However, for the same reason as the one explained in
+                                                                                  the last subsection, it is impossible to nonparametrically
+                Xi1                 Xi2                 Xi3                       adjust for the entire sequence of past time-varying con-
+                                                                                  founders and unobserved time-invariant confounders Ui
+                                                                                  at the same time. While the nonparametric adjustment of
+                                                                                  Ui requires the comparison of observations across differ-
+                Zi1                 Zi2                 Zi3                       ent time periods within each unit, no two observations
+                                                                                  measured at different points in time share an identical
+                                                                                  history of time-varying confounders.
+                                                                                         Furthermore, similar to the case of NP − FE with-
+                                                                                  out time-varying confounders, the average contempora-
+                                     Ui                                           neous treatment effect of X i t on Yi t becomes uniden-
+                                                                                  tifiable if the outcome Yi t affects future treatments X i t 
+                                                                                  either directly or indirectly through Zi t  where t  > t. This
+                                                                                  is because the existence of a causal relationship between
+models. In fact, in this case, we must make an addi-                              Yi t and Zi t  implies a correlation between ⑀i t and Zi t  ,
+tional assumption that there exists no dynamic causal                             thereby violating Assumption 4. In the previous subsec-
+relationship between outcome and these time-varying                               tion, we pointed out the difficulty of assuming the lack of
+confounders, leading to potentially even less credible                            causal relationships between past outcomes and current
+causal identification in many applications.                                       treatment. In many applications, we expect feedback ef-
+     Consider the following NP − FE, which now in-                                fects to occur over time between outcome and treatment
+cludes observed time-varying confounders Zi t .                                   variables. For the same reason, assuming the absence of
+                                                                                  causal effects of past outcomes on current time-varying
+Assumption 4. (NONPARAMETRIC FIXED EFFECTS MODEL
+                                                                                  confounders may not be realistic.
+WITH OBSERVED TIME-VARYING CONFOUNDERS). For each
+                                                                                         The above discussion implies that researchers face
+i = 1, 2, . . . , N and t = 1, 2, . . . , T ,
+                                                                                  the same key trade-off regardless of whether time-
+   Yi t = g (X i 1 , . . . , X i t , Ui , Zi 1 , . . . , Zi t , ⑀i t ) and (10)   varying confounders are present. To adjust for unob-
+                         ⑀i t ⊥⊥ {Xi , Zi , Ui },                       (11)      served time-invariant confounders, researchers must as-
+                                                                                  sume the absence of dynamic causal relationships among
+where Zi = (Zi 1 Zi 2 . . . Zi t ).
+                                                                                  the outcome, treatment, and observed time-varying con-
+       Figure 3 presents a DAG that corresponds to a non-                         founders. In contrast, the selection-on-observables ap-
+parametric structural equation model consistent with this                         proach can relax these assumptions so long as there ex-
+NP − FE. The difference between the DAGs shown in                                 ists no unobserved time-invariant confounder. Under this
+Figures 1 and 3 is the addition of Zi t , which directly af-                      alternative approach, past treatments can directly affect
+fects the contemporaneous outcome Yi t , the current and                          current outcome, and past outcomes can either directly or
+future treatments {X i t , X i,t+1 , . . . , X i t }, and their own               indirectly affect current treatment (through time-varying
+future values {Zi,t+1 , . . . , Zi t }. Moreover, the unobserved                  confounders).
+time-invariant confounders Ui can directly affect these                                  In the next section, we propose a within-unit match-
+observed time-varying confounders. Under this model,                              ing estimator, which relaxes the common assumption of
+only the contemporaneous time-varying confounders Zi t                            linearity among unit fixed effects estimators discussed
+and the unobserved time-invariant confounders Ui con-                             in this section. Although the fundamental trade-off be-
+found the contemporaneous causal relationship between                             tween causal dynamics and time-invariant unobservables
+X i t and Yi t . Neither past treatments nor past time-varying                    is unavoidable, relaxing the functional form assumption
+                                                                                                                                             15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                       475
+
+of linear regression models with unit fixed effects enables   Equation 4 even when Assumptions 2 and 3 are satis-
+more robust inference when the identification assump-         fied. This is because LIN − FE additionally requires the
+tions are met.                                                linearity assumption. Indeed, the linear unit fixed effects
+                                                              regression estimator given in Equation 3 converges to
+                                                              a weighted average of unit-specific ATEs in which the
+                                                              weights are proportional to the within-unit variance of
+       A New Matching Framework                               the treatment assignment variable. This result is restated
+                                                              here as a proposition.
+Causal inference is all about the question of how to
+                                                               Proposition 1 (Inconsistency of the Linear Fixed Ef-
+credibly estimate the counterfactual outcomes through
+                                                               fects Regression Estimator [Chernozhukov et al. 2013,
+the comparison of treated and control observations. For
+                                                               Theorem 1]). Suppose E(Yi2t ) < ∞ and E(C i Si2 ) > 0
+a treated observation, we observe the outcome under the                     T
+                                                               where Si2 = t=1     (X i t − X i )2 /(T − 1). Under Assump-
+treatment condition but must infer its counterfactual
+                                                               tions 2 and 3 as well as simple random sampling of units
+outcome under the control condition using the observed
+                                                               with T fixed, the linear fixed effects regression estimator
+outcomes of control observations. Matching is a class
+                                                               given in Equation 3 is inconsistent for the average treat-
+of nonparametric methods in which we solve this
+                                                               ment effect ␶ defined in Equation 4:
+fundamental problem of causal inference by finding
+                                                                                 T                     T                   
+a set of control observations similar to each treated                        E   C      t=1 X i t Yi t
+                                                                                                        −  t=1 (1−X i t )Yi t
+                                                                                                                                 Si2
+                                                                         p         i       T
+                                                                                               Xi t            T
+                                                                                                                   1−X i t
+observation (e.g., Ho et al. 2007; Rubin 2006; Stuart         ␤ˆ LIN−FE −→                 t=1                 t=1
+                                                                                                                                     = ␶.
+2010).                                                                                             E(C i Si2 )
+     In this section, we propose a new matching frame-             Thus, in general, under Assumptions 2 and 3, the
+work to shed new light on the causal identification           linear unit fixed effects estimator fails to consistently es-
+assumptions of unit fixed effects regression models.          timate the ATE unless either the within-unit ATE or the
+Like the DAGs introduced above, this new matching             within-unit proportion of treated observations is con-
+framework is completely nonparametric. In the following       stant across units. This result also applies to the use
+subsection, we show that relaxing the linearity assump-       of LIN − FE in a cross-sectional context. For example,
+tion is key to consistently estimating the causal quantity    LIN − FE is often used to analyze stratified randomized
+of interest defined in Equation 4. Moreover, the proposed     experiments (Duflo, Glennerster, and Kremer 2007). Even
+framework elucidates how various unit fixed effects           in this case, if the proportion of treated observations and
+models adjust for time-invariant unobservables. Specif-       the ATE vary across strata, then the resulting least squares
+ically, the subsequent section shows that causal inference    estimator will be inconsistent.
+based on unit fixed effects regression models relies upon          We consider a nonparametric matching estimator
+within-unit comparison where a treated observation is         that eliminates this bias. The key insight from an ear-
+matched with the control observations of the same unit        lier discussion is that under Assumptions 2 and 3, even
+at different time periods. We then establish this fact by     though a set of time-invariant confounders Ui is not ob-
+proving that a within-unit matching estimator is equiv-       served, we can nonparametrically adjust for them by com-
+alent to a weighted linear unit fixed effects regression      paring the treated and control observations measured at
+model.                                                        different time periods within the same unit. This within-
+     Consistent with the earlier analysis, such over-time     unit comparison motivates the following matching esti-
+comparison is valid only in the absence of causal dy-         mator, which computes the difference of means between
+namics. However, the proposed nonparametric match-            the treated and control observations within each unit and
+ing framework can serve as an important foundation            then averages it across units:
+for simultaneously relaxing the linearity assumption and
+                                                                                                     T
+enabling a variety of identification strategies based on                                    N
+                                                                                    1                   t=1 X i t Yi t
+within-unit comparison in the presence of unobservable                  ␶ˆ =  N                Ci     T
+                                                                                  i =1 C i i =1           t=1 X i t
+unit-specific heterogeneity.
+                                                                                               T
+                                                                                                 t=1 (1 − X i t )Yi t
+                                                                                           −      T
+                                                                                                                       . (12)
+                                                                                                   t=1 (1 − X i t )
+    The Within-Unit Matching Estimator
+                                                              This matching estimator is attractive because unlike the
+Despite its popularity, LIN − FE does not consistently        estimator in Equation 3, it does not require the linearity
+estimate the average treatment effect (ATE) defined in        assumption. Under Assumptions 2 and 3, this within-unit
+                                                                                                                                                                          15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+476                                                                                                                              KOSUKE IMAI AND IN SONG KIM
+
+
+matching estimator is consistent for the ATE defined in                                          Identification Strategies Based on
+Equation 4.                                                                                          Within-Unit Comparison
+                                                                                        The framework described above can accommodate di-
+Proposition 2 (Consistency of the Within-Unit Match-
+                                                                                        verse matching estimators through their corresponding
+ing Estimator). Under the same set of assumptions as in
+                                                                                        matched sets Mi t . Here, we illustrate the generality of the
+Proposition 1, the within-unit matching estimator defined
+                                                                                        proposed framework. First, we show how to incorporate
+in Equation 12 is consistent for the average treatment effect
+                                                                                        time-varying confounders Zi t by matching observations
+defined in Equation 4.
+                                                                                        within each unit based on the values of Zi t . For example,
+                                                                                        the within-unit nearest neighbor matching leads to the
+Proof is in Appendix A.2.
+                                                                                        following matched set:
+     To further generalize this idea, we make the connec-
+tion to matching methods more explicit by defining a                                    Mi t = {(i  , t  ) : i  = i,
+matched set Mi t for each observation (i, t) as a group of
+                                                                                                            X i  t  = 1 − X i t , D(Zi t , Zi  t  ) = J i t }, (16)
+other observations that are matched with it. For example,
+under the estimator proposed above, a treated (control)                                 where D(·, ·) is a distance measure (e.g., Mahalanobis
+observation is matched with all control (treated) obser-                                distance), and
+vations within the same unit, and hence the matched set
+is given by                                                                                                  Jit =        min D(Zi t , Zi t  )                 (17)
+                                                                                                                     (i,t  )∈Mi t
+
+                                                                                        represents the minimum distance between the time-
+        Mi t = {(i  , t  ) : i  = i, X i  t  = 1 − X i t }.                 (13)   varying confounders of this observation and another ob-
+                                                                                        servation from the same unit whose treatment status is
+      Thus far, we have focused on the average treat-                                   opposite. With this definition of matched set, we can con-
+ment effect as a parameter of interest given that re-                                   struct the within-unit nearest neighbor matching estima-
+searchers often interpret the parameter ␤ of LIN − FE                                   tor using Equation 14. The argument of Proposition 2
+as the average contemporaneous treatment effect of                                      suggests that this within-unit nearest neighbor matching
+X i t on Yi t . However, our matching framework can ac-                                 estimator is consistent for the ATE so long as matching
+comodate various identification strategies for different                                on Zi t eliminates the confounding bias.
+causal quantities of interest using different matched                                        Second, we consider the before-and-after (BA) design
+sets. That is, given any matched set Mi t , we can de-                                  in which each average potential outcome is assumed to
+fine the corresponding within-unit matching estimator ␶ˆ                                have no time trend over a short time period. Since the
+as                                                                                      BA design also requires the assumption of no carryover
+                                                                                        effect, the BA design may be most useful when for a
+            1                          
+                                       N 
+                                         T
+                                                                                        given unit the change in the treatment status happens
+   ␶ˆ =  N T                                                
+                                                       D i t (Y          
+                                                               i t (1) − Yi t (0)),     only once. Under the BA design, we simply compare the
+             i =1          t=1 Di t i =1 t=1
+                                                                                        outcome right before and immediately after a change in
+                                                                                 (14)   the treatment status. Formally, the assumption of no time
+                                                                                        trend can be written as the following:
+where Yi t (x) is observed when X i t = x and is estimated
+                                                                                        Assumption 5 (Before-and-After Design). For i =
+using the average of outcomes among the units of its
+                                                                                        1, 2, . . . , N and t = 2, . . . , T ,
+matched set when X i t = 1 − x:
+             ⎧                                                                                    E(Yi t (x) − Yi,t−1 (x) | X i t = X i,t−1 ) = 0,
+             ⎨Yi t                                         if X i t = x
+                                                                                       where x ∈ {0, 1}.
+Yi t (x) =                                                                      (15)
+             ⎩     1
+                                                           if X i t = 1 − x.
+                 |Mi t |       (i  ,t  )∈Mi t Yi  t                                      Under Assumptions 2 and 5, the average difference
+                                                                                        in outcome between before and after a change in the
+Note that |Mi t | represents the number of observa-                                     treatment status is a valid estimate of the local ATE, that
+tions in the matched set and that Di t indicates whether                                is, E(Yi t (1) − Yi t (0) | X i t = X i,t−1 ).
+the matched set Mi t contains at least one observa-                                          To implement the BA design within our framework,
+tion, that is, Di t = 1{|Mi t | > 0}. In the case of the                                we restrict the matched set and compare the observations
+matched set defined in Equation 13, we have Di t = C i for                              within two subsequent time periods that have opposite
+any t.                                                                                  treatment status. Formally, the resulting matched set can
+                                                                                                                                                                                  15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                                                            477
+
+be written as                                                                   is,
+                                 
+Mi t = {(i , t ) : i = i, t = t − 1, X i  t  = 1 − X i t }. (18)                       E{Yi,t+F (1) − Yi,t+F (0) | X i t = X i,t−1 },                                 (21)
+It is straightforward to show that this matching estima-
+                                                                                where F is a non-negative integer representing the num-
+tor is equivalent to the following first-difference (FD)
+                                                                                ber of leads. Under this setting, we estimate the potential
+estimator:
+                                                                                outcome under X i t = x at time t + F using the following
+                            
+                            N 
+                              T
+                                                                                matching estimator:
+    ␤ˆ FD = argmin                       (Yi t − Yi,t−1 )
+                    ␤       i =1 t=2
+                                                                                                                        −F
+                                                                                                                      N T
+                                                                2                               1
+                                        − ␤(X i t − X i,t−1 )        .   (19)   ␶ˆ =  N        T −F
+                                                                                         i =1        t=L +1 Di t i =1 t=L +1
+In standard econometrics textbooks, the FD estimator
+                                                                                                                             
+                                                                                                                      Di t (Yi,t+F        
+                                                                                                                                   (1) − Yi,t+F (0)), (22)
+defined in Equation 19 is presented as an alternative esti-
+mation method for the LIN − FE estimator. For example,
+                                                                                where
+Wooldridge (2010) writes, “We emphasize that the model                                        ⎧
+and the interpretation of ␤ are exactly as in [the linear                                     ⎨Yi,t+F                                            if X i t = 1 − X i,t−1 = x
+                                                                                       (x) =                                                                                 ,
+                                                                                              ⎩ 1 
+                                                                                 Yi,t+F
+fixed effects model]. What differs is our method for es-                                                                                         if X i t = 1 − x
+                                                                                                     |Mi t |   (i  ,t  )∈Mi t Yi  t 
+timating ␤” (279; italics original). However, as can be                                          ⎧
+seen from the above discussion, the difference lies in the                                       ⎨1       if X i t = 1 − X i,t−1
+identification assumption and the population for which                                  Di t =                                                                           (23)
+                                                                                                 ⎩0       otherwise.
+the ATE is identified. Both the LIN − FE and FD estima-
+tors match observations within the same unit. However,
+the FD estimator matches observations only from sub-
+sequent time periods, whereas the LIN − FE estimator
+matches observations from all time periods regardless of
+                                                                                      Estimation, Inference, and Specification
+the treatment status.
+                                                                                                        Test
+      There exists an important limitation of the BA de-                        As the main analytical result of this article, we show that
+sign. Although Assumption 5 is written in terms of time                         any within-unit matching estimator can be written as
+trend of potential outcomes, the assumption is violated                         a weighted linear regression estimator with unit fixed
+if past outcomes affect current treatment. Since the first-                     effects. The following theorem establishes this result and
+difference estimator can be thought of as a special case                        shows how to compute regression weights for a given
+of linear unit fixed effects regression estimators, the crit-                   matched set (see Gibbons, Suárez Serrato, and Urbancic
+ical assumption of no dynamic causal relationships be-                          2017; Solon, Haider, and Wooldridge 2015 for related
+tween the outcome and treatment variables remains rel-                          results).
+evant under the BA design. Consider a scenario where
+the treatment variable X i t is set to 1 when the lagged                        Theorem 1 (Within-Unit Matching Estimator as a
+outcome Yi,t−1 takes a value greater than its mean. In                          Weighted Unit Fixed Effects Estimator). Any within-
+this case, even if the treatment effect is 0, the out-                          unit matching estimator ␶ˆ defined by a matched set Mi t
+come difference between the two periods, Yi t − Yi,t−1 ,                        equals the weighted linear fixed effects estimator, which can
+is likely to be negative because of the so-called “regres-                      be computed as
+sion toward the mean” phenomenon. James (1973) de-                                                                         
+                                                                                                        
+                                                                                                        N 
+                                                                                                          T
+                                                                                                                                      ∗
+rives an expression for this bias under the normality                            ␤ˆ WFE = argmin                       Wi t (Yi t − Y i )
+assumption.                                                                                      ␤       i =1 t=1
+      Finally, we can generalize the BA design so that we                                                                                                       2
+                                                                                                                                                           ∗
+use a larger number of lags to estimate the counterfactual                                                                        − ␤(X i t − X i )                 ,    (24)
+outcome. If we let L represent the number of lags, then
+the matched set becomes                                                                   ∗     T                 T            ∗  T
+                                                                                where X i = t=1        Wi t X i t / t=1 Wi t , Y i = t=1 Wi t
+                                       
+    Mi t = {(i , t ) : i = i, t ∈ {t − 1, . . . , t − L },                            T
+                                                                                Yi t / t=1 Wi t , and the weights are given by
+                            X i  t  = 1 − X i t }.                     (20)
+                                                                                                               
+                                                                                                               N 
+                                                                                                                 T
+                                                                                                                                            
+Furthermore, the causal quantity of interest can also be                                    Wi t = Di t                          wii tt ,           where
+generalized to a longer-term average treatment effect, that                                                    i  =1 t  =1
+                                                                                                                                                           15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+478                                                                                                                   KOSUKE IMAI AND IN SONG KIM
+
+                 ⎧
+                 ⎪
+                 ⎨1                if (i, t) = (i  , t  )                average treatment effect defined in Equation 21. One
+           i t                                                           possibile way to address this problem is to exploit the
+          wi t = 1/|Mi  t  |     if (i, t) ∈ Mi  t              (25)
+                 ⎪
+                 ⎩                                                         equivalence between matching and weighted least squares
+                   0               otherwise.                              estimators and model a time trend using observations
+                                                                           prior to the administration of treatment.
+                                                               
+     Proof is in Appendix A.3. In this theorem, wii tt rep-                     For example, researchers may use the following
+resents the amount of contribution or “matching weight”                    weighted least squares estimator of the average treatment
+of observation (i, t) for the estimation of treatment ef-                  effect in the F time periods ahead,
+fect of observation (i  , t  ). For any observation (i, t), its
+regression weight is given by the sum of the matching                                      
+                                                                                           N 
+                                                                                             T
+                                                                                                          
+                                                                           ␤ˆ = argmin                Wi t (Yi t − Y i )
+weights across all observations.                                                     ␤     i =1 t=1
+     For example, it can be shown that when the matched                                                                                2
+set is given by Equation 13, the regression weights equal                                                   − ␤(X i t − X i ) − f ␥ (t) , (26)
+to the inverse of the propensity score computed within
+                                                                           where f ␥ (t) is a parametric time trend model (e.g.,
+each unit. Thus, along with Proposition 2, this im-
+                                                                            f ␥ (t) = ␥1 (t − t̄) + ␥2 (t 2 − t¯2 )), with t̄ and t¯2 repre-
+plies that if the data-generating process is given by the
+                                                                           senting the average year, and average squared year re-
+linear unit fixed effects model defined in Equation 1
+                                                                           spectively,12 and Wi t is the weight computed accord-
+with Assumptions 2 and 3, then the weighted linear
+                                                                           ing to Theorem 1 based on the matched set defined in
+unit fixed effects regression estimator with weights in-
+                                                                           Equation 20:
+versely proportional to the propensity score is consis-
+tent for the average treatment effect ␤. We note that                                             
+                                                                                                  N 
+                                                                                                    T
+                                                                                                                       
+this weighted linear fixed effects estimator is numeri-                             Wi t = Di t                   wii tt    where
+cally equivalent to the sample weighted treatment ef-                                             i  =1 t  =1
+                                                                                          ⎧
+fect estimator of Wooldridge (2005b), which was fur-                                      ⎪
+                                                                                          ⎨1                         if (i, t) = (i  , t  + F )
+ther studied by Gibbons, Suárez Serrato, and Urbancic                              i t
+                                                                                   wi t = 1/|Mi  t  |              if (i, t) ∈ Mi  t            (27)
+(2017).                                                                                   ⎪
+                                                                                          ⎩
+     Theorem 1 yields several practically useful impli-                                     0                        otherwise,
+cations. First, one can efficiently compute within-unit                    and Mi t is defined in Equation 20. Although the above
+matching estimators even when the number of units is                       model assumes a common time trend across units, we
+large. Specifically, a weighted linear fixed effects esti-                 can also estimate a separate time trend for each unit if
+mator can be computed by first subtracting its within-                     there is a sufficient number of time periods. This is done
+unit weighted average from each of the variables and                       by replacing f ␥ (t) with f ␥i (t) (e.g., f ␥i (t) = ␥i 1 (t − t̄) +
+then running another weighted regression using these                       ␥i 2 (t 2 − t¯2 )). While this strategy enables flexible model-
+“weighted demeaned” variables. Second, taking advan-                       ing of time trend, care must be taken especially for a large
+tage of this equivalence, we can use various model-based                   value of F since we are extrapolating into the future.
+robust standard errors for within-unit matching estima-
+tors (e.g., Stock and Watson 2008; White 1980a). Third, a
+within-unit matching estimator is consistent for the ATE
+even when LIN − FE is the true model (i.e., the linear-
+                                                                                         An Empirical Illustration
+ity assumption holds). This observation leads to a simple
+specification test based on the difference between the un-                 In this section, we illustrate our proposed methodology
+weighted and weighted least squares (White 1980b) where                    by estimating the effects of General Agreement on Tariffs
+the null hypothesis is that the linear unit fixed effects re-              and Trade (GATT) membership on bilateral trade and
+gression model is correct.                                                 comparing our results with various fixed effects models.
+     Finally, Theorem 1 can be used to improve the credi-                  We show that different causal assumptions can yield sub-
+bility of the BA design. Recall that the BA design makes the               stantively different results, but our methodology using
+assumption that there is no time trend (Assumption 5).                     the before-and-after design generally suggests that joint
+That is, the outcome from the previous time period can                     GATT membership slightly increases bilateral trade vol-
+be used to estimate the average counterfactual outcome in                  ume on average.
+the next time period when the treatment status changes.
+In practice, however, this identification assumption may                   12
+                                                                              For an unbalanced time-series cross section data set, t̄ and t¯2 will
+be questionable, especially when estimating a long-term                    vary across units.
+                                                                                                                                          15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                    479
+
+  Effects of GATT Membership on Bilateral                        “participants” as adopted by Tomz, Goldstein, and Rivers
+                   Trade                                         (2007). For each membership definition, we estimate its
+                                                                 average effects on bilateral trade. We consider the two
+Does GATT membership increase international trade?               treatment variables: whether both countries in a dyad i
+Rose (2004) finds that the answer to this question is            are members (formal or participants) of GATT or not
+negative. Based on the standard gravity model applied            in a given year t (mix of dyads with one GATT member
+to dyadic trade data, his analysis yields economically           and no GATT member). This analysis focuses on the reci-
+and statistically insignificant effects of GATT member-          procity hypothesis that GATT can impact bilateral trade
+ship (and its successor, the World Trade Organization            only when countries mutually agree on reducing trade
+or WTO) on bilateral trade. This finding led to subse-           barriers (Bagwell and Staiger 1999).13
+quent debates among empirical researchers as to whether               Figure 4 shows the distributions of these two treat-
+GATT actually promotes trade (e.g., Gowa and Kim 2005;           ment variables across dyads (vertical axis) and over time
+Tomz, Goldstein, and Rivers 2007; Rose 2007). In par-            (horizontal axis). For any dyad, the treatment status
+ticular, Tomz, Goldstein and Rivers (2007) find a sub-           changes at most once in only one direction from the
+stantial positive effect of GATT/WTO on trade when a             control condition to the treatment condition. This ob-
+broader definition of membership is employed. They ar-           servation holds true for both formal membership (left
+gue that nonmember participants, such as former colonies,        plot) and participant status (right plot). Given this distri-
+de facto members, and provisional members, should also           bution of treatment variables, we next consider different
+be included in empirical analysis since they enjoy similar       identification strategies.
+“rights and obligations.”
+     Despite the substantive controversy regarding the ef-
+fects of GATT on trade, researchers appear to have reached                     Models and Assumptions
+a methodological consensus that the LIN − FE is the cor-
+rect model to be used (Anderson and Wincoop 2003;                We begin with the following linear regression model with
+Feenstra 2003). In another article, Rose (2005) expresses        dyadic fixed effects used by Rose (2007):
+his belief in the usefulness of LIN − FE by stating, “In                      log Yi t = ␣i + ␤X i t + ␦ Zi t + ⑀i t ,           (28)
+terms of confidence, I follow the profession in placing
+most confidence in the fixed effects estimators; I have          where X i t is one of the binary treatment indicators
+no clear ranking between country-specific and country            for dyad i in year t described above, Yi t is the bilat-
+pair-specific effects” (10). Tomz, Goldstein, and Rivers         eral trade volume, and Zi t represents a vector of time-
+(2007) agree with this assessment and write, “We, too,           varying confounders including Generalized System of
+prefer FE estimates over OLS on both theoretical and             Preferences (GSP), log product real GDP, log product
+statistical grounds” (2013). Below, we critically examine        real GDP per capita, regional free trade agreement, cur-
+the assumptions of the LIN − FE in the context of this           rency union, and currently colonized. As discussed ear-
+specific application.                                            lier, the advantage of this standard dyad fixed effects
+                                                                 model is its ability to adjust for unobserved time-invariant
+                                                                 confounders.
+                           Data                                       Next, we progressively improve this LIN − FE. First,
+                                                                 we relax the linearity assumption, which, as shown in
+We analyze the data set from Tomz, Goldstein, and Rivers         Proposition 1, leads to bias when there exists hetero-
+(2007), which updates and corrects some minor errors in          geneity across dyads in treatment effect and/or treat-
+the data set used by Rose (2004). Unlike Rose (2004) and         ment assignment probability. Indeed, Subramanian and
+Tomz, Goldstein, and Rivers (2007), however, we restrict         Wei (2007) find substantial heterogeneity in the effects
+our analysis to the period between 1948 and 1994 so that         of GATT/WTO on trade. We instead apply the proposed
+we focus on the effects of GATT and avoid conflating             nonparametric matching estimator, given by Equation 14,
+them with the effects of the WTO. As shown below, this           which compares each treated observation with the average
+restriction does not significantly change the conclusions        outcome among all control observations within the same
+of the studies, but it leads to a conceptually cleaner anal-     unit. In the current application, this implies the within-
+ysis. This yields a dyadic data set of bilateral international   dyad comparison between the control observations in an
+trade in which the total number of dyads is 10,289 and
+the total number of (dyad-year) observations is 196,207.         13
+                                                                    We also conduct analyses based on alternative definitions of treat-
+     We use two different definitions of GATT member-            ment, such as whether only one country or no country in a dyad is
+ship: “formal membership” as used by Rose (2004) and             a member (see Appendix A.4).
+                                                                                                                                              15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+480                                                                                                      KOSUKE IMAI AND IN SONG KIM
+
+
+ FIGURE 4 Distributions of the Treatment Variables across Dyads and over Time
+
+                        Both Formal Members vs. Others                                     Both Participants vs. Others
+
+
+
+
+  Dyad
+
+
+
+
+         50   55   60       65    70    75   80    85    90   95   99       50   55   60     65    70     75    80        85   90   95   99
+         19   19   19      19    19    19    19   19     19   19   19      19    19   19    19    19     19    19    19        19   19   19
+
+
+
+ Note: This figure displays the distribution of treatment for 9,180 dyads from 1948 to 1999 based on 136 countries
+ whose existence and membership status were identified by Tomz, Goldstein, and Rivers (2007) during the entire
+ period. In the left (right) panel, the binary treatment variable is shown in dark gray if both countries in the dyad are
+ formal members (participants) and in light gray otherwise. In both cases, the visualization shows that the treatment
+ status does not revert back and forth over time because countries do not exit the institution once they join.
+
+
+earlier period and the treatment observations in a later                in treatment status is used to form an estimate of the
+period because the treatment status changes at most once                counterfactual outcome under the treatment condition.
+for any given dyad. However, this comparison is poten-                  Although this identification strategy is more credible, the
+tially problematic since the data set spans a relatively large          assumption of no time trend may be too stringent given
+number of years and hence some of the matched control                   that trade volume in general has increased over time.
+observations may be too far apart in time from the treated              This problem is particularly pronounced if researchers
+observation to be comparable. For example, it would not                 are interested in estimating the long-term effects
+be credible if one estimated the counterfactual bilateral               (see Equation 21) rather than the contemporaneous
+trade volume in 1994 using the observed trade volume                    effect.
+in 1950 since various other factors have changed between                     Thus, we generalize the first-difference estimator
+those 2 years.                                                          by including longer lagged control observations in the
+     Second, to improve the comparability of treated                    matched set prior to the change in the treatment status
+and control observations, we employ the first-difference                (see Equation 20). This allows us to parametrically adjust
+estimator by restricting the matched set and compare                    for the time trend in bilateral trade volume by exploiting
+the observations within only two subsequent time                        the equivalence between matching and weighted fixed ef-
+periods with treatment status change (see Equation 19).                 fects estimators. Under this general design, we can also
+Under this special case of the before-and-after design,                 estimate both contemporaneous and longer-term effects
+we require the assumption of no time trend because                      by setting various values of leads, F ≥ 0. Specifically, we
+the control observation immediately before the change                   fit the following weighted fixed effects estimator with a
+                                                                                                                                                   15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                              481
+
+TABLE 2 Estimated Contemporaneous Effects of GATT on the Logarithm of Bilateral Trade Based
+        on Various Dyad Fixed Effects Estimators
+
+                                                    Dyad Fixed Effects                                    Before-and-After Design
+Membership                        Standard              Weighted           First Diff.           Lag = 3            Lag = 5           Lag = 7
+Formal                            −0.048            −0.069              0.075                    −0.003              0.028              0.035
+(N=196,207)                        (0.024)            (0.022)          (0.053)                    (0.027)           (0.022)            (0.020)
+White’s p-value                                        0.000            0.004
+N (nonzero weights)                196,207           110,195            6,846                     8,625             12,880             17,274
+Participants                         0.147             0.011            0.096                      0.066             0.065              0.079
+(N=196,207)                         (0.030)           (0.028)          (0.029)                    (0.035)           (0.028)            (0.026)
+White’s p-value                                        0.000            0.648
+N (nonzero weights)                196,207            68,004            3,952                     4,472            6,640          8,905
+Covariates                                Year-varying dyadic covariates                                    Quadratic time trends
+Note: The “Standard” column presents the estimates based on the standard linear regression model with dyadic fixed effects given by
+Equation 28. The “Weighted” column presents the estimates based on the nonparametric matching estimator given by Equation 12.
+The “First Diff.” column is based on the comparison between two subsequent time periods with treatment status change. “White’s
+p-value” represents the p-value from a model specification test whose null hypothesis is that the standard linear fixed effects models
+are correct. Finally, the “Before-and-After Design” columns present the results based on three different lengths of lags with quadratic
+time trends (Equation 29). These estimators compare the dyads of two GATT members with those consisting of either one or no GATT
+member. “Formal” membership includes only formal GATT members as done in Rose (2004), whereas “Participants” includes nonmember
+participants as defined in Tomz, Goldstein, and Rivers (2007). The year-varying dyadic covariates include Generalized System of Preferences,
+log product real GDP, log product real GDP per capita, regional free trade agreement, currency union, and currently colonized. Robust
+standard errors, allowing for the presence of heteroskedasticity, are in parentheses. The results suggest that different causal assumptions,
+which imply different regression weights, can yield different results, and that the standard linear fixed effects models are likely to be
+misspecified.
+
+
+quadratic time trend:                                                      outcome.14 These assumptions may be unrealistic. Stud-
+                                                                           ies have shown that economic interests and previous levels
+                                                                           of engagement in bilateral trade affect countries’ incen-
+                    
+                    N 
+                      T
+                                                                          tives to join the GATT/WTO (Davis and Wilf 2017). That
+  ␤ˆ BA = argmin               Wi t (Yi t − Y i )
+              ␤     i =1 t=1
+                                                                           is, past outcomes (i.e., bilateral trade volumes) may af-
+                                                                  2       fect current treatment (i.e., GATT membership). Further-
+           − ␤(X i t − X i ) − ␥1 (t − t̄i ) − ␥2 (t 2 − t̄i2 )        ,   more, past treatments may also affect current outcome.
+                                                                   (29)    Atkeson and Burstein (2010) find that changes in trade
+                                                                           barriers, such as most favored nations (MFN) tariffs ap-
+                                                                           plied to GATT members, will determine forward-looking
+where Wi t is given by Equation 25, and t̄i and t̄i2 are the               firms’ reactions to exit, export, and product innovation,
+mean values of year and squared year variables, respec-                    which will in turn affect future trade volumes. For the em-
+tively (unlike the estimator in Equation 26, these values                  pirical analysis of this article, however, we maintain these
+may differ across dyads because some dyads do not cover                    assumptions and focus on the aforementioned improve-
+the entire period in this application). In this application,               ments of the linear fixed effects regression estimator used
+we chose at most F = 5 as our maximum value of this                        in the literature. In the concluding section, we briefly dis-
+lead variable since the identification of longer-term ef-                  cuss potential extensions of the proposed methodology
+fects requires the extrapolation of time trends into the                   to address these fundamental identification assumptions
+future based on the observed control observations from                     of unit fixed effects regression estimators.
+the past.
+     A word of caution is warranted about these estima-
+tors. As discussed earlier, these dyad linear fixed effects
+                                                                           14
+regression models and the before-and-after designs criti-                     Moreover, the model assumes no interference between units. That
+cally assume that there exist no time-varying unobserved                   is, one dyad’s treatment status does not affect the trade volumes of
+                                                                           other dyads. Although this assumption may also be unrealistic in
+confounders and that past outcomes do not confound                         this interdependent world, relaxing it is difficult and is beyond the
+the causal relationship between current treatment and                      scope of this article.
+                                                                                                                                                                               15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+482                                                                                                                                              KOSUKE IMAI AND IN SONG KIM
+
+
+            FIGURE 5 Estimated Longer-Term Effects of GATT on the Logarithm
+                     of Bilateral Trade Based on Before-and-After Design
+
+                                                                 Both Formal Members vs. One or No Member             Both Participants vs. One or No Participant
+
+
+
+
+                       Estimated Effects (Log of Trade)
+                                                          0.3                                                  0.3
+
+                                                          0.2                                                  0.2
+
+
+
+             Lag = 3
+                                                                                                                               ●       ●                ●
+                                                          0.1                                                  0.1                              ●               ●
+                                                                                                                       ●
+                                                          0.0      ●      ●      ●                             0.0
+                                                                                                ●      ●
+                                                                                         ●
+
+
+
+                                                          −0.2                                                 −0.2
+
+
+
+
+                       Estimated Effects (Log of Trade)
+                                                          0.3                                                  0.3
+
+                                                          0.2                                                  0.2
+
+
+
+             Lag = 5
+                                                                                                                               ●       ●                ●
+                                                          0.1                                                  0.1                              ●               ●
+                                                                          ●      ●              ●      ●               ●
+                                                                   ●                     ●
+                                                          0.0                                                  0.0
+
+
+
+
+                                                          −0.2                                                 −0.2
+
+
+
+
+                       Estimated Effects (Log of Trade)
+                                                          0.3                                                  0.3
+
+                                                          0.2                                                  0.2                                      ●
+
+
+
+             Lag = 7
+                                                                                                                               ●       ●        ●               ●
+                                                          0.1                    ●              ●      ●       0.1
+                                                                          ●                                            ●
+                                                                                         ●
+                                                                   ●
+                                                          0.0                                                  0.0
+
+
+
+
+                                                          −0.2                                                 −0.2
+
+                                                                   t     t+1    t+2     t+3    t+4    t+5              t      t+1     t+2      t+3     t+4     t+5
+
+                                                                       Year from Treated Year t                            Year from Treated Year t
+
+            Note: This plot presents point estimates and 95% confidence intervals for the estimated effects
+            of GATT membership on bilateral trade. The quantity of interest and the matched set are given
+            by Equations 21 and 20, respectively. That is, we compare the average bilateral trade volume
+            across L ∈ {3, 5, 7} years of lags before the treatment given at year t against the bilateral trade
+            volume in t + F , where F ∈ {0, 1, 2, 3, 4, 5} is the years since the treatment. We also include
+            quadratic time trends. Overall, we find no evidence of positive effects of formal membership.
+            We find some evidence of positive effects of participant membership with substantively much
+            smaller effect sizes (e.g., 20% increase in 5 years) than the estimates from Tomz, Goldstein,
+            and Rivers (2007; e.g., 71.6% contemporaneous effects). Robust standard errors allowing for
+            the presence of heteroskedasticity are used.
+
+
+                                                                 Findings                                   with dyadic fixed effects (see the “Standard” column), we
+                                                                                                            find that formal membership does not increase trade vol-
+We present the results based on each estimator discussed                                                    ume on average (if anything, there appears to be a negative
+above. Table 2 summarizes the estimated contemporane-                                                       effect). In contrast, the estimated effect of participant
+ous effects of GATT membership on bilateral trade vol-                                                      is postive and statistically significant. As expected, these
+ume. When we use the standard linear regression model                                                       results are consistent with the original findings from
+                                                                                                                                15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                           483
+
+both Rose (2004) and Tomz, Goldstein, and Rivers               presents the point estimates and 95% confidence inter-
+(2007), who also used standard fixed effects regression        vals for the estimated effects of formal membership (left
+models.                                                        column) and participant (right column) on trade vol-
+     However, the estimates based on the nonparametric         ume from the year of treatment t to year t + 5. We also
+matching estimator allowing for heterogeneity in treat-        use various lengths of lag to examine the robustness of
+ment assignment and treatment effects suggest that the         our findings. The quadratic time trend is included in the
+effect of participant membership is much smaller and sta-      model to account for time trend in trade volume.
+tistically indistinguishable from zero (see the “Weighted”          In general, we find little evidence for longer-term
+column). The nonparametric matching estimator uses a           effects of formal membership. Notwithstanding the
+much lower number of observations than the standard            statistically significant positive effects estimated based
+dyadic fixed effects because the dyads with no treatment       on 7 years of lags, the effect sizes are modest: The highest
+status change are dropped. The standard dyadic fixed ef-       estimate suggests an 8% percent (≈ exp(0.081) − 1)
+fects model still includes these observations because of       increase in trade volume over 5 years after joining the
+year-varying dyadic covariates.                                GATT. Similarly, we find some evidence of positive
+     In contrast, the analysis based on the comparison be-     effects of participant membership with the model with
+tween two subsequent time periods with treatment status        the lag of 7 years. However, the estimated effect sizes
+change, corresponding to the “First Diff.” column, shows       are substantively much smaller (e.g., maximum 20%
+that the estimated effects for both treatment variables are    increase in 5 years) than the estimates reported in Tomz,
+positive, although the effect of formal membership is not      Goldstein, and Rivers (e.g., 71.6% contemporaneous
+statistically significant. The sample size for this analysis   effect).
+is further reduced because of its focus on immediately              We note that the estimated effect sizes are stable across
+before and after the change in treatment status. As a con-     various implementations of the before-and-after design
+sequence, the standard error for the estimated effect of       with different values of the lags, although a longer lag
+formal membership is substantially greater than those of       yields smaller standard errors due to a larger sample size.
+standard and weighted analyses. On the other hand, the         To account for the correlations across dyads when they
+standard error for the estimated effect of participant does    share a common member, we verify our findings with
+not increase as much, suggesting that the effect is rela-      the cluster-robust standard errors proposed by Aronow,
+tively precisely estimated. “White p-value” represents the     Samii, and Assenova (2015) and find that the positive ef-
+p-value from a model misspecification test whose null          fects of participant membership remain statistically sig-
+hypothesis is that the standard linear fixed effects mod-      nificant, although the standard errors are about 20%
+els are correct (see the subsection “Estimation, Inference,    larger on average. Our findings are also robust to includ-
+and Specification Test”). The small p-values suggest that      ing/excluding time-varying covariates as well as linear
+the standard linear fixed effects models are likely to be      time trend (see Appendix A.5 for additional results). This
+misspecified.                                                  is not surprising since matching is expected to reduce
+     Furthermore, we implement the before-and-after de-        model dependence (Ho et al. 2007).
+sign with three different lengths of lag to adjust for the
+time trends in trade volume for each dyad. Consistent
+with the above analyses, we find that the estimated con-
+temporaneous effect of the formal membership is not                         Concluding Remarks
+distinguishable from zero with small point estimates, re-
+gardless of the lag length. However, while the standard        The title of this article asks the question of when re-
+error tends to be greater with fewer lags, we consistently     searchers should use linear unit fixed effects regression
+find positive effects of participant membership across         models for causal inference with longitudinal data. Ac-
+models with various lags. In sum, our findings suggest         cording to our analysis, the answer to this question
+that different causal assumptions can yield different re-      depends on the trade-off between unobserved time-
+sults. Credible comparisons under the before-and-after         invariant confounders and dynamic causal relationships
+design yield a robust finding that the contemporane-           between outcome and treatment variables. In particular,
+ous effect of participant is positive, whereas that of for-    if the treatment assignment mechanism critically depends
+mal membership is not statistically distinguishable from       on past outcomes, then researchers are likely to be better
+zero.                                                          off investing their efforts in measuring and adjusting for
+     Finally, we estimate the longer-term effects of the       time-varying confounders rather than adjusting for un-
+two treatment variables given in Equation 21. Figure 5         observed time-invariant confounders through unit fixed
+                                                                                                                                             15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+484                                                                                                   KOSUKE IMAI AND IN SONG KIM
+
+
+effects models under unrealistic assumptions. In such sit-      models. Imai, Kim, and Wang (2018) extend our matching
+uations, methods that effectively account for dynamics          framework introduced here and generalize the difference-
+such as marginal structural models may be more appro-           in-differences identification strategy.
+priate. This conclusion also applies to the before-and-
+after designs that are closely related to first-differencing
+regression models.                                              Appendix A: Mathematical Appendix
+     If, on the other hand, researchers are concerned about
+time-invariant confounders and are willing to assume
+the absence of dynamic causal relationships, then unit
+                                                                              A.1 Equivalence between
+fixed effects regression models are effective tools to ad-
+                                                                                  Assumptions 1 and 3
+just for unobserved time-invariant confounders. In this
+article, we propose a new matching framework that im-           Consider the potential outcome model Yi t (x) =
+proves linear unit fixed effects regression models by re-       g (x, Ui , ⑀i t ), which is consistent with equation 5. It
+laxing the linearity assumption. Under this framework,          is obvious that under this model, Equation 5 of As-
+we show how to incorporate various identification strate-       sumption 1 implies Assumption 3. To prove the con-
+gies and implement them as weighted linear unit fixed           verse, we focus on the case with T = 3, as the same
+effects regression estimators. For example, we extend           argument can be repeatedly applied to the case with
+the first-difference estimator to the general case of the       T > 3.
+before-and-after design and show its equivalence to a
+                                                                      p({Yi t (1), Yi t (0)}3t=1 , X i 1 , X i 2 , X i 3 | Ui )
+weighted linear regression with unit fixed effects. Our
+framework also facilitates the incorporation of additional              = p({Yi t (1), Yi t (0)}3t=1 | X i 1 , X i 2 , X i 3 , Ui )
+covariates, model-based inference, and specification
+                                                                            p(X i 1 , X i 2 , X i 3 | Ui )
+tests.
+     Unfortunately, researchers must choose either to ad-               = p({Yi t (1), Yi t (0)}3t=1 | X i 1 , X i 2 , Ui )
+just for unobserved time-invariant confounders through                      p(X i 1 , X i 2 , X i 3 | Ui )
+unit fixed effects models or to model dynamic causal
+relationships between treatment and outcome under a                     = p({Yi t (1), Yi t (0)}3t=1 | X i 1 , Ui )
+selection-on-observables approach. No existing method                       p(X i 1 , X i 2 , X i 3 | Ui )
+can achieve both objectives without additional assump-
+tions. In addition, because causal inference with obser-                = p({Yi t (1), Yi t (0)}3t=1 | Ui )
+vational data always requires unverifiable assumptions,                     p(X i 1 , X i 2 , X i 3 | Ui ),
+there is no statistical test that can tell researchers which
+                                                                which shows that {Yi t (1), Yi t (0)}3t=1 are conditionally in-
+method is more appropriate. A primary goal of this ar-
+                                                                dependent of Xi given Ui .
+ticle is to clarify the required assumptions of unit fixed
+effects models, which are widely used in social sciences.
+While we limit our discussion to the case of a binary treat-
+ment, our nonparametric identification analysis based on
+                                                                            A.2 Proof of Proposition 2
+DAGs is applicable to the case in which the treatment is        We begin by rewriting the within-unit matching estimator
+nonbinary. Thus, researchers who are analyzing a non-           as
+binary treatment must face the same trade-off described
+                                                                                              1 
+                                                                                                   N
+                                                                                 1
+here.                                                              ␶ˆmatch = 1  N        ·
+     In this article, we show that causal inference with unit                    i =1 C i
+                                                                                              N i =1
+                                                                             N
+fixed effects regression models is fundamentally based on                       T                   T
+                                                                                    t=1 X i t Yi t    t=1 (1 − X i t )Yi t
+the within-unit comparison between the treated and con-                     Ci       T
+                                                                                                   −  T                   .
+trol observations. The major limitation of this identifica-                           t=1 X i t         t=1 (1 − X i t )
+tion strategy is that one must assume a certain within-                                                                               (30)
+unit time trend for the average potential outcome. We
+used past control observations to model this time trend,        By law of large numbers, the first term converges in prob-
+but an alternative strategy is to use the observations from     ability to 1/ Pr(C i = 1). To derive the limit of the second
+other similar units to estimate unit-specific time trend.       term, first note that Assumption 3 implies the following
+Due to space limitations, we do not explore such an ap-         conditional independence:
+proach, which is closely related to two-way fixed effects                          {Yi t (1), Yi t (0)} ⊥⊥ Xi | Ui .                  (31)
+                                                                                                                                                                                                                   15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                                                                                              485
+
+                                                                                                                 
+                                                                                                                 N 
+                                                                                                                   T
+                                                                                                                                                                                   
+     The law of iterated expectation implies                                                                 =                    Di t X i  t  ␣i∗ − ␣i∗ + (1 − X i  t  ) ␣i∗ − ␣i∗ = 0,
+                                                                                                                  i  =1 t  =1
+E(Yi t (x) | C i = 1) = E{E(Yi t (x) | Ui , C i = 1) | C i = 1}                                                                                                                                             (33)
+                                                                                                   (32)                                                                         
+                                                                                                          where the last equality follows from (i,t)∈Mi  t  |M1   | (1 −
+                                                                                                                                                                              i t
+for x = 0, 1. We show that the difference of means over                                                   X i t ) = 1 if X i  t  = 1, and                    1
+                                                                                                                                              (i,t)∈Mi  t  |Mi  t  | X i t   = 1 if
+time within unit i estimates the inner expectation of                                                     X i  t  = 0.
+Equation 32 without bias because it adjusts for Ui . Con-                                                          Similarly, the second algebraic equality we prove is
+sider the case with x = 1.                                                                                the following:
+      T
+       t=1 X i t Yi t                                                                                     
+                                                                                                          N 
+                                                                                                            T
+ E Ci   T
+         t=1 X i t                                                                                                    Wi t
+                                                                                                       i =1 t=1
+         1         T
+                                                   
+ = E T                                            
+                      X i t E(Yi t (1) | Xi , Ui )  C i = 1 Pr(C i = 1)
+       t=1 X i t t=1
+                                                                                                                
+                                                                                                                N 
+                                                                                                                  T                       
+                                                                                                                                          N 
+                                                                                                                                            T
+                                                                                                                                                                    
+                                                                                                          =                     Di t                     wii tt
+                                                        
+         1
+                    T
+                                                                                                                i =1 t=1                 i  =1 t  =1
+ = E T               X i t E(Yi t (1) | C i = 1, Ui )  C i = 1 Pr(C i = 1)
+       t=1 X i t t=1                                                                                            
+                                                                                                                N 
+                                                                                                                  T                       
+                                                                                                                                          N 
+                                                                                                                                            T
+                                                                                                                                                                    
+ = E(Yi t (1) | C i = 1) Pr(C i = 1),                                                                       =                     Di t                     wii tt
+                                                                                                                i  =1 t  =1              i =1 t=1
+where the second equality follows from Equation 31.
+                                                                                                                
+                                                                                                                N 
+                                                                                                                  T                       
+                                                                                                                                          N 
+                                                                                                                                            T
+We note that      ␶ˆmatch
+                       T can be more          T
+                                                        precisely
+                                                           T de-                                           =                     Di t
+                                                                                                                                                                           
+                                                                                                                                                           X i  t  wii tt + (1 − X i  t  )wii tt
+                                                                                                                                                                                                      
+
+fined as 1/|I| i ∈I { t=1        X i t Yi t / t=1   X i t − t=1   (1 −
+             T                                                                                                 i  =1 t  =1              i =1 t=1
+X i t )Yi t / t=1 (1 − X i t )} where I := {i ∈ {1, . . . , N} |                                                                         ⎡        ⎛                                                          ⎞
+C i = 1} to avoid the division   by   
+                                           zero. A similar
+                                                       argument                                                
+                                                                                                                N 
+                                                                                                                  T                                                                   1
+                                                               T
+                                                                   (1−X )Y                                  =                     D i t ⎣ X i  t  ⎝1 +                                         (1 − X i t )⎠
+can be made to show E C i t=1T (1−Xi t )i t = E(Yi t (0) |                                                                                                                          |Mi  t  |
+                                   t=1      it                                                                  i  =1 t  =1                                       (i,t)∈Mi  t 
+C i = 1) Pr(C i = 1). Thus, the second term of Equa-                                                                                      ⎛                                                 ⎞⎤
+tion 30 converges to E(Yi t (1) − Yi t (0) | C i = 1) Pr(C i =                                                                                                             1
+1). The result then follows from the continuous mapping                                                         + (1 − X i  t  )⎝1 +                                                X i t ⎠⎦
+                                                                                                                                                                          |Mi  t  |
+theorem.                                                                                                                                           (i,t)∈Mi  t 
+
+                                                                                                                
+                                                                                                                N 
+                                                                                                                  T
+                                                                                                            =                     Di t {X i  t  (1 + 1) + (1 − X i  t  )(1 + 1)}
+                       A.3 Proof of Theorem 1                                                                   i  =1 t  =1
+
+We begin this proof by establishing two algebraic equali-                                                          
+                                                                                                                   N 
+                                                                                                                     T
+                                                                                                            =2                      Di t .                                                                  (34)
+ties. First, we prove that for any constants (␣1∗ , . . . , ␣∗N ),
+                                                                                                                    i =1 t=1
+the following equality holds:
+                                                                                                                                                               ∗
+ 
+ N 
+   T                                                                                                            Third, we show that X i = 1/2.
+            Wi t (2X i t − 1)␣i∗                                                                                   T
+ i =1 t=1                                                                                                  ∗             t=1 Wi t X i t
+                                                                                                          Xi =        T
+       
+       N  
+         T N 
+             T                                                                                                             t=1 Wi t
+                                                 
+   =                                   Di t wii t t (2X i t − 1)␣i∗                                                T           N T                  i t
+                                                                                                                      t=1 Di t   i  =1     t  =1 wi t X i t
+       i  =1 t  =1     i =1 t=1                                                                             =       T          N T                    i t
+                                                                                                                        t=1 Di t     i  =1     t  =1 wi t
+       
+       N  
+         T N 
+             T                                                                                                                                                                                              
+   =
+                                                          
+                                       Di t X i  t  wii t t (2X i t − 1)␣i∗                                      T                 N T                                                          
+                                                                                                                         t=1 Di t        i  =1 X i  t  wii t t X i t + (1 − X i  t  )wii t t X i t
+                                                                                                                                                  t  =1
+       i  =1 t  =1     i =1 t=1
+                                                                                                              =           T         N T                       i t                     i t
+                                                                                                                                                                                                  
+                                                                                                                           t=1 Di t  i  =1 t  =1 X i  t  wi t + (1 − X i  t  )wi t
+                                  
+       + (1 − X i  t  )wii t t (2X i t − 1)␣i∗                                                                T
+                                                                                                                     Di t · (1 + 0)
+                                                                                                              = t=1
+                                                                                                                 T
+                           ⎧           ⎛                                                       ⎞                 t=1 Di t · (1 + 1)
+       
+       N 
+         T                 ⎨                                        1
+   =                   Di t X i  t  ⎝␣i∗ −                                   (1 − X i t )␣i∗ ⎠              =
+                                                                                                                   1
+                                                                                                                     ,
+                           ⎩                                       |Mi  t  |                                     2
+       i  =1 t  =1                              (i,t)∈Mi  t 
+                            ⎛                                              ⎞⎫                             where the fourth equality follows from the fact that (1)
+                                                  1                        ⎬                                  
+       +(1 − X i  t  )⎝                                           ∗    ∗⎠
+                                                             X i t ␣i − ␣i                                wii tt = 1 when X i t = X i  t  and 0 otherwise, and (2) (1 −
+                                                 |Mi  t  |                ⎭
+                               (i,t)∈Mi  ,t                                                             X i  t  )X i t = 0 if (i, t) ∈ Mi  t  because only the years with
+                                                                                                                                                                                    15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+486                                                                                                                                        KOSUKE IMAI AND IN SONG KIM
+
+
+opposite treatment status are in the matched set. This                                               1                       
+                                                                                                                             N 
+                                                                                                                               T
+
+implies                                                                                        =  N T
+                                                                                                       i =1       t=1 Di t i  =1 t  =1
+                          ∗
+                                                   1
+                                                           if X i t = 1                          !
+                 Xi t − X i =                      2                    .          (35)                               
+                                                                                                                      N 
+                                                                                                                        T
+                                              − 12         if X i t = 0                              X i  t  Di t
+                                                                                                                                      
+                                                                                                                                 wii tt (2X i t − 1)Yi t
+                                                                                                                      i =1 t=1
+    Using the above algebraic equalities, we can derive                                                                                                                      "
+                                                                                                                                   
+                                                                                                                                   N 
+                                                                                                                                     T
+                                                                                                                                                        
+the desired result.                                                                                   + (1 − X i  t  )Di t                       wii tt (2X i t − 1)Yi t
+              N T                           ∗           ∗
+                         t=1 Wi t (X i t − X i )(Yi t − Y i )
+                                                                                                                                    i =1 t=1
+                  i =1
+  ␤ˆ WFE =            N T                        ∗ 2
+                       i =1   t=1 Wi t (X i t − X i )                                                1                       
+                                                                                                                             N 
+                                                                                                                               T
+                                                                                               =  N T
+              2                             
+                                            N 
+                                              T
+                                                            1           ∗                              i =1       t=1 Di t i  =1 t  =1
+        =  N T                               Wi t (X i t − )(Yi t − Y i )                           ⎡           ⎛                                                             ⎞
+                  i =1      t=1 D i t i =1 t=1
+                                                            2                                                                         
+                                                                                                      ⎣ X i  t  ⎝ Di t Yi t −                     Di t
+                                                                                                                                                               (1 − X i t )Yi t ⎠
+                         1                  
+                                            N 
+                                              T                                                                                                    |Mi  t  |
+                                                                                                                                  (i,t)∈Mi  t 
+        = N             T                                                                                                ⎛                                                ⎞⎤
+                  i =1      t=1 Di t i =1 t=1
+                                                                                                                                               Di t
+                                                                             ∗                       + (1 − X i  t  )⎝                                |X i t − Di t Yi t ⎠⎦
+                 Wi t (2X i t − 1)Yi t − Wi t (2X i t − 1)Y i                                                                                  |Mi  t 
+                                                                                                                              (i,t)∈Mi  t 
+
+              1                             
+                                            N 
+                                              T
+                                                                                                     1                       
+                                                                                                                             N 
+                                                                                                                               T
+        =  N T                                           Wi t (2X i t − 1)Yi t               =  N T                                           
+                                                                                                                                           D i t (Y          
+                                                                                                                                                   i t (1) − Yi t (0)) = ␶ˆ ,
+                  i =1      t=1 Di t i =1 t=1                                                          i =1       t=1 Di t i =1 t=1
+
+              1                             
+                                            N 
+                                              T                                           where the second equality follows from Equa-
+        =  N T                                                                          tion 34 and 35, and the fourth equality from Equation 33.
+                  i =1      t=1 Di t i =1 t=1
+                                                                                        The last equality follows from applying the definition of
+                         
+                         N 
+                           T
+                                                                                          
+                                                                                          Y                                                     
+                 Di t
+                                              
+                                         wii tt        (2X i t − 1)Yi t                     i t (1) and Yi t (0) given in Equation 15.
+                         i  =1 t  =1
+                                                                                                                                                15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                           487
+
+      A.4 Estimated Contemporaneous Effects of GATT Membership on Bilateral Trade
+                          with Alternative Membership Definitions
+TABLE A1 Estimated Contemporaneous Effects of GATT on the Logarithm of Bilateral Trade Based
+         on Alternative Membership Definitions
+                                                                                                Dyad Fixed Effects
+Comparison                         Membership                            Standard                   Weighted                     First Diff.
+Both vs. One                    Formal                                   −0.034                      −0.061                        0.076
+                                (N = 175,814)                             (0.024)                     (0.022)                     (0.054)
+                                White’s p-value                                                        0.000                       0.007
+                                N (nonzero weights)                       175,814                    100,055                       6,712
+                                Participants                                0.161                      0.020                       0.099
+                                (N = 187,651)                              (0.030)                    (0.029)                     (0.030)
+                                White’s p-value                                                        0.000                       0.613
+                                N (nonzero weights)                      187,651                      64,152                       3,900
+One vs. None                    Formal                                   −0.011                      −0.094                        0.031
+                                (N = 109,702)                             (0.039)                     (0.039)                     (0.065)
+                                White’s p-value                                                        0.000                       0.000
+                                N (nonzero weights)                       109,702                     36,115                       2,670
+                                Participants                                0.179                    −0.034                        0.053
+                                (N = 70,298)                               (0.060)                    (0.056)                     (0.061)
+                                White’s p-value                                                        0.000                       0.000
+                                N (nonzero weights)                       70,298                      15,766                       1,087
+Covariates                                                                                    Year-varying covariates
+Note: The “Weighted” column presents the estimates based on the nonparametric matching estimator given by Equation 12. “First Diff.” is
+based on the comparison between two subsequent time periods with treatment status change. “Both vs. One” represents the comparison
+between dyads of two GATT members and those consisting of only one GATT member. “One vs. None” refers to the comparison between
+dyads consisting of only one GATT member and those of two non-GATT members. “Formal” membership includes only formal GATT
+members as done in Rose (2004), whereas “Participants” includes nonmember participants as defined in Tomz, Goldstein, and Rivers
+(2007). The covariates include Generalized System of Preferences, log product real GDP, log product real GDP per capita, regional free
+trade agreement, currency union, and currently colonized. “White’s p-value” is based on the specification test with the null hypothesis that
+the corresponding standard fixed effects model is correct. Robust standard errors, allowing for the presence of serial correlation as well as
+heteroskedasticity (Arellano 1987; Hansen 2007), are in parentheses. The results suggest that different causal assumptions, which imply
+different regression weights, can yield different results.
+
+
+
+                A.5 Before-and-After Design: Effects of GATT Membership on Trade
+TABLE A2 Estimated Effects of GATT Membership on the Logarithm of Bilateral Trade Based
+         on Before-and-After Design
+
+Before            After              Both vs. Mix Formal Membership                                 Both vs. Mix Participants
+Lag = 3             t           −0.003        −0.003          0.008          0.006        0.066         0.066          0.071         0.071
+                                 (0.027)       (0.028)       (0.027)        (0.027)      (0.035)       (0.035)        (0.035)       (0.035)
+                  t +1            0.008         0.008         0.021          0.015        0.127         0.127          0.128         0.120
+                                 (0.041)       (0.041)       (0.040)        (0.040)      (0.052)       (0.052)        (0.052)       (0.052)
+                  t +2            0.005         0.007         0.013          0.005        0.115         0.119          0.112         0.103
+                                 (0.053)       (0.053)       (0.053)        (0.053)      (0.068)       (0.068)        (0.068)       (0.069)
+                  t +3          −0.049        −0.043        −0.036         −0.045         0.095         0.096          0.076         0.054
+                                 (0.065)       (0.066)       (0.065)        (0.065)      (0.084)       (0.084)        (0.084)       (0.084)
+                                                                                                                                (Continued)
+                                                                                                                                                15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+488                                                                                                        KOSUKE IMAI AND IN SONG KIM
+
+
+TABLE A2 Continued
+
+Before            After              Both vs. Mix Formal Membership                                 Both vs. Mix Participants
+                  t +4          −0.040        −0.032        −0.021         −0.022         0.141         0.137          0.153         0.137
+                                 (0.082)       (0.082)       (0.082)        (0.082)      (0.109)       (0.109)        (0.108)       (0.109)
+                  t +5          −0.043        −0.017        −0.013         −0.004         0.087         0.084          0.095         0.078
+                                 (0.092)       (0.092)       (0.092)        (0.092)      (0.126)       (0.127)        (0.127)       (0.126)
+Lag = 5             t             0.028         0.028         0.037          0.006        0.066         0.065          0.072         0.071
+                                 (0.022)       (0.022)       (0.021)        (0.027)      (0.028)       (0.028)        (0.028)       (0.035)
+                  t +1            0.052         0.054         0.060          0.015        0.129         0.128          0.123         0.120
+                                 (0.028)       (0.028)       (0.028)        (0.040)      (0.036)       (0.037)        (0.036)       (0.052)
+                  t +2            0.065         0.070         0.066          0.005        0.123         0.127          0.109         0.103
+                                 (0.034)       (0.034)       (0.033)        (0.053)      (0.044)       (0.044)        (0.044)       (0.069)
+                  t +3            0.017         0.027         0.025        −0.045         0.096         0.098          0.076         0.054
+                                 (0.039)       (0.039)       (0.039)        (0.065)      (0.051)       (0.052)        (0.051)       (0.084)
+                  t +4            0.057         0.072         0.079        −0.022         0.136         0.135          0.161         0.137
+                                 (0.047)       (0.047)       (0.047)        (0.082)      (0.063)       (0.063)        (0.063)       (0.109)
+                  t +5            0.030         0.066         0.059        −0.004         0.097         0.095          0.118         0.078
+                                 (0.052)       (0.053)       (0.052)        (0.092)      (0.071)       (0.072)        (0.071)       (0.126)
+Lag = 7             t             0.033         0.035         0.049          0.006        0.079         0.079          0.088         0.071
+                                 (0.020)       (0.020)       (0.020)        (0.027)      (0.026)       (0.026)        (0.025)       (0.035)
+                  t +1            0.059         0.064         0.077          0.015        0.145         0.145          0.145         0.120
+                                 (0.024)       (0.024)       (0.023)        (0.040)      (0.031)       (0.031)        (0.031)       (0.052)
+                  t +2            0.073         0.083         0.085          0.005        0.148         0.153          0.142         0.103
+                                 (0.027)       (0.027)       (0.027)        (0.053)      (0.036)       (0.036)        (0.036)       (0.069)
+                  t +3            0.042         0.058         0.063        −0.045         0.141         0.144          0.132         0.054
+                                 (0.031)       (0.031)       (0.031)        (0.065)      (0.041)       (0.042)        (0.041)       (0.084)
+                  t +4            0.073         0.094         0.107        −0.022         0.182         0.183          0.212         0.137
+                                 (0.036)       (0.036)       (0.036)        (0.082)      (0.049)       (0.049)        (0.048)       (0.109)
+                  t +5            0.037         0.081         0.077        −0.004         0.145         0.142          0.172         0.078
+                                 (0.039)       (0.039)       (0.039)        (0.092)      (0.053)       (0.054)        (0.053)       (0.126)
+                                   √             √             √              √             √             √              √             √
+Linear time trend
+                                                 √                            √                           √                            √
+Quadratic time trend
+                                                               √              √                                          √             √
+Year-varying
+covariates
+Note: This table summarizes the estimated effects of GATT membership on bilateral trade, that is, the comparison between dyads of two
+GATT members and those consisting of only one GATT member. To implement the before-and-after design, we compare the average
+bilateral trade volume across lags = L ∈ {3, 5, 7} years against the bilateral trade volume in leads = F ∈ {0, 1, 2, 3, 4, 5} years since the
+treated year, which yields the quantity of interest given in Equation 22. We find no evidence of short-term and long-term effects of formal
+membership. Although we find some evidence of long-term positive effects of participant membership with the model with Lag = 7, the
+estimated effects are about 2.6 to 7.8 times smaller than the estimate (0.56) from (Tomz, Goldstein, and Rivers 2007, p. 2012) Our findings
+are robust to including linear/quadratic time trends and with/without year-varying covariates. Robust standard errors allowing for the
+presence of heteroskedasticity are used.
+                                                                                                                                           15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+UNIT FIXED EFFECTS MODELS FOR CAUSAL INFERENCE                                                                                     489
+
+                       References                                   Clark, Tom S., and Drew A. Linzer. 2015. “Should I Use Fixed
+                                                                       or Random Effects?” Political Science Research and Methods
+                                                                       3(2): 399–408.
+Abadie, Alberto, and Guido W. Imbens. 2006. “Large Sample
+                                                                    Davis, Christina L., and Meredith Wilf. 2017. “Joining the Club:
+   Properties of Matching Estimators for Average Treatment
+                                                                       Accession to the GATT/WTO.” Journal of Politics 79(3): 964–
+   Effects.” Econometrica 74(1): 235–67.
+                                                                       78.
+Abadie, Alberto, and Guido W. Imbens. 2012. “A Martingale
+                                                                    Duflo, Esther, Rachel Glennerster, and Michael Kremer. 2007.
+   Representation for Matching Estimators.” Journal of the
+                                                                       “Using Randomization in Development Economics Re-
+   American Statistical Association 107(498): 833–43.
+                                                                       search: A Toolkit.” Handbook of Development Economics,
+Anderson, James E., and Eric van Wincoop. 2003. “Gravity               ed. Schultz, T. Paul and John A. Strauss. Amsterdam, The
+   with Gravitas: A Solution to the Border Puzzle.” American           Netherlands, Vol. 4. Elsevier, 3895–3962.
+   Economic Review 93(1): 170–92.
+                                                                    Feenstra, Robert C. 2003. Advanced International Trade. Prince-
+Angrist, Joshua D., and Jörn-Steffen Pischke. 2009. Mostly            ton, NJ: Princeton University Press.
+   Harmless Econometrics: An Empiricist’s Companion. Prince-
+                                                                    Gibbons, Charles E., Juan Carlos Suárez Serrato, and Michael
+   ton, NJ: Princeton University Press.
+                                                                       B. Urbancic. 2017. “Broken or Fixed Effects?” Work-
+Arellano, Manuel. 1987. “Computing Robust Standard Er-                 ing Paper 20342 National Bureau of Economic Research.
+   rors for Within-Groups Estimators.” Oxford Bulletin of Eco-         http://www.nber.org/papers/w20342.
+   nomics and Statistics 49(4): 431–34.
+                                                                    Gowa, Joanne, and Soo Yeon Kim. 2005. “An Exclusive Country
+Arellano, Manuel, and Stephen Bond. 1991. “Some Tests of               Club: The Effects of the GATT on Trade, 1950-94.” World
+   Specification for Panel Data: Monte Carlo Evidence and an           Politics 57(4): 453–78.
+   Application to Employment Equations.” Review of Economic
+                                                                    Hansen, Christian B. 2007. “Asymptotic Properties of a Robust
+   Studies 58(2): 277–97.
+                                                                       Variance Matrix Estimator for Panel Data when T is Large.”
+Arkhangelsky, Dmitry, and Guido Imbens. 2018. The Role of              Journal of Econometrics 141:597–620.
+   the Propensity Score in Fixed Effect Models. Technical re-
+                                                                    Ho, Daniel E., Kosuke Imai, Gary King and Elizabeth A. Stuart.
+   port, Stanford Graduate School of Business. https://arxiv.
+                                                                       2007. “Matching as Nonparametric Preprocessing for Re-
+   org/pdf/1807.02099.pdf.
+                                                                       ducing Model Dependence in Parametric Causal Inference.”
+Aronow, Peter M., and Cyrus Samii. 2015. “Does Regression              Political Analysis 15(3):199–236.
+   Produce Representative Estimates of Causal Effects?” Amer-
+                                                                    Humphreys, Macartan. 2009. Bounds on Least Squares Es-
+   ican Journal of Political Science 60(1): 250–67.
+                                                                       timates of Causal Effects in the Presence of Heteroge-
+Aronow, Peter M, Cyrus Samii, and Valentina A. Assen-                  neous Assignment Probabilities. Technical report, Depart-
+   ova. 2015. “Cluster–Robust Variance Estimation for Dyadic           ment of Political Science, Columbia University. http://www.
+   Data.” Political Analysis 23(4): 564–77.                            columbia.edu/mh2245/papers1/monotonicity7.pdf.
+Atkeson, Andrew, and Ariel Tomas Burstein. 2010. “Innovation,       Imai, Kosuke, In Song Kim and Erik Wang. 2018. “Matching
+   Firm Dynamics, and International Trade.” Journal of political       Methods for Time-Series Cross-Section Data.” Working pa-
+   economy 118(3): 433–84.                                             per. https://imai.fas.harvard.edu/research/tscs.html.
+Bagwell, Kyle, and Robert W. Staiger. 1999. “An Economic The-       Imbens, Guido W. and Donald B. Rubin. 2015. Causal Inference
+   ory of GATT.” American Economic Review 89(1): 215–48.               for Statistics, Social, and Biomedical Sciences: An Introduction.
+Beck, Nathaniel. 2001. “Time-Series-Cross-Section Data: What           New York: Cambridge University Press.
+   Have We Learned in the Past Few Years?” Annual Review            James, Kenneth E. 1973. “Regression toward the Mean in Un-
+   Political Science 4: 271–93.                                        controlled Clinical Studies.” Biometrics 29:121–30.
+Bell, Andrew, and Kelvyn Jones. 2015. “Explaining Fixed Effects:    Otsu, Taisuke and Yoshiyasu Rai. 2017. “Bootstrap Inference of
+   Random Effects Modeling of Time-Series Cross-Sectional              Matching Estimators for Average Treatment Effects.” Journal
+   and Panel Data.” Political Science Research and Methods 3(1):       of the American Statistical Association 112(520): 1720–32.
+   133–53.
+                                                                    Pearl, Judea. 2009. Causality: Models, Reasoning, and Inference.
+Blackwell, Matthew. 2013. “A Framework for Dynamic Causal              2nd ed. New York: Cambridge University Press.
+   Inference in Political Science.” American Journal of Political
+                                                                    Robins, James M., Miguel Ángel Hernán, and Babette Brum-
+   Science 57(2): 504–20.
+                                                                       back. 2000. “Marginal Structural Models and Causal Infer-
+Blackwell, Matthew, and Adam Glynn. 2018. “How to Make                 ence in Epidemiology.” Epidemiology 11(5): 550–60.
+   Causal Inferences with Time-Series Cross-Sectional Data
+                                                                    Rose, Andrew K. 2004. “Do We Really Know That the WTO
+   under Selection on Observables.” American Political Science
+                                                                       Increases Trade?” American Economic Review 94(1): 98–114.
+   Review. 112(4): 1067–1082.
+                                                                    Rose, Andrew K. 2005. “Does the WTO Make Trade More Sta-
+Brito, Carlos, and Judea Pearl. 2002. “Generalized Instrumen-
+                                                                       ble?” Open Economies Review 16: 7–22.
+   tal Variables.” In Proceedings of the 18th Conference of Un-
+   certainty in Artificial Intelligence, ed. Darwiche, Adnan and    Rose, Andrew K. 2007. “Do We Really Know That the WTO
+   Nir Friedman, San Francisco, CA, USA: Morgan Kaufmann               Increases Trade? Reply.” American Economic Review 97(5):
+   Publishers Inc. pp. 85–93.                                          2019–25.
+Chernozhukov, Victor, Iván Fernández-Val, Jinyong Hahn, and       Rubin, Donald B. 1990. “Comments on “On the Application
+   Whitney Newey. 2013. “Average and Quantile Effects in Non-          of Probability Theory to Agricultural Experiments. Essay on
+   separable Panel Models.” Econometrica 82(2): 535–80.                Principles. Section 9” by J. Splawa-Neyman translated from
+                                                                                                                                      15405907, 2019, 2, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/ajps.12417 by University Of Sao Paulo - Brazil, Wiley Online Library on [01/03/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+490                                                                                                KOSUKE IMAI AND IN SONG KIM
+
+
+   the Polish and edited by D. M. Dabrowska and T. P. Speed.”       Wilson, Sven E., and Daniel M. Butler. 2007. “A Lot More to
+   Statistical Science 5(4): 472–80.                                  Do: The Sensitivity of Time-Series Cross-Section Analyses to
+Rubin, Donald B. 2006. Matched Sampling for Causal Effects.           Simple Alternative Specifications.” Political Analysis 15(2):
+   Cambridge: Cambridge University Press.                             101–23.
+Shpitser, Ilya, Tyler VanderWeele, and James M. Robins. 2010.       Wooldridge, Jeffrey M. 2005a. “Fixed-Effects and Related Esti-
+   On the Validity of Covariate Adjustment for Estimating             mators for Correlated Random-Coefficient and Treatment-
+   Causal Effects. In Proceedings of the Twenty-Sixth Confer-         Effect Panel Data Models.” Review of Economics and Statistics
+   ence on Uncertainty in Artificial Intelligence. ed. Grunwald,      87(2): 385–390.
+   Peter and Peter Spirtes. Corvallis, Oregon: AUAI Press.          Wooldridge, Jeffrey M. 2005b. “Unobserved Heterogeneity
+Sobel, Michael E. 2006. “What Do Randomized Studies of Hous-          and Estimation of Average Partial Effects.” In Identifica-
+   ing Mobility Demonstrate? Causal Inference in the Face of          tion and Inference for Econometric Models: Essays in Honor
+   Interference.” Journal of the American Statistical Association     of Thomas Rothenberg, ed. Andrews, Donald W. K. and
+   101(476): 1398–1407.                                               James H. Stock. Cambridge: Cambridge University Press.
+                                                                      27–55.
+Solon, Gary, Steven J. Haider, and Jeffrey M. Wooldridge. 2015.
+   “What are we weighting for?” Journal of Human Resources          Wooldridge, Jeffrey M. 2010. Econometric Analysis of Cross-
+   50(2): 301–16.                                                     Section and Panel Data. 2nd ed. Cambridge, MA: The MIT
+                                                                      Press.
+Stock, James H. and Mark W. Watson. 2008.
+   “Heteroskedasticity-Robust Standard Errors for Fixed
+   Effects Panel Data Regression.” Econometrica 76(1): 155–74.
+Stuart, Elizabeth A. 2010. “Matching Methods for Causal In-
+   ference: A Review and a Look Forward.” Statistical Science                 Supporting Information
+   25(1): 1–21.
+Subramanian, Arbind and Shang-Jin Wei. 2007. “The WTO pro-
+   motes trade, strongly but unevenly.” Journal of International    Additional supporting information may be found online
+   Economics 72(1): 151–75.                                         in the Supporting Information section at the end of the
+Tomz, Michael, Judith L. Goldstein, and Douglas Rivers. 2007.       article.
+   “Do We Really Know That the WTO Increases Trade? Com-
+   ment.” The American Economic Review 97(5): 2005–18.              Table 3: Estimated Contemporaneous Effects of GATT
+White, Halbert. 1980a. “A Heteroskedasticity-Consistent Co-         on the Logarithm of Bilateral Trade based on Alternative
+   variance Matrix Estimator and a Direct Test for Het-             Membership Definitions.
+   eroskedasticity.” Econometrica 48(4): 817–838.                   Table 4: Estimated Effects of GATT Membership on
+White, Halbert. 1980b. “Using Least Squares to Approximate          the Logarithm of Bilateral Trade based on Before-and-
+   Unknown Regression Functions.” International Economic            After Design.
+   Review 21(1): 149–70.
+

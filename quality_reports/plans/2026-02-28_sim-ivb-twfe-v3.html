@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Plano v3: Ferramenta Analítica IVB</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Plano v3: Ferramenta Analítica IVB</h1>
+</header>
+<h1
+id="plano-ferramenta-analitica-ivb-validacao-de-amostra-finita-v3">Plano:
+Ferramenta Analitica IVB + Validacao de Amostra Finita (v3)</h1>
+<p><strong>Status</strong>: APPROVED (DA score 90/100 — EXCELENTE, Round
+3) <strong>Data</strong>: 2026-02-28</p>
+<h2 id="por-que-v2-foi-rejeitado">Por que v2 foi rejeitado</h2>
+<p>O plano v2 (<code>2026-02-28_sim-ivb-twfe-v2.md</code>) recebeu score
+25/100 (REPROVADO) na revisao Devil’s Advocate. As criticas centrais
+foram:</p>
+<ol type="1">
+<li><strong>Erro matematico na calibracao</strong>: Com sigma2_eps =
+sigma2_nu = 1, a funcao theta<em>(gamma_Y) = gamma_Y / (1 + gamma_Y^2)
+atinge maximo em |theta</em>| = 0.5. Os valores theta* = +-0.8 do grid
+sao inalcancaveis – a funcao <code>calibrate_dgp()</code> falharia em
+28-44% dos cenarios.</li>
+<li><strong>Tautologia nao resolvida</strong>: A reparametrizacao
+(gamma_Y, gamma_D) -&gt; (theta<em>, pi) e uma bijecao que preserva toda
+a informacao. Os heatmaps de IVB/SE apenas ilustram hiperboles
+|theta</em> x pi / SE| = constante, computaveis analiticamente via
+<code>pnorm()</code> sem simulacao.</li>
+<li>**Simulacao desnecessaria para N*T grande**: IVB/SE, cobertura e
+poder sao funcoes deterministicas dos parametros, computaveis em forma
+fechada. Nenhuma das 5 perguntas do plano requer Monte Carlo.</li>
+<li><strong>Dados empiricos incompletos</strong>: O CSV
+<code>standardized_ivb_metrics.csv</code> contem apenas IVB (o produto
+-theta* x pi), nao theta* e pi separadamente. Overlay no espaco
+bidimensional (theta*, pi) e impossivel sem extrair esses valores.</li>
+<li><strong>Cenarios redundantes</strong>: 96 cenarios com theta* = 0
+(IVB = 0 por construcao) desperdicam custo computacional.</li>
+</ol>
+<h2 id="o-que-mudou-na-v3">O que mudou na v3</h2>
+<p>A v3 adota uma <strong>abordagem hibrida em 3 partes</strong>,
+seguindo a recomendacao do DA:</p>
+<ul>
+<li><strong>Parte 1</strong>: Ferramenta analitica (contribuicao
+principal) – sem simulacao</li>
+<li><strong>Parte 2</strong>: Overlay empirico (requer extracao de
+theta* e pi dos estudos)</li>
+<li><strong>Parte 3</strong>: Validacao de amostra finita (unico uso
+legitimo de simulacao)</li>
+</ul>
+<hr />
+<h2 id="parte-1-ferramenta-analitica-contribuicao-principal">Parte 1:
+Ferramenta Analitica (contribuicao principal)</h2>
+<h3 id="motivacao">Motivacao</h3>
+<p>A pergunta central do pesquisador aplicado e: “Dado o que observo nos
+meus dados, devo me preocupar com IVB?”</p>
+<p>O pesquisador ja pode computar: - theta* = coeficiente de Z no modelo
+longo (Y ~ D + Z | FE) - pi = coeficiente de D na regressao auxiliar (Z
+~ D | FE) - SE(beta_long) = erro-padrao de D no modelo longo - beta_long
+= coeficiente de D no modelo longo</p>
+<p>Com essas quantidades, <strong>tudo</strong> e computavel
+analiticamente:</p>
+<pre><code>IVB = -theta* x pi
+IVB/SE = IVB / SE(beta_long)           (signed; coverage is symmetric in sign)
+Coverage(95%) = Phi(1.96 - IVB/SE) - Phi(-1.96 - IVB/SE)
+Power = 1 - Phi(1.96 - (beta + IVB)/SE) + Phi(-1.96 - (beta + IVB)/SE)</code></pre>
+<p>onde Phi e a CDF da normal padrao. Nenhuma simulacao e
+necessaria.</p>
+<h3 id="derivacao">Derivacao</h3>
+<p>A formula IVB = -theta* x pi segue do teorema de Frisch-Waugh-Lovell.
+O vies do estimador beta_long em relacao a beta_short e exatamente
+-theta* x pi, onde theta* e o coeficiente parcial de Z em Y dado D (e
+FE), e pi e o coeficiente parcial de D em Z (e FE).</p>
+<p>Em amostras grandes (N*T -&gt; infinito), beta_long se distribui
+aproximadamente como:</p>
+<pre><code>beta_long ~ N(beta + IVB, SE^2)</code></pre>
+<p>Portanto, o IC 95% centrado em beta_long cobre beta verdadeiro com
+probabilidade:</p>
+<pre><code>P(beta in CI) = P(|beta_long - beta| / SE &lt; 1.96)
+              = P(|(beta_long - beta - IVB) / SE + IVB/SE| &lt; 1.96)
+              = Phi(1.96 - IVB/SE) - Phi(-1.96 - IVB/SE)</code></pre>
+<p>Note: IVB/SE aqui preserva o sinal. Quando IVB &gt; 0, a cobertura
+cai porque o centro do IC esta deslocado para cima.</p>
+<h3 id="funcao-r-ivb_diagnostic">Funcao R:
+<code>ivb_diagnostic()</code></h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Diagnostico analitico de IVB</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Computa IVB, IVB/SE, cobertura e flag a partir de quantidades</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; que o pesquisador observa diretamente nos seus dados.</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param theta Coeficiente de Z no modelo longo (Y ~ D + Z | FE)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param pi Coeficiente de D na regressao auxiliar (Z ~ D | FE)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param se_beta_long Erro-padrao de D no modelo longo</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param beta_long Coeficiente de D no modelo longo (para poder distorcido)</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param alpha Nivel de significancia (default 0.05)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param df Graus de liberdade para valor critico (default Inf = normal;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;           usar df = N - 1 para correcao de amostra finita com t-distribution)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return Lista com: ivb, ivb_over_se, coverage, power_nominal, power_actual, flag</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>ivb_diagnostic <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, pi, se_beta_long, beta_long, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">df =</span> <span class="cn">Inf</span>) {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.finite</span>(df)) {</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    crit <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alpha <span class="sc">/</span> <span class="dv">2</span>, df)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    crit <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  ivb <span class="ot">&lt;-</span> <span class="sc">-</span>theta <span class="sc">*</span> pi</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  ivb_over_se <span class="ot">&lt;-</span> ivb <span class="sc">/</span> se_beta_long</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Cobertura do IC (1-alpha) em relacao ao beta verdadeiro</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># beta_true = beta_long - ivb (pois beta_long = beta + ivb)</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  coverage <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(crit <span class="sc">-</span> ivb_over_se) <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="sc">-</span>crit <span class="sc">-</span> ivb_over_se)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Poder: probabilidade de rejeitar H0: beta=0</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sob H0 falsa (beta != 0), o estimador tem E[beta_long] = beta + ivb = beta_long</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Poder nominal (sem ivb): P(reject | beta_true)</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  beta_true <span class="ot">&lt;-</span> beta_long <span class="sc">-</span> ivb</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (se_beta_long <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(beta_true)) {</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    power_nominal <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(crit <span class="sc">-</span> <span class="fu">abs</span>(beta_true) <span class="sc">/</span> se_beta_long) <span class="sc">+</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">pnorm</span>(<span class="sc">-</span>crit <span class="sc">-</span> <span class="fu">abs</span>(beta_true) <span class="sc">/</span> se_beta_long)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    power_actual  <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(crit <span class="sc">-</span> <span class="fu">abs</span>(beta_long) <span class="sc">/</span> se_beta_long) <span class="sc">+</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">pnorm</span>(<span class="sc">-</span>crit <span class="sc">-</span> <span class="fu">abs</span>(beta_long) <span class="sc">/</span> se_beta_long)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    power_nominal <span class="ot">&lt;-</span> <span class="cn">NA_real_</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    power_actual  <span class="ot">&lt;-</span> <span class="cn">NA_real_</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Flag baseado em |IVB/SE|</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  abs_ratio <span class="ot">&lt;-</span> <span class="fu">abs</span>(ivb_over_se)</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  flag <span class="ot">&lt;-</span> <span class="cf">if</span> (abs_ratio <span class="sc">&lt;</span> <span class="fl">0.5</span>) {</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;negligible&quot;</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (abs_ratio <span class="sc">&lt;</span> <span class="fl">1.0</span>) {</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;minor&quot;</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (abs_ratio <span class="sc">&lt;</span> <span class="fl">2.0</span>) {</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;moderate&quot;</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;severe&quot;</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">ivb          =</span> ivb,</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">ivb_over_se  =</span> ivb_over_se,</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">abs_ivb_se   =</span> abs_ratio,</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">coverage     =</span> coverage,</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">power_nominal =</span> power_nominal,</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">power_actual  =</span> power_actual,</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">flag         =</span> flag</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="figuras-analiticas-sem-monte-carlo">Figuras analiticas (sem
+Monte Carlo)</h3>
+<p>Todas computadas via <code>pnorm()</code> e funcoes analiticas. Sem
+ruido MC.</p>
+<p>**Figura 1: Heatmap de |IVB/SE| no espaco (theta*, pi)**</p>
+<p>Mostrar |theta* x pi| / SE como heatmap com <strong>4
+paineis</strong>, um para cada SE em {0.01, 0.05, 0.10, 0.20}. Esses
+valores cobrem o range empirico observado nos estudos replicados
+(Rogowski SE=0.005 ate Claassen FE SE=0.22). Os eixos sao theta* (de -1
+a 1) e pi (de -1 a 1). As curvas de nivel sao hiperboles.</p>
+<p>**Figura 2: Heatmap de cobertura no espaco (theta*, pi)**</p>
+<p>Coverage = Phi(1.96 - |theta* x pi| / SE) - Phi(-1.96 - |theta* x pi|
+/ SE), computada para cada ponto (theta*, pi) com <strong>4
+paineis</strong> para SE em {0.01, 0.05, 0.10, 0.20}. Identificar zonas
+onde cobertura &lt; 90%, &lt; 80%, &lt; 50%. Note que para SE pequeno
+(0.01), a zona de cobertura &lt; 90% e muito maior, ilustrando que dados
+mais precisos tornam o IVB mais perigoso em termos de inferencia.</p>
+<p><strong>Figura 3: Fronteira de preocupacao (“worry
+frontier”)</strong></p>
+<p>Contornos analiticos de |theta* x pi / SE| = c, para c = 0.5, 1, 2,
+3. Sao hiperboles:</p>
+<pre><code>|pi| = c * SE / |theta*|</code></pre>
+<p>Para cada c, tracar a hiperbole no espaco (theta*, pi). Mostrar com
+<strong>4 paineis</strong> para SE em {0.01, 0.05, 0.10, 0.20}, cobrindo
+o range empirico dos estudos.</p>
+<p>Interpretacao para o pesquisador: “se seu ponto (theta*, pi) cai
+dentro da hiperbole c = 1, o IVB e menor que 1 SE – provavelmente
+inofensivo.”</p>
+<p><strong>Figura 4: Overlay empirico sobre a fronteira de
+preocupacao</strong></p>
+<p>Plotar os pontos (theta*, pi) dos 7 estudos empiricos sobre os
+contornos da Figura 3. Requer dados da Parte 2.</p>
+<p><strong>Figura 5: IVB/SE vs SE (efeito de precisao)</strong></p>
+<p>Para theta* e pi fixos (ex: theta* = 0.1, pi = 0.3), mostrar como
+IVB/SE cresce quando SE diminui (paineis maiores, mais variacao within).
+Ilustra o insight contra-intuitivo: “dados melhores tornam o vies mais
+perigoso em termos de inferencia.”</p>
+<p>Computavel analiticamente: IVB/SE = |theta* x pi| / SE, que e
+monotonicamente decrescente em SE.</p>
+<h3 id="implementacao">Implementacao</h3>
+<p><strong>Arquivo</strong>: <code>ivb_analytical_tool.R</code></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. ivb_diagnostic(theta, pi, se_beta_long, beta_long)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; retorna IVB, IVB/SE, coverage, power, flag</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. ivb_worry_frontier(se_values, thresholds = c(0.5, 1, 2, 3))</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; retorna data.frame com coordenadas das hiperboles para plot</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. ivb_heatmap_data(theta_grid, pi_grid, se)</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; retorna data.frame com IVB/SE e coverage para cada (theta*, pi)</span></span></code></pre></div>
+<p><strong>Arquivo</strong>: <code>ivb_analytical_figures.R</code></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gera Figuras 1-3 e 5 diretamente via pnorm()</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Figura 4 depende dos dados da Parte 2</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Dependencias: ggplot2, scales</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Nao depende de fixest, data.table, ou future.apply</span></span></code></pre></div>
+<hr />
+<h2 id="parte-2-overlay-empirico-extracao-de-theta-e-pi">Parte 2:
+Overlay Empirico (extracao de theta* e pi)</h2>
+<h3 id="problema">Problema</h3>
+<p>O arquivo <code>replication/standardized_ivb_metrics.csv</code>
+contem apenas:</p>
+<pre><code>paper, collider, IVB, beta_long, SE_beta, SD_Y, IVB_pct_beta, IVB_over_SE, IVB_over_SDY, abs_IVB_SDY</code></pre>
+<p><strong>Nao ha colunas <code>theta</code> nem
+<code>pi</code></strong>. O CSV armazena IVB = -theta* x pi (o produto),
+mas nao os fatores individuais. Com apenas o produto, e impossivel
+posicionar um ponto no espaco bidimensional (theta*, pi).</p>
+<h3 id="solucao">Solucao</h3>
+<p>A funcao <code>compute_ivb_multi()</code> em
+<code>replication/ivb_utils.R</code> ja retorna theta e pi separadamente
+no campo <code>results</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">compute_ivb_multi</span>(data, y, d_vars, z, w, fe, vcov)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>theta    <span class="co"># coef de Z no modelo longo</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>res<span class="sc">$</span>results<span class="sc">$</span>pi  <span class="co"># coef de D na regressao auxiliar, por treatment term</span></span></code></pre></div>
+<p>Portanto, basta modificar
+<code>replication/compute_standardized_ivb.R</code> para tambem
+armazenar theta e pi no CSV.</p>
+<h3 id="estudos-a-processar">Estudos a processar</h3>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 17%" />
+<col style="width: 20%" />
+<col style="width: 53%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Paper</th>
+<th>Script</th>
+<th>Theta/Pi acessiveis?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Claassen (OLS)</td>
+<td><code>claassen_replication_ivb.R</code></td>
+<td>Sim via <code>compute_ivb_multi()</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Claassen (FE)</td>
+<td><code>claassen_replication_ivb.R</code></td>
+<td>Sim via <code>compute_ivb_multi()</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Leipziger</td>
+<td><code>leipziger_replication_ivb.R</code></td>
+<td>Sim via <code>compute_ivb_multi()</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Blair et al.</td>
+<td><code>peacekeeping_replication_ivb.R</code></td>
+<td>Sim via <code>compute_ivb_multi()</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Albers et al.</td>
+<td><code>fiscal_state_replication_ivb.R</code></td>
+<td>Parcial: SE_beta e NA, mas theta e pi provavelmente disponiveis via
+<code>fiscal_state_ivb_results.csv</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Rogowski et al.</td>
+<td>via <code>compute_standardized_ivb.R</code></td>
+<td>Sim via <code>compute_ivb_multi()</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Ballard-Rosa et al.</td>
+<td>via <code>compute_standardized_ivb.R</code></td>
+<td>Sim via <code>compute_ivb_multi()</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nota sobre Albers et al.</strong>: O CSV
+<code>standardized_ivb_metrics.csv</code> tem NA em SE_beta, SD_Y e
+metricas derivadas para este estudo. Verificar se o script original
+computa theta e pi e se e possivel obter SE_beta. Se nao, excluir do
+overlay ou marcar como incompleto.</p>
+<h3 id="implementacao-1">Implementacao</h3>
+<p><strong>Arquivo a modificar</strong>:
+<code>replication/compute_standardized_ivb.R</code></p>
+<p>Adicionar ao loop de cada estudo:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dentro de cada iteracao:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> res<span class="sc">$</span>results</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ja existente: add_row(..., r$ivb_formula, r$beta_long, se_b, sd_y)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Adicionar: theta e pi ao data.frame</span></span></code></pre></div>
+<p>Modificar a funcao <code>add_row()</code> para incluir
+<code>theta</code> e <code>pi</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>add_row <span class="ot">&lt;-</span> <span class="cf">function</span>(paper, collider_label, ivb, beta_long, se_beta, sd_y,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                    theta, pi_val) {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  all_results[[<span class="fu">length</span>(all_results) <span class="sc">+</span> <span class="dv">1</span>]] <span class="ot">&lt;&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">paper =</span> paper,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">collider =</span> collider_label,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">IVB =</span> ivb,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta_long =</span> beta_long,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_beta =</span> se_beta,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD_Y =</span> sd_y,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_star =</span> theta,         <span class="co"># NOVO</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi =</span> pi_val,                <span class="co"># NOVO</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">IVB_pct_beta =</span> <span class="dv">100</span> <span class="sc">*</span> ivb <span class="sc">/</span> beta_long,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">IVB_over_SE =</span> ivb <span class="sc">/</span> se_beta,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">IVB_over_SDY =</span> ivb <span class="sc">/</span> sd_y,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Para cada estudo, na chamada <code>add_row()</code>, passar
+<code>res$theta</code> e <code>r$pi</code> (onde
+<code>r &lt;- res$results</code>).</p>
+<p><strong>Output atualizado</strong>:
+<code>replication/standardized_ivb_metrics.csv</code> com colunas
+adicionais <code>theta_star</code> e <code>pi</code>.</p>
+<p>Caso o Albers et al. nao permita extrair theta e pi (dados
+pre-computados em <code>fiscal_state_ivb_results.csv</code>), verificar
+se esse CSV ja contem essas colunas. Se nao, rodar
+<code>compute_ivb_multi()</code> novamente para esse estudo.</p>
+<hr />
+<h2 id="parte-3-validacao-de-amostra-finita-simulacao-restrita">Parte 3:
+Validacao de Amostra Finita (simulacao restrita)</h2>
+<h3 id="proposito">Proposito</h3>
+<p>O unico uso legitimo de simulacao e verificar se as formulas
+assintoticas (Parte 1) sao acuradas em paineis pequenos. Em amostras
+finitas, a distribuicao de beta_long pode nao ser normal e SE pode ser
+viesado, levando a cobertura diferente da formula analitica.</p>
+<p><strong>Pergunta</strong>: “Para paineis com N &lt; 50 e T &lt; 10,
+qual e a discrepancia entre cobertura simulada e cobertura
+analitica?”</p>
+<p>Se a discrepancia for &lt; 2 pontos percentuais, concluir que as
+formulas analiticas bastam. Se a discrepancia for relevante,
+<strong>este e o resultado genuinamente novo</strong>: uma correcao de
+amostra finita que a formula sozinha nao fornece.</p>
+<h3 id="dgp">DGP</h3>
+<p>Identico ao da v1 (<code>sim_ivb_twfe.R</code>), mas apenas no caso
+clean (delta = 0):</p>
+<pre><code>Y_it = beta * D_it + alpha_i + lambda_t + epsilon_it
+Z_it = (gamma_D + gamma_Y * beta) * D_it + (eta_i + gamma_Y * alpha_i)
+       + (mu_t + gamma_Y * lambda_t) + (nu_it + gamma_Y * epsilon_it)</code></pre>
+<h3 id="calibracao-corrigida-grid-no-espaco-theta-pi">Calibracao
+corrigida: grid no espaco (theta*, pi)</h3>
+<p><strong>Correcao do erro matematico</strong>: Com sigma2_eps =
+sigma2_nu = 1:</p>
+<pre><code>theta*(gamma_Y) = gamma_Y / (1 + gamma_Y^2)</code></pre>
+<p>O maximo e |theta<em>| = 0.5 em gamma_Y = +-1. Para o grid,
+restringir |theta</em>| &lt;= 0.45 (margem de seguranca para inversao
+numerica estavel).</p>
+<p>Inversao: dado theta_target, resolver gamma_Y^2 -
+gamma_Y/theta_target + 1 = 0:</p>
+<pre><code>gamma_Y = (1 / (2 * theta_target)) * (1 - sqrt(1 - 4 * theta_target^2))</code></pre>
+<p>Discriminante real requer |theta_target| &lt;= 0.5. Com |theta*|
+&lt;= 0.45, discriminante = 1/(0.45^2) - 4 = 4.94 - 4 = 0.94 &gt; 0.
+OK.</p>
+<p>Depois, gamma_D = pi_target - gamma_Y * beta.</p>
+<p><strong>Alternativa</strong>: Para expandir o range de theta*, usar
+sigma2_eps = 4, sigma2_nu = 1. Entao:</p>
+<pre><code>theta*(gamma_Y) = 4 * gamma_Y / (1 + 4 * gamma_Y^2)</code></pre>
+<p>Maximo em gamma_Y = 0.5, onde theta* = 1.0. Isso permitiria
+|theta<em>| ate ~0.9. <strong>Recomendacao</strong>: usar sigma2_eps =
+sigma2_nu = 1 com |theta</em>| &lt;= 0.45. A restricao de range nao e
+problema porque os estudos empiricos tem theta* pequenos.</p>
+<h3 id="grid-de-parametros-reduzido">Grid de parametros (reduzido)</h3>
+<p><strong>Eixos principais (observaveis):</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 39%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parametro</th>
+<th>Significado</th>
+<th>Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>theta_star</td>
+<td>Coef de Z no modelo longo</td>
+<td>-0.45, -0.3, -0.1, 0.1, 0.3, 0.45</td>
+</tr>
+<tr>
+<td>pi</td>
+<td>Coef de D na reg auxiliar</td>
+<td>-0.5, -0.2, 0.2, 0.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nota</strong>: theta* = 0 excluido (IVB = 0 trivialmente para
+qualquer pi). O grid cobre 6 x 4 = 24 combinacoes de (theta*, pi).</p>
+<p><strong>Eixos de tamanho de amostra (foco em paineis
+pequenos):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parametro</th>
+<th>Significado</th>
+<th>Valores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N</td>
+<td>Unidades</td>
+<td>20, 50, 200</td>
+</tr>
+<tr>
+<td>T</td>
+<td>Periodos</td>
+<td>5, 10, 30</td>
+</tr>
+</tbody>
+</table>
+<p>N = 200 e T = 30 servem como referencia “grande” onde assintotico
+deve funcionar.</p>
+<p><strong>Parametros fixos:</strong> - beta = 1 - delta = 0 (caso clean
+apenas) - sigma2_eps = sigma2_nu = 1 - sigma2_alpha = sigma2_lambda = 1
+- sigma2_eta = sigma2_mu = 0.5 - R2_within = 0.5 (fixo; variacao de R2w
+nao e o foco desta validacao) - Replicacoes: 1000 (mais reps que v1/v2
+para reduzir ruido MC na estimativa de cobertura)</p>
+<p><strong>Total</strong>: 6 (theta*) x 4 (pi) x 3 (N) x 3 (T) = 216
+cenarios x 1000 reps</p>
+<p>Muito menor que os 864 x 500 da v2. Tempo estimado: ~20 min (com 4
+workers paralelos).</p>
+<h3 id="metricas-por-cenario">Metricas por cenario</h3>
+<ol type="1">
+<li><strong>IVB_simulado</strong> = mean(beta_long - beta_short)</li>
+<li><strong>IVB_analitico</strong> = -theta_target x pi_target
+(confirmar identidade)</li>
+<li><strong>SE_medio</strong> = mean(SE(beta_long)) ao longo das
+reps</li>
+<li><strong>IVB_over_SE_simulado</strong> = mean(|IVB| /
+SE(beta_long))</li>
+<li><strong>Coverage_simulada</strong> = fracao de reps onde IC 95%
+contem beta verdadeiro</li>
+<li><strong>Coverage_analitica</strong> = mean over reps r of [Phi(crit
+- IVB_analitico/SE_r) - Phi(-crit - IVB_analitico/SE_r)], onde crit =
+qt(0.975, N-1) e SE_r e o erro-padrao da replicacao r</li>
+<li><strong>Discrepancia_coverage</strong> = Coverage_simulada -
+Coverage_analitica (em pontos percentuais)</li>
+<li><strong>Power_simulado</strong> = fracao de reps que rejeitam H0:
+beta=0</li>
+<li><strong>Power_analitico</strong> = mean over reps r of [1 - Phi(crit
+- |beta + IVB|/SE_r) + Phi(-crit - |beta + IVB|/SE_r)], onde crit =
+qt(0.975, N-1) e SE_r e o erro-padrao da replicacao r</li>
+<li><strong>Discrepancia_power</strong> = Power_simulado -
+Power_analitico</li>
+</ol>
+<h3 id="resultado-esperado">Resultado esperado</h3>
+<ul>
+<li>Para N &gt;= 50 e T &gt;= 10: discrepancia &lt; 2pp -&gt; formulas
+analiticas bastam</li>
+<li>Para N = 20 e T = 5: discrepancia possivelmente &gt; 2pp -&gt;
+resultado genuinamente novo</li>
+<li>Se discrepancia sistematica: documentar e propor correcao (ex: usar
+t-distribution com df ajustados em vez de normal)</li>
+</ul>
+<h3 id="decomposicao-da-discrepancia">Decomposicao da discrepancia</h3>
+<p>Quando houver discrepancia entre cobertura simulada e analitica,
+reportar uma decomposicao em tres componentes para tornar os resultados
+mais informativos:</p>
+<ol type="1">
+<li><p><strong>Nao-normalidade de beta_long</strong>: A distribuicao de
+beta_long em amostras finitas pode nao ser normal (ex: caudas pesadas,
+assimetria). Medir via teste de Shapiro-Wilk ou comparacao de quantis
+empiricos vs. teoricos.</p></li>
+<li><p><strong>Vies na estimacao de SE</strong>: O erro-padrao estimado
+SE_r pode ser sistematicamente viesado em relacao ao desvio-padrao
+verdadeiro de beta_long. Medir como E[SE_r] vs. sd(beta_long_vec). Se
+E[SE_r] &lt; sd(beta_long), os ICs sao sistematicamente estreitos
+demais.</p></li>
+<li><p><strong>Residuo</strong>: A parcela da discrepancia nao explicada
+por (1) e (2). Captura interacoes entre nao-normalidade e vies de SE,
+bem como outros efeitos de amostra finita.</p></li>
+</ol>
+<p>Essa decomposicao permite diagnosticar a <strong>causa</strong> da
+falha assintotica, nao apenas sua magnitude.</p>
+<h3 id="implementacao-2">Implementacao</h3>
+<p><strong>Arquivo</strong>:
+<code>sim_ivb_twfe_v3_validation.R</code></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. calibrate_dgp(theta_target, pi_target, beta = 1,</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                   sigma2_eps = 1, sigma2_nu = 1)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; retorna list(gamma_Y, gamma_D)</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; ERRO se |theta_target| &gt; 0.5</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. generate_panel_data(N, TT, beta, gamma_Y, gamma_D, delta = 0,</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#                         R2_within, ...)</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; reutilizar funcao da v1 (sim_ivb_twfe.R)</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. run_validation_scenario(params)</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; roda nsim reps, computa metricas simuladas E analiticas</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; IMPORTANTE: usar df = N - 1 tanto na construcao do IC simulado</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#       (t_crit = qt(0.975, N-1)) quanto na cobertura analitica</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co">#       (ivb_diagnostic(..., df = N - 1)), garantindo valores criticos</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#       identicos entre simulacao e formula analitica.</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; Cobertura analitica: computar per-replication usando SE_r de cada rep,</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co">#       depois tirar a media (evita artefato de Jensen)</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    -&gt; retorna data.table com 1 linha: params + todas as metricas + discrepancias</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Grid: CJ(theta_star, pi, N, TT) com parametros fixos</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Paralelo: future_lapply</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Salvar: sim_ivb_validation_results.csv</span></span></code></pre></div>
+<p><strong>Estilo de codigo</strong>: Seguir o estilo da v1
+(<code>sim_ivb_twfe.R</code>) – <code>data.table</code>,
+<code>fixest</code>, <code>future.apply</code>, SEs iid, t-crit com N-1
+df.</p>
+<hr />
+<h2 id="figuras-finais-planejadas-resumo">Figuras finais planejadas
+(resumo)</h2>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+<col style="width: 51%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Titulo</th>
+<th>Fonte</th>
+<th>Requer simulacao?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Heatmap</td>
+<td>IVB/SE</td>
+<td>no espaco (theta*, pi)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Heatmap cobertura no espaco (theta*, pi)</td>
+<td>Parte 1 (analitico)</td>
+<td>Nao</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Fronteira de preocupacao (worry frontier)</td>
+<td>Parte 1 (analitico)</td>
+<td>Nao</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Overlay empirico sobre worry frontier</td>
+<td>Parte 2 (dados)</td>
+<td>Nao</td>
+</tr>
+<tr>
+<td>5</td>
+<td>IVB/SE vs SE (efeito de precisao)</td>
+<td>Parte 1 (analitico)</td>
+<td>Nao</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Discrepancia cobertura: simulada vs analitica por (N, T)</td>
+<td>Parte 3 (simulacao)</td>
+<td>Sim</td>
+</tr>
+</tbody>
+</table>
+<p>A Figura 6 e a unica que depende de simulacao e e potencialmente a
+contribuicao mais original: mostra <strong>quando</strong> as formulas
+assintoticas falham.</p>
+<hr />
+<h2 id="ordem-de-implementacao">Ordem de implementacao</h2>
+<ol type="1">
+<li><strong>Parte 1</strong>: <code>ivb_analytical_tool.R</code> +
+<code>ivb_analytical_figures.R</code> (Figuras 1-3, 5)</li>
+<li><strong>Parte 2</strong>: Modificar
+<code>compute_standardized_ivb.R</code>, re-rodar, atualizar CSV com
+theta/pi. Gerar Figura 4.</li>
+<li><strong>Parte 3</strong>: <code>sim_ivb_twfe_v3_validation.R</code>.
+Gerar Figura 6.</li>
+</ol>
+<p>Partes 1 e 2 sao independentes e podem ser implementadas em paralelo.
+Parte 3 depende de Parte 1 (precisa da funcao
+<code>ivb_diagnostic()</code> para computar cobertura analitica).</p>
+<hr />
+<h2 id="verificacao">Verificacao</h2>
+<h3 id="parte-1">Parte 1</h3>
+<ul class="task-list">
+<li><label><input
+type="checkbox" /><code>ivb_diagnostic(theta=0.1, pi=0.3, se=0.05, beta_long=1.03)</code>
+retorna IVB=-0.03, IVB/SE=-0.6, coverage~0.91, flag=“minor”</label></li>
+<li><label><input type="checkbox" />Figuras 1-3 produzidas sem erro;
+hiperboles simetricas; cores corretas</label></li>
+<li><label><input type="checkbox" />Fronteira de preocupacao: para
+|theta* x pi / SE| = 1, verificar que a hiperbole passa por
+(theta<em>=1, pi=SE) e (theta</em>=SE, pi=1)</label></li>
+</ul>
+<h3 id="parte-2">Parte 2</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />CSV atualizado tem colunas
+<code>theta_star</code> e <code>pi</code> para todos os 7 estudos
+(exceto possivelmente Albers et al.)</label></li>
+<li><label><input type="checkbox" />Verificar identidade: IVB =
+-theta_star x pi (max discrepancia &lt; 1e-10)</label></li>
+<li><label><input type="checkbox" />Pelo menos 6 dos 7 estudos
+posicionados no overlay</label></li>
+<li><label><input type="checkbox" />Verificar quantos estudos caem fora
+de |IVB/SE| = 1. Esperado: ao menos Rogowski (Log GDP p.c.) com |IVB/SE|
+= 2.11 cai fora, indicando que IVB pode ser inferencialmente relevante
+em estudos reais. Este e um achado empirico interessante, nao um
+erro.</label></li>
+</ul>
+<h3 id="parte-3">Parte 3</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Calibracao funciona: theta* e pi
+estimados coincidem com targets (max discrepancia &lt; 0.01 para N=200,
+T=30)</label></li>
+<li><label><input type="checkbox" />IVB_simulado ~ IVB_analitico (max
+discrepancia &lt; 0.005 para N=200, T=30)</label></li>
+<li><label><input type="checkbox" />Para N=200, T=30:
+discrepancia_coverage &lt; 2pp (confirma assintotico)</label></li>
+<li><label><input type="checkbox" />Para N=20, T=5: documentar
+discrepancia (resultado genuinamente novo se &gt; 2pp)</label></li>
+<li><label><input type="checkbox" />Nenhum cenario com |theta_target|
+&gt; 0.5 (grid corrigido)</label></li>
+<li><label><input type="checkbox" />Coverage do modelo short ~ 0.95 em
+todos os cenarios (sanity check, pois delta=0)</label></li>
+<li><label><input type="checkbox" />Total de cenarios = 216 (nao
+864)</label></li>
+</ul>
+<hr />
+<h2 id="o-que-esta-abordagem-nao-faz-limitacoes-explicitas">O que esta
+abordagem NAO faz (limitacoes explicitas)</h2>
+<ol type="1">
+<li><strong>Nao varia delta</strong> (confounding) – foca no caso clean.
+No caso dirty (delta != 0), beta_long - beta_short = IVB - OVB_removed,
+e a interpretacao muda. Extensao futura.</li>
+<li><strong>Nao usa D binario</strong> – DGP linear continuo. Com D
+binario, pi pode ser estruturalmente diferente.</li>
+<li><strong>Nao testa robustez a nao-linearidade</strong> – O DA
+identificou que testar se a ferramenta diagnostica funciona sob
+violacoes de linearidade (Z binario, erros heteroscedasticos,
+clustering) seria genuinamente informativo. Nao incluido nesta
+versao.</li>
+<li><strong>Nao incorpora dinamica</strong> (ADL) – painel estatico com
+TWFE.</li>
+<li><strong>Nao e um pacote R</strong> – a funcao
+<code>ivb_diagnostic()</code> sera um script avulso, nao um pacote
+instalavel. Se a contribuicao se mostrar util, empacotar
+futuramente.</li>
+</ol>
+</body>
+</html>

@@ -1,0 +1,367 @@
+---
+title: "Derivações Detalhadas das Proposições 1 e 2 (IVB)"
+author: "Manoel Galdino"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: true
+    keep_tex: true
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Q&A Inicial
+
+**Q1. Qual é o objetivo deste documento?**  
+Checar, passo a passo, as derivações da Proposição 1 (cross-section) e da Proposição 2 (ADL(1,0)) do IVB, com expansão explícita dos pontos que geraram dúvidas.
+
+**Q2. Quais foram os pontos de atenção incorporados aqui?**  
+(i) passagem da condição normal para a fórmula de coeficiente,  
+(ii) expansão da covariância com médias explícitas,  
+(iii) cuidado com sinais algébricos do tipo \(- (a-b)\),  
+(iv) residualização via FWL,  
+(v) diferença entre ortogonalidade OLS e ausência de viés causal.
+
+**Q3. Qual notação será usada para facilitar a leitura?**  
+Usaremos:
+\[
+\text{(M1)} = \text{modelo curto (correto)}, \qquad
+\text{(M2)} = \text{modelo longo (inclui collider)}.
+\]
+
+# Premissas Mínimas
+
+Para as razões com variância no denominador estarem bem definidas:
+\[
+\operatorname{Var}(D)>0
+\]
+e, no caso dinâmico,
+\[
+\operatorname{Var}(\widetilde{D}_t)>0.
+\]
+Assumimos também momentos de segunda ordem finitos.
+
+# Proposição 1: Caso Cross-Section
+
+## Enunciado
+
+Quando um collider \(Z\) é incluído por engano na regressão de \(y\) em \(D\),
+\[
+\beta_1^\star - \beta_1 = -\beta_2^\star \phi_1,
+\]
+onde \(\beta_2^\star\) é o coeficiente de \(Z\) na regressão longa e \(\phi_1\) é o coeficiente da regressão auxiliar de \(Z\) em \(D\).
+
+## Passo 1. Escrever os dois modelos
+
+\[
+\text{(M1)} \quad y = \beta_0 + \beta_1 D + e,
+\]
+\[
+\text{(M2)} \quad y = \beta_0^\star + \beta_1^\star D + \beta_2^\star Z + e^\star.
+\]
+
+No contexto do paper, (M1) é o modelo causal correto e (M2) é o modelo misspecificado por incluir o collider.
+
+## Passo 2. Coeficiente de \(D\) no modelo curto
+
+\[
+\beta_1 = \frac{\operatorname{Cov}(D,y)}{\operatorname{Var}(D)}.
+\]
+
+## Passo 3. Condição normal no modelo longo (FOC explícita)
+
+Defina o resíduo no modelo longo:
+\[
+u^\star = y - \beta_0^\star - \beta_1^\star D - \beta_2^\star Z.
+\]
+
+OLS populacional escolhe \((\beta_0^\star,\beta_1^\star,\beta_2^\star)\) para minimizar:
+\[
+Q = \mathbb{E}\!\left[(u^\star)^2\right].
+\]
+
+Derivando em relação a \(\beta_1^\star\):
+\[
+\frac{\partial Q}{\partial \beta_1^\star}
+=
+\mathbb{E}\!\left[2u^\star\left(-D\right)\right]
+=
+-2\mathbb{E}[Du^\star]=0
+\;\Rightarrow\;
+\mathbb{E}[Du^\star]=0.
+\]
+
+Com intercepto, também vale \(\mathbb{E}[u^\star]=0\). Logo:
+\[
+\operatorname{Cov}(D,u^\star)=\mathbb{E}[Du^\star]-\mathbb{E}[D]\mathbb{E}[u^\star]=0.
+\]
+Isto implica:
+\[
+\operatorname{Cov}\!\big(D,\;y-\beta_0^\star-\beta_1^\star D-\beta_2^\star Z\big)=0.
+\]
+
+## Passo 4. Expansão completa da covariância (com médias explícitas)
+
+Partindo de:
+\[
+0=\operatorname{Cov}\!\big(D,\;y-\beta_0^\star-\beta_1^\star D-\beta_2^\star Z\big),
+\]
+aplique a definição:
+\[
+\operatorname{Cov}(A,B)=\mathbb{E}\!\left[(A-\mu_A)(B-\mu_B)\right].
+\]
+
+Assim:
+\[
+0=\mathbb{E}\!\left[(D-\mu_D)\left(\Xi-\mu_\Xi\right)\right],
+\]
+onde
+\[
+\Xi=y-\beta_0^\star-\beta_1^\star D-\beta_2^\star Z,
+\quad
+\mu_\Xi=\mu_y-\beta_0^\star-\beta_1^\star\mu_D-\beta_2^\star\mu_Z.
+\]
+
+Logo:
+\[
+\Xi-\mu_\Xi
+=(y-\mu_y)-\beta_1^\star(D-\mu_D)-\beta_2^\star(Z-\mu_Z).
+\]
+
+Substituindo:
+\begin{align*}
+0
+&=
+\mathbb{E}\!\left[(D-\mu_D)(y-\mu_y)\right]
+-\beta_1^\star\mathbb{E}\!\left[(D-\mu_D)^2\right]
+-\beta_2^\star\mathbb{E}\!\left[(D-\mu_D)(Z-\mu_Z)\right] \\
+&=
+\operatorname{Cov}(D,y)-\beta_1^\star\operatorname{Var}(D)-\beta_2^\star\operatorname{Cov}(D,Z).
+\end{align*}
+
+Isolando \(\beta_1^\star\):
+\[
+\beta_1^\star
+=
+\frac{\operatorname{Cov}(D,y)-\beta_2^\star\operatorname{Cov}(D,Z)}
+{\operatorname{Var}(D)}.
+\]
+
+## Passo 5. Subtrair \(\beta_1\)
+
+\[
+\beta_1^\star-\beta_1
+=
+-\beta_2^\star\frac{\operatorname{Cov}(D,Z)}{\operatorname{Var}(D)}.
+\]
+
+## Passo 6. Regressão auxiliar para \(Z\)
+
+\[
+Z=\phi_0+\phi_1 D+\varepsilon
+\quad\Rightarrow\quad
+\phi_1=\frac{\operatorname{Cov}(D,Z)}{\operatorname{Var}(D)}.
+\]
+
+Substituindo:
+\[
+\boxed{\beta_1^\star-\beta_1=-\beta_2^\star\phi_1.}
+\]
+
+## Nota Didática A: Sinal Algébrico
+
+Um ponto crítico de sinal:
+\[
+-(a-b)=-a+b.
+\]
+Portanto,
+\[
+-\beta_1^\star D -(-\beta_1^\star\mu_D)
+=
+-\beta_1^\star D+\beta_1^\star\mu_D
+=
+-\beta_1^\star(D-\mu_D),
+\]
+e não \(-\beta_1^\star(D+\mu_D)\).
+
+# Proposição 2: Caso ADL(1,0) via FWL
+
+## Enunciado
+
+No ADL(1,0), ao incluir um collider \(Z_t\):
+\[
+\beta^\star-\beta=-\theta^\star\pi.
+\]
+
+## Passo 1. Modelos (curto e longo)
+
+\[
+\text{(M1)}\quad y_t=\alpha+\beta D_t+\rho y_{t-1}+e_t,
+\]
+\[
+\text{(M2)}\quad y_t=\alpha^\star+\beta^\star D_t+\rho^\star y_{t-1}+\theta^\star Z_t+v_t.
+\]
+
+Aqui, o objeto de viés \(\beta^\star-\beta\) compara duas regressões que diferem apenas pela inclusão de \(Z_t\).
+
+## Passo 2. Residualização explícita (FWL)
+
+Defina controles legítimos:
+\[
+W_t=(1,y_{t-1}).
+\]
+
+Residualizar significa rodar:
+\[
+y_t = a_y + b_y y_{t-1} + r^y_t,\quad \widetilde{y}_t=r^y_t,
+\]
+\[
+D_t = a_D + b_D y_{t-1} + r^D_t,\quad \widetilde{D}_t=r^D_t,
+\]
+\[
+Z_t = a_Z + b_Z y_{t-1} + r^Z_t,\quad \widetilde{Z}_t=r^Z_t.
+\]
+
+Pelo FWL, a regressão longa equivale a:
+\[
+\widetilde{y}_t=\beta^\star\widetilde{D}_t+\theta^\star\widetilde{Z}_t+\widetilde{v}_t.
+\]
+
+## Passo 3. Da minimização à FOC para \(\beta^\star\)
+
+Considere:
+\[
+Q(\beta^\star,\theta^\star)=
+\mathbb{E}\!\left[\left(\widetilde{y}_t-\beta^\star\widetilde{D}_t-\theta^\star\widetilde{Z}_t\right)^2\right].
+\]
+
+Derivando em relação a \(\beta^\star\):
+\[
+\frac{\partial Q}{\partial \beta^\star}
+=
+-2\,\mathbb{E}\!\left[\widetilde{D}_t\left(\widetilde{y}_t-\beta^\star\widetilde{D}_t-\theta^\star\widetilde{Z}_t\right)\right]=0.
+\]
+
+Então:
+\[
+\mathbb{E}[\widetilde{D}_t\widetilde{y}_t]
+-\beta^\star\mathbb{E}[\widetilde{D}_t^2]
+-\theta^\star\mathbb{E}[\widetilde{D}_t\widetilde{Z}_t]=0.
+\]
+
+## Passo 4. De \(\mathbb{E}[\cdot]\) para covariância/variância
+
+Como há intercepto em \(W_t\), os resíduos têm média zero:
+\[
+\mathbb{E}[\widetilde{D}_t]=\mathbb{E}[\widetilde{y}_t]=\mathbb{E}[\widetilde{Z}_t]=0.
+\]
+
+Logo:
+\[
+\mathbb{E}[\widetilde{D}_t\widetilde{y}_t]
+=
+\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t),
+\quad
+\mathbb{E}[\widetilde{D}_t^2]
+=
+\operatorname{Var}(\widetilde{D}_t),
+\]
+\[
+\mathbb{E}[\widetilde{D}_t\widetilde{Z}_t]
+=
+\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t).
+\]
+
+Portanto:
+\[
+\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t)
+-\beta^\star\operatorname{Var}(\widetilde{D}_t)
+-\theta^\star\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)=0.
+\]
+
+Isolando \(\beta^\star\):
+\[
+\beta^\star=
+\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t)-\theta^\star\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+## Passo 5. Repetir no modelo curto para obter \(\beta\)
+
+No curto residualizado:
+\[
+\widetilde{y}_t=\beta\widetilde{D}_t+\widetilde{e}_t.
+\]
+
+Pela mesma lógica:
+\[
+\beta=\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+## Passo 6. Subtração (diferença entre longo e curto)
+
+\[
+\beta^\star-\beta
+=
+-\theta^\star
+\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+## Passo 7. Regressão auxiliar e definição de \(\pi\)
+
+\[
+Z_t=a+\pi D_t+\lambda y_{t-1}+\eta_t.
+\]
+No espaço residualizado por \(W_t\):
+\[
+\widetilde{Z}_t=\pi\widetilde{D}_t+\widetilde{\eta}_t
+\quad\Rightarrow\quad
+\pi=
+\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+Substituindo:
+\[
+\boxed{\beta^\star-\beta=-\theta^\star\pi.}
+\]
+
+## Nota Didática B: Ortogonalidade OLS vs Viés Causal
+
+No longo residualizado, vale por construção OLS:
+\[
+\mathbb{E}[\widetilde{D}_t\widetilde{v}_t]=0.
+\]
+Isso **não** implica \(\beta^\star=\beta\).  
+Implica apenas que \(\beta^\star\) é o coeficiente de projeção linear do modelo longo.  
+O viés causal em relação ao alvo do modelo curto continua sendo:
+\[
+\beta^\star-\beta.
+\]
+
+## Nota Didática C: Viés em \(M2\) vem de \(Z_t\) ou de \(y_{t-1}\)?
+
+Na decomposição \(\beta^\star-\beta\), o termo capturado é o efeito de incluir \(Z_t\), pois \(M1\) e \(M2\) compartilham \(y_{t-1}\).  
+Ou seja, a diferença entre os modelos é apenas a presença do collider.
+
+# Conclusão
+
+As duas proposições têm a mesma estrutura:
+\[
+\text{IVB}=-\theta^\star\times\pi.
+\]
+No caso cross-section, \((\theta^\star,\pi)=(\beta_2^\star,\phi_1)\).  
+No caso ADL(1,0), ambos são efeitos parciais no espaço residualizado por \(W_t\).
+
+O ponto central é que a identidade é algébrica e operacional: os componentes são estimáveis por regressões padrão, mas a interpretação causal depende de justificar substantivamente que \(Z\) é collider.

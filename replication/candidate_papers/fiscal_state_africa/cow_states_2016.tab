@@ -1,0 +1,57 @@
+cow_alf	cow_num	cow_name	styear	stmonth	stday
+"CAP"	402	"Cape Verde"	1975	7	5
+"STP"	403	"Sao Tome and Principe"	1975	7	12
+"GNB"	404	"Guinea-Bissau"	1974	9	10
+"EQG"	411	"Equatorial Guinea"	1968	10	12
+"GAM"	420	"Gambia"	1965	2	18
+"MLI"	432	"Mali"	1960	6	20
+"SEN"	433	"Senegal"	1960	8	20
+"BEN"	434	"Benin"	1960	8	1
+"MAA"	435	"Mauritania"	1960	11	28
+"NIR"	436	"Niger"	1960	10	3
+"CDI"	437	"Ivory Coast"	1960	8	7
+"GUI"	438	"Guinea"	1958	10	2
+"BFO"	439	"Burkina Faso"	1960	8	5
+"LBR"	450	"Liberia"	1920	6	30
+"SIE"	451	"Sierra Leone"	1961	4	27
+"GHA"	452	"Ghana"	1957	3	6
+"TOG"	461	"Togo"	1960	4	27
+"CAO"	471	"Cameroon"	1960	1	1
+"NIG"	475	"Nigeria"	1960	10	1
+"GAB"	481	"Gabon"	1960	8	17
+"CEN"	482	"Central African Republic"	1960	8	13
+"CHA"	483	"Chad"	1960	8	11
+"CON"	484	"Congo"	1960	8	15
+"DRC"	490	"Democratic Republic of the Congo"	1960	6	30
+"UGA"	500	"Uganda"	1962	10	9
+"KEN"	501	"Kenya"	1963	12	12
+"TAZ"	510	"Tanzania"	1961	12	9
+"ZAN"	511	"Zanzibar"	1963	12	19
+"BUI"	516	"Burundi"	1962	7	1
+"RWA"	517	"Rwanda"	1962	7	1
+"SOM"	520	"Somalia"	1960	7	1
+"DJI"	522	"Djibouti"	1977	6	27
+"ETH"	530	"Ethiopia"	1941	5	5
+"ERI"	531	"Eritrea"	1993	5	24
+"ANG"	540	"Angola"	1975	11	11
+"MZM"	541	"Mozambique"	1975	6	25
+"ZAM"	551	"Zambia"	1964	10	24
+"ZIM"	552	"Zimbabwe"	1965	11	11
+"MAW"	553	"Malawi"	1964	7	6
+"SAF"	560	"South Africa"	1920	1	10
+"NAM"	565	"Namibia"	1990	3	21
+"LES"	570	"Lesotho"	1966	10	4
+"BOT"	571	"Botswana"	1966	9	30
+"SWA"	572	"Swaziland"	1968	9	6
+"MAG"	580	"Madagascar"	1960	6	26
+"COM"	581	"Comoros"	1975	12	31
+"MAS"	590	"Mauritius"	1968	3	12
+"SEY"	591	"Seychelles"	1976	6	29
+"MOR"	600	"Morocco"	1956	3	2
+"ALG"	615	"Algeria"	1962	7	5
+"TUN"	616	"Tunisia"	1956	3	20
+"LIB"	620	"Libya"	1951	12	24
+"SUD"	625	"Sudan"	1956	1	1
+"SSD"	626	"South Sudan"	2011	7	9
+"IRQ"	645	"Iraq"	1932	10	3
+"EGY"	651	"Egypt"	1937	5	26

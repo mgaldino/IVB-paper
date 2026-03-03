@@ -1,0 +1,278 @@
+---
+title: "Included Variable Bias in Leipziger (2024): An Empirical Application"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: true
+    keep_tex: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4
+)
+library(fixest)
+library(dplyr)
+library(knitr)
+source("ivb_utils.R")
+```
+
+# Introduction
+
+Leipziger (2024, AJPS) estimates the effect of democratic transitions on socioeconomic ethnic inequality using a two-way fixed effects (TWFE) model with country-year panel data. The main specification is:
+
+$$
+\text{Ethnic Inequality}_{it} = \beta \, \text{Democracy}(0,1)_{i,t-1} + \theta \, X_{i,t-1} + \delta_i + \gamma_t + \varepsilon_{it}
+$$
+
+where ethnic inequality is measured by three different indices (V-Dem public services, Alesina et al. nightlight income, Omoeva et al. education), Democracy is a binary indicator based on the Lexical Index (level $\geq$ 5), and $X_{i,t-1}$ is log GDP per capita (the only time-varying control in the baseline specification). Country fixed effects ($\delta_i$) absorb time-invariant confounders, and year fixed effects ($\gamma_t$) absorb global shocks.
+
+A key question is whether GDP per capita is a **collider** --- a variable caused by both the treatment (democracy) and the outcome (ethnic inequality). If so, conditioning on it introduces **Included Variable Bias** (IVB):
+
+$$
+\text{IVB}(\hat\beta) = \hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi
+$$
+
+where $\hat\theta^*$ is the coefficient of GDP per capita in the "long" model and $\hat\pi$ is the coefficient of democracy in the auxiliary regression of GDP per capita on democracy and other controls.
+
+# Data
+
+```{r load-data}
+dat <- read.delim(
+  "candidate_papers/leipziger_2024/Country-level_dataset.tab",
+  stringsAsFactors = FALSE
+)
+
+# Generate variables
+dat$lexical_index_5 <- ifelse(dat$lexical_index >= 5, 1,
+                               ifelse(dat$lexical_index <= 4, 0, NA))
+
+dat$SEI <- (dat$v2peapssoc - 3.37) / (-3.135 - 3.37)
+
+dat <- dat %>%
+  arrange(country_id, year) %>%
+  group_by(country_id) %>%
+  mutate(
+    L_lexical_index_5 = dplyr::lag(lexical_index_5, 1),
+    L_latent_gdppc_mean_log = dplyr::lag(latent_gdppc_mean_log, 1),
+    L_e_total_oil_income_pc = dplyr::lag(e_total_oil_income_pc, 1),
+    L_e_civil_war = dplyr::lag(e_civil_war, 1),
+    L_efindex = dplyr::lag(efindex, 1),
+    L_e_migdpgro = dplyr::lag(e_migdpgro, 1)
+  ) %>%
+  ungroup()
+
+dat$year_f <- factor(dat$year)
+dat$country_f <- factor(dat$country_id)
+```
+
+The dataset contains `r nrow(dat)` country-year observations for `r length(unique(dat$country_id))` countries over `r min(dat$year, na.rm=TRUE)`--`r max(dat$year, na.rm=TRUE)`.
+
+# Replication of Table 1
+
+## Baseline TWFE
+
+```{r replication-twfe}
+mod_sei <- feols(
+  SEI ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat, vcov = ~country_id
+)
+
+mod_grg <- feols(
+  grg ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat, vcov = ~country_id
+)
+
+mod_ggini <- feols(
+  ggini ~ L_lexical_index_5 + L_latent_gdppc_mean_log | country_f + year_f,
+  data = dat, vcov = ~country_id
+)
+```
+
+```{r replication-table}
+comparison <- data.frame(
+  Outcome = c("Public services (SEI)", "Income (Alesina)", "Education (Omoeva)"),
+  N_published = c(15188, 517, 3945),
+  N_replicated = c(mod_sei$nobs, mod_grg$nobs, mod_ggini$nobs),
+  Beta_published = c(-0.035, -0.030, -0.005),
+  Beta_replicated = c(
+    round(coef(mod_sei)["L_lexical_index_5"], 3),
+    round(coef(mod_grg)["L_lexical_index_5"], 3),
+    round(coef(mod_ggini)["L_lexical_index_5"], 3)
+  )
+)
+kable(comparison, digits = 3,
+      caption = "Table 1 Replication: Published vs. Replicated",
+      col.names = c("Outcome", "N (pub.)", "N (rep.)", "$\\hat\\beta$ (pub.)",
+                     "$\\hat\\beta$ (rep.)"))
+```
+
+Coefficients match closely across all three outcomes.
+
+# IVB Decomposition
+
+## Setup
+
+We define:
+
+- **Treatment** ($d$): `L_lexical_index_5` (lagged binary democracy)
+- **Outcome** ($y$): each of the three ethnic inequality measures
+- **Candidate collider** ($z$): `L_latent_gdppc_mean_log` (lagged log GDP per capita)
+- **Fixed effects**: country + year
+
+The baseline model has **only one** time-varying control (GDP per capita), making the IVB decomposition straightforward: the "short" model excludes GDP per capita entirely (only FE remain), and the "long" model includes it.
+
+## Table 1: GDP per capita as candidate collider
+
+```{r ivb-table1}
+outcomes <- c("SEI", "grg", "ggini")
+outcome_labels <- c("Public services (SEI)", "Income (Alesina)", "Education (Omoeva)")
+
+ivb_table1 <- lapply(outcomes, function(y_var) {
+  compute_ivb_multi(
+    data = dat, y = y_var, d_vars = "L_lexical_index_5",
+    z = "L_latent_gdppc_mean_log", w = character(),
+    fe = c("country_f", "year_f"), vcov = "iid"
+  )
+})
+names(ivb_table1) <- outcomes
+
+tab_t1 <- do.call(rbind, lapply(seq_along(outcomes), function(i) {
+  r <- ivb_table1[[outcomes[i]]]$results
+  data.frame(
+    Outcome = outcome_labels[i],
+    N = ivb_table1[[outcomes[i]]]$sample_n,
+    beta_short = r$beta_short,
+    beta_long = r$beta_long,
+    theta = r$theta,
+    pi = r$pi,
+    IVB = r$ivb_formula,
+    check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+```
+
+```{r ivb-table1-print}
+kable(tab_t1, digits = 4, row.names = FALSE,
+      caption = "IVB decomposition: GDP per capita as candidate collider (Table 1)",
+      col.names = c("Outcome", "N", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB $= -\\hat\\theta^* \\hat\\pi$",
+                     "Check"))
+```
+
+The identity holds exactly (check $\approx 0$) in all cases. The key finding: for the **public services** outcome (the most robust and well-powered specification), including GDP per capita as a control produces an IVB of **+0.006**, which *attenuates* the estimated effect of democracy by 16% (from $-0.041$ to $-0.035$).
+
+## Extended Model (Table A11): Multiple controls
+
+```{r ivb-extended}
+all_controls <- c("L_latent_gdppc_mean_log", "L_e_total_oil_income_pc",
+                   "L_e_civil_war", "L_efindex", "L_e_migdpgro")
+control_labels <- c("Log GDP p.c.", "Oil income p.c.", "Civil war",
+                     "Ethnic frac.", "GDP growth")
+
+ivb_ext <- lapply(seq_along(all_controls), function(j) {
+  z_var <- all_controls[j]
+  w_vars <- setdiff(all_controls, z_var)
+  tryCatch(
+    compute_ivb_multi(
+      data = dat, y = "SEI", d_vars = "L_lexical_index_5",
+      z = z_var, w = w_vars,
+      fe = c("country_f", "year_f"), vcov = "iid"
+    ),
+    error = function(e) NULL
+  )
+})
+names(ivb_ext) <- all_controls
+
+tab_ext <- do.call(rbind, lapply(seq_along(all_controls), function(j) {
+  if (is.null(ivb_ext[[j]])) return(NULL)
+  r <- ivb_ext[[j]]$results
+  data.frame(
+    Collider = control_labels[j],
+    beta_short = r$beta_short,
+    beta_long = r$beta_long,
+    theta = r$theta,
+    pi = r$pi,
+    IVB = r$ivb_formula,
+    check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+```
+
+```{r ivb-extended-print}
+kable(tab_ext, digits = 4, row.names = FALSE,
+      caption = "IVB decomposition for each control (Table A11, SEI outcome)",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB $= -\\hat\\theta^* \\hat\\pi$",
+                     "Check"))
+```
+
+GDP per capita produces the largest IVB (+0.005) even in the extended specification. All other controls contribute IVBs smaller than 0.001 in absolute value.
+
+# Literature Support for Collider Status
+
+The IVB formula diagnoses **how much** each control shifts the treatment estimate, but **whether** a control is a collider depends on substantive knowledge: does the outcome (ethnic inequality) cause the control $z$?
+
+## Ethnic inequality $\to$ GDP per capita
+
+There is moderate-to-strong evidence that ethnic inequality reduces economic growth and GDP:
+
+- **Gründler & Link (2024, CESifo WP):** Using harmonized satellite data and IV (artificiality of sub-national borders in Africa), find that ethnic inequality causally reduces GDP per capita by 12--15% at extreme levels.
+- **Easterly & Levine (1997, QJE):** Ethnic fragmentation explains Africa's slow growth via bad policies, instability, and low schooling.
+- **Alesina, Michalopoulos & Papaioannou (2016, JPE):** Strong inverse association between ethnic inequality (nightlight Gini across homelands) and development.
+
+**Implication:** GDP per capita is a plausible collider. Ethnic inequality reduces GDP, and democracy increases GDP (Acemoglu et al. 2019). Including GDP per capita opens a non-causal path, attenuating the estimated effect of democracy.
+
+## Ethnic inequality $\to$ Civil war
+
+There is strong evidence that horizontal inequalities cause civil war:
+
+- **Cederman, Gleditsch & Buhaug (2013, Cambridge UP):** Politically excluded and economically disadvantaged ethnic groups face significantly higher conflict risk. Group-level analysis with EPR data.
+- **Wucherpfennig et al. (2016, AJPS):** IV using colonial rule strategies (British vs. French) shows that ethnic exclusion *causally* increases conflict; naïve estimates *understate* the effect.
+- **Stewart (2008, Palgrave):** Multi-dimensional HIs across economic, social, and political dimensions provoke conflict; strongest when dimensions reinforce each other.
+
+**Implication:** Civil war is a plausible collider, though the empirical IVB is small (+0.0002) due to the modest conditional effect of civil war on ethnic inequality within this sample.
+
+## Controls unlikely to be colliders
+
+- **Oil income per capita:** Determined by geological endowment and world prices; no plausible channel from ethnic inequality to oil revenues.
+- **Ethnic fractionalization:** Structural/demographic variable measuring group composition; changes over decades/centuries, not affected by contemporaneous inequality.
+- **GDP growth:** Same mechanisms as GDP per capita, but empirical IVB is negligible.
+
+# Summary
+
+```{r summary-table}
+summary_all <- data.frame(
+  Control = c("Log GDP p.c.", "Oil income p.c.", "Civil war",
+              "Ethnic frac.", "GDP growth"),
+  `Y causes Z` = c("Moderate-strong", "No", "Strong",
+                    "No (structural)", "Moderate"),
+  `Key reference` = c("Gründler & Link 2024", "---",
+                       "Cederman et al. 2013", "---", "Easterly & Levine 1997"),
+  `IVB (Table 1)` = c(round(tab_t1$IVB[1], 4), rep(NA, 4)),
+  `IVB (Table A11)` = round(tab_ext$IVB, 4),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(summary_all, caption = "Summary: Literature evidence and IVB magnitudes")
+```
+
+The main finding is that GDP per capita --- the only time-varying control in Leipziger's baseline specification --- is a plausible collider with a substantive IVB. Including it **attenuates** the estimated effect of democracy on ethnic inequality by 16% for the public services measure. Leipziger (2024) notes that additional controls are excluded due to "the risk of posttreatment bias" (p. 1347), which is consistent with IVB/collider bias concerns. However, the retained control (GDP per capita) introduces the largest bias of all. The "short" model without GDP per capita yields $\hat\beta = -0.041$, suggesting the true equalizing effect of democracy may be larger than the reported $-0.035$.
+
+# References
+
+- Acemoglu, D., Naidu, S., Restrepo, P., & Robinson, J. A. (2019). Democracy Does Cause Growth. *Journal of Political Economy*, 127(1), 47--100.
+- Alesina, A., Michalopoulos, S., & Papaioannou, E. (2016). Ethnic Inequality. *Journal of Political Economy*, 124(2), 428--488.
+- Cederman, L.-E., Gleditsch, K. S., & Buhaug, H. (2013). *Inequality, Grievances, and Civil War*. Cambridge University Press.
+- Easterly, W. & Levine, R. (1997). Africa's Growth Tragedy: Policies and Ethnic Divisions. *Quarterly Journal of Economics*, 112(4), 1203--1250.
+- Gründler, K. & Link, A. (2024). Ethnic Inequality and Economic Growth: Evidence from Harmonized Satellite Data. *CESifo Working Paper* No. 11034.
+- Leipziger, L. E. (2024). Does Democracy Reduce Ethnic Inequality? *American Journal of Political Science*, 68(4), 1335--1352.
+- Stewart, F. (2008). *Horizontal Inequalities and Conflict: Understanding Group Violence in Multiethnic Societies*. Palgrave Macmillan.
+- Wucherpfennig, J., Hunziker, P., & Cederman, L.-E. (2016). Who Inherits the State? Colonial Rule and Postcolonial Conflict. *American Journal of Political Science*, 60(4), 882--898.

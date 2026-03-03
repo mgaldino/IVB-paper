@@ -1,0 +1,246 @@
+---
+title: "Simulation v4: Why is the IVB small?"
+subtitle: "Structural factors that determine IVB magnitude in TWFE panels"
+author: "Manoel Galdino"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+    keep_tex: false
+    latex_engine: pdflatex
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{float}
+  - \floatplacement{figure}{H}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.align = "center", out.width = "95%")
+library(data.table)
+library(knitr)
+
+res_A <- fread("sim_ivb_twfe_v4_mechA.csv")
+res_B <- fread("sim_ivb_twfe_v4_mechB.csv")
+res_C <- fread("sim_ivb_twfe_v4_mechC.csv")
+res_D <- fread("sim_ivb_twfe_v4_mechD.csv")
+synthesis <- fread("sim_ivb_twfe_v4_synthesis.csv")
+```
+
+# Motivation
+
+The v1 simulation showed that $|\text{IVB}|/|\beta|$ is constant in $R^2_{\text{within}}$. This is because the DGP had a single parameter $\gamma_D$ governing the $D \to Z$ channel, and after TWFE demeaning, $\pi = \gamma_D + \gamma_Y \beta$ regardless of the between/within decomposition of $D$. The simulation was **tautological**: it only confirmed the formula $\text{IVB} = -\theta^* \times \pi$.
+
+The real question is: **which structural features of a DGP make $\pi$ and $\theta^*$ small after absorbing fixed effects?** This simulation explores four mechanisms.
+
+# Setup
+
+All mechanisms use the clean case ($\delta = 0$, no confounding through $Z$), $N = 200$ units, $T = 30$ periods, $\beta = 1$, and 500 replications per scenario. Total: 212 scenarios.
+
+The IVB identity is:
+$$
+\text{IVB} = \hat\beta_{\text{long}} - \hat\beta_{\text{short}} = -\hat\theta^* \times \hat\pi
+$$
+where $\hat\theta^*$ is the coefficient on $Z$ in the long model and $\hat\pi$ is the coefficient on $D$ in the auxiliary regression $Z \sim D + \text{FE}$.
+
+# Mechanism A: Between/within decomposition of $D \to Z$
+
+## DGP
+
+$$
+Y_{it} = \beta D_{it} + \alpha_i + \lambda_t + \varepsilon_{it}
+$$
+$$
+Z_{it} = \gamma_D^{\text{btw}} \mu_i^D + \gamma_D^{\text{wth}} (D_{it} - \mu_i^D) + \gamma_Y Y_{it} + \eta_i + \mu_t + \nu_{it}
+$$
+
+where $\mu_i^D$ is the time-invariant unit-level component of $D$. After TWFE absorbs unit FE, $\gamma_D^{\text{btw}} \mu_i^D$ is removed. The surviving first-stage coefficient is:
+
+$$
+\pi = \gamma_D^{\text{wth}} + \gamma_Y \beta
+$$
+
+## Key finding: FE absorbs the between channel
+
+```{r fig-heatmap-A, fig.cap="IVB depends on the within channel ($\\gamma_D^{\\text{wth}}$, vertical axis), not the between channel ($\\gamma_D^{\\text{btw}}$, horizontal axis). Horizontal bands confirm that FE absorbs the between component."}
+knitr::include_graphics("plots/v4_heatmap_A_btw_wth.png")
+```
+
+The heatmap shows clear **horizontal bands**: within each row (fixed $\gamma_D^{\text{wth}}$), the IVB is essentially constant as $\gamma_D^{\text{btw}}$ varies from 0 to 0.9. This confirms that the between channel is fully absorbed by unit FE.
+
+```{r fig-line-A, fig.cap="IVB is flat in $\\gamma_D^{\\text{btw}}$: the between channel is irrelevant after FE absorption."}
+knitr::include_graphics("plots/v4_line_A_flat_btw.png")
+```
+
+## Quantitative verification
+
+```{r}
+check_A <- res_A[gamma_Y == 0.3 & gamma_D_wth == 0.2 & R2_within == 0.5,
+                 .(gamma_D_btw,
+                   pi_hat = round(mean_pi, 3),
+                   ivb_pct = round(mean_abs_ivb_over_beta * 100, 1))]
+kable(check_A, col.names = c("$\\gamma_D^{\\text{btw}}$", "$\\hat\\pi$", "|IVB/$\\beta$| (%)"),
+      caption = "pi and IVB are invariant to gamma_D_btw (gamma_D_wth=0.2, gamma_Y=0.3).",
+      booktabs = TRUE, escape = FALSE)
+```
+
+The theoretical prediction is $\pi = 0.2 + 0.3 \times 1.0 = 0.5$, independent of $\gamma_D^{\text{btw}}$. The simulation confirms this.
+
+## When D causes Z primarily in levels
+
+```{r fig-share-within, fig.cap="IVB increases with the within-share of the $D \\to Z$ channel. When most of the D-Z association is cross-sectional (left side), IVB is small."}
+knitr::include_graphics("plots/v4_ivb_vs_share_within.png")
+```
+
+**Insight for the researcher**: Even if $D$ and $Z$ are strongly correlated in the raw data, the IVB can be small if that correlation is cross-sectional (between countries) rather than temporal (within countries), because TWFE absorbs the between channel.
+
+
+# Mechanism B: Between/within decomposition of $Y \to Z$
+
+## DGP
+
+$$
+Z_{it} = \gamma_D D_{it} + \gamma_Y^{\text{btw}} \bar{Y}_i + \gamma_Y^{\text{wth}} (Y_{it} - \bar{Y}_i) + \eta_i + \mu_t + \nu_{it}
+$$
+
+After TWFE absorbs unit FE, $\gamma_Y^{\text{btw}} \bar{Y}_i$ is removed (since $\bar{Y}_i$ is time-invariant). Therefore $\theta^*$ in the long regression depends only on $\gamma_Y^{\text{wth}}$.
+
+## Key finding: $\theta^*$ is independent of $\gamma_Y^{\text{btw}}$
+
+```{r fig-heatmap-B, fig.cap="IVB depends on the within channel of $Y \\to Z$ ($\\gamma_Y^{\\text{wth}}$), not the between channel ($\\gamma_Y^{\\text{btw}}$). Analogous horizontal bands."}
+knitr::include_graphics("plots/v4_heatmap_B_btw_wth.png")
+```
+
+```{r}
+check_B <- res_B[gamma_D == 0.3 & gamma_Y_wth == 0.2 & R2_within == 0.5,
+                 .(gamma_Y_btw,
+                   theta = round(mean_theta, 4),
+                   ivb_pct = round(mean_abs_ivb_over_beta * 100, 1))]
+kable(check_B, col.names = c("$\\gamma_Y^{\\text{btw}}$", "$\\hat\\theta^*$", "|IVB/$\\beta$| (%)"),
+      caption = "theta* is invariant to gamma_Y_btw (gamma_D=0.3, gamma_Y_wth=0.2).",
+      booktabs = TRUE, escape = FALSE)
+```
+
+The range of $\hat\theta^*$ across all values of $\gamma_Y^{\text{btw}}$ is only 0.001 --- effectively zero.
+
+**Insight**: If the correlation between $Y$ and $Z$ is primarily cross-sectional (e.g., richer countries have higher inequality in levels), $\theta^*$ after FE is small, and IVB is small.
+
+
+# Mechanism C: Binary $D$ with staggered adoption
+
+## DGP
+
+$D_{it} = \mathbf{1}(t \geq T_i^*)$ for switchers, with $T_i^* \sim \text{Uniform}\{2, \ldots, T\}$. The fraction of switchers is controlled by `prob_switch`. Never-treated ($D = 0$ always) and always-treated ($D = 1$ always) units contribute zero within-variation.
+
+## Key finding: fewer switchers $\to$ larger SE $\to$ IVB invisible to inference
+
+```{r fig-bar-C, fig.cap="With fewer switchers, $|\\text{IVB}|/\\text{SE}$ decreases: the IVB becomes statistically invisible even though it has the same population magnitude."}
+knitr::include_graphics("plots/v4_bar_C_switchers.png")
+```
+
+```{r fig-line-C-se, fig.cap="Standard errors increase sharply as the fraction of switchers decreases, because less within-variation in $D$ is available for identification."}
+knitr::include_graphics("plots/v4_line_C_se.png")
+```
+
+```{r}
+check_C <- res_C[gamma_D == 0.3 & gamma_Y == 0.3,
+                 .(prob_switch,
+                   ivb_pct = round(mean_abs_ivb_over_beta * 100, 1),
+                   ivb_se = round(mean_abs_ivb_over_se, 2),
+                   se_long = round(mean_se_long, 4))]
+kable(check_C, col.names = c("prob\\_switch", "|IVB/$\\beta$| (%)", "|IVB|/SE", "SE($\\hat\\beta_{\\text{long}}$)"),
+      caption = "Population IVB is stable (~27%), but SE grows from 0.045 to 0.099 as switchers decrease.",
+      booktabs = TRUE, escape = FALSE)
+```
+
+**Insight**: In political science applications where treatment is binary and slow-moving (democratization, peacekeeping deployment), few units actually switch. The IVB exists in population but is **dwarfed by estimation uncertainty**, making it practically irrelevant for inference.
+
+
+# Mechanism D: Measurement error in $Z$
+
+## DGP
+
+The researcher observes $Z^{\text{obs}}_{it} = Z^{\text{true}}_{it} + e_{it}$, where $e_{it} \sim N(0, \sigma^2_{\text{me}})$. Classic errors-in-variables attenuation bias shrinks $\theta^*$ toward zero.
+
+## Key finding: measurement error attenuates $\theta^*$ and IVB
+
+```{r fig-line-D-att, fig.cap="$|\\hat\\theta^*|$ decreases monotonically with measurement error variance, following the classic attenuation bias formula."}
+knitr::include_graphics("plots/v4_line_D_attenuation.png")
+```
+
+```{r fig-line-D-ivb, fig.cap="IVB shrinks proportionally with measurement error, because IVB $= -\\theta^* \\times \\pi$ and $\\theta^*$ is attenuated."}
+knitr::include_graphics("plots/v4_line_D_ivb.png")
+```
+
+```{r}
+check_D <- res_D[gamma_D == 0.3 & gamma_Y == 0.3,
+                 .(sigma2_me,
+                   theta = round(mean_theta, 4),
+                   ivb_pct = round(mean_abs_ivb_over_beta * 100, 1))]
+kable(check_D, col.names = c("$\\sigma^2_{\\text{me}}$", "$\\hat\\theta^*$", "|IVB/$\\beta$| (%)"),
+      caption = "theta* is attenuated from 0.28 to 0.10 as measurement error grows from 0 to 2.",
+      booktabs = TRUE, escape = FALSE)
+```
+
+**Insight**: Socioeconomic control variables in long panels are often measured with substantial error (GDP, inequality indices, governance scores). This measurement error attenuates $\theta^*$, mechanically reducing the IVB.
+
+
+# Synthesis
+
+```{r}
+kable(synthesis,
+      col.names = c("Mechanism", "Scenarios", "$n$ with |IVB|/SE < 1",
+                     "\\% with |IVB|/SE < 1", "Median |IVB/$\\beta$| (\\%)", "Max |IVB/$\\beta$| (\\%)"),
+      caption = "Summary across mechanisms. In A and B, one-third of scenarios have IVB smaller than one standard error.",
+      booktabs = TRUE, escape = FALSE)
+```
+
+## Why is the IVB small in empirical applications?
+
+The empirical studies in the paper (Claassen, Fiscal State, Leipziger, Peacekeeping) share features that activate **all four mechanisms simultaneously**:
+
+1. **Mechanism A** --- Treatment variables ($D$) like democracy or peacekeeping deployment vary primarily across countries (between), not within countries over time. After TWFE absorbs unit FE, the $D \to Z$ channel is weak, so $\pi$ is small.
+
+2. **Mechanism B** --- Outcome variables ($Y$) like civil war onset or state capacity also correlate with controls ($Z$) primarily in levels. After FE, $\theta^*$ is small.
+
+3. **Mechanism C** --- Treatment is binary and slow-moving. Few units switch, so SE is large, and even a moderate IVB is dwarfed by estimation uncertainty.
+
+4. **Mechanism D** --- Control variables like GDP, ethnic fractionalization, or governance indices are measured with error, especially in long panels. This attenuates $\theta^*$.
+
+These mechanisms are **mutually reinforcing**: a study can have small IVB because of any one of them, and empirical studies typically exhibit all four.
+
+## Robustness: coverage rates
+
+```{r}
+cov_dt <- data.table(
+  Mechanism = c("A", "B", "C", "D"),
+  Mean = c(mean(res_A$coverage_short), mean(res_B$coverage_short),
+           mean(res_C$coverage_short), mean(res_D$coverage_short)),
+  Min = c(min(res_A$coverage_short), min(res_B$coverage_short),
+          min(res_C$coverage_short), min(res_D$coverage_short)),
+  Max = c(max(res_A$coverage_short), max(res_B$coverage_short),
+          max(res_C$coverage_short), max(res_D$coverage_short))
+)
+cov_dt[, `:=`(Mean = round(Mean, 3), Min = round(Min, 3), Max = round(Max, 3))]
+kable(cov_dt, caption = "95\\% CI coverage of the short model (should be ~0.95). All mechanisms are well-calibrated.",
+      booktabs = TRUE)
+```
+
+
+# Suggested next steps
+
+1. **Combine mechanisms A+C**: A DGP with binary $D$ *and* between/within decomposition of $D \to Z$. This is the most realistic scenario for political science and would show even smaller IVB than either mechanism alone.
+
+2. **Calibrate to empirical studies**: Extract $R^2_{\text{within}}$, proportion of switchers, and approximate measurement error from the four replication studies. Run the simulation with those calibrated parameter values to produce study-specific IVB bounds.
+
+3. **Formal bound**: Derive an analytical upper bound for $|\text{IVB}|/\text{SE}$ as a function of observable quantities (within-share of $D$, first-stage $R^2$, number of switchers). This would give researchers a formula to assess IVB risk without running simulations.
+
+4. **Integration with v3 diagnostic tool**: The `ivb_diagnostic()` function (v3 plan, Part 1) estimates $\hat\pi$ and $\hat\theta^*$ from actual data. Combining it with the structural insights from v4 would let researchers say: "My estimated $|\text{IVB}|/\text{SE}$ is small, and here are the structural reasons why."
+
+5. **Paper section**: Write up Mechanisms A and B as the main theoretical contribution (formal result: FE absorbs between channels). Mechanisms C and D are supporting arguments that reinforce the conclusion.
+
+\vspace{1cm}
+\noindent\textit{Generated by sim\_ivb\_twfe\_v4.R and sim\_ivb\_twfe\_v4\_figures.R on `r Sys.Date()`.}

@@ -1,0 +1,113 @@
+IVB Assessment: Dell, Jones & Olken (2012, AEJ:Macro)
+"Temperature Shocks and Economic Growth: Evidence from the Last Half Century"
+=============================================================================
+
+VERDICT: BAD candidate for IVB analysis
+REASON: No continuous time-varying controls beyond the treatment variables themselves.
+
+=============================================================================
+DETAILED ANALYSIS
+=============================================================================
+
+1. PAPER OVERVIEW
+-----------------
+- Uses country-year panel data (1950-2003, ~125 countries)
+- Treatment (D): Temperature shocks (annual average temperature, degrees Celsius)
+- Outcome (Y): GDP per-capita growth rate
+- Also examines precipitation as a second treatment variable
+- Identification: within-country year-to-year fluctuations in weather
+
+2. MAIN SPECIFICATION (Equation 4, p.9 of manuscript)
+------------------------------------------------------
+g_it = theta_i + theta_rt + sum_{j=0}^{L} rho_j * T_{it-j} + epsilon_it
+
+Where:
+- g_it = per-capita GDP growth rate in country i, year t
+- theta_i = country fixed effects
+- theta_rt = time fixed effects (region x year FE and poor x year FE)
+- T_it = vector of temperature and precipitation (and their interactions with poor dummy)
+- epsilon_it = error term clustered at parent-country and year-region levels
+
+3. WHAT ARE THE CONTROLS?
+-------------------------
+The ONLY right-hand-side variables in the main specification are:
+
+A) Fixed effects (absorbed):
+   - Country FE (theta_i)
+   - Region x Year FE (theta_rt)
+   - Poor country x Year FE
+
+B) Time-varying regressors:
+   - Temperature (and its lags)
+   - Temperature x Poor dummy (and its lags)
+   - Precipitation (and its lags)
+   - Precipitation x Poor dummy (and its lags)
+
+C) Time-invariant interaction terms:
+   - "Poor" dummy (defined at first year of data entry): BINARY, NOT CONTINUOUS
+   - "Hot" dummy (above median temperature in 1950s): BINARY, NOT CONTINUOUS
+   - "Agricultural" dummy (above median ag share in 1995): BINARY, NOT CONTINUOUS
+
+CRITICAL POINT: There are NO continuous time-varying controls beyond temperature
+and precipitation themselves. The "poor", "hot", and "agricultural" dummies are
+TIME-INVARIANT characteristics (defined at a fixed point in time) that are only
+used as interaction terms with the treatment variable. They are fully absorbed
+by country fixed effects.
+
+4. CHANNEL/MECHANISM REGRESSIONS (Tables 5 and 6)
+--------------------------------------------------
+The paper examines channels in SEPARATE regressions where the dependent variable
+changes (NOT as controls in the main growth regression):
+
+Table 5: Growth in agriculture, industry, investment as DEPENDENT VARIABLES
+Table 6: Political instability (POLITY, leader transitions, conflict) as DEPENDENT VARIABLES
+
+These are separate reduced-form regressions to understand channels. None of these
+variables ever appear as RIGHT-HAND-SIDE CONTROLS in the main GDP growth regression.
+
+5. IVB REQUIREMENTS CHECK
+--------------------------
+Requirement 1: Linear OLS with FE? YES - panel OLS with country + region-year FE
+Requirement 2: Continuous time-varying controls? NO - FAILS
+   - Temperature and precipitation are the TREATMENT, not controls
+   - The interaction dummies (poor, hot, agricultural) are time-invariant, binary,
+     and absorbed by country FE
+   - No additional time-varying controls are included
+Requirement 3: Selection-on-observables design? PARTIALLY
+   - Temperature is plausibly exogenous (weather shocks), so this is more of a
+     natural experiment than selection-on-observables
+   - The paper argues identification from year-to-year weather fluctuations
+Requirement 4: Plausible colliders? NOT APPLICABLE
+   - Since there are no time-varying controls, there is nothing to serve as a collider
+
+6. WHY THIS PAPER IS A BAD CANDIDATE
+--------------------------------------
+The IVB formula requires IVB = -theta* x pi, where:
+- theta* is the coefficient from regressing Y on Z (control) after partialing out D and FE
+- pi is the coefficient from regressing D on Z after partialing out FE
+
+For IVB to be computable, there must be at least one continuous time-varying control Z
+that could plausibly be a collider (caused by both D and Y). This paper has NO such
+controls. The specification is intentionally parsimonious: just weather variables and
+fixed effects.
+
+Even though the paper discusses channels (agriculture, industry, political stability)
+that would be IDEAL collider candidates if they were included as controls, they are
+NOT included in the main specification. They are only examined in separate regressions
+as dependent variables.
+
+7. COULD THE PAPER BE MODIFIED FOR IVB?
+-----------------------------------------
+In principle, if someone were to run the Dell et al. specification but ADD a control
+like "political stability" or "agricultural output growth" to the right-hand side,
+that would create an IVB-eligible specification. But the paper as published does not
+do this, so there is no existing coefficient to analyze.
+
+8. REPLICATION DATA
+-------------------
+Paper PDF downloaded from MIT DSpace.
+Replication data available at ICPSR (requires authentication):
+https://www.openicpsr.org/openicpsr/project/114251/version/V1/view
+
+Best table for main results: Table 2, Column 3 (with precipitation) or Table 3
+Best table for channels: Table 5 (agriculture/industry/investment), Table 6 (political)

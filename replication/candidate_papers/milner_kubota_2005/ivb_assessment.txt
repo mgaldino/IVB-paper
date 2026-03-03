@@ -1,0 +1,330 @@
+====================================================================
+IVB ASSESSMENT: Milner & Kubota (2005)
+"Why the Move to Free Trade? Democracy and Trade Policy
+ in the Developing Countries"
+International Organization 59(1): 107-143
+====================================================================
+
+1. PAPER OVERVIEW
+-----------------
+Research Question: Does democracy cause trade liberalization?
+Method: OLS with country fixed effects, AR1 correction, PCSE
+Data: Panel of ~179 developing countries, 1970-1999
+  - Actual estimation samples vary: N=649-774 (tariff), N=829-982 (SW)
+
+Key Variables:
+  Y (Outcome)   = TARIFF (avg statutory tariff rate, continuous 0-102)
+                   or SW OPEN (Sachs-Warner openness, binary 0/1)
+  D (Treatment) = REGIME (Polity IV score, -10 to +10, lagged 1 period)
+                   Also: DICTATOR, ACLP as alternatives
+
+2. EXACT REGRESSION SPECIFICATION (from paper p. 29, eq. 1)
+-----------------------------------------------------------
+tradepolicy_{i,t} = beta_0 + beta_1*REGIME_{i,t-1}
+                    + beta_2*SIGNED_{i,t-1}
+                    + beta_3*OFFICE_{i,t-1}
+                    + beta_4*GDPPC_{i,t-1}
+                    + beta_5*LNPOP_{i,t-1}
+                    + beta_6*ECRISIS_{i,t-1}
+                    + beta_7*BPC_{i,t-1}
+                    + beta_8*AVOPEN_{-i,t-1}
+                    + u_i + epsilon_{i,t}
+
+Additional controls added in some specifications:
+  - USHEG (US hegemony), GATT, FIVEOP, FDI, AV TARIFF
+
+Notes on estimation:
+  - Country fixed effects (u_i)
+  - Time trend (DATE) or decade fixed effects
+  - AR1 correction for serial correlation
+  - Panel corrected standard errors (PCSE, Beck & Katz 1995)
+  - All RHS variables lagged one period
+
+3. MAIN RESULTS (Table 3, most complete tariff specification)
+------------------------------------------------------------
+Table 3, Equation 1 (main specification with REGIME):
+  REGIME:     -0.328*** (0.108)
+  LN POP:     33.97***  (6.543)
+  GDP PC:      0.001**  (0.000)
+  EC CRISIS:  -0.638    (0.676)
+  BPC:         0.821    (0.717)
+  IMF:         0.139    (0.372)
+  OFFICE:     -0.180*** (0.057)
+  AV TARIFF:   2.131*   (1.140)
+  N=694, R2=0.80
+
+Table 3, Equation 3 (with GATT, FDI):
+  REGIME:     -0.331*** (0.110)
+  LN POP:     31.75***  (7.255)
+  GDP PC:      0.002*** (0.001)
+  EC CRISIS:  -0.688    (0.755)
+  BPC:         0.434    (0.710)
+  IMF:         0.141    (0.393)
+  OFFICE:     -0.199*** (0.061)
+  AV TARIFF:   0.128*** (0.047)
+  GATT:        2.395**  (1.174)
+  FDI:         0.418**  (0.175)
+  N=649, R2=0.80
+
+4. DATA AVAILABILITY
+---------------------
+A. Full replication data: NOT available programmatically.
+   - Princeton page (hvmilner.scholar.princeton.edu) is behind
+     Cloudflare protection, cannot be scraped.
+   - Not on Harvard Dataverse.
+   - The paper PDF (working paper version) was downloaded from:
+     https://www.princeton.edu/~hmilner/forthcoming%20papers/LDCdem_IO.pdf
+
+B. Amelia R package "freetrade" dataset:
+   - SUBSET ONLY: 9 Asian countries, 1981-1999, 171 obs
+   - Countries: India, Indonesia, Korea, Malaysia, Nepal, Pakistan,
+                 Philippines, Sri Lanka, Thailand
+   - Variables: year, country, tariff, polity, pop, gdp.pc, intresmi,
+                signed, fiveop, usheg
+   - MISSING several variables from paper: ECRISIS, BPC, OFFICE,
+     GATT, FDI, AV TARIFF, AV OPEN
+   - Has intresmi (international reserves/months of imports) which
+     corresponds to the BPC concept
+
+C. Variable mapping (Amelia -> paper):
+   tariff   -> TARIFF (Y)
+   polity   -> REGIME (D) [Note: paper uses REGIME = DEMOC-AUTOC]
+   pop      -> POP (paper uses LN POP = log(pop))
+   gdp.pc   -> GDP PC
+   intresmi -> related to BPC (reserves measure)
+   signed   -> SIGNED (IMF agreement dummy)
+   fiveop   -> FIVE OPEN (Quinn financial openness)
+   usheg    -> US HEG
+
+5. IVB ASSESSMENT: COLLIDER ANALYSIS
+-------------------------------------
+For IVB, we need controls Z where Y (tariffs) -> Z (collider pathway).
+The treatment is D = democracy/REGIME.
+
+IVB formula: IVB_z = -theta*_z x pi_z
+  where theta*_z = effect of Y on Z (conditional on D and other controls)
+        pi_z = effect of D on Z (conditional on Y and other controls)
+
+CONTROL-BY-CONTROL ASSESSMENT:
+
+A. GDP per capita (GDP PC) - lagged
+   Type: Time-varying, continuous
+   Confounder? YES - economic development plausibly affects both
+     democracy (modernization theory) and trade policy
+   Collider? MODERATE
+     Y -> Z channel: Lower tariffs -> more trade -> economic growth ->
+     higher GDP per capita. Standard trade theory predicts trade
+     liberalization boosts growth. However, the lag structure (GDP PC
+     at t-1 predicting tariff at t) weakens this. The contemporaneous
+     effect of tariffs on GDP is the concern, but lagging helps.
+   D -> Z channel: YES - democracy may promote growth (Acemoglu et al.)
+     or modernization theory says growth promotes democracy
+   Assessment: MODERATE COLLIDER / STRONG CONFOUNDER
+   IVB direction: With Amelia subset, theta* > 0 (higher tariffs ->
+     higher GDP?? -- this is the within-FE relationship in 9 Asian
+     countries, not generalizable). In the full sample, sign unclear.
+
+B. Log Population (LN POP) - lagged
+   Type: Time-varying, continuous (slowly changing)
+   Confounder? WEAK - population is largely predetermined; hard to
+     argue tariffs affect population in 1-year lag
+   Collider? WEAK/NO
+     Y -> Z channel: Very hard to argue tariff rates affect total
+     population. Population is driven by fertility, mortality, and
+     migration. Tariffs could affect migration at the margin, but
+     this effect is tiny relative to total population.
+   D -> Z channel: WEAK - democracy might marginally affect population
+     through health policy effects on mortality, but this is a stretch
+     at 1-year lag
+   Assessment: WEAK/NO COLLIDER, WEAK CONFOUNDER
+   IVB concern: MINIMAL
+
+C. IMF SIGNED - lagged
+   Type: Time-varying, binary (dummy)
+   Confounder? YES - IMF conditionality may require both political
+     reforms and trade liberalization
+   Collider? MODERATE
+     Y -> Z channel: Countries with high tariffs may be more likely to
+     face economic problems requiring IMF bailouts. BUT the lag goes
+     the wrong way here (SIGNED at t-1 -> tariff at t). The question
+     is whether contemporaneous tariffs cause IMF agreements --
+     high tariffs -> poor economic performance -> IMF agreement.
+     This is plausible but indirect.
+   D -> Z channel: Democracies may be more/less likely to sign IMF
+     agreements (Vreeland 2003 argues democracies are more likely
+     to use IMF as a scapegoat)
+   Assessment: MODERATE COLLIDER (primarily as confounder)
+   Note: Binary variable - IVB formula still applies but interpretation
+   differs. Being binary limits the collider bias magnitude.
+
+D. Economic Crisis (ECRISIS) - lagged [not in Amelia]
+   Type: Time-varying, binary
+   Confounder? YES - crisis may trigger both political change and
+     trade reform
+   Collider? MODERATE
+     Y -> Z channel: High tariffs -> economic distortions -> crisis.
+     Protectionism can contribute to economic imbalances that
+     eventually trigger crises.
+   D -> Z channel: Democracy -> economic management quality -> crisis
+   Assessment: MODERATE COLLIDER / MODERATE CONFOUNDER
+
+E. Balance of Payments Crisis (BPC) - lagged [not in Amelia]
+   Type: Time-varying, binary (reserves < 3 months imports)
+   Confounder? YES - BPC may force trade reform
+   Collider? STRONG
+     Y -> Z channel: High tariffs -> reduced imports initially but
+     also reduced exports (retaliation, inefficiency) -> BOP problems.
+     Also: tariff liberalization -> surge in imports -> BOP pressure.
+     BOTH high and low tariffs can cause BPC through different
+     channels, making the sign ambiguous.
+   D -> Z channel: Democracy -> economic policy quality -> BPC
+   Assessment: MODERATE COLLIDER (ambiguous sign)
+   Note: In paper, BPC is defined as reserves < 3 months imports.
+   The Amelia "intresmi" variable (international reserves/months
+   of imports) is the continuous version of this.
+
+F. OFFICE (years in office) - lagged [not in Amelia]
+   Type: Time-varying, discrete (count)
+   Confounder? POSSIBLE - new governments may both democratize and
+     liberalize trade
+   Collider? WEAK
+     Y -> Z channel: Hard to argue tariff rates cause government
+     tenure. Governments don't fall because of tariff levels per se.
+   D -> Z channel: Democracy -> shorter average tenure (more
+     regular turnover)
+   Assessment: WEAK COLLIDER, POSSIBLE CONFOUNDER
+
+G. GATT membership - lagged [not in Amelia]
+   Type: Time-varying, binary (rarely changes)
+   Confounder? YES - GATT membership may promote both democracy
+     (through international engagement) and free trade
+   Collider? WEAK
+     Y -> Z channel: Countries with low tariffs are not necessarily
+     more likely to join GATT (many joined with high tariffs).
+     Paper actually finds GATT members have HIGHER tariffs.
+   D -> Z channel: Democracies more likely to join international
+     organizations
+   Assessment: WEAK COLLIDER, MODERATE CONFOUNDER
+
+H. FDI (foreign direct investment/GNP) - lagged [not in Amelia]
+   Type: Time-varying, continuous
+   Confounder? YES - FDI may lobby for trade barriers (tariff-jumping)
+     or against them, and FDI may flow to democracies
+   Collider? MODERATE-STRONG
+     Y -> Z channel: STRONG - Tariff rates directly affect FDI
+     decisions. High tariffs may attract tariff-jumping FDI
+     (invest in country to avoid trade barriers), or low tariffs
+     may attract efficiency-seeking FDI. Paper finds FDI positively
+     related to tariffs (suggesting tariff-jumping motive).
+   D -> Z channel: Democracies may attract more FDI (rule of law,
+     property rights) or less (policy uncertainty)
+   Assessment: MODERATE-STRONG COLLIDER
+   IVB direction: theta* > 0 (higher tariffs -> more FDI), paper
+   shows FDI coefficient positive. If pi > 0 (democracy -> more FDI),
+   then IVB = -theta*pi < 0, biasing democracy coefficient toward
+   zero (attenuating the negative effect).
+
+I. AV TARIFF / AV OPEN (world average) - lagged [not in Amelia]
+   Type: Time-varying, continuous, but NO within-country variation
+     (same value for all countries in a given year)
+   Confounder? YES (global trend affects all countries)
+   Collider? NO
+     Y -> Z channel: An individual country's tariff cannot cause
+     the world average to change (except marginally for large countries).
+   Assessment: NO COLLIDER - this is essentially a time trend control
+   Note: Absorbed by time fixed effects / time trend
+
+J. US Hegemony (USHEG)
+   Type: Time-varying, but NO within-country variation
+     (same value for all countries in a given year)
+   Confounder? YES (US power may affect both democratization and
+     trade liberalization globally)
+   Collider? NO
+     Y -> Z channel: Individual country tariffs cannot cause changes
+     in US share of world trade.
+   Assessment: NO COLLIDER - this is essentially a time trend
+   Note: With only between-year variation, this is similar to a year
+   fixed effect. In the Amelia dataset with 9 countries, usheg has
+   almost no within-country variation.
+
+K. FIVEOP (Quinn financial openness of 5 top economies)
+   Type: Time-varying, but NO within-country variation
+     (same value for all countries in a given year)
+   Confounder? YES (global financial openness trend may affect both
+     democratization pressure and trade liberalization)
+   Collider? NO
+     Y -> Z channel: Individual LDC tariffs cannot cause the top 5
+     industrial countries to open their capital markets.
+   Assessment: NO COLLIDER - this is a global/time trend variable
+
+6. SUMMARY OF IVB POTENTIAL
+---------------------------
+
+STRONGEST COLLIDER CANDIDATES (worth computing IVB):
+  1. FDI (lagged) - MODERATE-STRONG: tariffs directly affect FDI flows
+  2. GDP per capita (lagged) - MODERATE: tariffs affect growth via trade
+  3. BPC / international reserves - MODERATE: tariffs affect BOP
+
+MODERATE COLLIDER CANDIDATES:
+  4. IMF SIGNED - MODERATE: tariff-induced economic problems -> IMF
+  5. ECRISIS - MODERATE: protectionism contributes to economic crises
+
+WEAK/NO COLLIDER:
+  6. LN POP - WEAK: tariffs don't meaningfully affect population
+  7. OFFICE - WEAK: tariffs don't cause government tenure changes
+  8. GATT - WEAK: tariff levels don't clearly cause GATT membership
+  9. AV TARIFF, AV OPEN - NO: individual tariffs can't cause world avg
+  10. USHEG, FIVEOP - NO: individual tariffs can't cause US hegemony/
+      global financial openness
+
+7. CAN WE COMPUTE IVB?
+-----------------------
+
+WITH AMELIA DATA (9 Asian countries):
+  - PARTIAL. We can compute IVB for: GDP PC, LN POP, SIGNED, FIVEOP,
+    USHEG (5 of the ~10 controls)
+  - MISSING: ECRISIS, BPC (binary), OFFICE, GATT, FDI, AV TARIFF
+  - The strongest collider candidate (FDI) is MISSING
+  - Sample is too small (9 countries, ~100 usable obs) and not
+    representative of the full paper's sample (~100 LDCs)
+  - Results would NOT be meaningful as an IVB replication
+
+WITH FULL REPLICATION DATA (from Milner's website):
+  - COMPLETE. All variables should be available.
+  - Need to manually download from Princeton page (requires browser)
+  - The full dataset has 907 obs for tariffs, 100+ countries
+  - Could compute IVB for all controls in Table 3
+
+ASSESSMENT: This paper is a GOOD CANDIDATE for IVB analysis in
+principle, but requires the FULL replication dataset, which must
+be manually downloaded from Milner's Princeton page.
+
+Key strengths as IVB candidate:
+  + Clear OLS specification with country FE
+  + Multiple continuous controls that are plausible colliders
+  + FDI is an especially strong collider candidate
+  + GDP per capita is a classic collider in political economy
+  + Paper is highly cited (~1200+ citations)
+  + Clean panel structure
+
+Key limitations:
+  - Amelia subset is insufficient (9 countries, missing key vars)
+  - Need manual download of replication data
+  - AR1 correction complicates exact replication
+  - PCSE complicates standard error computation
+  - Many controls are binary (ECRISIS, BPC, SIGNED, GATT)
+    which limits IVB magnitude
+  - Several controls are really time trends (USHEG, FIVEOP, AV TARIFF)
+    with no within-country variation -> not colliders
+
+8. RECOMMENDATION
+------------------
+CONDITIONAL RECOMMENDATION: Good IVB candidate IF full data obtained.
+
+Priority actions:
+  1. Manually download replication data from Milner's Princeton page
+  2. Focus IVB analysis on: FDI, GDP PC, and BPC/reserves
+  3. The paper's Table 3, Eq 3 is the best target specification
+     (most controls, REGIME as treatment)
+  4. Note that the paper also runs 2SLS (Table 7) which provides
+     a natural comparison point for IVB-corrected estimates

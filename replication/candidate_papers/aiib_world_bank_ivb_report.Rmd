@@ -1,0 +1,133 @@
+---
+title: "Avaliação de Potencial de IVB: AIIB e World Bank"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    keep_tex: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(knitr)
+```
+
+# Q\&A inicial
+
+**Q1. O tratamento principal é plausivelmente exógeno?**  
+**A1.** É observacional, mas com identificação plausível e forte no desenho do paper (DM-LFM, placebo temporal e múltiplas robustezes).
+
+**Q2. O paper depende de controles/modelagem para lidar com endogeneidade?**  
+**A2.** Sim. A estratégia central usa DM-LFM (fatores latentes) e várias robustezes (DiD, FE, Poisson, binomial negativa, Gsynth), além de placebo.
+
+**Q3. Com seu novo insight, este é bom caso para "IVB alto por collider com D exógeno"?**  
+**A3.** Sim, com ressalvas. É um bom candidato para explorar se o componente de IVB \"clean\" pode dominar, dado tratamento bem identificado e efeito robusto entre especificações.
+
+# 1. Visão geral do paper
+
+**Paper:** Qian, Vreeland e Zhao (2023), *International Organization*  
+**Título:** *The Impact of China’s AIIB on the World Bank*  
+**Pergunta:** A fundação da AIIB reduziu a participação de membros fundadores (em desenvolvimento) em projetos de infraestrutura do Banco Mundial?  
+
+**Amostra:** 155 países receptores de projetos do Banco Mundial, 1992--2019.  
+
+**Desfecho principal (Y):** número anual de novos projetos de infraestrutura do Banco Mundial por país.  
+**Tratamento (D):** indicador de país fundador da AIIB no período pós-2016 (`AIIB founder × post-2016`).
+
+# 2. Estratégia empírica do artigo
+
+Os autores destacam que DiD padrão pode ser inadequado devido à possível violação de tendências paralelas pré-tratamento. Assim, usam como estratégia principal:
+
+- **DM-LFM** (*Dynamic Multilevel Latent Factor Model*),
+- com ATT para tratados e correção para confundimento não observado variante no tempo via fatores latentes,
+- sob hipótese de **latent ignorability**.
+
+Além disso, fazem triangulação com:
+
+- DiD,
+- regressões Poisson e binomial negativa,
+- modelos com efeitos fixos,
+- Gsynth,
+- placebo temporal (usar 2014 como pseudo-início do tratamento).
+
+# 3. Avaliação com o novo insight
+
+## 3.1 Força de identificação do tratamento
+
+Embora não seja randomizado, o caso é empiricamente forte:
+
+- o paper reconhece a limitação de DiD padrão e usa DM-LFM para lidar com tendências não paralelas;
+- há triangulação com diversos modelos (DiD, FE, Poisson, binomial negativa, Gsynth);
+- placebo temporal mostra efeito surgindo após 2016, consistente com a intervenção.
+
+## 3.2 Por que este caso pode gerar IVB mais \"clean\"
+
+Sob o critério que você enfatizou (o que importa é a dominância do efeito IVB limpo), este paper é promissor porque:
+
+- o efeito de tratamento é estável em múltiplas especificações, reduzindo a chance de que controles estejam apenas corrigindo um grande confounding residual;
+- o desfecho é setorialmente específico (projetos de infraestrutura), o que ajuda a isolar canais substantivos;
+- isso aumenta a chance de que, ao testar inclusão/exclusão de certos controles, o componente IVB capturado seja substantivo e não só \"ruído de identificação\".
+
+## 3.3 Ressalvas
+
+Ainda assim, há limites:
+
+- há hipóteses estruturais fortes (latent ignorability);
+- decisões políticas de adesão/fundação da AIIB não são aleatórias;
+- portanto, \"IVB clean\" aqui é plausível, mas não no grau de um experimento puro.
+
+Em resumo, o caso é melhor classificado como **forte observacional com boa chance de IVB dominante interpretável**.
+
+# 4. Score de adequação ao objetivo atual
+
+```{r tabela-score}
+score <- data.frame(
+  Criterio = c(
+    "Identificação causal observacional",
+    "Robustez da evidência do efeito",
+    "Chance de IVB dominante interpretável",
+    "Utilidade para aplicação didática de IVB",
+    "Aderência ao seu novo foco prático"
+  ),
+  Nota_0a5 = c(4, 4, 4, 4, 4),
+  Justificativa = c(
+    "DM-LFM + placebo + múltiplas estratégias de robustez",
+    "Resultado principal persiste em diferentes modelos",
+    "Menor chance de confounding residual dominar totalmente as comparações de controles",
+    "Caso útil para decompor mudança de coeficientes com interpretação substantiva",
+    "Alto, dado seu foco em efeito IVB limpo dominante"
+  ),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+kable(
+  score,
+  caption = "Tabela 1. Adequação do paper AIIB-World Bank ao novo critério",
+  row.names = FALSE
+)
+```
+
+# 5. Veredito
+
+**Veredito final:** **candidato forte (com ressalvas)** para seu objetivo prático atual.
+
+Uso recomendado:
+
+1. manter como **caso principal** na rodada de papers observacionais fortes;
+2. interpretar IVB com transparência sobre as hipóteses estruturais do DM-LFM.
+
+# 6. Fontes e data de acesso
+
+- Artigo analisado (arquivo local): `replication/candidate_papers/impact_of_chinas_aiib_on_the_world_bank.pdf`  
+- DOI: 10.1017/S0020818322000327  
+- Data de acesso: `r Sys.Date()`.
+
+# 7. Perguntas para próxima iteração
+
+1. Quer que eu já consolide `sqae150` + `AIIB-World Bank` + `Bretton Woods` em um ranking único (mais aderente ao seu novo critério)?  
+2. Na próxima rodada, priorizo apenas papers com desenho experimental/quase-experimental forte para maximizar a chance de aplicar seu insight?

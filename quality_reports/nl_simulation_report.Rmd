@@ -1,0 +1,327 @@
+---
+title: "Simulações de Não-Linearidade (NL-1a/1b/1c/NL-2)"
+date: "2026-03-02"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+library(here)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+**Status**: Resultados finais (após fix log2 + softclamp Y²)
+
+---
+
+# Setup e Design
+
+## Pergunta
+
+O resultado "IVB é pequeno sob linearidade" sobrevive quando o canal collider D→Z (e/ou Y→Z) contém não-linearidades?
+
+## DGP compartilhado
+
+Todas as simulações usam o mesmo DGP base:
+
+```
+D_t = α^D_i + γ_D · Z_{t-1} + ρ_D · D_{t-1} + u_t
+Y_t = α^Y_i + β · D_t + γ_Y · Z_{t-1} + ρ_Y · Y_{t-1} + e_t
+Z_t = α^Z_i + δ_D · D_t + [f_nl(D_t)] + δ_Y · Y_t + [g_nl(Y_t)] + ρ_Z · Z_{t-1} + ν_t
+```
+
+Parâmetros fixos: N=100, T=30, T_burn=100, **β=1**, ρ_Y=0.5, ρ_D=0.5, γ_D=0.15, γ_Y=0.2, δ_D=0.1, δ_Y=0.1. Cada cenário × 500 replicações MC.
+
+Cada simulação varia a não-linearidade de forma diferente:
+
+| Simulação | O que varia | Cenários | Tempo |
+|---|---|---|---|
+| **Collider** (`sim_nl_collider.R`) | f_nl(D) e g_nl(Y) no canal D→Z, Y→Z | 42 | 23 min |
+| **Carryover** (`sim_nl_carryover.R`) | Termo não-linear D²→Y (carryover) | 13 | 7 min |
+| **Interact** (`sim_nl_interact.R`) | Interação D×H→Z (heterogeneidade) | 10 | 6 min |
+
+## Modelos estimados (9)
+
+O pesquisador estima modelos **lineares** — nunca vê a não-linearidade no DGP:
+
+| # | Modelo | Especificação | O que controla |
+|---|---|---|---|
+| 1 | **TWFE short** | Y ~ D \| id + time | Nada (benchmark) |
+| 2 | **TWFE long** | Y ~ D + Z_lag \| id + time | Collider Z |
+| 3 | **ADL(Y_lag)** | Y ~ D + Y_lag \| id + time | Dinâmica Y |
+| 4 | **ADL(Y,Z_lag)** | Y ~ D + Z_lag + Y_lag \| id + time | Collider + dinâmica Y |
+| 5 | **ADL(D_lag)** | Y ~ D + D_lag \| id + time | Carryover D |
+| 6 | **ADL(D,Y_lag)** | Y ~ D + D_lag + Y_lag \| id + time | Carryover + dinâmica Y |
+| 7 | **ADL(D,Z_lag)** | Y ~ D + D_lag + Z_lag \| id + time | Carryover + collider |
+| 8 | **ADL(all lags)** | Y ~ D + D_lag + Y_lag + Z_lag \| id + time | Tudo + FE |
+| 9 | **ADL(all, no FE)** | Y ~ D + D_lag + Y_lag + Z_lag | Tudo, sem FE |
+
+## Definição do IVB
+
+IVB = variação no viés de β̂ ao **incluir Z_lag** no modelo.
+
+- **IVB_TWFE** = bias(TWFE long) − bias(TWFE short) = bias(modelo 2) − bias(modelo 1)
+- **IVB_ADL** = bias(ADL(Y,Z_lag)) − bias(ADL(Y_lag)) = bias(modelo 4) − bias(modelo 3)
+
+**IVB ratio** = IVB(cenário NL) / IVB(baseline linear). Ratio = 1 significa "não-linearidade não afeta IVB."
+
+## Funções não-lineares testadas (collider)
+
+Quatro tipos, todos calibrados para contribuição idêntica em D = sd_D_within (≈ 1.16):
+
+| Tipo | f(D) | Comportamento | Bounded? |
+|---|---|---|---|
+| **log2** | log(1 + D²) | ~D² na origem, ~2·log\|D\| longe | Sim (log) |
+| **log4** | log(1 + D⁴) | Mais agressivo que log2 | Sim (log) |
+| **softpoly2** | D²/(1+(D/c_D)²), c_D=2·sd_D | ~D² na origem, satura em c_D² | Sim (bounded) |
+| **power1.5** | sign(D)·\|D\|^1.5 | Super-linear, sub-quadrático | **Não** |
+
+Canal Y→Z (quando nl_Y=TRUE): Y²/(1+(Y/c_Y)²) com c_Y = 2·sd_Y_within (softclamped).
+
+## Baseline linear — consistência entre simulações
+
+As 3 simulações usam seeds diferentes, gerando baselines ligeiramente distintos. Diferenças estão dentro do MCSE (~0.002):
+
+| Simulação | ρ_Z | TWFE_s | TWFE_l | ADL(Y,Z_lag) | ADL(all) |
+|---|---|---|---|---|---|
+| Collider | 0.5 | 0.4315 | 0.2518 | 0.0098 | -0.0019 |
+| Carryover | 0.5 | 0.4299 | 0.2499 | 0.0095 | -0.0025 |
+| Interact | 0.5 | 0.4306 | 0.2511 | 0.0092 | -0.0029 |
+| Collider | 0.7 | 0.5107 | 0.2391 | 0.0087 | -0.0034 |
+| Carryover | 0.7 | 0.5136 | 0.2415 | 0.0107 | -0.0009 |
+| Interact | 0.7 | 0.5097 | 0.2408 | 0.0086 | -0.0030 |
+
+MCSE típico: TWFE ~0.002, ADL ~0.001. Baselines consistentes.
+
+---
+
+# Resultado principal: IVB permanece pequeno sob não-linearidades bounded
+
+## Visão geral — tabela síntese
+
+| Fonte de NL | \|IVB_TWFE\| | \|IVB_ADL\| | IVB ratio (TWFE) | ADL_all \|bias/β\| | Conclusão |
+|---|---|---|---|---|---|
+| *Baseline linear* | *0.18–0.27* | *0.033–0.037* | *1.00* | *< 0.4%* | *Referência* |
+| **Bounded D→Z** (log2, softpoly2, log4) | 0.18–0.30 | 0.033–0.041 | 1.00–1.13 | < 0.5% | IVB pequeno sobrevive |
+| **Bounded D→Z + Y→Z** (nl_Y=TRUE) | 0.18–0.27 | 0.033–0.046 | 1.00–1.25 | < 0.5% | Idem |
+| **Carryover D→Y** (softclamp) | 0.18–0.33 | 0.029–0.034 | 1.00–1.33 | < 0.3% | IVB pequeno sobrevive |
+| **Interação D×H→Z** (δ_DH ≤ 0.20) | 0.18–0.31 | 0.033–0.056 | 1.00–1.15 | < 0.3% | IVB pequeno sobrevive |
+| **Interação D×H→Z** (δ_DH = 0.40) | 0.22–0.41 | 0.072–0.109 | 1.20–1.53 | < 0.3% | IVB cresce, mas ADL_all robusto |
+| **Unbounded D→Z** (power1.5) | 0.25–0.38+ | 0.038–0.47 | 1.4–3.5+ | < 0.3% (instável) | IVB **não** é pequeno |
+
+## Gráfico principal: bias por modelo vs nl_strength (collider)
+
+Todos os 9 modelos, facetados por nl_type e ρ_Z. TWFE tem bias grande e estável (~0.43–0.52); ADL_all fica colado em zero.
+
+![](  `r here::here("plots", "nl_bias_all_models.png")`)
+
+**Leitura**: ADL models (linha preta = ADL_all) ficam perto de zero independentemente do tipo e força da não-linearidade. TWFE (vermelho/azul) tem bias grande e cresce com power1.5.
+
+## IVB ratio vs nl_strength
+
+IVB ratio = IVB(NL) / IVB(baseline). Para bounded (log2, log4, softpoly2), o ratio fica perto de 1.0 mesmo em nl_strength=2.0. power1.5 diverge.
+
+![](`r here::here("plots", "nl_ivb_ratio.png")`)
+
+## Collider — IVB ratio detalhado (TWFE)
+
+Ranges cobrem ρ_Z ∈ {0.5, 0.7}:
+
+| Tipo | nl_Y | nl_str=0.5 | nl_str=1.0 | nl_str=2.0 |
+|---|---|---|---|---|
+| *baseline* | — | *1.00* | *1.00* | *1.00* |
+| **log2** | FALSE | 1.00–1.01 | 1.01–1.02 | 1.04–1.05 |
+| **log2** | TRUE | 1.00–1.03 | 1.00–1.07 | 0.99–1.23 |
+| **softpoly2** | FALSE | 0.99–1.00 | 1.00–1.01 | 1.02–1.04 |
+| **softpoly2** | TRUE | 0.99–1.02 | 0.99–1.07 | 0.93–1.22 |
+| **log4** | FALSE | 0.99–1.01 | 1.01–1.04 | 1.10–1.13 |
+| **power1.5** | FALSE | **1.38–1.40** | **1.87–2.47** | **3.51+** |
+
+## Carryover — bias por modelo
+
+TWFE é estável e enviesado; ADL(all lags) fica colado em zero:
+
+![](`r here::here("plots", "nl_carryover_bias.png")`)
+
+## Interact — bias por modelo
+
+TWFE bias cresce com δ_DH; ADL_all permanece ~0:
+
+![](`r here::here("plots", "nl_interact_bias.png")`)
+
+---
+
+# Comparação de modelos: ADL(all lags) domina
+
+## Bias de todos os 9 modelos — cenários selecionados (ρ_Z = 0.5)
+
+| Cenário | TWFE_s | TWFE_l | ADL(Y_lag) | ADL(Y,Z) | ADL(D_lag) | ADL(D,Y) | ADL(D,Z) | **ADL(all)** | ADL(noFE) |
+|---|---|---|---|---|---|---|---|---|---|
+| *baseline* | *0.432* | *0.252* | *0.043* | *0.010* | *0.047* | *0.034* | *-0.026* | ***-0.002*** | *-0.086* |
+| log2 s=1 | 0.434 | 0.251 | 0.044 | 0.010 | 0.049 | 0.035 | -0.026 | **-0.002** | -0.087 |
+| log2 s=2 +Y² | 0.477 | 0.255 | 0.051 | 0.009 | 0.075 | 0.047 | -0.027 | **-0.002** | -0.086 |
+| log4 s=2 | 0.455 | 0.252 | 0.046 | 0.009 | 0.061 | 0.040 | -0.026 | **-0.002** | -0.084 |
+| power1.5 s=0.5 | 0.476 | 0.224 | 0.047 | 0.009 | 0.054 | 0.034 | -0.026 | **-0.002** | -0.088 |
+| softpoly2 s=2 +Y² | 0.475 | 0.256 | 0.050 | 0.008 | 0.075 | 0.046 | -0.028 | **-0.004** | -0.088 |
+
+## Bias de todos os 9 modelos — cenários selecionados (ρ_Z = 0.7)
+
+| Cenário | TWFE_s | TWFE_l | ADL(Y_lag) | ADL(Y,Z) | ADL(D_lag) | ADL(D,Y) | ADL(D,Z) | **ADL(all)** | ADL(noFE) |
+|---|---|---|---|---|---|---|---|---|---|
+| *baseline* | *0.511* | *0.239* | *0.046* | *0.009* | *0.086* | *0.044* | *-0.029* | ***-0.003*** | *-0.088* |
+| log2 s=1 | 0.515 | 0.241 | 0.047 | 0.010 | 0.092 | 0.045 | -0.025 | **-0.002** | -0.088 |
+| log2 s=2 +Y² | 0.525 | 0.257 | 0.054 | 0.008 | 0.102 | 0.055 | -0.028 | **-0.003** | -0.085 |
+| log4 s=2 | 0.543 | 0.245 | 0.051 | 0.009 | 0.109 | 0.052 | -0.026 | **-0.002** | -0.084 |
+| power1.5 s=0.5 | 0.580 | 0.205 | 0.048 | 0.008 | 0.103 | 0.043 | -0.028 | **-0.003** | -0.089 |
+| softpoly2 s=2 +Y² | 0.514 | 0.262 | 0.054 | 0.008 | 0.101 | 0.055 | -0.028 | **-0.004** | -0.086 |
+
+**Leitura**: ADL(all lags) tem |bias| < 0.004 em todos os cenários. O segundo melhor é ADL(Y,Z_lag) com |bias| ~0.01. TWFE_s chega a 0.58.
+
+## RMSE de todos os 9 modelos — cenários selecionados (ρ_Z = 0.5)
+
+| Cenário | TWFE_s | TWFE_l | ADL(Y_lag) | ADL(Y,Z) | ADL(D_lag) | ADL(D,Y) | ADL(D,Z) | **ADL(all)** | ADL(noFE) |
+|---|---|---|---|---|---|---|---|---|---|
+| *baseline* | *0.433* | *0.254* | *0.047* | *0.021* | *0.054* | *0.039* | *0.035* | ***0.019*** | *0.089* |
+| log2 s=1 | 0.436 | 0.253 | 0.048 | 0.021 | 0.055 | 0.040 | 0.035 | **0.020** | 0.089 |
+| log2 s=2 +Y² | 0.479 | 0.257 | 0.054 | 0.021 | 0.080 | 0.051 | 0.036 | **0.020** | 0.089 |
+| log4 s=2 | 0.456 | 0.253 | 0.050 | 0.020 | 0.066 | 0.045 | 0.036 | **0.020** | 0.087 |
+| power1.5 s=0.5 | 0.477 | 0.226 | 0.050 | 0.019 | 0.060 | 0.039 | 0.035 | **0.019** | 0.090 |
+| softpoly2 s=2 +Y² | 0.477 | 0.257 | 0.053 | 0.019 | 0.080 | 0.050 | 0.036 | **0.019** | 0.090 |
+
+![](`r here::here("plots", "nl_rmse_comparison.png")`)
+
+**ADL(all lags) tem o menor RMSE em todos os cenários** (0.019–0.020). Não é apenas o menos enviesado — é também o mais preciso.
+
+## Nickell cost (FE vs no-FE)
+
+ADL(all lags) **com** FE vs **sem** FE. O custo de não ter FE é ~0.085 de bias — 40x maior que o bias do ADL(all) com FE:
+
+| Cenário | ADL(all) bias | ADL(noFE) bias | Nickell cost |
+|---|---|---|---|
+| baseline | -0.002 | -0.086 | 0.085 |
+| log2 s=1 | -0.002 | -0.087 | 0.085 |
+| log2 s=2 | -0.003 | -0.088 | 0.085 |
+| log4 s=2 | -0.002 | -0.084 | 0.082 |
+| softpoly2 s=2 | -0.004 | -0.088 | 0.084 |
+
+O Nickell cost é estável (~0.084) e não muda com a não-linearidade. Reforça: FE é essencial.
+
+---
+
+# Boundary conditions: quando o IVB cresce?
+
+## power1.5 (unbounded)
+
+A única não-linearidade que faz o IVB crescer substancialmente. Ratio TWFE chega a 3.5x em nl_str=2.0/ρ_Z=0.5. Cenários com nl_str≥1.0/ρ_Z=0.7 são instáveis (85-100% descartados).
+
+**Por que**: power1.5 é unbounded — a derivada cresce como √|D|, então valores extremos de D produzem contribuições cada vez maiores para Z. No feedback loop Z→D→Z, isso amplifica.
+
+**Relevância prática**: baixa. Em CP, variáveis são tipicamente bounded (proporções, contagens, índices), discretas, ou log-transformadas. Uma não-linearidade unbounded com nl_str≥1 é implausível.
+
+## Interação forte (δ_DH = 0.40)
+
+IVB_ADL chega a 10.9% de β (vs 3.7% baseline). Porém, ADL_all |bias| permanece < 0.3% porque o IVB e outros viéses se cancelam parcialmente. Isso é uma **fragilidade**: o ADL_all é "bom" por cancelamento, não por eliminação de viés.
+
+## Estabilidade
+
+| Cenários | Estáveis | Instáveis (>10% disc.) |
+|---|---|---|
+| Collider bounded (log2, log4, softpoly2) | 36/36 | 0 |
+| Collider power1.5 | 4/6 | 2/6 (nl_str≥1.0/ρ_Z=0.7) |
+| Carryover softclamp | 6/6 | 0 |
+| Carryover raw | 4/7 | 3/7 (k≥0.25) |
+| Interact | 10/10 | 0 |
+
+---
+
+# Conclusão para o paper
+
+> **Sob não-linearidades realistas (bounded), o IVB permanece pequeno (<5% de β no ADL, <0.5% no ADL_all).** A fórmula IVB = −θ*·π é um bom diagnóstico de primeira ordem.
+>
+> O resultado falha para não-linearidades unbounded severas (power1.5 com nl_str≥1.0), que são implausíveis na maioria das aplicações em CP.
+>
+> **ADL(all lags) é o melhor modelo em bias E RMSE em todos os cenários estáveis.** Incluir todos os lags (D_lag, Y_lag, Z_lag) com FE é a recomendação prática.
+>
+> O custo Nickell de incluir FE (~0.085 em ADL_noFE) é ~40x maior que o bias do ADL_all com FE (~0.002), e é estável sob não-linearidade. FE deve sempre ser incluído.
+
+---
+
+# Apêndice A: Funções não-lineares {.appendix}
+
+## Funções f(D) raw (sem calibração)
+
+![](`r here::here("plots", "nl_functions_D_raw.png")`)
+
+## Contribuição calibrada δ_nl·f(D) com nl_strength=1
+
+![](`r here::here("plots", "nl_functions_D_calibrated.png")`)
+
+**Nota**: todas cruzam em D = sd_D com contribuição = δ_D·sd_D ≈ 0.116. Fora desse ponto, divergem: softpoly2 satura, log2/log4 crescem lentamente, power1.5 cresce sem limite.
+
+## Canal Y: Y² raw vs softclamped
+
+![](`r here::here("plots", "nl_functions_Y_softclamp.png")`)
+
+**Nota**: Y² raw diverge a 80+ em 4·sd_Y. O softclamp satura em c_Y² ≈ 20.9, estabilizando o feedback loop.
+
+# Apêndice B: Detalhes por simulação {.appendix}
+
+## Collider — IVB ADL detalhado
+
+| Tipo | nl_Y | max \|IVB_ADL/β\| | Ratio vs baseline |
+|---|---|---|---|
+| *baseline* | — | *3.4–3.7%* | *1.00* |
+| **log2** | FALSE | 3.9% | 1.04 |
+| **log2** | TRUE | 4.6% | 1.24 |
+| **softpoly2** | FALSE | 3.9% | 1.04 |
+| **softpoly2** | TRUE | 4.6% | 1.25 |
+| **log4** | FALSE | 4.1% | 1.12 |
+| **power1.5** | FALSE | **47.2%** (instável) | **12.65** |
+
+## Carryover — tabela completa
+
+| k | ρ_Z | ADL_all bias | \|bias/β\| | IVB_TWFE | IVB_ADL |
+|---|---|---|---|---|---|
+| *0 (baseline)* | *0.5* | *-0.0025* | *0.25%* | *-0.180* | *-0.034* |
+| *0 (baseline)* | *0.7* | *-0.0009* | *0.09%* | *-0.272* | *-0.037* |
+| 0.25 | 0.5 | -0.0019 | 0.19% | -0.185 | -0.033 |
+| 0.25 | 0.7 | -0.0025 | 0.25% | -0.274 | -0.037 |
+| 0.50 | 0.5 | -0.0006 | 0.06% | -0.196 | -0.032 |
+| 0.50 | 0.7 | -0.0028 | 0.28% | -0.284 | -0.036 |
+| 1.00 | 0.5 | +0.0004 | 0.04% | -0.240 | -0.029 |
+| 1.00 | 0.7 | -0.0005 | 0.05% | -0.333 | -0.032 |
+
+## Interact — tabela completa
+
+| δ_DH | ρ_Z | IVB_TWFE | \|IVB/β\| | IVB_ADL | \|IVB_ADL/β\| | ADL_all bias |
+|---|---|---|---|---|---|---|
+| *0* | *0.5* | *-0.180* | *18.0%* | *-0.033* | *3.3%* | *-0.003* |
+| 0.05 | 0.5 | -0.181 | 18.1% | -0.034 | 3.4% | -0.003 |
+| 0.10 | 0.5 | -0.180 | 18.0% | -0.035 | 3.5% | -0.001 |
+| 0.20 | 0.5 | -0.188 | 18.8% | -0.044 | 4.4% | -0.003 |
+| 0.40 | 0.5 | **-0.216** | **21.6%** | **-0.072** | **7.2%** | -0.003 |
+| *0* | *0.7* | *-0.269* | *26.9%* | *-0.037* | *3.7%* | *-0.003* |
+| 0.05 | 0.7 | -0.272 | 27.2% | -0.039 | 3.9% | -0.002 |
+| 0.10 | 0.7 | -0.276 | 27.6% | -0.041 | 4.1% | -0.003 |
+| 0.20 | 0.7 | **-0.310** | **31.0%** | **-0.056** | **5.6%** | -0.003 |
+| 0.40 | 0.7 | **-0.412** | **41.2%** | **-0.109** | **10.9%** | -0.002 |
+
+---
+
+# Arquivos {.appendix}
+
+| Arquivo | Conteúdo |
+|---|---|
+| `sim_nl_collider.R` | Simulação collider (42 cenários) |
+| `sim_nl_carryover.R` | Simulação carryover (13 cenários) |
+| `sim_nl_interact.R` | Simulação interação D×H (10 cenários) |
+| `sim_nl_utils.R` | Funções compartilhadas (est_models, run_pilot) |
+| `plot_nl_functions.R` | Script dos gráficos de funções |
+| `plot_nl_results.R` | Script dos gráficos de resultados |
+| `sim_nl_collider_results.csv` | Resultados collider (41 rows) |
+| `sim_nl_carryover_results.csv` | Resultados carryover (13 rows) |
+| `sim_nl_interact_results.csv` | Resultados interact (10 rows) |

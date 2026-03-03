@@ -1,0 +1,272 @@
+---
+title: "Included Variable Bias in Claassen (2020): An Empirical Application"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: true
+    keep_tex: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4
+)
+library(fixest)
+library(dplyr)
+library(knitr)
+source("ivb_utils.R")
+```
+
+# Introduction
+
+Claassen (2020, AJPS) estimates the effect of public support for democracy on subsequent democratic change using an autoregressive distributed lag (ADL) model with country-year panel data. The main specification is:
+
+$$
+d_{it} = \alpha + \phi_1 d_{it-1} + \phi_2 d_{it-2} + \beta s_{it-1} + \mathbf{Z}'_{it-1}\gamma + \varepsilon_{it}
+$$
+
+where $d_{it}$ is democracy (V-Dem Liberal Democracy index), $s_{it-1}$ is lagged public support for democracy, and $\mathbf{Z}_{it-1}$ is a vector of five controls: log GDP per capita, GDP growth, regional democracy, percent Muslim, and resource dependence.
+
+A key question is whether any of these controls are **colliders** --- variables caused by both the treatment ($s_{it-1}$) and the outcome ($d_{it}$). If so, conditioning on them introduces **Included Variable Bias** (IVB). The IVB for each candidate collider $z$ is given by:
+
+$$
+\text{IVB}(\hat\beta) = \hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi
+$$
+
+where $\hat\theta^*$ is the coefficient of $z$ in the "long" model (with $z$) and $\hat\pi$ is the coefficient of the treatment in the auxiliary regression of $z$ on the treatment and other controls.
+
+We apply this decomposition to Claassen's data, treating each control as a candidate collider, for both pooled OLS and country fixed effects specifications.
+
+# Data
+
+```{r load-data}
+dat <- read.delim(
+  "candidate_papers/claassen_2020/Support_democracy_ajps_correct.tab",
+  stringsAsFactors = FALSE
+)
+```
+
+The dataset contains `r nrow(dat)` country-year observations for `r length(unique(dat$Country))` countries over `r min(dat$Year)`--`r max(dat$Year)`.
+
+# Replication of Claassen (2020) Table 1
+
+## Pooled OLS (Model 1.1)
+
+```{r replication-ols}
+mod_ols <- feols(
+  Libdem_VD ~ Libdem_m1 + Libdem_m2 + SupDem_m1 +
+    lnGDP_imp_m1 + GDP_imp_grth_m1 + Libdem_regUN_m1 +
+    Pr_Muslim + Res_cp_WDI_di_m1,
+  data = dat, vcov = "iid"
+)
+```
+
+```{r ols-comparison}
+published <- c(
+  "(Intercept)" = 0.647, Libdem_m1 = 1.141, Libdem_m2 = -0.163,
+  SupDem_m1 = 0.267, lnGDP_imp_m1 = 0.015, GDP_imp_grth_m1 = 0.007,
+  Libdem_regUN_m1 = 0.008, Pr_Muslim = -0.002, Res_cp_WDI_di_m1 = -0.367
+)
+replicated <- round(coef(mod_ols), 3)
+comparison <- data.frame(
+  Term = names(replicated),
+  Published = published[names(replicated)],
+  Replicated = as.numeric(replicated)
+)
+kable(comparison, digits = 3,
+      caption = "Pooled OLS: Published vs. Replicated coefficients (N = 2,435)")
+```
+
+Coefficients match closely. The small discrepancy in `SupDem_m1` (0.267 vs. 0.273) is due to using the pre-computed lag `SupDem_m1` rather than `plm::lag(SupDem_trim, 1)`, which may handle edge observations differently.
+
+## Dynamic Fixed Effects
+
+```{r replication-fe}
+mod_fe <- feols(
+  Libdem_VD ~ Libdem_m1 + Libdem_m2 + SupDem_m1 +
+    lnGDP_imp_m1 + GDP_imp_grth_m1 + Libdem_regUN_m1 +
+    Res_cp_WDI_di_m1 | Country,
+  data = dat, vcov = "iid"
+)
+```
+
+```{r fe-table}
+fe_coefs <- data.frame(
+  Term = names(coef(mod_fe)),
+  Estimate = as.numeric(round(coef(mod_fe), 4)),
+  SE = as.numeric(round(sqrt(diag(vcov(mod_fe))), 4))
+)
+kable(fe_coefs, digits = 4,
+      caption = "Dynamic FE estimates (N = 2,435, 135 countries)")
+```
+
+With country fixed effects, the coefficient on `SupDem_m1` drops to approximately zero ($\hat\beta$ = `r round(coef(mod_fe)["SupDem_m1"], 3)`, $p$ = `r round(summary(mod_fe)$coeftable["SupDem_m1", 4], 3)`), consistent with the Nickell bias problem discussed in Claassen (2020).
+
+# IVB Decomposition
+
+## Setup
+
+We define:
+
+- **Treatment** ($d$): `SupDem_m1` (lagged public support for democracy)
+- **Outcome** ($y$): `Libdem_VD` (V-Dem Liberal Democracy index)
+- **ADL terms** (always in $w$): `Libdem_m1`, `Libdem_m2`
+- **Candidate colliders** ($z$): each of the five controls, one at a time
+
+For each candidate collider $z$, the "short" model excludes $z$ and the "long" model includes it. The IVB identity $\hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi$ is verified numerically.
+
+## Pooled OLS
+
+```{r ivb-ols}
+all_controls <- c("lnGDP_imp_m1", "GDP_imp_grth_m1", "Libdem_regUN_m1",
+                   "Pr_Muslim", "Res_cp_WDI_di_m1")
+ldv_terms <- c("Libdem_m1", "Libdem_m2")
+
+ivb_ols <- lapply(all_controls, function(z_var) {
+  w_vars <- c(ldv_terms, setdiff(all_controls, z_var))
+  compute_ivb_multi(
+    data = dat, y = "Libdem_VD", d_vars = "SupDem_m1",
+    z = z_var, w = w_vars, fe = character(), vcov = "iid"
+  )
+})
+names(ivb_ols) <- all_controls
+
+tab_ols <- do.call(rbind, lapply(names(ivb_ols), function(z) {
+  r <- ivb_ols[[z]]$results
+  data.frame(
+    Collider = z,
+    beta_short = r$beta_short,
+    beta_long = r$beta_long,
+    theta = r$theta,
+    pi = r$pi,
+    IVB = r$ivb_formula,
+    check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+```
+
+```{r ivb-ols-table}
+tab_ols_print <- tab_ols
+tab_ols_print$Collider <- c("Log GDP p.c.", "GDP growth", "Regional democracy",
+                             "% Muslim", "Resource dep.")
+kable(tab_ols_print, digits = 4, row.names = FALSE,
+      caption = "IVB decomposition for each candidate collider (Pooled OLS)",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB $= -\\hat\\theta^* \\hat\\pi$",
+                     "Check"))
+```
+
+The identity holds exactly (check $\approx 0$) in all cases. Regional democracy produces the largest IVB ($-0.009$), reducing the estimated effect of support from 0.282 to 0.273.
+
+## Country Fixed Effects
+
+```{r ivb-fe}
+fe_controls <- c("lnGDP_imp_m1", "GDP_imp_grth_m1", "Libdem_regUN_m1",
+                  "Res_cp_WDI_di_m1")
+
+ivb_fe <- lapply(fe_controls, function(z_var) {
+  w_vars <- c(ldv_terms, setdiff(fe_controls, z_var))
+  compute_ivb_multi(
+    data = dat, y = "Libdem_VD", d_vars = "SupDem_m1",
+    z = z_var, w = w_vars, fe = "Country", vcov = "iid"
+  )
+})
+names(ivb_fe) <- fe_controls
+
+tab_fe <- do.call(rbind, lapply(names(ivb_fe), function(z) {
+  r <- ivb_fe[[z]]$results
+  data.frame(
+    Collider = z,
+    beta_short = r$beta_short,
+    beta_long = r$beta_long,
+    theta = r$theta,
+    pi = r$pi,
+    IVB = r$ivb_formula,
+    check = r$diff_check,
+    stringsAsFactors = FALSE
+  )
+}))
+```
+
+```{r ivb-fe-table}
+tab_fe_print <- tab_fe
+tab_fe_print$Collider <- c("Log GDP p.c.", "GDP growth",
+                            "Regional democracy", "Resource dep.")
+kable(tab_fe_print, digits = 4, row.names = FALSE,
+      caption = "IVB decomposition for each candidate collider (Country FE)",
+      col.names = c("Candidate collider $z$", "$\\hat\\beta_{\\text{short}}$",
+                     "$\\hat\\beta_{\\text{long}}$", "$\\hat\\theta^*$",
+                     "$\\hat\\pi$", "IVB $= -\\hat\\theta^* \\hat\\pi$",
+                     "Check"))
+```
+
+With fixed effects, log GDP per capita produces the largest IVB ($-0.016$), pulling the support coefficient from near-zero positive to negative.
+
+# Literature Support for Collider Status
+
+The IVB formula diagnoses **how much** each control shifts the treatment estimate, but **whether** a control is a collider depends on substantive knowledge: does the outcome $d_{it}$ (democracy) cause the control $z_{it}$?
+
+## Democracy $\to$ GDP growth
+
+There is strong evidence that democracy causes economic growth:
+
+- **Acemoglu, Naidu, Restrepo & Robinson (2019, JPE):** Democratization increases GDP per capita by ~20% over 25 years. Uses the same ADL panel framework, system GMM, and IV (regional waves of democratization). This is the current consensus result.
+- **Papaioannou & Siourounis (2008, EJ):** Democratization associated with ~1 pp/year additional growth using before-after event study designs.
+- **Madsen, Raschky & Skali (2015, EER):** Using linguistic-distance-weighted foreign democracy as IV, find large positive effects of democracy on income over 500 years.
+- **Doucouliagos & Ulubasoglu (2008, AJPS):** Meta-analysis of 84 studies finds robust indirect effects of democracy on growth via human capital, inflation, and economic freedom.
+
+**Implication:** GDP growth is a plausible collider. Democracy $d_{it}$ causes GDP growth $z_{it}$, and public support $s_{it}$ may also affect GDP growth via political stability. Including GDP growth as a control opens a non-causal path.
+
+## Democracy $\to$ Regional democracy
+
+There is moderate-to-strong evidence of democratic diffusion:
+
+- **Gleditsch & Ward (2006, IO):** Democratic neighborhood increases probability of democratic transition and decreases probability of reversal. Markov transition model with panel data.
+- **Brinks & Coppedge (2006, CPS):** Countries converge toward the mean democracy level of contiguous neighbors. Robust spatial diffusion effects.
+- **Leeson & Dean (2009, AJPS):** Democratic "dominoes" fall, but modestly: countries absorb ~11% of changes in neighbors' democracy levels. Spatial econometrics with 150 years of data.
+- **Teorell (2010, Cambridge UP):** Regional democratic organizations and democratic neighbors are robust predictors of democratization across 165 countries.
+
+**Additionally**, regional democracy (`Libdem_regUN_m1`) has a **mechanical** component: country $i$'s democracy level $d_{it}$ is part of the regional average $z_{it}$. This makes the collider channel virtually certain.
+
+**Implication:** Regional democracy is a collider both through genuine diffusion and through mechanical composition. This is the control with the largest IVB in the pooled OLS specification.
+
+# Summary
+
+```{r summary-table}
+summary_all <- data.frame(
+  Control = c("Log GDP p.c.", "GDP growth", "Regional democracy",
+              "% Muslim", "Resource dep."),
+  `Y causes Z` = c("Strong", "Strong", "Moderate + mechanical",
+                    "No (time-invariant)", "Weak/reverse"),
+  `Key reference` = c("Acemoglu et al. 2019", "Acemoglu et al. 2019",
+                       "Gleditsch & Ward 2006", "---", "Ross 2001"),
+  `IVB (OLS)` = round(tab_ols$IVB, 4),
+  `IVB (FE)` = c(round(tab_fe$IVB[tab_fe$Collider == "lnGDP_imp_m1"], 4),
+                  round(tab_fe$IVB[tab_fe$Collider == "GDP_imp_grth_m1"], 4),
+                  round(tab_fe$IVB[tab_fe$Collider == "Libdem_regUN_m1"], 4),
+                  NA,
+                  round(tab_fe$IVB[tab_fe$Collider == "Res_cp_WDI_di_m1"], 4)),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+kable(summary_all, caption = "Summary: Literature evidence and IVB magnitudes")
+```
+
+Two of the five controls in Claassen (2020) --- GDP-related variables and regional democracy --- have well-documented causal links from democracy. The IVB formula quantifies the resulting bias: regional democracy produces the largest bias in pooled OLS ($-0.009$, ~3% of $\hat\beta$), while log GDP per capita produces the largest bias in the FE specification ($-0.016$). These magnitudes are modest in absolute terms, but they demonstrate the practical applicability of the IVB decomposition to real-world empirical research.
+
+# References
+
+- Acemoglu, D., Naidu, S., Restrepo, P., & Robinson, J. A. (2019). Democracy Does Cause Growth. *Journal of Political Economy*, 127(1), 47--100.
+- Brinks, D. & Coppedge, M. (2006). Diffusion Is No Illusion. *Comparative Political Studies*, 39(4), 463--489.
+- Claassen, C. (2020). Does Public Support Help Democracy Survive? *American Journal of Political Science*, 64(1), 118--134.
+- Doucouliagos, H. & Ulubasoglu, M. A. (2008). Democracy and Economic Growth: A Meta-Analysis. *American Journal of Political Science*, 52(1), 61--83.
+- Gleditsch, K. S. & Ward, M. D. (2006). Diffusion and the International Context of Democratization. *International Organization*, 60(4), 911--933.
+- Leeson, P. T. & Dean, A. M. (2009). The Democratic Domino Theory. *American Journal of Political Science*, 53(3), 533--551.
+- Madsen, J. B., Raschky, P. A., & Skali, A. (2015). Does Democracy Drive Income in the World, 1500--2000? *European Economic Review*, 78, 175--195.
+- Papaioannou, E. & Siourounis, G. (2008). Democratisation and Growth. *The Economic Journal*, 118(532), 1520--1551.
+- Teorell, J. (2010). *Determinants of Democratization*. Cambridge University Press.

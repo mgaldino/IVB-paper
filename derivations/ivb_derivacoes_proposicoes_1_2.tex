@@ -1,0 +1,405 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Derivações Detalhadas das Proposições 1 e 2 (IVB)},
+  pdfauthor={Manoel Galdino},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Derivações Detalhadas das Proposições 1 e 2 (IVB)}
+\author{Manoel Galdino}
+\date{27/02/2026}
+
+\begin{document}
+\maketitle
+
+\section{Q\&A Inicial}\label{qa-inicial}
+
+\textbf{Q1. Qual é o objetivo deste documento?}\\
+Checar, passo a passo, as derivações da Proposição 1 (cross-section) e
+da Proposição 2 (ADL(1,0)) do IVB, com expansão explícita dos pontos que
+geraram dúvidas.
+
+\textbf{Q2. Quais foram os pontos de atenção incorporados aqui?}\\
+(i) passagem da condição normal para a fórmula de coeficiente,\\
+(ii) expansão da covariância com médias explícitas,\\
+(iii) cuidado com sinais algébricos do tipo \(- (a-b)\),\\
+(iv) residualização via FWL,\\
+(v) diferença entre ortogonalidade OLS e ausência de viés causal.
+
+\textbf{Q3. Qual notação será usada para facilitar a leitura?}\\
+Usaremos: \[
+\text{(M1)} = \text{modelo curto (correto)}, \qquad
+\text{(M2)} = \text{modelo longo (inclui collider)}.
+\]
+
+\section{Premissas Mínimas}\label{premissas-muxednimas}
+
+Para as razões com variância no denominador estarem bem definidas: \[
+\operatorname{Var}(D)>0
+\] e, no caso dinâmico, \[
+\operatorname{Var}(\widetilde{D}_t)>0.
+\] Assumimos também momentos de segunda ordem finitos.
+
+\section{Proposição 1: Caso
+Cross-Section}\label{proposiuxe7uxe3o-1-caso-cross-section}
+
+\subsection{Enunciado}\label{enunciado}
+
+Quando um collider \(Z\) é incluído por engano na regressão de \(y\) em
+\(D\), \[
+\beta_1^\star - \beta_1 = -\beta_2^\star \phi_1,
+\] onde \(\beta_2^\star\) é o coeficiente de \(Z\) na regressão longa e
+\(\phi_1\) é o coeficiente da regressão auxiliar de \(Z\) em \(D\).
+
+\subsection{Passo 1. Escrever os dois
+modelos}\label{passo-1.-escrever-os-dois-modelos}
+
+\[
+\text{(M1)} \quad y = \beta_0 + \beta_1 D + e,
+\] \[
+\text{(M2)} \quad y = \beta_0^\star + \beta_1^\star D + \beta_2^\star Z + e^\star.
+\]
+
+No contexto do paper, (M1) é o modelo causal correto e (M2) é o modelo
+misspecificado por incluir o collider.
+
+\subsection{\texorpdfstring{Passo 2. Coeficiente de \(D\) no modelo
+curto}{Passo 2. Coeficiente de D no modelo curto}}\label{passo-2.-coeficiente-de-d-no-modelo-curto}
+
+\[
+\beta_1 = \frac{\operatorname{Cov}(D,y)}{\operatorname{Var}(D)}.
+\]
+
+\subsection{Passo 3. Condição normal no modelo longo (FOC
+explícita)}\label{passo-3.-condiuxe7uxe3o-normal-no-modelo-longo-foc-expluxedcita}
+
+Defina o resíduo no modelo longo: \[
+u^\star = y - \beta_0^\star - \beta_1^\star D - \beta_2^\star Z.
+\]
+
+OLS populacional escolhe \((\beta_0^\star,\beta_1^\star,\beta_2^\star)\)
+para minimizar: \[
+Q = \mathbb{E}\!\left[(u^\star)^2\right].
+\]
+
+Derivando em relação a \(\beta_1^\star\): \[
+\frac{\partial Q}{\partial \beta_1^\star}
+=
+\mathbb{E}\!\left[2u^\star\left(-D\right)\right]
+=
+-2\mathbb{E}[Du^\star]=0
+\;\Rightarrow\;
+\mathbb{E}[Du^\star]=0.
+\]
+
+Com intercepto, também vale \(\mathbb{E}[u^\star]=0\). Logo: \[
+\operatorname{Cov}(D,u^\star)=\mathbb{E}[Du^\star]-\mathbb{E}[D]\mathbb{E}[u^\star]=0.
+\] Isto implica: \[
+\operatorname{Cov}\!\big(D,\;y-\beta_0^\star-\beta_1^\star D-\beta_2^\star Z\big)=0.
+\]
+
+\subsection{Passo 4. Expansão completa da covariância (com médias
+explícitas)}\label{passo-4.-expansuxe3o-completa-da-covariuxe2ncia-com-muxe9dias-expluxedcitas}
+
+Partindo de: \[
+0=\operatorname{Cov}\!\big(D,\;y-\beta_0^\star-\beta_1^\star D-\beta_2^\star Z\big),
+\] aplique a definição: \[
+\operatorname{Cov}(A,B)=\mathbb{E}\!\left[(A-\mu_A)(B-\mu_B)\right].
+\]
+
+Assim: \[
+0=\mathbb{E}\!\left[(D-\mu_D)\left(\Xi-\mu_\Xi\right)\right],
+\] onde \[
+\Xi=y-\beta_0^\star-\beta_1^\star D-\beta_2^\star Z,
+\quad
+\mu_\Xi=\mu_y-\beta_0^\star-\beta_1^\star\mu_D-\beta_2^\star\mu_Z.
+\]
+
+Logo: \[
+\Xi-\mu_\Xi
+=(y-\mu_y)-\beta_1^\star(D-\mu_D)-\beta_2^\star(Z-\mu_Z).
+\]
+
+Substituindo: \begin{align*}
+0
+&=
+\mathbb{E}\!\left[(D-\mu_D)(y-\mu_y)\right]
+-\beta_1^\star\mathbb{E}\!\left[(D-\mu_D)^2\right]
+-\beta_2^\star\mathbb{E}\!\left[(D-\mu_D)(Z-\mu_Z)\right] \\
+&=
+\operatorname{Cov}(D,y)-\beta_1^\star\operatorname{Var}(D)-\beta_2^\star\operatorname{Cov}(D,Z).
+\end{align*}
+
+Isolando \(\beta_1^\star\): \[
+\beta_1^\star
+=
+\frac{\operatorname{Cov}(D,y)-\beta_2^\star\operatorname{Cov}(D,Z)}
+{\operatorname{Var}(D)}.
+\]
+
+\subsection{\texorpdfstring{Passo 5. Subtrair
+\(\beta_1\)}{Passo 5. Subtrair \textbackslash beta\_1}}\label{passo-5.-subtrair-beta_1}
+
+\[
+\beta_1^\star-\beta_1
+=
+-\beta_2^\star\frac{\operatorname{Cov}(D,Z)}{\operatorname{Var}(D)}.
+\]
+
+\subsection{\texorpdfstring{Passo 6. Regressão auxiliar para
+\(Z\)}{Passo 6. Regressão auxiliar para Z}}\label{passo-6.-regressuxe3o-auxiliar-para-z}
+
+\[
+Z=\phi_0+\phi_1 D+\varepsilon
+\quad\Rightarrow\quad
+\phi_1=\frac{\operatorname{Cov}(D,Z)}{\operatorname{Var}(D)}.
+\]
+
+Substituindo: \[
+\boxed{\beta_1^\star-\beta_1=-\beta_2^\star\phi_1.}
+\]
+
+\subsection{Nota Didática A: Sinal
+Algébrico}\label{nota-diduxe1tica-a-sinal-alguxe9brico}
+
+Um ponto crítico de sinal: \[
+-(a-b)=-a+b.
+\] Portanto, \[
+-\beta_1^\star D -(-\beta_1^\star\mu_D)
+=
+-\beta_1^\star D+\beta_1^\star\mu_D
+=
+-\beta_1^\star(D-\mu_D),
+\] e não \(-\beta_1^\star(D+\mu_D)\).
+
+\section{Proposição 2: Caso ADL(1,0) via
+FWL}\label{proposiuxe7uxe3o-2-caso-adl10-via-fwl}
+
+\subsection{Enunciado}\label{enunciado-1}
+
+No ADL(1,0), ao incluir um collider \(Z_t\): \[
+\beta^\star-\beta=-\theta^\star\pi.
+\]
+
+\subsection{Passo 1. Modelos (curto e
+longo)}\label{passo-1.-modelos-curto-e-longo}
+
+\[
+\text{(M1)}\quad y_t=\alpha+\beta D_t+\rho y_{t-1}+e_t,
+\] \[
+\text{(M2)}\quad y_t=\alpha^\star+\beta^\star D_t+\rho^\star y_{t-1}+\theta^\star Z_t+v_t.
+\]
+
+Aqui, o objeto de viés \(\beta^\star-\beta\) compara duas regressões que
+diferem apenas pela inclusão de \(Z_t\).
+
+\subsection{Passo 2. Residualização explícita
+(FWL)}\label{passo-2.-residualizauxe7uxe3o-expluxedcita-fwl}
+
+Defina controles legítimos: \[
+W_t=(1,y_{t-1}).
+\]
+
+Residualizar significa rodar: \[
+y_t = a_y + b_y y_{t-1} + r^y_t,\quad \widetilde{y}_t=r^y_t,
+\] \[
+D_t = a_D + b_D y_{t-1} + r^D_t,\quad \widetilde{D}_t=r^D_t,
+\] \[
+Z_t = a_Z + b_Z y_{t-1} + r^Z_t,\quad \widetilde{Z}_t=r^Z_t.
+\]
+
+Pelo FWL, a regressão longa equivale a: \[
+\widetilde{y}_t=\beta^\star\widetilde{D}_t+\theta^\star\widetilde{Z}_t+\widetilde{v}_t.
+\]
+
+\subsection{\texorpdfstring{Passo 3. Da minimização à FOC para
+\(\beta^\star\)}{Passo 3. Da minimização à FOC para \textbackslash beta\^{}\textbackslash star}}\label{passo-3.-da-minimizauxe7uxe3o-uxe0-foc-para-betastar}
+
+Considere: \[
+Q(\beta^\star,\theta^\star)=
+\mathbb{E}\!\left[\left(\widetilde{y}_t-\beta^\star\widetilde{D}_t-\theta^\star\widetilde{Z}_t\right)^2\right].
+\]
+
+Derivando em relação a \(\beta^\star\): \[
+\frac{\partial Q}{\partial \beta^\star}
+=
+-2\,\mathbb{E}\!\left[\widetilde{D}_t\left(\widetilde{y}_t-\beta^\star\widetilde{D}_t-\theta^\star\widetilde{Z}_t\right)\right]=0.
+\]
+
+Então: \[
+\mathbb{E}[\widetilde{D}_t\widetilde{y}_t]
+-\beta^\star\mathbb{E}[\widetilde{D}_t^2]
+-\theta^\star\mathbb{E}[\widetilde{D}_t\widetilde{Z}_t]=0.
+\]
+
+\subsection{\texorpdfstring{Passo 4. De \(\mathbb{E}[\cdot]\) para
+covariância/variância}{Passo 4. De \textbackslash mathbb\{E\}{[}\textbackslash cdot{]} para covariância/variância}}\label{passo-4.-de-mathbbecdot-para-covariuxe2nciavariuxe2ncia}
+
+Como há intercepto em \(W_t\), os resíduos têm média zero: \[
+\mathbb{E}[\widetilde{D}_t]=\mathbb{E}[\widetilde{y}_t]=\mathbb{E}[\widetilde{Z}_t]=0.
+\]
+
+Logo: \[
+\mathbb{E}[\widetilde{D}_t\widetilde{y}_t]
+=
+\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t),
+\quad
+\mathbb{E}[\widetilde{D}_t^2]
+=
+\operatorname{Var}(\widetilde{D}_t),
+\] \[
+\mathbb{E}[\widetilde{D}_t\widetilde{Z}_t]
+=
+\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t).
+\]
+
+Portanto: \[
+\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t)
+-\beta^\star\operatorname{Var}(\widetilde{D}_t)
+-\theta^\star\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)=0.
+\]
+
+Isolando \(\beta^\star\): \[
+\beta^\star=
+\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t)-\theta^\star\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+\subsection{\texorpdfstring{Passo 5. Repetir no modelo curto para obter
+\(\beta\)}{Passo 5. Repetir no modelo curto para obter \textbackslash beta}}\label{passo-5.-repetir-no-modelo-curto-para-obter-beta}
+
+No curto residualizado: \[
+\widetilde{y}_t=\beta\widetilde{D}_t+\widetilde{e}_t.
+\]
+
+Pela mesma lógica: \[
+\beta=\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{y}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+\subsection{Passo 6. Subtração (diferença entre longo e
+curto)}\label{passo-6.-subtrauxe7uxe3o-diferenuxe7a-entre-longo-e-curto}
+
+\[
+\beta^\star-\beta
+=
+-\theta^\star
+\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+\subsection{\texorpdfstring{Passo 7. Regressão auxiliar e definição de
+\(\pi\)}{Passo 7. Regressão auxiliar e definição de \textbackslash pi}}\label{passo-7.-regressuxe3o-auxiliar-e-definiuxe7uxe3o-de-pi}
+
+\[
+Z_t=a+\pi D_t+\lambda y_{t-1}+\eta_t.
+\] No espaço residualizado por \(W_t\): \[
+\widetilde{Z}_t=\pi\widetilde{D}_t+\widetilde{\eta}_t
+\quad\Rightarrow\quad
+\pi=
+\frac{\operatorname{Cov}(\widetilde{D}_t,\widetilde{Z}_t)}
+{\operatorname{Var}(\widetilde{D}_t)}.
+\]
+
+Substituindo: \[
+\boxed{\beta^\star-\beta=-\theta^\star\pi.}
+\]
+
+\subsection{Nota Didática B: Ortogonalidade OLS vs Viés
+Causal}\label{nota-diduxe1tica-b-ortogonalidade-ols-vs-viuxe9s-causal}
+
+No longo residualizado, vale por construção OLS: \[
+\mathbb{E}[\widetilde{D}_t\widetilde{v}_t]=0.
+\] Isso \textbf{não} implica \(\beta^\star=\beta\).\\
+Implica apenas que \(\beta^\star\) é o coeficiente de projeção linear do
+modelo longo.\\
+O viés causal em relação ao alvo do modelo curto continua sendo: \[
+\beta^\star-\beta.
+\]
+
+\subsection{\texorpdfstring{Nota Didática C: Viés em \(M2\) vem de
+\(Z_t\) ou de
+\(y_{t-1}\)?}{Nota Didática C: Viés em M2 vem de Z\_t ou de y\_\{t-1\}?}}\label{nota-diduxe1tica-c-viuxe9s-em-m2-vem-de-z_t-ou-de-y_t-1}
+
+Na decomposição \(\beta^\star-\beta\), o termo capturado é o efeito de
+incluir \(Z_t\), pois \(M1\) e \(M2\) compartilham \(y_{t-1}\).\\
+Ou seja, a diferença entre os modelos é apenas a presença do collider.
+
+\section{Conclusão}\label{conclusuxe3o}
+
+As duas proposições têm a mesma estrutura: \[
+\text{IVB}=-\theta^\star\times\pi.
+\] No caso cross-section,
+\((\theta^\star,\pi)=(\beta_2^\star,\phi_1)\).\\
+No caso ADL(1,0), ambos são efeitos parciais no espaço residualizado por
+\(W_t\).
+
+O ponto central é que a identidade é algébrica e operacional: os
+componentes são estimáveis por regressões padrão, mas a interpretação
+causal depende de justificar substantivamente que \(Z\) é collider.
+
+\end{document}

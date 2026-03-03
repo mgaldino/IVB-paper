@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>derivacao_ivb_fatores_latentes</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="derivação-detalhada-do-ivb-com-fatores-latentes">Derivação
+detalhada do IVB com fatores latentes</h1>
+<h2 id="qa-inicial">Q&amp;A inicial</h2>
+<p><strong>Q1. O que será provado aqui?</strong><br />
+Vamos provar, passo a passo, três resultados:</p>
+<ol type="1">
+<li>Com o mesmo conjunto de controles (incluindo fatores latentes), vale
+a identidade: [ _L - _S = -_L . ]</li>
+<li>Se os fatores latentes são reestimados entre o modelo curto e o
+longo, surge um termo adicional: [ _L^{F_L} - _S^{F_S} =
+-_L<sup>{F_L}</sup>{F_L} + _F. ]</li>
+<li>Interpretação causal em dois cenários:</li>
+</ol>
+<ul>
+<li><code>Z</code> apenas collider;</li>
+<li>caso <code>mixed</code> (<code>confounder + collider</code>).</li>
+</ul>
+<p><strong>Q2. Qual é o nível de detalhe?</strong><br />
+Prova algébrica completa, com expansão das condições normais (FOC/eqs.
+normais), sem saltos.</p>
+<hr />
+<h2
+id="motivação-por-que-fatores-latentes-em-extensões-de-did-via-matrix-completion">Motivação:
+por que fatores latentes em extensões de DiD (via Matrix
+Completion)</h2>
+<p>Em aplicações de DiD, a suposição clássica de tendências paralelas
+pode ser forte demais quando há:</p>
+<ol type="1">
+<li>choques agregados que afetam unidades de forma heterogênea;</li>
+<li>componentes não observados persistentes que evoluem no tempo;</li>
+<li>trajetórias pré-tratamento com padrões sistemáticos não capturados
+por FE padrão.</li>
+</ol>
+<p>Modelos de Matrix Completion surgem justamente como extensão prática
+de DiD para esse tipo de cenário.<br />
+A ideia substantiva é usar a estrutura dos dados ao longo do tempo e
+entre unidades para recuperar componentes latentes que funcionam como
+controles adicionais de trajetória.</p>
+<p>Do ponto de vista deste documento, o ponto central é simples:</p>
+<ul>
+<li>ao introduzir fatores latentes, mudamos o conjunto efetivo de
+controles da regressão;</li>
+<li>se curto e longo usam o mesmo conjunto latente, a identidade IVB
+mantém a forma padrão;</li>
+<li>se o conjunto latente muda entre especificações (porque foi
+reestimado), aparece um termo adicional na decomposição.</li>
+</ul>
+<p>Ou seja, a motivação para tratar fatores latentes aqui não é discutir
+detalhes de estimação de Matrix Completion, mas garantir comparação
+correta entre especificações em um ambiente DiD mais flexível.</p>
+<hr />
+<h2
+id="equações-de-matrix-completion-mc-e-ligação-com-o-problema-de-ivb">Equações
+de Matrix Completion (MC) e ligação com o problema de IVB</h2>
+<p>Nesta seção, escrevemos explicitamente as equações de MC para fixar a
+notação.</p>
+<h3 id="mc-estrutura-observada-em-painel">MC: estrutura observada em
+painel</h3>
+<p>Considere (i=1,,N) e (t=1,,T).<br />
+Seja (Y_{it}) o desfecho observado e (D_{it}) o tratamento.</p>
+<p>Uma forma padrão de MC com fatores latentes é: [ Y_{it} = + <em>i +
+<em>t + X</em>{it}’+ L</em>{it} + D_{it} + _{it}, ] onde:</p>
+<ul>
+<li>(): intercepto global;</li>
+<li>(_i): efeito fixo de unidade;</li>
+<li>(_t): efeito fixo de tempo;</li>
+<li>(X_{it}): controles observados;</li>
+<li>(L_{it}): componente latente de baixa dimensão (baixa-rank em matriz
+(NT));</li>
+<li>(): parâmetro de tratamento (ou objeto de interesse em uma versão
+linearizada).</li>
+</ul>
+<h3
+id="conjunto-de-observações-usadas-para-recuperar-o-contrafactual">Conjunto
+de observações usadas para recuperar o contrafactual</h3>
+<p>Defina () como o conjunto de células usadas para ajustar o componente
+não tratado (tipicamente células pré-tratamento e/ou nunca tratadas,
+dependendo do desenho).</p>
+<p>O problema penalizado típico é: [ <em>{,,,,L} </em>{(i,t)} (
+Y_{it}--<em>i-<em>t-X</em>{it}’-L</em>{it} )^2 + <em>L |L|</em>* +
+_||_2^2. ]</p>
+<p>Aqui, (|L|_*) é a norma nuclear (soma dos valores singulares), que
+força estrutura de baixa-rank.</p>
+<h3 id="curto-vs-longo-no-contexto-deste-documento">Curto vs longo no
+contexto deste documento</h3>
+<p>No problema de IVB, a diferença entre curto e longo é a inclusão de
+(Z_{it}):</p>
+<ul>
+<li><strong>Curto (S):</strong> (X_{it}^{(S)}) não inclui (Z_{it});</li>
+<li><strong>Longo (L):</strong> (X_{it}^{(L)}) inclui (Z_{it}).</li>
+</ul>
+<p>Logo, em geral, temos dois problemas MC distintos: [
+(_S,_S,_S,_S,L_S) (_L,_L,_L,_L,L_L). ]</p>
+<p>Se (L_SL_L), os fatores implícitos também mudam.<br />
+Por exemplo, via decomposição SVD: [ L_S=U_S_SV_S’, L_L=U_L_LV_L’. ]</p>
+<p>Isso é exatamente o que, na derivação abaixo, aparece como mudança de
+(F_S) para (F_L), gerando o termo (_F).</p>
+<h3 id="caso-especial-em-que-a-fórmula-ivb-fica-limpa">Caso especial em
+que a fórmula IVB fica limpa</h3>
+<p>Se o pesquisador <strong>congela</strong> o componente latente (mesmo
+(F) no curto e no longo), então o operador de residualização é o mesmo
+nos dois modelos e volta a identidade: [ _L-_S=-_L. ]</p>
+<p>Se não congelar (reestimar MC separadamente), a diferença total passa
+a ser: [ _L^{F_L}-_S^{F_S} = -_L<sup>{F_L}</sup>{F_L} + _F. ]</p>
+<hr />
+<h2 id="setup-e-suposições">1) Setup e suposições</h2>
+<h3 id="variáveis">1.1 Variáveis</h3>
+<ul>
+<li>(y): vetor (n ) do desfecho.</li>
+<li>(d): vetor (n ) do tratamento.</li>
+<li>(z): vetor (n ) do controle suspeito.</li>
+<li>(W): matriz (n k) de controles observados legítimos (inclui
+constante quando apropriado).</li>
+<li>(F): matriz (n r) de fatores latentes (ou proxys/fatores
+estimados).</li>
+</ul>
+<p>Defina a matriz de controles totais: [ C(F) . ]</p>
+<h3 id="operador-de-residualização-fwl">1.2 Operador de residualização
+(FWL)</h3>
+<p>[ P_F C(F)(C(F)‘C(F))^{-1}C(F)’, M_F I - P_F. ]</p>
+<p>Para qualquer vetor (x): [ x^F M_F x. ]</p>
+<h3 id="suposições-técnicas-mínimas">1.3 Suposições técnicas
+mínimas</h3>
+<ol type="1">
+<li>Mesma amostra para comparar curto e longo.</li>
+<li>(C(F)) tem posto completo.</li>
+<li>(d<sup>{F}d</sup>F &gt; 0).</li>
+<li>No longo, ([d<sup>F,z</sup>F]) tem posto 2 (sem colinearidade
+perfeita).</li>
+</ol>
+<hr />
+<h2 id="prova-1-fórmula-ivb-com-o-mesmo-f-no-curto-e-no-longo">2) Prova
+1: fórmula IVB com o mesmo (F) no curto e no longo</h2>
+<h2 id="definição-dos-modelos">2.1 Definição dos modelos</h2>
+<p>Curto (S): [ y = _S + _S d + C(F)_S + u_S. ]</p>
+<p>Longo (L): [ y = _L + _L d + _L z + C(F)_L + u_L. ]</p>
+<p>Como (C(F)) é o mesmo nos dois, FWL permite trabalhar no espaço
+residualizado por (C(F)):</p>
+<p>[ y^F = _S d^F + u_S^F ] e [ y^F = _L d^F + _L z^F + u_L^F. ]</p>
+<h2 id="condição-normal-no-modelo-longo">2.2 Condição normal no modelo
+longo</h2>
+<p>Na regressão de (y^F) em ((d<sup>F,z</sup>F)), a condição normal para
+(_L) é: [ d<sup>{F}(y</sup>F - _L d^F - _L z^F)=0. ]</p>
+<p>Expansão: [ d<sup>{F}y</sup>F - _L d<sup>{F}d</sup>F - _L
+d<sup>{F}z</sup>F = 0. ]</p>
+<p>Isolando (_L): [ _L = {d<sup>{F}d</sup>F}. ]</p>
+<h2 id="condição-normal-no-modelo-curto">2.3 Condição normal no modelo
+curto</h2>
+<p>No curto residualizado: [ d<sup>{F}(y</sup>F-_Sd^F)=0 ] [ _S = .
+]</p>
+<h2 id="subtração-longo-menos-curto">2.4 Subtração longo menos
+curto</h2>
+<p>[ _L - _S = - = -_L. ]</p>
+<p>Defina (^F) pela regressão auxiliar: [ z = a + ^F d + C(F)+ . ]</p>
+<p>FWL da auxiliar: [ z^F = ^F d^F + ^F ^F = . ]</p>
+<p>Substituindo: [ ]</p>
+<p>Isso prova a identidade IVB quando o conjunto de controles (incluindo
+fatores) é o mesmo.</p>
+<hr />
+<h2 id="prova-2-fatores-reestimados-entre-curto-e-longo">3) Prova 2:
+fatores reestimados entre curto e longo</h2>
+<p>Agora o curto usa (F_S) e o longo usa (F_L):</p>
+<ul>
+<li>Curto: (y d + C(F_S))</li>
+<li>Longo: (y d + z + C(F_L))</li>
+</ul>
+<p>Queremos (_L^{F_L} - _S^{F_S}).</p>
+<h2 id="decomposição-algébrica-por-soma-e-subtração">3.1 Decomposição
+algébrica por soma e subtração</h2>
+<p>Some e subtraia (_S^{F_L}): [ <em>L^{F_L} - <em>S^{F_S} = </em>{(A)}
++ </em>{(B)}. ]</p>
+<p>Defina: [ _F _S^{F_L} - _S^{F_S}. ]</p>
+<h2 id="termo-a">3.2 Termo (A)</h2>
+<p>No termo (A), o conjunto de controles é o mesmo ((F_L)) nos dois
+modelos; então pela Prova 1: [ (A) = -_L<sup>{F_L}</sup>{F_L}. ]</p>
+<h2 id="resultado-final">3.3 Resultado final</h2>
+<p>[ ] com [ _F = _S^{F_L} - _S^{F_S}. ]</p>
+<p>Interpretação: (_F) mede a mudança no coeficiente de (d) provocada
+apenas por trocar os fatores do curto de (F_S) para (F_L).</p>
+<hr />
+<h2
+id="caso-z-apenas-collider-o-que-é-necessário-para-leitura-causal">4)
+Caso <code>Z</code> apenas collider: o que é necessário para leitura
+causal</h2>
+<p>A identidade acima é algébrica. Para interpretar como “dano de
+collider”:</p>
+<ol type="1">
+<li>(Z) deve ser collider no problema substantivo (condicional em
+(W,F)).</li>
+<li>(Z) não deve ser confounder do efeito de (d) em (y) (condicional em
+(W,F)).</li>
+<li>O benchmark causal deve ser o curto (sem (Z)).</li>
+</ol>
+<p>Sob essas condições, com fatores fixos: [ _S^F _L^F -
+-_L<sup>F</sup>F. ]</p>
+<p>Se fatores mudam entre curto e longo: [ <em>L^{F_L} - = </em>{ZF_L} +
+<em>{} + </em>{}. ]</p>
+<p>Logo, para “collider puro”, o ideal é trabalhar com fatores
+congelados (mesmo (F) no curto e no longo).</p>
+<hr />
+<h2 id="caso-mixed-confounder-collider">5) Caso <code>mixed</code>
+(<code>confounder + collider</code>)</h2>
+<p>Aqui, (Z) pode simultaneamente: - reduzir viés por omissão (canal de
+confusão); - introduzir distorção por condicionamento (canal
+collider).</p>
+<h2 id="com-fatores-fixos-f">5.1 Com fatores fixos (F)</h2>
+<p>Defina: [ _S^F = + U^F, _L^F = + C^F. ]</p>
+<p>Onde: - (U^F): componente líquido de viés no curto (sem (Z)); -
+(C^F): componente líquido de viés no longo (com (Z)).</p>
+<p>Subtraindo: [ _L^F - _S^F = C^F - U^F. ]</p>
+<p>Mas pela Prova 1: [ _L^F - _S^F = -_L<sup>F</sup>F. ]</p>
+<p>Portanto: [ ]</p>
+<p>Isto é: no caso misto, (-) é efeito líquido, não identificação
+separada dos componentes.</p>
+<h2 id="com-fatores-reestimados">5.2 Com fatores reestimados</h2>
+<p>[ _L^{F_L}-_S^{F_S} = (_L^{F_L}-_S^{F_L}) + (_S^{F_L}-_S^{F_S}) =
+-_L<sup>{F_L}</sup>{F_L}+_F. ]</p>
+<p>Como acima: [ -_L<sup>{F_L}</sup>{F_L}=C<sup>{F_L}-U</sup>{F_L}, ]
+então: [ ]</p>
+<p>Resultado: há três elementos misturados na diferença total
+observada:</p>
+<ol type="1">
+<li>componente collider/confounding líquido sob (F_L);</li>
+<li>componente de confusão líquida do benchmark;</li>
+<li>mudança induzida por reestimação de fatores ((_F)).</li>
+</ol>
+<hr />
+<h2 id="resumo-prático-o-que-reportar">6) Resumo prático (o que
+reportar)</h2>
+<p>Em aplicações com fatores latentes estimados separadamente:</p>
+<ol type="1">
+<li>Reportar (-_L<sup>{F_L}</sup>{F_L}) (efeito com fatores fixos no
+longo).</li>
+<li>Reportar (_F) (mudança por reestimar fatores).</li>
+<li>Reportar a soma: [ _L^{F_L}-_S^{F_S} =
+(-_L<sup>{F_L}</sup>{F_L})+_F. ]</li>
+</ol>
+<p>Sem separar esses termos, a leitura de “IVB puro” não é
+defensável.</p>
+</body>
+</html>

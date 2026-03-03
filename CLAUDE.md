@@ -71,24 +71,51 @@ Predicao: IVB aumenta com grau de nao-linearidade no canal D->Z (NL-1a/c). Se co
 
 ```
 IVB-paper/
-  sim_ivb_twfe.R              # Simulacao v1 (COMPLETA, resultados salvos)
-  sim_ivb_twfe_figures.R       # Figuras v1 (8 PNGs gerados)
-  sim_ivb_twfe_results.csv     # Resultados v1: 400 cenarios x 500 reps
-  sim_ivb_twfe_v4.R            # Simulacao v4 (ESCRITA, NAO REVISADA, NAO RODADA)
-  sim_ivb_twfe_v4_figures.R    # Figuras v4 (ESCRITA, NAO REVISADA)
-  sim_ivb_completa.R           # Simulacoes de validacao (cross-section, ADL, civil war)
-  plots/                       # Figuras geradas (PNGs)
-  quality_reports/plans/       # Planos em disco (ver abaixo)
+  ivb_paper_psrm.Rmd           # Paper principal (Rmd source)
+  references.bib                # Bibliografia
+
+  derivations/                  # Notas teoricas e derivacoes
+    ivb_derivation.Rmd/pdf
+    ivb_derivacoes_proposicoes_1_2.Rmd/pdf/tex
+    ivb_adl_derivacao.md
+    sintese_entrevista.Rmd
+
+  simulations/                  # Todos os scripts de simulacao
+    utils/                      # Funcoes compartilhadas
+      sim_nl_utils.R
+    v1_twfe/                    # Sim v1 (completa, tautologica)
+      sim_ivb_twfe.R, sim_ivb_twfe_figures.R, sim_ivb_completa.R
+    v4_mechanisms/              # Sim v4 — mecanismos A-D
+      sim_ivb_twfe_v4.R, sim_ivb_twfe_v4_figures.R, sim_mechC_adl.R
+      results/                  # CSVs: mechA-D, synthesis, mechC_adl
+    dual_role_z/                # Familia dual-role Z (6 scripts)
+      results/
+    nonlinearity/               # NL-1a, NL-1b, NL-2
+      sim_nl_collider.R, sim_nl_interact.R, sim_nl_carryover.R
+      plot_nl_functions.R, plot_nl_results.R
+      results/
+    dynamics/                   # Feedback e carryover
+      sim_direct_carryover.R, sim_direct_feedback.R, sim_feedback_carryover.R
+      results/
+    diagnostics/                # Scripts diag_* e check_*
+      results/
+    deprecated/
+
+  plots/                        # Figuras geradas (PNGs)
+  quality_reports/plans/        # Planos em disco (ver abaixo)
+  references_pdfs/              # PDFs de papers citados
+  misc/                         # Utilitarios avulsos (count_words.R, etc.)
+
   replication/
-    ivb_utils.R                # compute_ivb_multi() — ferramenta aplicada
-    *_replication_ivb.R        # 4 estudos empiricos (claassen, fiscal_state, leipziger, peacekeeping)
-    unified_ivb_report.Rmd     # Relatorio unificado
+    ivb_utils.R                 # compute_ivb_multi() — ferramenta aplicada
+    *_replication_ivb.R         # 4 estudos empiricos (claassen, fiscal_state, leipziger, peacekeeping)
+    unified_ivb_report.Rmd      # Relatorio unificado
     standardized_ivb_metrics.csv
 ```
 
 ## Simulacao v1 (COMPLETA)
 
-- **Arquivo**: sim_ivb_twfe.R (350 linhas)
+- **Arquivo**: simulations/v1_twfe/sim_ivb_twfe.R (350 linhas)
 - **DGP**: Y = beta*D + FE + eps; Z = (gamma_D + gamma_Y*beta)*D + FE + nu
 - **Grid**: gamma_Y x gamma_D x delta x R2_within = 400 cenarios x 500 reps
 - **Resultado principal**: IVB/|beta| e constante em R2_within — a simulacao era tautologica, so confirmava a formula
@@ -98,7 +125,7 @@ IVB-paper/
 
 **Plano**: quality_reports/plans/2026-02-28_sim-ivb-twfe-v4.md (DRAFT)
 **Pergunta**: Por que o IVB e pequeno em aplicacoes empiricas?
-**Arquivos**: sim_ivb_twfe_v4.R + sim_ivb_twfe_v4_figures.R
+**Arquivos**: simulations/v4_mechanisms/sim_ivb_twfe_v4.R + sim_ivb_twfe_v4_figures.R
 
 ### Status atual
 - [x] Plano escrito e detalhado (v4)

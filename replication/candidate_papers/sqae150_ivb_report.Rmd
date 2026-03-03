@@ -1,0 +1,132 @@
+---
+title: "Avaliação de Potencial de IVB: Pinto, Rickard e Vreeland (sqae150)"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    keep_tex: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(knitr)
+```
+
+# Q\&A inicial
+
+**Q1. O tratamento é plausivelmente exógeno?**  
+**A1.** Sim. O envolvimento do ator internacional (FMI/UE) é randomizado no experimento pre-post.
+
+**Q2. O artigo depende de um grande bloco de controles para identificação?**  
+**A2.** Não. A estratégia central usa randomização + comparação pre-post (diferença-em-diferenças experimental), com comparações simples entre grupos.
+
+**Q3. O potencial de IVB alto (via collider em contexto de tratamento exógeno) é elevado?**  
+**A3.** Não é elevado para \"IVB alto\", mas é um benchmark forte de identificação limpa para comparar com casos observacionais.
+
+# 1. Visão geral do paper
+
+**Paper:** Pinto, Rickard e Vreeland, *International Studies Quarterly* (sqae150)  
+**Título:** *The Effect of International Actors on Public Support for Government Spending Decisions*  
+**País e desenho:** Espanha, survey experimental de painel pre-post (duas ondas).  
+
+**Pergunta:** informar que cortes de gasto são "exigidos" por ator internacional (FMI/UE) aumenta apoio público aos cortes?  
+
+**Variável dependente (Y):** oposição a cortes de gasto (escala Likert de 1 a 7; maior valor = maior oposição).  
+**Tratamento principal (D):** cue sobre ator internacional no segundo wave:
+
+- controle: sem ator internacional,
+- tratamento 1: cortes exigidos pelo FMI,
+- tratamento 2: cortes exigidos pela UE.
+
+# 2. Identificação e estrutura empírica
+
+O paper combina:
+
+1. comparações "post-only" entre grupos;
+2. análise pre-post (diferença nas mudanças entre tratamento e controle), análoga a DiD experimental;
+3. heterogeneidades por tamanho/composição dos cortes, apoio ao governo e nacionalismo.
+
+O ponto crucial para o seu novo critério é que **o tratamento é randomizado**, reduzindo fortemente preocupação de viés de variável omitida no coeficiente do tratamento.
+
+# 3. Avaliação com o novo insight
+
+## 3.1 Tratamento exógeno: critério atendido
+
+Este paper atende ao filtro que você definiu:
+
+- a atribuição de D (FMI/UE/controle) é experimental;
+- a inferência sobre o efeito médio do tratamento não depende de supor ignorabilidade via grande vetor de controles;
+- o desenho pre-post ainda ajuda a reduzir heterogeneidade não observada ao nível do indivíduo.
+
+## 3.2 Papel dos controles
+
+Diferente de aplicações observacionais com muitos controles, aqui o núcleo da identificação não precisa de overcontrol. Os cortes por subgrupo (apoio ao governo, nacionalismo) são usados para heterogeneidade substantiva, não como "muleta" para identificar causalidade do tratamento principal.
+
+## 3.3 Risco de collider/IVB
+
+Sob a lógica do IVB, o risco principal apareceria se o artigo condicionasse em variáveis pós-tratamento (mediadores) na equação central. O desenho apresentado minimiza isso.
+
+Assim, o paper é:
+
+- **forte em exogeneidade de D**;
+- **moderado como caso de IVB** (faltam controles potencialmente colliders que mudem fortemente \(\hat\beta_D\)).
+
+# 4. Score de adequação ao seu foco prático
+
+```{r tabela-score}
+score <- data.frame(
+  Criterio = c(
+    "Identificação causal do tratamento",
+    "Robustez da evidência do efeito",
+    "Chance de IVB dominante interpretável",
+    "Utilidade didática para IVB",
+    "Aderência ao seu novo foco prático"
+  ),
+  Nota_0a5 = c(5, 4, 2, 4, 3),
+  Justificativa = c(
+    "Randomização explícita do tratamento (FMI/UE/controle)",
+    "Resultados consistentes no desenho pre-post e em comparações complementares",
+    "Baixa: desenho principal evita overcontrol e mediação indevida",
+    "Excelente benchmark para contraste com estudos observacionais",
+    "Bom para calibrar expectativa de IVB em desenho quase-livre de confounding"
+  ),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+kable(
+  score,
+  caption = "Tabela 1. Adequação do paper sqae150 ao novo critério",
+  row.names = FALSE
+)
+```
+
+# 5. Veredito
+
+**Veredito final:** **candidato moderado** no pipeline.
+
+- Como caso de **boa identificação causal**, o paper é forte.
+- Como caso de **mudança grande em coeficiente por inclusão de controles potencialmente colliders**, o paper é limitado.
+
+# 6. Uso recomendado no seu pipeline
+
+Este paper funciona melhor como **benchmark de contraste**:
+
+1. mostra um desenho em que D é exógeno e a estimação principal quase não depende de controles;
+2. ajuda a comparar com estudos observacionais onde muitos controles são incluídos e o risco de collider é maior;
+3. permite argumentar que nem todo paper com boa identificação de D é automaticamente um bom caso para demonstrar IVB alto.
+
+# 7. Fontes e data de acesso
+
+- Artigo analisado (arquivo local): `replication/candidate_papers/sqae150.pdf`  
+- DOI: 10.1093/isq/sqae150  
+- Data de acesso: `r Sys.Date()`.
+
+# 8. Perguntas para próxima iteração
+
+1. Você quer que eu mantenha o `sqae150` no conjunto final como **caso de contraste** (e não como caso principal de IVB alto)?  
+2. Na próxima rodada, priorizo papers observacionais com tratamento quase-exógeno e muitos controles para maximizar a chance de collider relevante?

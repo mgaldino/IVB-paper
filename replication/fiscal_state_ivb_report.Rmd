@@ -1,0 +1,283 @@
+---
+title: "Included Variable Bias in Albers, Jerven \\& Suesse (2023): An Empirical Application"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: true
+    keep_tex: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE, message = FALSE, warning = FALSE,
+  fig.width = 7, fig.height = 4
+)
+library(dplyr)
+library(knitr)
+```
+
+# Introduction
+
+Albers, Jerven, and Suesse (2023, *International Organization*) estimate the determinants of fiscal capacity in Africa using a panel of 46 polities over 1900--2015. The dependent variable is the 5-year average change in real per capita tax collection, excluding trade and resource taxes (`dtax_non_trade_real`). Their full specification (Table 1, Column 6) includes polity and period fixed effects plus 13 right-hand-side variables spanning political institutions, conflict, economic conditions, and structural factors.
+
+A key question is whether any of these controls are **colliders** --- variables caused by both the treatment and the outcome. If so, conditioning on them introduces **Included Variable Bias** (IVB). For the IVB decomposition, we treat lagged government turnover (`l1_gov_change`) as the treatment variable $D$ and examine each of the remaining 12 covariates as a candidate collider $Z$.
+
+The IVB for each candidate collider is given by:
+
+$$
+\text{IVB}(\hat\beta) = \hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi
+$$
+
+where $\hat\beta^*$ is the coefficient on $D$ in the "long" model (including $Z$), $\hat\beta$ is the coefficient on $D$ in the "short" model (excluding $Z$), $\hat\theta^*$ is the coefficient on $Z$ in the long model, and $\hat\pi$ is the coefficient on $D$ in the auxiliary regression of $Z$ on $D$ and other controls.
+
+# Data and Specification
+
+## Original specification
+
+The model estimated in Table 1, Column 6, is:
+
+$$
+\Delta \text{Tax}_{it} = \beta \cdot \text{GovChange}_{i,t-1} + \boldsymbol{\theta}' \mathbf{Z}_{it} + \delta_i + \gamma_t + \varepsilon_{it}
+$$
+
+where:
+
+- $\Delta \text{Tax}_{it}$ = `dtax_non_trade_real`: change in real non-trade/non-resource tax collection per capita (5-year averages)
+- $\text{GovChange}_{i,t-1}$ = `l1_gov_change`: lagged government turnover (treatment for IVB)
+- $\delta_i$ = polity fixed effects (`iso_n`)
+- $\gamma_t$ = period fixed effects (`demidecade`)
+
+The 12 covariates serving as candidate colliders are:
+
+| Variable | Description |
+|---|---|
+| `X_indep` | Independent statehood (binary) |
+| `X_inflation_ep` | Hyperinflation episode (binary) |
+| `l1_civ_war_all_PRIO` | Civil war, lagged (binary) |
+| `X_g_gdp_yoy` | GDP growth (year-on-year) |
+| `l1_drought_affected_merged` | Drought-affected population, lagged |
+| `libdem_extra_vdem` | Liberal democracy score (V-Dem) |
+| `X_secession` | Territorial change/secession (binary) |
+| `X_socialist` | Socialist economic system (binary) |
+| `S_g5_unw_alliance_abs` | Aid exposure (alliance-based measure) |
+| `cr_market_accessXBOEinv` | Credit market access |
+| `X_external_default_RR` | Sovereign default (Reinhart-Rogoff) |
+| `l1_int_war_all_PRIO` | International war, lagged (binary) |
+
+## Replication approach
+
+The original paper uses Stata with 13 do-files to construct the 5-year panel from raw data. Our replication reconstructs this pipeline in R (see `fiscal_state_replication_ivb.R`). The IVB results have been saved to CSV for reproducible reporting.
+
+# Replication Summary
+
+```{r load-results}
+ivb_results <- read.csv("candidate_papers/fiscal_state_ivb_results.csv",
+                         stringsAsFactors = FALSE)
+```
+
+```{r replication-comparison}
+comparison <- data.frame(
+  Quantity = c("N (observations)",
+               "Coefficient on l1_gov_change",
+               "Adj. R-squared"),
+  Published = c("873", "-0.66", "0.21"),
+  Replicated = c(
+    as.character(ivb_results$sample_n[1]),
+    as.character(round(ivb_results$beta_long[1], 3)),
+    "0.234"
+  ),
+  stringsAsFactors = FALSE
+)
+kable(comparison,
+      caption = "Table 1, Col. 6: Published vs.\\ Replicated estimates",
+      col.names = c("Quantity", "Published", "Replicated"))
+```
+
+The replication yields N = `r ivb_results$sample_n[1]` observations compared to N = 873 in the published paper. The discrepancy arises primarily from missing data on the aid exposure variable (`S_g5_unw_alliance_abs`), which requires ODA disbursement data that could not be fully reconstructed. The reconstructed variable reduces the estimation sample by approximately 44\%. The coefficient on government turnover is $-0.319$ in our replication compared to $-0.66$ in the published paper, consistent with a substantially different (smaller) sample. The adjusted R-squared values are comparable (0.234 vs.\ 0.21).
+
+Despite the sample discrepancy, the IVB decomposition remains informative because it quantifies *within-sample* bias from including each control. The relative ranking and signs of IVBs are diagnostic of which controls act as potential colliders in this empirical setting.
+
+# IVB Decomposition
+
+## Results
+
+```{r ivb-table}
+# Create display labels
+labels <- c(
+  "X_indep" = "Independence",
+  "X_inflation_ep" = "Hyperinflation",
+  "l1_civ_war_all_PRIO" = "Civil war (lag)",
+  "X_g_gdp_yoy" = "GDP growth",
+  "l1_drought_affected_merged" = "Drought (lag)",
+  "libdem_extra_vdem" = "Liberal democracy",
+  "X_secession" = "Secession",
+  "X_socialist" = "Socialist system",
+  "S_g5_unw_alliance_abs" = "Aid exposure",
+  "cr_market_accessXBOEinv" = "Credit market access",
+  "X_external_default_RR" = "Sovereign default",
+  "l1_int_war_all_PRIO" = "Int. war (lag)"
+)
+
+ivb_display <- ivb_results %>%
+  mutate(
+    label = labels[candidate_collider],
+    check = ivb_formula - ivb_direct
+  ) %>%
+  arrange(desc(abs_ivb)) %>%
+  select(label, beta_short, beta_long, theta, pi, ivb_formula, abs_ivb, check)
+
+kable(ivb_display, digits = 4, row.names = FALSE,
+      caption = "IVB decomposition for each candidate collider (Table 1, Col.\\ 6)",
+      col.names = c("Candidate collider",
+                     "beta short",
+                     "beta long",
+                     "theta",
+                     "pi",
+                     "IVB",
+                     "Abs IVB",
+                     "Check"))
+```
+
+The identity $\hat\beta^* - \hat\beta = -\hat\theta^* \cdot \hat\pi$ holds exactly in all cases (check $\approx 0$ up to machine precision). The key finding is that **independence** produces the largest IVB ($-0.041$), followed by **hyperinflation** ($+0.029$), **civil war** ($+0.021$), and **GDP growth** ($+0.016$).
+
+## Visualization
+
+```{r ivb-plot, fig.height=5, fig.width=7}
+ivb_plot <- ivb_results %>%
+  mutate(label = labels[candidate_collider]) %>%
+  arrange(ivb_formula)
+
+ivb_plot$label <- factor(ivb_plot$label, levels = ivb_plot$label)
+
+par(mar = c(5, 12, 4, 2))
+barplot(
+  ivb_plot$ivb_formula,
+  names.arg = ivb_plot$label,
+  horiz = TRUE, las = 1,
+  col = ifelse(ivb_plot$ivb_formula > 0, "steelblue", "coral"),
+  border = NA,
+  xlab = expression(paste("IVB = ", -hat(theta)^"*", " ", hat(pi))),
+  main = "IVB Decomposition: Albers, Jerven & Suesse (2023)\nTable 1, Column 6"
+)
+abline(v = 0, lty = 2, col = "grey40")
+```
+
+Positive IVB values (blue) indicate that including the control makes the government turnover coefficient *less negative* (attenuates the effect), while negative values (red) indicate it makes the coefficient *more negative* (amplifies the effect).
+
+## Decomposing the IVB components
+
+```{r component-table}
+components <- ivb_results %>%
+  mutate(label = labels[candidate_collider]) %>%
+  arrange(desc(abs_ivb)) %>%
+  select(label, theta, pi, ivb_formula) %>%
+  mutate(
+    theta_abs = abs(theta),
+    pi_abs = abs(pi),
+    driver = ifelse(theta_abs > pi_abs, "theta (Z in outcome eq.)", "pi (D in auxiliary eq.)")
+  )
+
+kable(components[, c("label", "theta", "pi", "ivb_formula", "driver")],
+      digits = 4, row.names = FALSE,
+      caption = "Decomposition of IVB into $\\hat\\theta^*$ and $\\hat\\pi$ components",
+      col.names = c("Candidate collider", "$\\hat\\theta^*$", "$\\hat\\pi$",
+                     "IVB", "Dominant component"))
+```
+
+For most candidate colliders, the IVB is driven by a large $\hat\theta^*$ (the effect of $Z$ on the outcome) combined with a small $\hat\pi$ (the association between the treatment and $Z$). The exception is **liberal democracy**, where $\hat\pi = 0.678$ is the largest across all controls, reflecting the strong association between government turnover and liberal democracy scores.
+
+# Literature Support for Collider Status
+
+The IVB formula quantifies **how much** each control shifts the treatment estimate, but **whether** a control is a genuine collider depends on substantive knowledge: does the outcome (change in fiscal capacity) cause the control $Z$?
+
+## Strong collider candidates
+
+### Fiscal capacity $\to$ Hyperinflation (IVB = +0.029)
+
+The fiscal-inflation nexus is one of the most established relationships in macroeconomics. Sargent and Wallace (1981) showed that in a "fiscally dominant" regime, weak fiscal capacity forces governments to resort to seigniorage (money printing), generating inflation. The mechanism is particularly relevant in the African context, where central bank independence is limited and many countries experienced hyperinflation precisely when fiscal capacity collapsed. Catao and Terrones (2005) provide panel evidence (107 countries, 1960--2001) that fiscal deficits are a key driver of inflation, especially in developing countries.
+
+### Fiscal capacity $\to$ GDP growth (IVB = +0.016)
+
+Besley and Persson (2009, 2011, 2013) document that fiscal capacity and economic development form "development clusters": countries that invest in tax collection capability also achieve higher growth through public goods provision, infrastructure investment, and institutional quality. Johnson and Koyama (2017) find sharp, sustained GDP growth jumps following fiscal centralization. The state capacity literature provides robust support for the Y $\to$ Z channel.
+
+## Moderate collider candidates
+
+### Fiscal capacity $\to$ Liberal democracy (IVB = $-$0.013)
+
+The "fiscal bargaining" literature (Bates \& Lien 1985; Levi 1988; Ross 2004) argues that states dependent on domestic taxation must offer political representation in exchange for compliance. Huntington (1968) and Fukuyama (2011) identify state capacity (including fiscal) as a precondition for democratic governance. Kato (2019) provides recent evidence on the tax-democracy link, though the relationship may be weakening in contemporary developing countries.
+
+### Fiscal capacity $\to$ Credit market access (IVB = +0.006)
+
+Higher government revenue improves sovereign creditworthiness and reduces borrowing costs (Reinhart \& Rogoff 2009). The channel is theoretically clear but the empirical IVB is small.
+
+### Fiscal capacity $\to$ Sovereign default (IVB = $-$0.001)
+
+Higher revenue reduces default risk. The theoretical channel is direct but the empirical IVB is negligible.
+
+## Unlikely colliders
+
+### Independence (IVB = $-$0.041, largest)
+
+Despite producing the largest IVB, independence is a structural/historical variable determined by colonial timing, not by contemporaneous fiscal capacity changes. The large IVB reflects the strong *confounding* relationship between independence and fiscal state-building, not a genuine collider channel. This is a pedagogically valuable case: the IVB formula correctly quantifies the arithmetic bias from including this variable, even though the underlying causal mechanism is confounding rather than collider bias.
+
+### Drought, secession, socialist system, lagged wars
+
+These are either exogenous (drought), structural (secession, socialist), or temporally ordered against the collider interpretation (lagged wars). The IVBs range from $-0.015$ to $-0.001$.
+
+# Summary
+
+```{r summary-table}
+summary_df <- data.frame(
+  Control = c("Independence", "Hyperinflation", "Civil war (lag)",
+              "GDP growth", "Drought (lag)", "Liberal democracy",
+              "Secession", "Socialist system", "Aid exposure",
+              "Credit market", "Sovereign default", "Int. war (lag)"),
+  IVB = c(-0.041, 0.029, 0.021, 0.016, -0.015, -0.013,
+          0.012, 0.007, 0.006, 0.006, -0.001, -0.001),
+  `Y causes Z` = c("Unlikely (structural)", "Strong", "Unlikely (lag)",
+                     "Moderate-strong", "No (exogenous)", "Moderate",
+                     "Unlikely (structural)", "No (structural)", "Possible",
+                     "Moderate", "Moderate", "No"),
+  `Key reference` = c("---", "Sargent & Wallace 1981", "---",
+                        "Besley & Persson 2011", "---", "Bates & Lien 1985",
+                        "---", "---", "Moss et al. 2006",
+                        "Reinhart & Rogoff 2009", "Reinhart & Rogoff 2009", "---"),
+  check.names = FALSE, stringsAsFactors = FALSE
+)
+
+kable(summary_df,
+      caption = "Summary: IVB magnitudes and literature support for collider status")
+```
+
+The Albers, Jerven, and Suesse (2023) application is particularly informative for several reasons:
+
+1. **Diverse controls.** The 12 covariates span economic (GDP growth, inflation, credit), political (democracy, government turnover), structural (independence, socialist system), conflict (civil/international war), environmental (drought), and international (aid, default) domains. This diversity allows comparison of genuine colliders with confounders and exogenous variables.
+
+2. **Plausible colliders.** The literature provides strong support for at least two controls being genuine colliders: hyperinflation (via the Sargent-Wallace fiscal dominance mechanism) and GDP growth (via the Besley-Persson state capacity framework). Liberal democracy is a moderate candidate via the fiscal bargaining channel.
+
+3. **Instructive non-collider.** Independence produces the largest IVB but is almost certainly not a collider. This illustrates that the IVB formula quantifies *arithmetic bias from inclusion* regardless of the underlying causal structure, highlighting the importance of combining the formula with substantive knowledge.
+
+4. **Historical panel context.** The century-long panel (1900--2015) with 5-year averages provides a setting where slow-moving causal processes (fiscal capacity building $\to$ democratization, fiscal weakness $\to$ inflation) have time to operate, making collider concerns more relevant than in annual panels.
+
+The total IVB across all 12 candidate colliders sums to approximately $+0.041$ (from $\hat\beta_{\text{short}} = -0.278$ to $\hat\beta_{\text{long}} = -0.319$). The plausible colliders (hyperinflation, GDP growth, liberal democracy) account for approximately $0.032$ of this total, suggesting that genuine collider bias may explain a meaningful fraction of the overall bias from including controls.
+
+# References
+
+- Albers, T., Jerven, M., & Suesse, M. (2023). The Fiscal State in Africa: Evidence from a Century of Growth. *International Organization*, 77(2), 267--313.
+- Bates, R. H. & Lien, D.-H. D. (1985). A Note on Taxation, Development, and Representative Government. *Politics & Society*, 14(1), 53--70.
+- Besley, T. & Persson, T. (2009). The Origins of State Capacity: Property Rights, Taxation, and Politics. *American Economic Review*, 99(4), 1218--1244.
+- Besley, T. & Persson, T. (2011). *Pillars of Prosperity: The Political Economics of Development Clusters*. Princeton University Press.
+- Besley, T. & Persson, T. (2013). Taxation and Development. In *Handbook of Public Economics*, Vol. 5, 51--110.
+- Catao, L. A. V. & Terrones, M. E. (2005). Fiscal Deficits and Inflation. *Journal of Monetary Economics*, 52(3), 529--554.
+- Fukuyama, F. (2011). *The Origins of Political Order*. Farrar, Straus and Giroux.
+- Huntington, S. P. (1968). *Political Order in Changing Societies*. Yale University Press.
+- Johnson, N. D. & Koyama, M. (2017). States and Economic Growth: Capacity and Constraints. *Explorations in Economic History*, 64, 1--20.
+- Kato, J. (2019). Does Taxation Lose Its Role in Contemporary Democratisation? *European Journal of Political Research*, 58(1), 184--208.
+- Levi, M. (1988). *Of Rule and Revenue*. University of California Press.
+- Moss, T., Pettersson, G., & van de Walle, N. (2006). An Aid-Institutions Paradox? *CGD Working Paper* 74.
+- Reinhart, C. M. & Rogoff, K. S. (2009). *This Time Is Different*. Princeton University Press.
+- Ross, M. L. (2004). Does Taxation Lead to Representation? *British Journal of Political Science*, 34(2), 229--249.
+- Sargent, T. J. & Wallace, N. (1981). Some Unpleasant Monetarist Arithmetic. *FRB Minneapolis Quarterly Review*, 5(3), 1--17.

@@ -1,0 +1,153 @@
+---
+title: "Avaliação de Potencial de IVB: Hollyer et al. (2025)"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    keep_tex: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(knitr)
+```
+
+# Q\&A inicial
+
+**Q1. O tratamento principal é plausivelmente exógeno?**  
+**A1.** É observacional, mas com identificação causal parcial no desenho (PanelMatch), especialmente para democracias.
+
+**Q2. Com o novo insight (tratamento exógeno), os controles deste artigo são majoritariamente controles de confusão ou potenciais colliders?**  
+**A2.** Majoritariamente controles de confusão/seleção. O desenho empírico foi construído para corrigir endogeneidade do tratamento, não para um cenário de tratamento quase aleatório.
+
+**Q3. Este paper tem alto potencial para um estudo de IVB focado em collider em contexto de tratamento exógeno?**  
+**A3.** Potencial moderado-baixo. É útil para contraste e para discutir IVB em desenho observacional com seleção forte, mas menos \"clean\" que casos onde confounding residual é menor.
+
+# 1. Visão geral do paper
+
+**Paper:** Hollyer, Pang, Rosendorff e Vreeland (2025), *Political Science Research and Methods*  
+**Título:** *Do the Bretton Woods Institutions promote economic transparency?*  
+**Pergunta:** Empréstimos do FMI e do Banco Mundial aumentam transparência econômica?  
+**Janela temporal:** 1980--2010  
+**Amostra efetiva:** 3.750 observações país-ano (125 países)  
+
+**Variável dependente (Y):** índice HRV de transparência econômica.  
+**Tratamento (D):** empréstimos dos BWIs (compromissos e desembolsos; versões binária e de tamanho).  
+
+# 2. Especificação empírica relevante
+
+O artigo usa dois blocos:
+
+1. **PanelMatch** para estimativa causal (ATT), com histórico de tratamento e ponderação por covariadas.
+2. **Modelos multinível** para associações no painel completo.
+
+Na especificação multinível principal, entram como controles (defasados):
+
+- transparência defasada,
+- PIB per capita,
+- população,
+- PIB,
+- comércio/PIB,
+- BITs assinados,
+- membro da OMC,
+- membro do CSNU,
+- instabilidade política,
+- distância geográfica,
+- indicadores regionais,
+- tipo de regime.
+
+# 3. Avaliação com o novo insight
+
+## 3.1 Força de identificação do tratamento
+
+O paper trata explicitamente os problemas de identificação:
+
+- os autores mostram associação entre transparência prévia e alocação de empréstimos (problema de seleção);
+- reconhecem risco de *carry-over effects* (histórico de empréstimos afeta tratamento futuro e desfecho);
+- precisam de PanelMatch para construir contrafactuais com histórico idêntico de tratamento;
+- no Banco Mundial, a fração de tratados que encontra pares válidos é baixa (menos de 10\%).
+
+Conclusão: identificação observacional plausível, porém mais sensível a hipóteses e suporte de pareamento do que em casos experimentais.
+
+## 3.2 Potencial de IVB \"clean\" dominante
+
+Com esse desenho, os controles entram sobretudo para mitigar seleção e dinâmica temporal:
+
+- viés de seleção na alocação dos empréstimos;
+- heterogeneidade observável entre países/regimes;
+- persistência temporal muito forte do desfecho (LDV de transparência ~0,97).
+
+Por isso, a chance de o componente de IVB \"clean\" dominar é menor do que em casos com tratamento mais próximo de exógeno.
+
+## 3.3 Onde ainda pode haver risco de bad controls/collider
+
+Mesmo sem atender ao critério de exogeneidade, há risco metodológico secundário:
+
+- algumas covariadas econômicas defasadas podem já carregar efeitos de empréstimos passados (dado tratamento recorrente), criando possibilidade de ajuste pós-tratamento dinâmico;
+- a própria transparência defasada pode absorver parte de trajetórias induzidas por intervenções passadas.
+
+Isso é relevante, mas é um problema de dinâmica e recorrência do tratamento, não o cenário-alvo de "tratamento exógeno + collider por overcontrol".
+
+# 4. Score de adequação ao seu foco prático
+
+```{r tabela-score}
+score <- data.frame(
+  Criterio = c(
+    "Identificação causal observacional",
+    "Robustez da evidência do efeito",
+    "Chance de IVB dominante interpretável",
+    "Utilidade didática para IVB",
+    "Aderência ao seu novo foco prático"
+  ),
+  Nota_0a5 = c(3, 3, 2, 3, 2),
+  Justificativa = c(
+    "PanelMatch + multilevel abordam seleção e dinâmica, com limitações de suporte",
+    "Efeitos aparecem no matching para democracias, mas com divergências entre métodos",
+    "Controles ainda atuam fortemente como ajuste de confounding",
+    "Bom para discutir IVB em observacional complexo",
+    "Médio-baixo para buscar IVB clean dominante"
+  ),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+kable(
+  score,
+  caption = "Tabela 1. Adequação do paper Bretton Woods ao foco prático",
+  row.names = FALSE
+)
+```
+
+# 5. Veredito
+
+**Veredito final:** **candidato moderado-baixo** para seu objetivo principal.
+
+Este paper é útil como:
+
+- caso de contraste metodológico (tratamento endógeno + correções por matching),
+- exemplo de como efeitos mudam com diferentes estratégias (PanelMatch vs. multinível).
+
+Mas **não é o melhor laboratório para argumentar que o efeito IVB clean é dominante**.
+
+# 6. Recomendação prática para o pipeline
+
+Para o objetivo atual, recomendo:
+
+1. manter este paper como "caso secundário/contraste";
+2. priorizar papers em que D seja mais próximo de choque exógeno;
+3. nesses casos, usar IVB para mostrar que controles adicionais podem funcionar como collider ou mediador indevido.
+
+# 7. Fontes e data de acesso
+
+- Artigo analisado (arquivo local): `replication/candidate_papers/do_the_bretton_woods_institutions_promote_economic_transparency.pdf`  
+- DOI: 10.1017/psrm.2024.28  
+- Data de acesso: `r Sys.Date()`.
+
+# 8. Perguntas para próxima iteração
+
+1. Você quer que eu já faça o mesmo relatório (com este novo critério) para mais 2 papers da pasta `candidate_papers` e entregue um ranking comparativo?  
+2. Você prefere que eu transforme este diagnóstico em um template único reutilizável (Rmd) para acelerar as próximas avaliações?

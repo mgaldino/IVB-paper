@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Large data files (GitHub 100MB limit)
+*.dta
+*.zip
+
+# macOS
+.DS_Store
