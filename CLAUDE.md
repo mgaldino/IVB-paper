@@ -8,37 +8,40 @@ Paper academico sobre **Included Variable Bias (IVB)** — o vies que surge quan
 - theta* = coeficiente de Z no modelo longo
 - pi = coeficiente de D na regressao auxiliar Z ~ D + FE
 
-## Framing central do paper (2026-03-01)
+## Framing central do paper (2026-03-03)
 
-### Tres perspectivas sobre o mesmo fenomeno
+### Contribuicao central — Lane do paper
 
-O IVB de controlar por Z dual-role e o **mesmo mecanismo** visto de tres angulos:
-1. **IVB** (nossa formula): vies = -theta* x pi ao incluir collider
-2. **Post-treatment bias** (Blackwell & Glynn 2018): condicionar em Z pos-tratamento abre back-door via U_i
-3. **Strict exogeneity violation** (Imai & Kim 2019): TWFE basico nao-identificado quando ha dinamica causal
+**Estimando**: CET (contemporaneous effect of treatment, efeito de D_t sobre Y_t).
 
-### Argumento-chave
+**O problema novo**: Em TSCS, pesquisadores rotineiramente defasam controles (incluem Z_{t-1}) para "evitar reverse causality". Quando Z e causado por D e Y, isso cria a estrutura D_{t-1} -> Z_{t-1} <- Y_{t-1}. Condicionar em Z_{t-1} **abre** um caminho collider que viesa o CET. **Ninguem articulou isso na literatura de TSCS.**
 
-Blackwell & Glynn mostram que ADL tem post-treatment bias e recomendam SNMM/MSM. Porem:
-- SNMM/MSM **nao controlam** por confounders time-invariant (alpha_i)
-- Em CP, alpha_i (country effects, institutions, geography) e **ubiquo**
-- A formula do IVB **quantifica** o post-treatment bias e mostra que e pequeno sob linearidade + caso misto
+**A formula**: IVB = -theta* x pi quantifica esse vies com quantidades ja estimadas pelo pesquisador.
 
-**Portanto**: ADL+FE e a escolha pratica. O pesquisador aceita IVB pequeno (<1% de beta) em troca de controle por alpha_i.
+**A solucao**: O ADL com variavel dependente defasada (Y_{t-1}) **bloqueia** o caminho collider aberto, sob linearidade ou nao-linearidade bounded. Vies residual < 3% de beta.
 
-### Por que a formula "trivial" e importante
+**O limite**: Sob nao-linearidade unbounded na equacao do collider, o ADL linear nao consegue bloquear o caminho, e o vies retorna.
 
-A formula IVB = -theta* x pi e FWL puro — mecanicamente simples. Mas o **uso** e novo:
-1. **Diagnostico quantitativo**: permite calcular |IVB| com dados reais e decidir se incluir Z vale a pena
-2. **Bridge entre literaturas**: unifica IVB (nosso) + post-treatment bias (Blackwell) + collider bias (Pearl)
-3. **Resultado substantivo**: sob linearidade e caso misto, |IVB| < 1% de beta — o problema de Blackwell & Glynn e negligivel
-4. **Delimitacao**: collider **puro** (Z so causado por D/Y, nao causa nada) => IVB e vies puro, Blackwell & Glynn estao certos. Caso **misto** (Z tambem e confounder via lags) => incluir Z cria IVB mas remove OVB maior, net favoravel
+### Elevator pitch
 
-### Collider puro vs caso misto
+"Todo mundo sabe que omitir variaveis gera vies. Ninguem percebeu que incluir variaveis defasadas como controle em painel — pratica universal em CP — pode gerar vies por abrir um caminho collider. Derivamos uma formula fechada para esse vies, mostramos que o ADL o resolve sob linearidade, e demonstramos que nas aplicacoes tipicas o vies e negligivel. O limite e nao-linearidade forte na equacao do collider."
 
-- **Collider puro**: IVB e puro vies, sem compensacao. Nao condicione em Z. Blackwell & Glynn 100% corretos.
-- **Caso misto**: incluir Z cria IVB mas remove OVB. A formula mostra que o net e quase sempre favoravel sob linearidade.
-- A formula permite **distinguir os dois casos empiricamente** — basta estimar theta* e pi.
+### Lane vs Blackwell & Glynn (2018)
+
+BG e COMPLEMENTAR, nao adversario. Lanes separados, zero conflito:
+
+| | BG (2018) | Nosso paper |
+|---|---|---|
+| **Estimando** | Efeitos defasados (impulse response) | CET (efeito contemporaneo) |
+| **Problema** | Post-treatment bias em beta_2 (coef. do tratamento defasado) | Collider bias em beta_1 (CET) por incluir Z_{t-1} |
+| **Fonte do vies** | X_{t-1} -> Z_t (Z contemp. e pos-tratamento para efeito defasado) | D_{t-1} -> Z_{t-1} <- Y_{t-1} (Z defasado e collider) |
+| **Solucao** | SNMM / MSM | ADL (sob linearidade/bounded NL) |
+| **Limite** | Functional form do outcome model | NL unbounded na equacao do collider |
+
+**Importante**: BG mostram que beta_1 (CET) e consistente no ADL sob linearidade (p. 1073). O post-treatment bias deles afeta apenas beta_2 (efeitos defasados). Nosso paper identifica um problema **diferente** no CET: collider bias de Z_{t-1}. Sob linearidade, o ADL resolve; sob NL unbounded, nao.
+
+**NAO dizer**: "IVB = post-treatment bias de BG" (sao coisas diferentes).
+**DIZER**: "BG identificaram post-treatment bias para efeitos defasados. Nos identificamos collider bias para o CET — um problema distinto que o ADL resolve sob linearidade."
 
 ### Imai & Kim (2019) — leitura correta
 
@@ -47,25 +50,27 @@ A formula IVB = -theta* x pi e FWL puro — mecanicamente simples. Mas o **uso**
 - ADL+FE e a solucao parametrica (Table 1, rows 2-4) com vies residual O(1/T) do estimador within com LDV
 - NAO usar "Nickell bias" para descrever o argumento central de Imai & Kim
 
-### Blackwell & Glynn (2018) — leitura correta
+### Collider puro vs caso misto
 
-- ADL tem post-treatment bias para efeitos defasados quando Z e afetado pelo tratamento
-- SNMM/MSM evitam o post-treatment bias, mas exigem todos confounders observados
-- FE nao e compativel com MSM/IPTW facilmente (BG footnote 13)
-- Sob linearidade, o post-treatment bias (= IVB) e pequeno — o custo de perder alpha_i >> IVB
+- **Collider puro**: IVB e puro vies, sem compensacao. Exclua Z.
+- **Caso misto** (Z e collider E confounder via lags): incluir Z cria IVB mas remove OVB. A formula permite quantificar o trade-off.
+- A formula permite **distinguir os dois casos empiricamente** — basta estimar theta* e pi.
 
-### Simulacoes de nao-linearidade (PLANEJADAS)
+### O que FICA no paper (apos reestruturacao)
 
-O resultado "IVB pequeno" depende de linearidade. Simulacoes planejadas para delimitar:
+1. O problema novo: controles defasados como colliders viésam o CET
+2. A formula IVB = -theta* x pi (cross-section + ADL)
+3. FE absorvem between-unit collider channels
+4. ADL bloqueia o caminho collider sob linearidade (vies < 3% de beta)
+5. Boundary condition: NL unbounded quebra o bloqueio
+6. Aplicacoes empiricas: mediana IVB ~ 0.13 SE
 
-| ID | Nao-linearidade | Equacao | O que testa |
-|---|---|---|---|
-| NL-1a | Polinomial D->Z (grau 1,2,3) | Z = ... + d_D2*D^2 [+ d_D3*D^3] | IVB quando collider e nao-linear |
-| NL-1b | Interacao D*H->Z (H exogena) | Z = ... + d_DH*D*H | IVB com heterogeneidade no canal collider |
-| NL-1c | Polinomial D->Z + Y->Z | Z = ... + d_D2*D^2 + d_Y2*Y^2 | Caso adverso: dois canais nao-lineares |
-| NL-2 | Carryover D->Y nao-linear | Y = ... + b2*D_lag^2 | Interacao especificacao errada x IVB |
+### O que SAI do paper (apos reestruturacao)
 
-Predicao: IVB aumenta com grau de nao-linearidade no canal D->Z (NL-1a/c). Se confirmado, delimita quando ADL+FE funciona vs quando MSM/IPTW valem o custo.
+- Tentativa de "dialogar" com BG como se resolvessem o mesmo problema
+- Discussao de SNMM/MSM vs ADL+FE (irrelevante — estimandos diferentes)
+- Mecanismo "few switchers" (sobre precisao, nao sobre o collider bias)
+- Mecanismo "feedback Y->D" (sobre strict exogeneity, tangencial ao collider)
 
 ## Estrutura do repositorio
 
