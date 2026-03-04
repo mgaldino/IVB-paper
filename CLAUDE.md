@@ -8,69 +8,58 @@ Paper academico sobre **Included Variable Bias (IVB)** — o vies que surge quan
 - theta* = coeficiente de Z no modelo longo
 - pi = coeficiente de D na regressao auxiliar Z ~ D + FE
 
-## Framing central do paper (2026-03-03)
+## Framing do paper — STATUS: INVALIDADO (2026-03-03)
 
-### Contribuicao central — Lane do paper
+### O que aconteceu
 
-**Estimando**: CET (contemporaneous effect of treatment, efeito de D_t sobre Y_t).
+Simulacoes MC + analise de d-separation mostraram que o ADL completo (Y ~ D + D_lag + Y_lag + Z_lag | FE) da vies < 3% de beta em TODOS os 170 cenarios testados, incluindo NL unbounded (power1.5, Dlog), feedback, carryover, binary D. Nenhuma excecao.
 
-**O problema novo**: Em TSCS, pesquisadores rotineiramente defasam controles (incluem Z_{t-1}) para "evitar reverse causality". Quando Z e causado por D e Y, isso cria a estrutura D_{t-1} -> Z_{t-1} <- Y_{t-1}. Condicionar em Z_{t-1} **abre** um caminho collider que viesa o CET. **Ninguem articulou isso na literatura de TSCS.**
+### Resultado-chave: o argumento do "firewall"
 
-**A formula**: IVB = -theta* x pi quantifica esse vies com quantidades ja estimadas pelo pesquisador.
+Os UNICOS pais de Y_{t+1} no DAG sao {D_{t+1}, Y_t, Z_t}. Condicionar em {Y_t, Z_t} bloqueia TODOS os backdoor paths, independente de:
+- Cascatas de colliders abertos no passado (Z_{t-2}, Z_{t-3}, ...)
+- Persistencia de Z (Z_{t-1} -> Z_t nao muda nada)
+- Y_t ser collider de {D_t, Z_{t-1}, Y_{t-1}} — os paths abertos nao chegam em Y_{t+1} sem passar por {Y_t, Z_t}
+- Forma funcional da equacao de Z (resultado estrutural de d-separation, nao parametrico)
 
-**A solucao**: O ADL com variavel dependente defasada (Y_{t-1}) **bloqueia** o caminho collider aberto, sob linearidade ou nao-linearidade bounded. Vies residual < 3% de beta.
+### Tabela-resumo (todas as simulacoes)
 
-**O limite**: Sob nao-linearidade unbounded na equacao do collider, o ADL linear nao consegue bloquear o caminho, e o vies retorna.
-
-### Elevator pitch
-
-"Todo mundo sabe que omitir variaveis gera vies. Ninguem percebeu que incluir variaveis defasadas como controle em painel — pratica universal em CP — pode gerar vies por abrir um caminho collider. Derivamos uma formula fechada para esse vies, mostramos que o ADL o resolve sob linearidade, e demonstramos que nas aplicacoes tipicas o vies e negligivel. O limite e nao-linearidade forte na equacao do collider."
-
-### Lane vs Blackwell & Glynn (2018)
-
-BG e COMPLEMENTAR, nao adversario. Lanes separados, zero conflito:
-
-| | BG (2018) | Nosso paper |
+| Simulacao | max |adl_all_bias| | % de beta |
 |---|---|---|
-| **Estimando** | Efeitos defasados (impulse response) | CET (efeito contemporaneo) |
-| **Problema** | Post-treatment bias em beta_2 (coef. do tratamento defasado) | Collider bias em beta_1 (CET) por incluir Z_{t-1} |
-| **Fonte do vies** | X_{t-1} -> Z_t (Z contemp. e pos-tratamento para efeito defasado) | D_{t-1} -> Z_{t-1} <- Y_{t-1} (Z defasado e collider) |
-| **Solucao** | SNMM / MSM | ADL (sob linearidade/bounded NL) |
-| **Limite** | Functional form do outcome model | NL unbounded na equacao do collider |
+| mechC_adl (binary D) | 0.0285 | 2.9% |
+| nl_collider (incl. power1.5) | 0.0229 | 2.3% |
+| nl_carryover | 0.0112 | 1.1% |
+| feedback_Y_to_D | 0.0103 | 1.0% |
+| feedback_carryover | 0.0075 | 0.8% |
+| direct_carryover | 0.0035 | 0.4% |
+| nl_interact | 0.0031 | 0.3% |
 
-**Importante**: BG mostram que beta_1 (CET) e consistente no ADL sob linearidade (p. 1073). O post-treatment bias deles afeta apenas beta_2 (efeitos defasados). Nosso paper identifica um problema **diferente** no CET: collider bias de Z_{t-1}. Sob linearidade, o ADL resolve; sob NL unbounded, nao.
+### Consequencias
 
-**NAO dizer**: "IVB = post-treatment bias de BG" (sao coisas diferentes).
-**DIZER**: "BG identificaram post-treatment bias para efeitos defasados. Nos identificamos collider bias para o CET — um problema distinto que o ADL resolve sob linearidade."
+- BG (2018) ja mostraram que beta_1 e consistente no ADL (p. 1073). Nossas simulacoes confirmam universalmente.
+- O frame "ninguem viu que controles defasados viesam o CET" so vale para TWFE sem Y_{t-1}. Mas ai a solucao e "use ADL" — que BG ja recomendam.
+- O plano de reescrita para APSR (quality_reports/plans/2026-03-03_rewrite-apsr.md) esta **ON HOLD**.
+- O paper precisa de repensar fundamental da contribuicao.
 
-### Imai & Kim (2019) — leitura correta
+### NAO fazer (erros a evitar)
+
+- **NAO dizer** "NL unbounded e boundary condition para o ADL" — NAO E. ADL funciona em todos os cenarios.
+- **NAO dizer** "BG nao viram o problema do collider para o CET" — BG mostraram beta_1 consistente no ADL.
+- **NAO confundir** adl_Ylag (parcial, PODE ter vies ate 41%) com adl_all (completo, vies < 3%).
+- **NAO confundir** adl_all_nofe (sem FE, vies 8-13%) com adl_all (com FE, vies < 3%). FE sao essenciais.
+
+### O que sobrevive (potencialmente)
+
+- A formula IVB em si (identidade algebrica, quantifica vies de incluir collider)
+- Diagnostico para TWFE (muitos pesquisadores usam TWFE, nao ADL)
+- Aplicacoes empiricas (mediana IVB ~ 0.13 SE)
+
+### Imai & Kim (2019) — leitura correta (ainda valida)
 
 - O argumento de Imai & Kim e sobre **identificacao** (strict exogeneity), NAO sobre "Nickell bias"
 - TWFE basico e **nao-identificado** quando ha dinamica causal — vies permanente (nao O(1/T))
 - ADL+FE e a solucao parametrica (Table 1, rows 2-4) com vies residual O(1/T) do estimador within com LDV
 - NAO usar "Nickell bias" para descrever o argumento central de Imai & Kim
-
-### Collider puro vs caso misto
-
-- **Collider puro**: IVB e puro vies, sem compensacao. Exclua Z.
-- **Caso misto** (Z e collider E confounder via lags): incluir Z cria IVB mas remove OVB. A formula permite quantificar o trade-off.
-- A formula permite **distinguir os dois casos empiricamente** — basta estimar theta* e pi.
-
-### O que FICA no paper (apos reestruturacao)
-
-1. O problema novo: controles defasados como colliders viésam o CET
-2. A formula IVB = -theta* x pi (cross-section + ADL)
-3. FE absorvem between-unit collider channels
-4. ADL bloqueia o caminho collider sob linearidade (vies < 3% de beta)
-5. Boundary condition: NL unbounded quebra o bloqueio
-6. Aplicacoes empiricas: mediana IVB ~ 0.13 SE
-
-### O que SAI do paper (apos reestruturacao)
-
-- Tentativa de "dialogar" com BG como se resolvessem o mesmo problema
-- Discussao de SNMM/MSM vs ADL+FE (irrelevante — estimandos diferentes)
-- Mecanismo "few switchers" (sobre precisao, nao sobre o collider bias)
-- Mecanismo "feedback Y->D" (sobre strict exogeneity, tangencial ao collider)
 
 ## Estrutura do repositorio
 
@@ -126,43 +115,10 @@ IVB-paper/
 - **Resultado principal**: IVB/|beta| e constante em R2_within — a simulacao era tautologica, so confirmava a formula
 - **Stack**: fixest, data.table, future.apply (4 workers), iid SEs
 
-## Simulacao v4 (EM ANDAMENTO)
+## Simulacoes — TODAS COMPLETAS (2026-03-03)
 
-**Plano**: quality_reports/plans/2026-02-28_sim-ivb-twfe-v4.md (DRAFT)
-**Pergunta**: Por que o IVB e pequeno em aplicacoes empiricas?
-**Arquivos**: simulations/v4_mechanisms/sim_ivb_twfe_v4.R + sim_ivb_twfe_v4_figures.R
-
-### Status atual
-- [x] Plano escrito e detalhado (v4)
-- [x] Codigo escrito (sim_ivb_twfe_v4.R + figures)
-- [ ] **Review de codigo (review-r skill) — PENDENTE**
-- [ ] Rodar simulacao
-- [ ] Verificar sanity checks
-- [ ] Gerar figuras
-
-### 4 Mecanismos
-
-| Mec | O que varia | DGP key | Grid | Predicao |
-|-----|-------------|---------|------|----------|
-| A | D->Z btw vs wth | gamma_D_btw, gamma_D_wth separados | 108 cen | IVB flat em gamma_D_btw |
-| B | Y->Z btw vs wth | gamma_Y_btw, gamma_Y_wth separados | 72 cen | theta* flat em gamma_Y_btw |
-| C | D binario escalonado | prob_switch controla switchers | 16 cen | IVB/SE cai com poucos switchers |
-| D | Erro de medida em Z | sigma2_me | 16 cen | |theta*| cai (attenuation bias) |
-
-**Total**: 212 cenarios x 500 reps. Fixos: N=200, T=30, beta=1, delta=0.
-
-### Algebra apos TWFE (mecanismo A)
-- pi = gamma_D_wth + gamma_Y*beta (gamma_D_btw absorvido pelo unit FE)
-- v1 e caso especial onde gamma_D_btw = gamma_D_wth
-
-### Figuras planejadas (7+)
-1. Heatmap A: |IVB/beta| vs (btw, wth) — faixas horizontais
-2. Line A: |IVB/beta| vs gamma_D_btw — flat
-3. IVB vs share_within do canal D->Z
-4. Heatmap B: analogo ao A para Y->Z
-5. Bar C: |IVB/SE| vs prob_switch
-6. Line D: |theta*| vs sigma2_me
-7. Tabela sintese: condicoes para IVB < 1 SE
+Todas as simulacoes rodaram. 170 cenarios, 8 arquivos de resultados. Ver MEMORY.md para detalhes.
+Resultado principal: adl_all com FE tem vies < 3% de beta em todos os cenarios.
 
 ## Workflow obrigatorio
 
