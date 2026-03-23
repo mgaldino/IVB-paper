@@ -88,8 +88,11 @@ IVB-paper/
       sim_nl_collider.R, sim_nl_interact.R, sim_nl_carryover.R
       plot_nl_functions.R, plot_nl_results.R
       results/
-    dynamics/                   # Feedback e carryover
+    dynamics/                   # Feedback, carryover, boundary conditions
       sim_direct_carryover.R, sim_direct_feedback.R, sim_feedback_carryover.R
+      sim_persistent_confounder.R  # Bellemare et al. (2017) — OVB persistente
+      sim_callaway_controls.R      # Callaway — NL em Z->Y + level-dep trends
+      sim_staggered_posttreat.R    # Staggered absorbing D — Y_lag pos-tratamento
       results/
     diagnostics/                # Scripts diag_* e check_*
       results/
@@ -115,10 +118,17 @@ IVB-paper/
 - **Resultado principal**: IVB/|beta| e constante em R2_within — a simulacao era tautologica, so confirmava a formula
 - **Stack**: fixest, data.table, future.apply (4 workers), iid SEs
 
-## Simulacoes — TODAS COMPLETAS (2026-03-03)
+## Simulacoes — TODAS COMPLETAS (2026-03-03, expandidas 2026-03-23)
 
-Todas as simulacoes rodaram. 170 cenarios, 8 arquivos de resultados. Ver MEMORY.md para detalhes.
+Todas as simulacoes rodaram. 170 cenarios originais + 120 novos (boundary conditions).
 Resultado principal: adl_all com FE tem vies < 3% de beta em todos os cenarios.
+
+### Boundary conditions (2026-03-23)
+- **Bellemare (OVB persistente)**: ADL NAO resolve. OVB 40-53% com kappa=0.5. Problema ortogonal.
+- **Callaway (NL em Z->Y + level-dep trends)**: ADL robusto. Bias < 0.3%.
+- **Staggered absorbing D (Y_lag pos-tratamento)**: ADL robusto. Bias < 1%.
+- **Unica boundary condition real**: OVB de confounder nao-observado (requer IV/design).
+- **Relatorio completo**: quality_reports/sim_callaway_bellemare_report.md
 
 ## Workflow obrigatorio
 
