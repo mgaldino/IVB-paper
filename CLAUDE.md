@@ -126,6 +126,7 @@ Resultado principal: adl_all com FE tem vies < 3% de beta em todos os cenarios.
 2. **Review de codigo** via skill `review-r` antes de rodar
 3. **NAO rodar** sem aprovacao do usuario
 4. **NAO commitar** sem instrucao explicita
+5. **O agente que implementa NAO revisa. Quem revisa NAO implementa.** Usar agentes separados para cada funcao.
 
 ## Subagentes e permissoes
 

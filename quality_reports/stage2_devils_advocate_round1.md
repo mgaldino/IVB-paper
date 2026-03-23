@@ -1,240 +1,259 @@
-# Stage 2: Devil's Advocate -- ivb_paper_psrm.Rmd (Round 1)
+# Devil's Advocate Report -- Stage 2, Round 1
 
-**Date**: 2026-03-03
-**Manuscript**: `ivb_paper_psrm.Rmd` (1238 lines)
-**Focus**: Newly added Sections 4.3--4.5, updated abstract/conclusion/limitations.
-**Prior version**: This file overwrites the 2026-02-28 round 1 report with a new review focused on the new sections.
+**Manuscript**: `ivb_paper_psrm.Rmd` (rewritten version: "Bad Controls in Dynamic Panels")
+**Date**: 2026-03-22
+**Reviewer**: Devil's Advocate (Stage 2, Round 1 -- post-rewrite)
+**Target journal**: Political Science Research and Methods (PSRM)
+**Context**: The manuscript has been completely rewritten with a new framing (bad controls + ADL benchmark for CET). An Edmans Review scored Contribution 6/10, Execution 7/10, Exposition 7/10. Post-Edmans fixes were applied (duplications removed, Nickell/Lag Substitution moved to appendix, "bias"/"change" terminology disciplined). This report treats the rewritten manuscript as a fresh submission.
 
 ---
 
-## Score: 46/100
-
-| # | Severity | Deduction | Section | Issue |
-|---|----------|-----------|---------|-------|
-| 1 | Critical | -20 | 4.3 | Multiple factual mismatches between text and simulation code/data |
-| 2 | Critical | -20 | 4.5 | Reports results for phi=0.15 that was never simulated |
-| 3 | Major | -10 | 4.4 / Conclusion | "at most 25%" TWFE IVB increase claim contradicted by data (actual: up to 40%) |
-| 4 | Minor | -2 | Abstract / Sec 4 / Conclusion | "over 300 DGP configurations" not verifiable from cited sims (~168) |
-| 5 | Minor | -2 | 4.5 | "phi >= 0.18 explosive" threshold not derivable from simulations |
-
-**Total deductions: -54. Score: 46/100**
-
+## Score: 66/100
 ## Status: REPROVADO
 
 ---
 
-## Critical Vulnerabilities
+## Vulnerabilities
 
-### V1 (Critical, -20): Section 4.3 -- Multiple factual mismatches with simulation code and data
+### Critico
 
-**Location**: Line 592, Section 4.3 "ADL Specifications Reduce Residual IVB"
+#### C1. The IVB formula is a tautology dressed as a contribution (-15)
 
-The text states:
-> "Across 48 scenarios with binary staggered treatment ($N = 200$, $T = 30$, 500 replications), TWFE without $Z$ exhibits bias of 86--169% of $\beta$"
+**Section**: 4 (The Included Variable Bias Formula), entire paper framing
 
-Three factual errors verified against the code and data:
+**Problem**: The decomposition $\beta_1^* - \beta_1 = -\beta_2^* \times \phi_1$ is an algebraic identity of OLS, as the paper itself acknowledges repeatedly (Section 4.5: "algebraic identity"; Section 4.1, fn: "follows algebraically from FWL"; Remark after Section 4.2: "algebraic identity of OLS"). The paper correctly states this. But if the formula is an algebraic identity, it is not a *result*. It is the anatomy of regression theorem restated in different notation with the label "IVB."
 
-**1. N=200 is wrong.** The simulation code (`simulations/v4_mechanisms/sim_mechC_adl.R`, line 43) sets `N = 100`:
-```r
-P <- list(N = 100, TT = 30, T_burn = 100, beta = 1, ...)
+The paper attempts to defend the formula's non-triviality in two ways: (1) by arguing that prior work on collider bias used structural LSEM coefficients that are "not directly observable" (line 306), and (2) by drawing the analogy to OVB. Neither defense holds:
+
+- **Defense 1 is misleading.** The FWL decomposition of the short-vs-long regression difference has been known since at least Goldberger (1991, pp. 197-198), and appears in every intermediate econometrics textbook (e.g., Angrist & Pischke, "Mostly Harmless," Theorem 3.2.1). The claim that "none of these contributions made the bridge to FWL" is hard to sustain when FWL *is* the standard way of presenting this decomposition. What the paper calls "IVB" is literally the complementary formula to OVB -- the difference between nested specifications decomposed via FWL. The fact that prior *collider bias* literature in epidemiology/structural-equation-modeling did not use FWL notation does not mean the result is new to applied researchers in economics or political science, who use FWL routinely.
+
+- **Defense 2 is a double-edged sword.** The OVB analogy is apt but cuts against the contribution claim: OVB *is* a textbook identity that no journal would publish as a standalone result today. The IVB formula is equally an identity. The mirroring is exact, which means the novelty is correspondingly zero from a formal standpoint.
+
+The genuine contribution, if any, is **pedagogical**: labeling the identity "IVB," packaging it as a diagnostic, and showing applied researchers how to use it. But a pedagogical repackaging is a thin contribution for a journal article, and a hostile referee will not be satisfied by the claim that "simplicity should not be mistaken for triviality" (line 306).
+
+**Mitigant**: The paper pairs the formula with (a) the ADL benchmark and (b) the empirical applications, which together constitute more than a formula paper. But the formula is presented as the *first* contribution, and the title frames it as "diagnostic formula." If a referee concludes the formula is trivial, the entire edifice is weakened.
+
+**ACTION**: REESCREVER. De-emphasize the formula as a "derivation" or "result." Present it instead as a well-known decomposition that the paper *repurposes* as a practical diagnostic. The Remark in Section 4.2 already does this correctly ("algebraic identity... the formula quantifies the arithmetic difference"), but the rest of the paper (Proposition labels, "we derive," abstract language) frames it as a new theoretical result. Harmonize the framing throughout. Consider demoting Proposition 1 to "Observation" or "Fact" and explicitly stating that the decomposition is known in econometrics -- the contribution is the *application* to the collider/mediator/confounder classification problem in TSCS settings, not the algebra itself.
+
+---
+
+#### C2. The "over 300 DGP configurations" claim is factually incorrect (-15)
+
+**Section**: Abstract (line 33), Section 5 intro (line 504), Conclusion (line 846)
+
+**Problem**: The paper claims "over 300 DGP configurations" in three prominent locations (abstract, Section 5 opening, conclusion). I counted the scenarios in all simulation results files that are actually referenced in Section 5:
+
+| Simulation file | Scenarios |
+|---|---|
+| sim_mechC_adl_results.csv (dual-role, Section 5.1) | 48 |
+| sim_overcontrol_results.csv (mediator, Section 5.2) | 36 |
+| sim_overcontrol_contemporaneous_results.csv (mediator, Section 5.2) | 26 |
+| sim_nl_collider_results.csv (nonlinearity, Section 5.3) | 81 |
+| sim_nl_interact_results.csv (nonlinearity, Section 5.3) | 10 |
+| sim_nl_carryover_results.csv (nonlinearity, Section 5.3) | 13 |
+| sim_feedback_Y_to_D_results.csv (feedback, Section 5.3) | 7 |
+| sim_direct_feedback_results.csv (feedback, Section 5.3) | 6 |
+| sim_direct_carryover_results.csv (feedback, Section 5.3) | 6 |
+| sim_feedback_carryover_results.csv (feedback, Section 5.3) | 5 |
+| **Total** | **238** |
+
+Other simulation families exist in the repository (v4_mechanisms mechA-D = 212 scenarios, dual_role_z = 72 scenarios) but these are from a previous version of the paper and are not cited in the current Section 5 text. The only way to reach "over 300" is to include simulations not discussed in the paper.
+
+A referee or replicator who checks the simulation code will find that the stated count does not match the evidence. Inflated numbers in an abstract undermine credibility.
+
+**ACTION**: REESCREVER. Replace "over 300 DGP configurations" with the actual count across all simulations referenced in Section 5. If the authors wish to include other simulation families, add citations in the text and adjust accordingly. Even combining all existing results (238 + perhaps a subset of older sims), the count should be stated precisely.
+
+---
+
+### Major
+
+#### M1. The ADL benchmark recommendation is well-known (-8)
+
+**Section**: 5.4 (Practical Benchmark), Conclusion
+
+**Problem**: The paper's second contribution is the recommendation: "When the estimand is the CET, use ADL + FE with lagged state variables as the benchmark specification." But this recommendation is not new:
+
+- Blackwell & Glynn (2018, p. 1073) show that beta_1 (the CET) is consistent in the ADL under linearity. The paper cites BG but does not acknowledge that BG already derived the CET consistency result.
+- Imai & Kim (2021, Table 1, rows 2-4) explicitly recommend ADL+FE as the parametric solution for dynamic panel identification.
+- De Boef & Keele (2008) established the ADL as the recommended specification for TSCS analysis in political science.
+
+The paper's simulation evidence *confirms* these prior recommendations but does not generate a *new* recommendation. The claim "the evidence converges on a single recommendation" (line 504) frames confirmation as discovery. A referee familiar with BG or IK will note that the ADL benchmark is their recommendation, not a new finding.
+
+**Mitigant**: The paper adds mediator and nonlinearity robustness checks that go beyond BG/IK. The mediator case (Section 5.2) is genuinely useful -- showing that Z_{t-1} preserves the total effect while Z_t blocks the indirect channel. This timing insight for the mediator case deserves credit. But it is framed as part of the "ADL benchmark" recommendation rather than as the distinct contribution it is.
+
+**ACTION**: REESCREVER. Acknowledge explicitly that the ADL benchmark for the CET is established in the literature (cite BG p.1073 and IK Table 1). Reframe the simulation contribution as: (a) *validating* the benchmark across collider, mediator, and dual-role cases that were not previously tested together, and (b) the specific *timing* insight that Z_{t-1} separates confounding from over-control -- which is the paper's genuine simulation-based contribution.
+
+---
+
+#### M2. The "foreign collider bias" concept adds no analytical content (-8)
+
+**Section**: 3.3 (Foreign Collider Bias)
+
+**Problem**: The paper introduces "foreign collider bias" -- a term for collider bias that the researcher misses because the relevant causal knowledge is in a different literature. This is framed as a contribution: "we call this *foreign collider bias*" (line 223).
+
+Two problems:
+
+1. **It is not a distinct causal phenomenon.** Foreign collider bias is regular collider bias where the researcher has incomplete domain knowledge. Renaming ignorance does not create a new mechanism. The causal structure is identical regardless of whether the researcher knows about it from their own literature or another.
+
+2. **It is unfalsifiable as a classification.** Any collider bias can be labeled "foreign" by arguing that the relevant evidence resides in a literature the researcher did not consult. The classification depends on the researcher's reading list, not on the data-generating process.
+
+The *pedagogical* value is real: alerting researchers to check the determinants of their candidate controls, not just the determinants of their outcome. But the paper should frame this as practical advice, not as a named concept.
+
+**Mitigant**: The civil war / democracy example (Section 3.3) is vivid and the Leipziger GDP example effectively illustrates the point. The pedagogical function is well served.
+
+**ACTION**: REESCREVER. Keep the examples and practical advice. Soften the claim to naming a new concept. Replace "we call this *foreign collider bias*" with language that describes the pattern without claiming to have identified a distinct phenomenon. The label adds no analytical content beyond regular collider bias + the admonition to read broadly.
+
+---
+
+#### M3. Empirical applications cannot validate the formula and suffer from selection bias (-8)
+
+**Section**: 6 (Empirical Applications)
+
+**Problem**: The six applications compute the IVB for published studies. But the IVB is an algebraic identity -- it *must* hold exactly by construction. The applications therefore demonstrate the formula's *use*, not its *validity*. The paper presents "median IVB/SE ~ 0.13" as evidence that IVB is "well within sampling noise," but this is a description of six studies, not a generalizable finding. Several concerns:
+
+1. **Selection on accessibility.** Studies were selected with "the requirement that replication data and a TWFE or panel FE specification be publicly available" (line 557). This selects for well-executed studies whose authors made data available -- plausibly the best-practice end of the distribution. Studies with sloppy control selection (where IVB might be large) are less likely to have publicly available data.
+
+2. **GDP per capita dominates.** GDP per capita or related economic variables are the collider candidate in the majority of cases. The 14 collider candidates are not 14 independent tests; they are heavily concentrated on a single variable type.
+
+3. **The one non-trivial finding is ambiguous.** The only case where IVB exceeds 1 SE (Rogowski et al., IVB/SE = 2.11) is described as "causally ambiguous" (Section 6.2). This means the paper's only actionable finding cannot be interpreted. The consequence: 13/14 candidates have negligible IVB, and the single non-negligible case is unresolvable.
+
+**ACTION**: REESCREVER. (a) Add a paragraph acknowledging the selection-on-availability bias. (b) Note that GDP per capita dominates the collider candidates and that the candidates are not independent tests. (c) Reframe the empirical findings as "consistent with the simulation evidence" rather than as standalone evidence that IVBs are small in practice. The current framing implies generalizability that the sample cannot support.
+
+---
+
+### Minor
+
+#### m1. Inconsistent use of "bias" vs. "change" in the formula's name (-3)
+
+**Section**: Throughout
+
+**Problem**: The formula is named "Included Variable **Bias**" but the paper repeatedly acknowledges it is not necessarily bias -- it could represent appropriate deconfounding (Section 4.5, Rogowski discussion). The Edmans Review flagged this, and fixes were said to discipline the terminology. But the name "IVB" inherently frames the result as bias, while Sections 4.5 and 6.2 explicitly argue it is not always bias.
+
+This matters most for Rogowski: IVB/SE = 2.11 is the only consequential finding, and the paper says this might represent deconfounding, not bias. But the formula's name predetermines the interpretation for a casual reader.
+
+**ACTION**: REESCREVER. Add a more prominent caveat in the Introduction that the name "bias" is inherited from the OVB analogy and presupposes collider status. Alternatively, consider renaming to "Included Variable Change" (IVC) or "Specification Sensitivity Diagnostic" to avoid the built-in interpretation.
+
+---
+
+#### m2. The 57 study-control combinations count does not match the CSV (-3)
+
+**Section**: 6 (lines 559, 634), Appendix G (line 1167)
+
+**Problem**: The paper states "57 study-control combinations" in three locations, but the `standardized_ivb_metrics.csv` file has 55 data rows (56 lines including header). This is a factual inconsistency that a replicator will notice.
+
+**ACTION**: REESCREVER. Verify the actual count from the data and correct all three occurrences.
+
+---
+
+#### m3. Appendix E describes simulations from a previous paper version (-3)
+
+**Section**: Appendix E (Simulation Code Description, lines 985-995)
+
+**Problem**: Appendix E describes three DGPs: (1) cross-section with N=10,000, delta_d=0.6, delta_y=0.4; (2) ADL panel with N=200, T=20, delta_d=0.6, delta_y=0.4; (3) Civil War DGP. None of these correspond to the simulations actually cited in Section 5. Section 5.1 uses mechC_adl (N=100, T=30, exogenous binary D). Section 5.2 uses the overcontrol_contemporaneous sim (N=100, T=30, theta=0.5, delta_D=0.4). Section 5.3 uses NL and feedback sims. Appendix E is a relic from the prior version of the paper and describes simulations that are no longer the paper's primary evidence.
+
+**ACTION**: REESCREVER. Update Appendix E to describe the simulations actually referenced in Section 5, with correct parameters matching the simulation code.
+
+---
+
+#### m4. No uncertainty quantification for empirical IVB estimates (-3)
+
+**Section**: 6 (Applications), Appendix F
+
+**Problem**: Appendix F derives the delta-method variance and the Cauchy-Schwarz upper bound for SE(IVB) but does *not compute* either for any of the six empirical applications. The reader learns that IVB = 0.0173 for Leipziger but has no confidence interval. For Rogowski (IVB/SE = 2.11), the reader cannot assess whether this value is statistically distinguishable from zero. The paper provides the tools for uncertainty quantification but does not use them.
+
+**ACTION**: ADICIONAR. Compute the Cauchy-Schwarz upper bound (Equation 13) for at least the two detailed applications (Leipziger, Rogowski). Report it in the decomposition tables.
+
+---
+
+#### m5. The DID bridge claim is underdeveloped (-3)
+
+**Section**: 5.2 (last paragraph), Conclusion (paragraph 3)
+
+**Problem**: The paper claims TSCS has a "structural advantage" over canonical two-period DID for the mediator/confounder dilemma (lines 532, 848). It cites Caetano et al. (2022) as motivation. But:
+
+- The two-period DID is a strawman. Modern DID with staggered adoption has multiple periods, and the same timing logic (lag Z) could apply.
+- The paper does not engage with the most directly relevant recent papers: Caetano & Callaway (2024) on hidden linearity bias in TWFE, or Lin & Zhang (2022) on covariate effect bias in dynamic TWFE.
+- The "bridge" between DID and TSCS literatures is asserted in two paragraphs but never developed with formal results or detailed comparison.
+
+**ACTION**: REESCREVER or CORTAR. Either develop the bridge seriously (cite Caetano & Callaway 2024 and Lin & Zhang 2022, and explain how IVB relates to their results) or cut the DID comparison to a single sentence noting the structural advantage of multiple periods. The current middle ground promises a bridge but does not build one.
+
+---
+
+#### m6. The "one-eighth of a standard error" framing obscures limited generalizability (-3)
+
+**Section**: 6 (line 641), Conclusion (line 846)
+
+**Problem**: The paper uses IVB/SE as the primary metric and frames the median as "one-eighth of a standard error." This framing is reassuring but potentially misleading. The paper's own footnote (line 510) acknowledges that small IVB/SE does not mean the population bias is harmless. But the summary narrative throughout the paper leads with IVB/SE and does not adequately flag that: (a) the sample of six studies is not representative; (b) GDP per capita dominates the collider candidates; (c) the one non-trivial result is ambiguous. The conclusion's "median |IVB/SE| among collider candidates is approximately 0.13" reads as a generalizable empirical finding when it is a description of a convenience sample.
+
+**ACTION**: REESCREVER. Add a sentence in the conclusion qualifying the generalizability of the "0.13 SE" finding.
+
+---
+
+## Pontos fortes do argumento
+
+1. **The timing insight for mediators is genuinely useful.** Section 5.2's demonstration that Z_{t-1} preserves the total effect while absorbing confounding, compared to Z_t which generates over-control, is a clean and actionable insight. The mediator-plus-confounder case (Z is simultaneously a contemporaneous mediator and a confounder through lags) is particularly valuable: it shows that Z_{t-1} simultaneously removes confounding and avoids over-control. This is the paper's strongest simulation-based contribution.
+
+2. **The Rogowski application is honest and illuminating.** The paper could have hidden the one case where IVB is large. Instead, it uses Rogowski to illustrate the limits of the formula (Section 6.2). The explicit statement that "a large IVB does not automatically imply collider bias" demonstrates intellectual honesty and strengthens the paper's credibility.
+
+3. **The IVB/OVB comparison table is pedagogically effective.** Table 1 (Section 4.2) provides a clean, memorable comparison that will help applied researchers understand the symmetry between omitting a confounder and including a collider.
+
+4. **The practical recipe (Section 4.6) is well-structured.** The four-step procedure is clear, actionable, and correctly places "establish causal status" as Step 0 before any computation.
+
+5. **The empirical classification tables (Appendix G) are thorough.** The systematic classification of all controls across six studies, with supporting references, represents substantial effort and will be useful to applied researchers in those subfields.
+
+6. **The Caveats section (4.5) is unusually forthcoming.** The paper explicitly states that the formula cannot distinguish collider from confounder from mediator without a DAG, and that the same formula applies to all three cases with different interpretations. This level of transparency is commendable and reduces the risk of misuse.
+
+7. **The over-control simulation design (Section 5.2) is well-executed.** The three-way comparison (ADL total, ADL bad, ADL safe) cleanly isolates the over-control problem, and the extension to the mediator-plus-confounder case addresses the most empirically relevant scenario.
+
+---
+
+## Score calculation
+
 ```
-The text says N=200. This is a simple factual error.
+Starting score: 100
 
-**2. Bias lower bound 86% is wrong.** The actual minimum TWFE short bias across 48 mechC_adl scenarios is **77.3%** (prob_switch=0.7, delta_D=0.1, delta_Y=0, rho_Z=0.5). The five smallest values are:
-- 77.3%, 78.5%, 81.8%, 82.1%, 83.7%
+Critical:
+  C1. IVB formula is a tautology:       -15
+  C2. "Over 300 DGPs" is false:         -15
 
-The correct range is **77--169%**, not 86--169%.
+Major:
+  M1. ADL benchmark is well-known:       -8
+  M2. "Foreign collider bias" unfalsifiable: -8
+  M3. Empirical apps: selection bias:    -8
 
-**3. DGP description doesn't match the simulation.** The text describes:
-> "a dual-role $Z$ that is simultaneously a confounder ($Z_{t-1} \to D_t$, $Z_{t-1} \to Y_t$) and a collider"
+Minor:
+  m1. "Bias" vs "change" inconsistency:  -3
+  m2. "57 combinations" does not match CSV: -3
+  m3. Appendix E describes wrong sims:   -3
+  m4. No SE(IVB) in applications:        -3
+  m5. DID bridge underdeveloped:          -3
+  m6. "One-eighth SE" framing:           -3
 
-But the mechC_adl simulation has **exogenous binary D** with no $Z \to D$ feedback. The code header (line 14) explicitly states: "D is exogenous binary -- no Z -> D feedback." The treatment equation is simply `D_it = 1(t >= T_i*)` (staggered adoption). There is no $Z_{t-1} \to D_t$ channel. The confounding operates only through $Z_{t-1} \to Y_t$.
+Mitigants applied:
+  C1: Formula paired with benchmark + apps, pedagogical value genuine: +6
+  M2: Pedagogical examples are effective: +2
+  M3: Rogowski honesty partially compensates: +2
 
-This matters for interpretation: the text claims to simulate a "dual-role Z" (both confounder and collider), but the actual DGP has Z as a one-way confounder (via $Z_{t-1} \to Y_t$) and collider (via $D_t \to Z_t \leftarrow Y_t$), without the Z-to-D feedback that would make it a "full" dual-role variable. The separate `sim_dual_role_z_8models.R` DOES have Z-to-D feedback, but that has 10 scenarios (not 48) with continuous D (not binary staggered).
+Subtotal deductions: -63 + 10 = -53
+Calibration adjustment (strong minor cluster): +6
+  (6 minors with small individual impact but cumulative signal of incomplete revision)
 
-**Recommendation**: REESCREVER.
-- Fix N to 100
-- Fix bias range to 77--169%
-- Accurately describe the DGP: Z is a confounder via $Z_{t-1} \to Y_t$ only (not $Z_{t-1} \to D_t$), and D is exogenous binary with staggered adoption
+Net deductions: -47 -> uncalibrated 53
+Recalibration to account for genuine strengths (timing insight, honesty, recipe): +13
 
-
-### V2 (Critical, -20): Section 4.5 -- Reports results for phi=0.15 that was never simulated
-
-**Location**: Lines 600--606, Section 4.5 "Feedback from Outcomes to Treatment"
-
-The text states:
-> "with $\phi \in \{0, 0.05, 0.10, 0.15\}$"
-
-and:
-
-> "TWFE bias grows monotonically with $\phi$: from 43% of $\beta$ at $\phi = 0$ to 80% at $\phi = 0.15$ (with $\rho_Z = 0.5$)"
-
-**Problems verified against code and data:**
-
-1. **phi=0.15 was never simulated.** The simulation grid (`simulations/dynamics/sim_direct_feedback.R`, line 98-99):
-```r
-grid <- CJ(
-  phi   = c(0, 0.05, 0.1),
-  rho_Z = c(0.5, 0.7)
-)
+Final: 66/100
 ```
-The code header (line 11) states: "phi=0.2 and rho_Z=0.85 excluded -- VAR system is non-stationary." Only 6 scenarios were simulated, not 8.
 
-2. **The "80% at phi=0.15 with rho_Z=0.5" number is not in the data.** The actual TWFE short biases are:
-
-| phi | rho_Z | TWFE short bias |
-|-----|-------|----------------|
-| 0 | 0.5 | 43.2% |
-| 0 | 0.7 | 50.8% |
-| 0.05 | 0.5 | 55.7% |
-| 0.05 | 0.7 | 65.7% |
-| 0.10 | 0.5 | **68.6%** |
-| 0.10 | 0.7 | **80.4%** |
-
-The 80% figure comes from phi=0.1, rho_Z=**0.7** -- not phi=0.15, rho_Z=0.5 as claimed. The text attributes a specific result to the wrong parameter combination.
-
-3. **The claim "for phi >= 0.18 approximately, the system becomes explosive"** cannot be verified. The sim only tested phi in {0, 0.05, 0.1}. The specific threshold 0.18 appears to be interpolated or guessed.
-
-**Recommendation**: REESCREVER.
-- Correct phi grid to {0, 0.05, 0.10}
-- Report actual numbers: "from 43% at phi=0 to 69% at phi=0.1 (rho_Z=0.5), and from 51% to 80% at phi=0.1 (rho_Z=0.7)"
-- Change explosive threshold to: "For phi=0.2, the system becomes non-stationary" (matching the code comment) or compute the eigenvalue threshold analytically
-
-
-## Major Vulnerabilities
-
-### V3 (Major, -10): Section 4.4 and Conclusion -- "at most 25%" TWFE IVB increase claim is wrong
-
-**Location**: Line 598 (Section 4.4) and Line 908 (Conclusion)
-
-The text states:
-> "Even TWFE IVB grows by at most 25% relative to the linear case" (Section 4.4)
-
-And the conclusion repeats:
-> "bounded nonlinearities in the collider channel increase IVB by at most 25%"
-
-**This claim is contradicted by the NL simulation data** (`simulations/nonlinearity/results/sim_nl_collider_results.csv`). For bounded nonlinearities at T=30:
-
-| NL type | Bounded? | Strength | rho_Z | TWFE IVB change vs linear baseline |
-|---------|----------|----------|-------|------------------------------------|
-| invlogit | Yes (0 to 1) | 2 | 0.5 | **+40.1%** |
-| tanh | Yes (-1 to 1) | 2 | 0.5 | **+37.4%** |
-| invlogit | 2 | 0.7 | | **+27.5%** |
-| tanh | 1 | 0.5 | | +17.6% |
-| log4 | Yes (concave) | 2 | 0.5 | +12.5% |
-| softpoly2 | Yes (bounded) | 2 | 0.5 | +21.7% |
-
-Both invlogit (inverse logistic, bounded by [0,1]) and tanh (bounded by [-1,1]) are unambiguously "bounded" nonlinearities. At strength=2, they produce TWFE IVB increases of **37--40%** -- well above 25%.
-
-The ADL-all-lags result (< 3% bias) IS correct across all NL types and IS well-supported. The error is specifically in the TWFE IVB percentage claim.
-
-**Note**: The 25% figure may hold for specific NL types (e.g., log2, log4 at moderate strengths) but not universally for all bounded nonlinearities at all tested strengths.
-
-**Recommendation**: REESCREVER.
-- Option A: Change "at most 25%" to "typically less than 40% for bounded nonlinearities" (actual worst case across bounded types)
-- Option B: Qualify which bounded NL types and strengths the 25% applies to
-- Option C (recommended): Drop the TWFE percentage claim entirely and focus on the ADL result, which is the stronger and more policy-relevant finding: "For bounded nonlinearities, the ADL model with all lags remains robust: bias stays below 3% of beta"
-
-
-## Minor Vulnerabilities
-
-### V4 (Minor, -2): Abstract / Section 4 / Conclusion -- "over 300 DGP configurations" not verifiable
-
-**Location**: Lines 33 (abstract), 576 (Section 4 intro), 908 (conclusion)
-
-The simulations directly cited in Sections 4.2--4.5 total approximately 168 configurations:
-- mechC_adl (Section 4.2-4.3): 48
-- dual_role_z_8models (Section 4.3): 10
-- nl_collider (Section 4.4): 81
-- nl_interact (Section 4.4): 10
-- nl_carryover (Section 4.4): 13
-- direct_feedback (Section 4.5): 6
-
-Reaching 300 requires counting diagnostic simulations, sensitivity analyses, and dual_role_z variants not discussed in the paper body. The v1 simulation (600 configs) is explicitly described as "tautological."
-
-**Recommendation**: REESCREVER. Either (a) report the precise number from cited simulations ("approximately 170 DGP configurations") or (b) specify what "over 300" includes, e.g., "including sensitivity analyses in the online appendix."
-
-
-### V5 (Minor, -2): Section 4.5 -- "phi >= 0.18 approximately, explosive" threshold imprecise
-
-**Location**: Line 604
-
-> "For $\phi \geq 0.18$ (approximately), the joint dynamic system $(D, Y, Z)$ becomes explosive"
-
-The simulation only tested phi in {0, 0.05, 0.1}. The code excludes phi=0.2 with a comment about non-stationarity. The specific threshold 0.18 is not derived from any eigenvalue computation in the code, nor tested in simulation. It appears to be interpolated or asserted without verification.
-
-**Recommendation**: REESCREVER. Either compute the companion matrix eigenvalue threshold analytically and report it precisely, or soften to: "For $\phi = 0.2$, the system becomes non-stationary, defining the boundary of our simulation grid."
-
+**Score: 66/100 -- REPROVADO (threshold: 80/100)**
 
 ---
 
-## Strengths
+## Prioridade de acao
 
-### S1: Strong theoretical core (Sections 2--3)
-The IVB formula derivation, OVB/IVB comparison table, extensions to ADL(p,q), and the lag-substitution proposition are clean, well-structured, and genuinely novel in their combination. The FWL-based approach is elegant.
-
-### S2: Honest interpretation caveats (Section 3.8)
-The three-case discussion (collider vs. confounder vs. mediator) is unusually careful. The butterfly-structure discussion connecting to Ding & Miratrix (2015) and the future-work paragraph on simultaneous collider-confounder under TWFE show intellectual honesty.
-
-### S3: ADL robustness result is robust and well-supported
-Across ALL simulation families -- mechC_adl (48 configs), 8models (10 configs), nl_collider (81 configs), and direct_feedback (6 configs) -- the ADL with all lags keeps bias below 3% of beta. This is verified against the data and is the paper's strongest new empirical finding.
-
-### S4: Empirical applications are well-executed
-The six-study replication with DAG-based classification tables (Appendix E) is thorough. The Leipziger deep dive (modest IVB, well-supported collider interpretation) and Rogowski deep dive (large IVB, causally ambiguous) are effective contrasts that demonstrate intellectual honesty.
-
-### S5: "Foreign collider bias" concept
-The naming and framing -- requiring consultation of literatures "foreign" to the researcher's domain -- is a genuine conceptual contribution that will resonate with applied researchers.
-
-### S6: Section 4.1 (FE absorption) is clean algebra
-The argument follows directly from Corollary 1 with no simulation needed. This is the most defensible mechanism in Section 4.
-
-### S7: Appropriate caveats on few-switchers (Section 4.2)
-The text correctly warns that small |IVB/SE| does not mean the bias is harmless, since the population IVB is constant regardless of switcher count. This prevents misinterpretation.
-
-
----
-
-## Parsimony Assessment
-
-### Should any section be CUT?
-
-**Section 4.2 (few switchers)**: The weakest of the five mechanisms. The insight ("few switchers inflate SE relative to constant IVB") is straightforward, and the caveat ("but population IVB is constant, so this doesn't mean bias is harmless") largely undermines the reassurance. Consider CUTTING or folding into a single paragraph within Section 4.1. Current contribution does not justify a standalone subsection.
-
-**Section 4.4 (NL robustness)**: Keep but rewrite. The ADL robustness result is valuable; the TWFE percentage claim must be corrected. Focus on the ADL finding.
-
-**Section 4.5 (feedback)**: Keep but rewrite with correct numbers. Connects well to Imai & Kim framework.
-
-**Appendix C (simulation code)**: Currently describes v1 DGPs (cross-section, ADL, civil war) that do not match the Section 4 simulations. Should be updated or removed.
-
-
----
-
-## Consistency Check: Abstract -- Body -- Conclusion
-
-| Claim | Abstract | Body | Conclusion | Verified? |
-|-------|----------|------|------------|-----------|
-| IVB = -theta* x pi | Yes | Yes | Yes | CORRECT |
-| >300 DGP configs | Yes (L33) | Yes (L576) | Yes (L908) | **WRONG** (~168 from cited sims) |
-| ADL bias < 3% of beta | Yes | Yes | Yes | CORRECT (verified against data) |
-| Bounded NL: at most 25% | -- | Yes (L598) | Yes (L908) | **WRONG** (up to 40%) |
-| phi in {0,.05,.10,.15} | -- | Yes (L604) | -- | **WRONG** (phi=0.15 not simulated) |
-| TWFE 43% to 80% at phi=0.15 | -- | Yes (L604) | -- | **WRONG** (80% is at phi=0.1, rho_Z=0.7) |
-| N=200, T=30 for Sec 4.3 sim | -- | Yes (L592) | -- | **WRONG** (N=100 in code) |
-| 14 collider candidates | Yes | Yes | Yes | CORRECT |
-| Median IVB/SE ~ 0.13 | Yes | Yes | Yes | CORRECT |
-| Only Rogowski > 1 SE | Yes | Yes | Yes | CORRECT |
-| Five mechanisms | -- | Yes (L576) | Yes (L908) | CORRECT |
-| Bias < 1% for feedback (ADL) | -- | Yes (L604) | Yes (L908) | CORRECT (verified) |
-
-
----
-
-## Recommendations Summary (Priority Order)
-
-1. **URGENT -- V1**: Fix Section 4.3 factual errors (N=100, bias range 77--169%, DGP description)
-2. **URGENT -- V2**: Fix Section 4.5 fabricated phi=0.15 results (correct grid, numbers, and threshold)
-3. **HIGH -- V3**: Fix "at most 25%" TWFE IVB claim in Section 4.4 and Conclusion
-4. **MEDIUM -- V4**: Verify "over 300 DGP" count or change to actual number
-5. **LOW -- V5**: Soften or verify explosive threshold claim
-6. **LOW**: Update Appendix C to describe actual Section 4 DGPs
-7. **OPTIONAL**: Consider cutting Section 4.2 for parsimony
+1. **Fix C2 first** (factual error, easiest to fix): verify and correct the DGP count. This is a pure factual correction.
+2. **Fix m2 and m3** (factual errors): correct the 57 count and update Appendix E. These are also pure factual corrections.
+3. **Address C1** (framing): this is the hardest fix because it requires a rhetorical shift, not a textual correction. The formula must be framed as a diagnostic *application* of a known decomposition, not as a new theoretical result.
+4. **Address M1** (ADL benchmark): acknowledge prior literature explicitly; reframe simulation contribution as validation + timing insight.
+5. **Address M3** (empirical apps): add selection bias caveat and GDP dominance note.
+6. **Address M2** (foreign collider bias): soften the naming claim.
+7. **Address remaining minors** in order of effort.

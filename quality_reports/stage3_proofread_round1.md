@@ -1,120 +1,89 @@
-# Stage 3: Proofread Review -- Round 1 (Post-Integration)
+# Proofread Report -- Stage 3, Round 1 (Post-Rewrite)
 
-**Reviewer:** Proofread Reviewer Agent (Claude Opus 4.6)
-**Date:** 2026-03-03
-**File reviewed:** `ivb_paper_psrm.Rmd` (1239 lines) and `references.bib` (572 lines)
-**Focus:** Newly integrated sections (4.3--4.5, updated Summary, abstract, conclusion, limitations)
-
----
-
-## Summary
-
-The manuscript is well written overall, with clear prose and rigorous mathematical exposition. The newly integrated sections (ADL, nonlinearity, feedback subsections; updated Summary; revised abstract; revised conclusion and limitations paragraphs) are substantively strong and well integrated with the existing text. The main issues found are: (a) a clear grammar error in the Introduction (missing subject in a sentence), (b) an incomplete verb phrase in the Introduction ("putting a collider" instead of "putting in" or "including"), (c) minor notation and style inconsistencies between new and existing text, and (d) a few points where cross-referencing or wording could be improved. No broken references, missing citation keys, or factual errors were found.
-
-The "five mechanisms" count is internally consistent across the Section 5 intro (line 576), the five subsections (5.1--5.5), the Summary subsection (line 608), the abstract (line 33), and the conclusion (line 908).
+**Reviewer:** Proofread Agent (Claude Opus 4.6)
+**Date:** 2026-03-22
+**File reviewed:** `ivb_paper_psrm.Rmd` (1207 lines)
+**Scope:** Full manuscript proofread -- grammar, notation, facts, cross-references, formatting
 
 ---
 
-## Issue Table
-
-| # | Line(s) | Current Text | Proposed Correction | Category | Severity |
-|---|---------|-------------|---------------------|----------|----------|
-| 1 | 76 | "We show that is primarily cross-sectional (e.g., richer countries have better governance in levels), fixed effects remove this association, and the residual within-unit IVB is small." | Missing subject. Should read: "We show that **when the association between treatment and collider** is primarily cross-sectional (e.g., richer countries have better governance in levels), fixed effects remove this association, and the residual within-unit IVB is small." (Or a similar repair that supplies the missing subject clause.) | Grammar | Major (-10) |
-| 2 | 74 | "IVB quantifies the cost of putting a collider." | Incomplete verb phrase. Should read: "IVB quantifies the cost of **including** a collider." (Alternatively: "putting **in** a collider.") The existing paper uses "including" consistently elsewhere (lines 67, 87, 288, 345, etc.). | Grammar | Major (-10) |
-| 3 | 33 | Abstract: "We characterize structural conditions---fixed effects absorbing between-unit variation, few treatment switchers, ADL specifications blocking collider paths, bounded nonlinearities, and moderate outcome-to-treatment feedback---that explain why IVB tends to be modest in typical panel applications." | The phrase "moderate outcome-to-treatment feedback" could be misread as claiming that moderate feedback *explains* why IVB is modest, when the actual claim is that moderate feedback *does not break* the ADL's ability to keep IVB small. Consider: "...bounded nonlinearities, and moderate (rather than explosive) outcome-to-treatment feedback---" or simply noting that these are conditions under which the result holds. This is a clarity issue, not strictly a grammar error. | Style/Clarity | Minor (-2) |
-| 4 | 592 | "The ADL specification with all lags ($Y \sim D + Y_{t-1} + D_{t-1} + Z_{t-1}$) reduces bias to less than 3\% of $\beta$ in every scenario." | The R-formula notation `$Y \sim D + Y_{t-1} + D_{t-1} + Z_{t-1}$` is informal and inconsistent with the LaTeX equation style used elsewhere in the paper (e.g., equations 7--12). Consider: "$Y_t = \beta D_t + \rho Y_{t-1} + \gamma_D D_{t-1} + \delta Z_{t-1} + \text{FE} + e_t$" or simply describe it in prose: "the ADL specification including $Y_{t-1}$, $D_{t-1}$, and $Z_{t-1}$". | Notation | Minor (-2) |
-| 5 | 576 | "The remaining four are documented with Monte Carlo simulations spanning over 300 DGP configurations and 500 replications each." | The count "over 300 DGP configurations" is consistent with the abstract (line 33) and conclusion (line 908). However, the paper earlier (lines 578--586) describes only Mechanisms A/B (the FE absorption argument, which is analytical) and C (the few-switchers mechanism). The new sections add Mechanisms D (ADL, 48 scenarios), E (NL, unspecified count), and F (feedback, unspecified count). The reader cannot verify the "300" claim from the text alone. Consider adding a brief parenthetical with the total: e.g., "(48 ADL + X nonlinearity + Y feedback + Z earlier dual-role scenarios = 300+ configurations)". | Verifiability | Minor (-2) |
-| 6 | 604 | "$D_{it} = \alpha^D_i + \phi Y_{i,t-1} + \rho_D D_{i,t-1} + \gamma_D Z_{i,t-1} + u_{it}$" | The coefficient $\gamma_D$ was previously used on line 580 and in Corollary 2 (line 353) to refer to the association between D and Z in the collider equation, not the coefficient on $Z_{t-1}$ in the treatment equation. Consider using a distinct symbol (e.g., $\delta_D$ or $\kappa$) to avoid overloading $\gamma_D$. | Notation | Minor (-2) |
-| 7 | 596 | "(i)~concave transformations ($\log(1 + |D|)$, soft-clamped polynomial), (ii)~polynomial terms ($D^2$), and (iii)~interaction terms ($D \times H$ with $H$ exogenous)." | Strictly, $\log(1 + |D|)$ is concave but NOT bounded from above (it grows without bound as $D \to \infty$). The next paragraph (line 598) draws a distinction between "bounded" and "unbounded" nonlinearities and places concave/saturating transformations in the "bounded" category. Logarithmic growth is extremely slow, so the practical claim is correct, but calling it "bounded" is technically imprecise. Consider: "slowly growing" or "sublinear" instead of grouping $\log(1 + |D|)$ with "bounded" transformations. | Precision | Minor (-2) |
-| 8 | 580 | "treatment variables like democratization or peacekeeping deployment vary primarily across countries in levels, and their within-country variation is modest." | The claim that "democratization varies primarily across countries in levels" is slightly imprecise. Democratization is a *change* variable (transition from autocracy to democracy), so it varies primarily *within* countries over time. What varies primarily across countries in levels is the *treatment-collider association* (e.g., richer countries have both more democracy and higher GDP). The sentence should clarify that it is the D-Z and Y-Z associations that are primarily cross-sectional, not the treatment itself. | Precision/Clarity | Minor (-2) |
-| 9 | 608 | "## Summary: When Is IVB Small?" | This subsection has no `\label{}`. If this section is cross-referenced elsewhere, it will produce a "??" in the PDF. No current cross-reference was found, but adding a label (e.g., `\label{sec:ivb_summary}`) would be good practice for future-proofing. | LaTeX | Minor (-2) |
-| 10 | 602 | "This feedback violates the strict exogeneity assumption that underpins TWFE \citep{imai_kim2021}" | The strict exogeneity assumption underpins TWFE *without* lagged dependent variables. With an ADL specification (which includes $Y_{t-1}$), the relevant assumption is *sequential exogeneity*, as Imai & Kim (2021) themselves discuss. The sentence is not wrong (TWFE does require strict exogeneity), but since the next paragraph discusses how ADL *solves* this problem, the sentence could more precisely say: "This feedback violates the strict exogeneity assumption required by static TWFE" or "...that underpins TWFE without dynamic controls". | Precision | Minor (-2) |
-| 11 | 610 | "And moderate feedback from outcomes to treatment ($Y_{t-1} \to D_t$) is absorbed by the ADL specification, with IVB remaining at approximately 1\% of $\beta$." | Beginning a sentence with "And" is stylistically informal for an academic paper. The rest of the paper avoids this construction. Consider: "Finally, moderate feedback..." or "Moreover, moderate feedback..." | Style | Minor (-2) |
-| 12 | 908 | "...ADL specifications with lagged controls block collider paths and reduce bias to less than 3\% of $\beta$; bounded nonlinearities in the collider channel do not qualitatively change the IVB picture; and moderate outcome-to-treatment feedback is absorbed by the lagged dependent variable, keeping bias at approximately 1\% of $\beta$." | This sentence in the conclusion is 110+ words (the entire sentence starting "We identify five mechanisms" is even longer). Consider breaking it into two sentences after the semicoloned list, e.g., ending the first sentence at "...reduce bias to less than 3\% of $\beta$." and starting a new sentence: "Additionally, bounded nonlinearities..." | Style/Readability | Minor (-2) |
-| 13 | 33 (abstract) | "Monte Carlo simulations across over 300 DGP configurations confirm that these conditions keep IVB below 3\% of the treatment effect." | Slight tension with the body text: Section 4.5 (line 604) reports "$|\text{bias}| \leq 1\%$ of $\beta$" for the ADL under feedback, and Section 4.3 (line 592) reports "less than 3\% of $\beta$" for ADL. The abstract uses "below 3\%", which is correct as an upper bound across all simulations but could mislead readers into thinking the typical bias is close to 3\%. Consider "below 3\%" with a qualifier: "typically well below 3\%". | Precision | Minor (-2) |
-| 14 | 914 | "Our Monte Carlo simulations (Section~\ref{sec:mech_nl}) show that bounded nonlinearities in the collider channel preserve the formula's practical relevance---bias remains small---but unbounded nonlinearities can generate substantial deviations." | The parenthetical references only Section 5.4 (nonlinearity), but the limitations paragraph is discussing all the Monte Carlo results. Consider referencing the parent section: "(Section~\ref{sec:ivb_magnitude})" or "(Sections~\ref{sec:mech_adl}--\ref{sec:mech_feedback})". However, since this specific sentence is about nonlinearities only, the current reference is defensible. No change required, but flagged for consideration. | Cross-reference | Minor (-2) |
-| 15 | 584 | "reducing the fraction of switchers from 70\% to 10\% increases the standard error by a factor of 2--3" | The phrase "a factor of 2--3" uses an en-dash, which is correct for ranges. However, elsewhere in the paper, ranges use "--" (e.g., "20--30 periods" on line 447). This is consistent. No issue. | --- | (no deduction) |
-| 16 | 592 | "Across 48 scenarios ($N = 100$, $T = 30$, 500 replications)" | Note the change from the earlier simulations described in Section 5.2 (line 584) which use $N = 200$. The switch to $N = 100$ is not explained. Consider adding a brief note: "We use $N = 100$ (rather than 200) to..." or simply noting this is a different simulation design. | Consistency | Minor (-2) |
-| 17 | 604 | "with $\phi \in \{0, 0.05, 0.10, 0.15\}$" | Using 0.10 (with trailing zero) is slightly unusual but not incorrect. The rest of the paper uses $0.5$, $0.95$, $0.77$, $0.13$ without trailing zeros. For consistency, consider $0.1$ instead of $0.10$. Very minor. | Formatting | Minor (-2) |
+## Score: 78
+## Status: REPROVADO (<90)
 
 ---
 
-## Issues NOT Found (Verification)
+## Corrections Proposed
 
-The following potential issues were checked and found to be correct:
-
-1. **Citation keys**: All `\citet{}`, `\citep{}`, and `\citealt{}` keys in the newly added sections (`imai_kim2021`, `ding2015adjust`, `blackwell2018make`, `cinelli2020making`, `cinelli2021crash`, `rogowski_etal2022`) exist in `references.bib`.
-
-2. **Cross-references**: All `\ref{}` labels in the newly added sections point to existing `\label{}` targets:
-   - `\ref{cor:ivb_twfe}` (line 344)
-   - `\ref{sec:ivb_magnitude}` (line 572)
-   - `\ref{sec:mech_nl}` (line 594)
-   - `\ref{sec:caveats}` (line 551)
-   - `\ref{app:classification}` (line 1049)
-
-3. **"Five mechanisms" count**: Consistent across abstract (line 33), section intro (line 576), five subsections (5.1--5.5), Summary (line 608), and conclusion (line 908).
-
-4. **"14 collider candidates" count**: Consistent across abstract (line 33), body (line 703), and conclusion (line 908).
-
-5. **"0.13" median and "2.11 / 58%" outlier**: Consistent across abstract (line 33), body (lines 703, 885), and conclusion (line 908).
-
-6. **"over 300 DGP configurations"**: Consistent across abstract (line 33), section intro (line 576), and conclusion (line 908).
-
-7. **Math notation**: The new sections consistently use `$\beta$`, `$\theta^{\star}$`, `$\pi$`, `$\phi$` in LaTeX notation (not plain-text "beta", "theta*", etc.).
-
-8. **Hyphenation**: Compounds like "outcome-to-treatment", "between-unit", "within-unit", "standard-error" are consistently hyphenated throughout.
-
-9. **`\ref{tab:ivb-full-table}`** (line 1199): This resolves correctly because R Markdown with `kable()` auto-generates `\label{tab:chunk-name}` from the chunk name `ivb-full-table` when a caption is provided.
+| # | Line(s) | Current Text | Proposed Correction | Category |
+|---|---------|-------------|---------------------|----------|
+| 1 | 559 | "The full mechanical IVB decomposition for all 57 study-control combinations" | Change "57" to "55" -- the CSV `standardized_ivb_metrics.csv` contains exactly 55 data rows (header + 55 rows, verified by counting). Breakdown: Claassen OLS=5, Claassen FE=4, Leipziger SEI/GRG/GGINI=3, Leipziger SEI ext=5, Blair=6, Albers=12, Rogowski=4, Ballard-Rosa=16. Total=55. | Facto (-5) |
+| 2 | 634 | `"The full mechanical decomposition for all 57 study-control combinations "` | Change "57" to "55" (same factual error, repeated in kable caption for Table 1). | Facto (same error, -1) |
+| 3 | 1167 | "Table~\ref{tab:ivb-full-table} reports the complete IVB decomposition for all 57 study-control combinations" | Change "57" to "55" (same factual error, third occurrence, in Appendix G text). | Facto (same error, -1) |
+| 4 | 987 | "All simulations in this paper are implemented in R and embedded in the R Markdown source file." | This is false. The 238-DGP simulations reported in Section 5 are in external R files (`simulations/v4_mechanisms/`, `simulations/nonlinearity/`, `simulations/dynamics/`, etc.), NOT embedded in the Rmd. The Rmd contains only replication/IVB-computation code for the empirical applications. Rewrite to: "Simulation code is implemented in R. The companion scripts for Section 5 simulations are in the `simulations/` directory; the replication code for Section 6 applications is embedded in the R Markdown source file." | Facto (-5) |
+| 5 | 987 | "The code is fully reproducible: all random number generators are seeded, and results can be exactly replicated by compiling the source document." | False for Section 5 simulations -- compiling the Rmd does NOT replicate those simulations. Only the Section 6 replications are embedded. Revise to clarify that Section 5 simulations require running the external scripts. | Facto (counted with #4) |
+| 6 | 989-995 | Appendix E describes only 3 DGPs (Cross-section, ADL, Civil War) from `sim_ivb_completa.R` | Appendix E does not describe ANY of the 238 DGP configurations that produce the results in Section 5 (collider/dual-role 48 scenarios, mediator, nonlinearity, feedback). The 3 DGPs described are from the v1 tautological simulation and are not reported in the current paper body. Appendix E needs a complete rewrite to describe the actual simulation families used in Section 5. | Facto (-5) |
+| 7 | 995 | `The full simulation code is available in the companion file \texttt{sim\_ivb\_completa.R}.` | `sim_ivb_completa.R` is the old v1 simulation. The Section 5 simulations use multiple files: `sim_mechC_adl.R`, `sim_nl_collider.R`, `sim_nl_interact.R`, `sim_nl_carryover.R`, `sim_direct_feedback.R`, etc. Update to list the correct companion files, or reference the `simulations/` directory as a whole. | Facto (counted with #6) |
+| 8 | 481 | "The decomposition $\beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1$ is an \textbf{algebraic identity}" | The Caveats section (4.6) uses cross-section notation ($\beta_2^*$, $\phi_1$), but the footnote on line 70 states: "we use the TSCS notation throughout the paper as it is the more general form." In Section 4.6, which comes after the ADL extensions (Sections 4.3-4.5), the TSCS notation ($\theta^*$, $\pi$) should be used for consistency. Change to: "The decomposition $\beta^{\star} - \beta = -\theta^{\star} \times \pi$" (and similarly throughout Section 4.6). | Consistencia (-2) |
+| 9 | 337 | "The decomposition $\beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1$ is an algebraic identity" (in the Remark) | This Remark appears between the CS derivation (4.1) and OVB-vs-IVB (4.2), so CS notation is contextually defensible. However, since it discusses the formula's "generality" across all specifications, using the TSCS notation ($\theta^*$, $\pi$) would be more consistent with the footnote on line 70. Lower-priority than #8. | Consistencia (-2) |
+| 10 | 70 | "we use the TSCS notation throughout the paper as it is the more general form" | If corrections #8 and #9 are NOT applied, this footnote is misleading because the paper uses CS notation in Sections 4.1-4.2 and 4.6. In that case, revise to: "we use the TSCS notation in the general discussion; the cross-sectional notation ($\beta_2^*$, $\phi_1$) appears in Section 4.1 and related passages." | Consistencia (counted with #8-#9) |
 
 ---
 
 ## Score Calculation
 
-Starting score: **100**
+| Category | Items | Deduction |
+|----------|-------|-----------|
+| Facto incorreto: "57" should be "55" (#1) | 1 distinct error | -5 |
+| Facto incorreto: repeated "57" in two more locations (#2, #3) | 2 repetitions | -2 |
+| Facto incorreto: Appendix E says sims are embedded in Rmd (#4-5) | 1 distinct error | -5 |
+| Facto incorreto: Appendix E describes wrong DGPs (#6-7) | 1 distinct error | -5 |
+| Consistencia de notacao: CS notation in Section 4.6 (#8) | 1 | -2 |
+| Consistencia de notacao: CS notation in Remark (#9) | 1 | -2 |
+| Footnote inaccuracy (#10) | dependent on #8-9 | -1 |
+| **Total deduction** | | **-22** |
 
-| # | Category | Deduction |
-|---|----------|-----------|
-| 1 | Grammar (missing subject -- ungrammatical sentence) | -10 |
-| 2 | Grammar (incomplete verb phrase) | -10 |
-| 3 | Style/Clarity | -2 |
-| 4 | Notation consistency | -2 |
-| 5 | Verifiability | -2 |
-| 6 | Notation consistency | -2 |
-| 7 | Precision | -2 |
-| 8 | Precision/Clarity | -2 |
-| 9 | LaTeX practice | -2 |
-| 10 | Precision | -2 |
-| 11 | Style | -2 |
-| 12 | Style/Readability | -2 |
-| 13 | Precision | -2 |
-| 14 | Cross-reference (flagged, no deduction) | 0 |
-| 15 | (No issue) | 0 |
-| 16 | Consistency | -2 |
-| 17 | Formatting | -2 |
-
-**Final Score: 100 - 10 - 10 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 = 56 / 100**
+**Score: 100 - 22 = 78**
 
 ---
 
-## Priority Recommendations
+## Observations
 
-### Must Fix (Issues 1--2)
+### Strengths
 
-These are unambiguous grammar errors that would be caught by any reviewer:
+1. **Writing quality is high.** The prose is clear, precise, and reads well as academic English. No grammatical errors, typos, or spelling mistakes were found in the 1207-line manuscript.
 
-1. **Line 76**: Restore the missing subject in "We show that is primarily cross-sectional..."
-2. **Line 74**: Change "putting a collider" to "including a collider"
+2. **Cross-references are clean.** All `\ref{}` targets have corresponding `\label{}` definitions (either explicit or auto-generated by knitr). No broken cross-references were found. The `\ref{tab:ivb-full-table}` target is auto-generated by knitr from the chunk name `ivb-full-table` with a caption, which is correct.
 
-### Should Fix (Issues 4, 6, 8, 10, 16)
+3. **Citation keys are complete.** All 46 cited keys exist in `references.bib`. The natbib syntax (`\citep[e.g.,][]{...}`, `\citealt{...}`, etc.) is correctly used throughout.
 
-These are notation/precision issues that could confuse careful readers:
+4. **LaTeX formatting is correct.** Math environments, theorem/proposition/corollary environments, TikZ figures, and table formatting are all syntactically correct. No orphaned braces, unmatched environments, or broken math mode.
 
-- **Issue 4 (line 592)**: Replace R-formula notation with LaTeX equation or prose description
-- **Issue 6 (line 604)**: Use a distinct symbol for $\gamma_D$ in the treatment equation to avoid overloading
-- **Issue 8 (line 580)**: Clarify that the D-Z association (not the treatment itself) varies across countries in levels
-- **Issue 10 (line 602)**: Specify "static TWFE" or "TWFE without dynamic controls"
-- **Issue 16 (line 592)**: Explain or acknowledge the switch from $N=200$ to $N=100$
+5. **Terminology is consistent in the body text.** The paper consistently uses "covariate" for the variable being assessed, "control" for the selection decision, "collider/confounder/mediator" for causal roles, and "CET" for the estimand.
 
-### Consider (Issues 3, 5, 7, 9, 11, 12, 13, 17)
+6. **Factual claims about the empirical applications are accurate.** The "14 collider candidates" count matches the R code (7 study-specifications with 14 total collider candidates). The "six studies" count is correct. The total-effect calculation ($1.2 = 1.0 + 0.5 \times 0.4$) is correct.
 
-These are style and minor precision points that improve the manuscript but are not essential.
+### Critical Issues
+
+1. **Appendix E is stale (lines 985-995).** This is the most significant issue. Appendix E describes 3 DGPs from the old v1 simulation (`sim_ivb_completa.R`), which are NOT the simulations reported in Section 5. The paper body reports results from 238 DGP configurations across multiple simulation families (collider/dual-role, mediator, nonlinearity, feedback), none of which are described in Appendix E. The claim that simulations are "embedded in the R Markdown source file" is false -- the Rmd contains only replication code for Section 6 applications. This appendix needs a complete rewrite to match the current paper.
+
+2. **"57 study-control combinations" should be "55" (lines 559, 634, 1167).** The CSV `replication/standardized_ivb_metrics.csv` contains exactly 55 data rows. This number appears three times in the manuscript and is incorrect in all three.
+
+3. **Notation inconsistency in Section 4.6 and the Remark.** The footnote on line 70 promises TSCS notation ($\theta^*$, $\pi$) "throughout the paper," but Section 4.6 (Caveats) and the Remark after Section 4.1 use cross-section notation ($\beta_2^*$, $\phi_1$). This should be harmonized.
+
+### No Issues Found In
+
+- Grammar and spelling (zero typos in 1207 lines)
+- Subject-verb agreement
+- Article usage (a/an/the)
+- Punctuation and sentence structure
+- Em-dash and en-dash usage
+- LaTeX math mode syntax
+- Figure captions and labels
+- Table formatting
+- Bibliography style and citation syntax
+- Factual claims about empirical applications
+- Factual claims about simulation results in Section 5
+
+---
+
+*Report generated by Proofread Agent, 2026-03-22*
