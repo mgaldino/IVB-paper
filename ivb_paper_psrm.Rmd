@@ -48,12 +48,140 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(kableExtra)
+library(knitr)
 library(fixest)
 library(data.table)
 
 source("replication/ivb_utils.R")
 
 theme_set(theme_minimal(base_size = 12))
+```
+
+```{r load-results, include=FALSE}
+# ---- Dual-role simulation data ----
+dual_role_results <- fread("simulations/dual_role_z/results/sim_dual_role_z_8models_results.csv") %>%
+  as_tibble()
+
+dual_role_plot_data <- dual_role_results %>%
+  filter(sigma_aZ == 0.5) %>%
+  transmute(
+    rho_Z = rho_Z,
+    `TWFE short` = twfe_s_bias,
+    `TWFE + $Z_{t-1}$` = twfe_l_bias,
+    `ADL + FE` = adl_s_fe_bias,
+    `ADL + FE + $Z_{t-1}$` = adl_l_fe_bias
+  ) %>%
+  pivot_longer(
+    cols = -rho_Z,
+    names_to = "model",
+    values_to = "bias"
+  )
+
+dual_role_summary <- dual_role_results %>%
+  filter(sigma_aZ == 0.5) %>%
+  summarise(
+    adl_min = min(adl_l_fe_bias),
+    adl_max = max(adl_l_fe_bias),
+    twfe_long_min = min(twfe_l_bias),
+    twfe_long_max = max(twfe_l_bias),
+    twfe_short_max = max(twfe_s_bias)
+  )
+
+# ---- Firewall (outcome persistence) ----
+firewall_results <- fread("simulations/dual_role_z/results/sim_dual_role_z_firewall_results.csv") %>%
+  as_tibble()
+
+firewall_main <- firewall_results %>%
+  filter(rho_Z == 0.5) %>%
+  transmute(
+    `Outcome persistence ($\\rho_Y$)` = rho_Y,
+    `TWFE + $Z_{t-1}$` = round(twfe_l_bias, 3),
+    `ADL + FE + $Z_{t-1}$` = round(adl_l_bias, 3)
+  )
+
+# ---- Over-control simulations ----
+oc_clean <- fread("simulations/nonlinearity/results/sim_overcontrol_contemporaneous_results.csv") %>%
+  as_tibble() %>%
+  filter(nl_type == "linear") %>%
+  transmute(
+    Scenario = paste0("Pure mediator, $\\rho_Z = ", rho_Z, "$"),
+    `Target total` = 1.20,
+    `Target direct` = 1.00,
+    `ADL total` = round(adl_total_mean, 3),
+    `ADL bad ($Z_t$)` = round(adl_bad_mean, 3),
+    `ADL safe ($Z_{t-1}$)` = round(adl_safe_mean, 3)
+  )
+
+oc_dual <- fread("simulations/overcontrol/results/sim_overcontrol_results.csv") %>%
+  as_tibble() %>%
+  filter(variant == "mediator_confounder", nl_type == "baseline") %>%
+  transmute(
+    Scenario = paste0("Mediator + confounder, $\\rho_Z = ", rho_Z, "$"),
+    `Target total` = 1.03,
+    `Target direct` = 1.00,
+    `ADL total` = round(adl_DYlag, 3),
+    `ADL bad ($Z_t$)` = round(adl_DYlag_Z, 3),
+    `ADL safe ($Z_{t-1}$)` = round(adl_all, 3)
+  )
+
+overcontrol_table <- bind_rows(oc_clean, oc_dual)
+
+# ---- Callaway boundary conditions ----
+callaway_controls_results <- fread(
+  "simulations/dynamics/results/sim_callaway_controls_results.csv"
+) %>% as_tibble()
+
+callaway_controls_summary <- callaway_controls_results %>%
+  filter(n_discarded == 0) %>%
+  summarise(max_abs_bias = max(abs(adl_all_bias)))
+
+# ---- Persistent confounder (Bellemare) ----
+persistent_confounder_results <- fread(
+  "simulations/dynamics/results/sim_persistent_confounder_results.csv"
+) %>% as_tibble()
+
+persistent_confounder_summary <- persistent_confounder_results %>%
+  filter(kappa > 0) %>%
+  summarise(
+    min_abs_bias = min(abs(adl_all_bias)),
+    max_abs_bias = max(abs(adl_all_bias)),
+    oracle_max_abs_bias = max(abs(oracle_adl_bias))
+  )
+
+# ---- Empirical applications summary ----
+ivb_all <- read.csv("replication/standardized_ivb_metrics.csv", stringsAsFactors = FALSE)
+
+collider_candidates <- list(
+  "Claassen (FE)" = "Log GDP p.c.",
+  "Leipziger (SEI)" = "Log GDP p.c.",
+  "Leipziger (SEI ext.)" = c("Civil war", "GDP growth"),
+  "Blair et al." = c("Foreign Aid", "GDP per capita", "Refugees/IDPs"),
+  "Albers et al." = c("Hyperinflation", "GDP growth (YoY)", "Liberal democracy"),
+  "Rogowski et al." = "Log GDP p.c.",
+  "Ballard-Rosa et al." = c("Inflation crisis", "IMF program", "Sov. debt crisis")
+)
+
+cc_rows <- do.call(rbind, lapply(names(collider_candidates), function(paper_name) {
+  zvars <- collider_candidates[[paper_name]]
+  sub <- ivb_all[ivb_all$paper == paper_name & ivb_all$collider %in% zvars, ]
+  if (nrow(sub) == 0) return(NULL)
+  sub$sig <- !is.na(sub$SE_beta) & abs(sub$beta_long / sub$SE_beta) >= 1.96
+  data.frame(
+    paper = paper_name, collider = sub$collider,
+    IVB = sub$IVB, IVB_SE = sub$IVB_over_SE,
+    IVB_pct = ifelse(sub$sig, sub$IVB_pct_beta, NA_real_),
+    stringsAsFactors = FALSE
+  )
+}))
+
+cc_summary <- cc_rows %>%
+  as_tibble() %>%
+  summarise(
+    n_candidates = n(),
+    median_ivb_se = median(abs(IVB_SE), na.rm = TRUE),
+    max_ivb_se = max(abs(IVB_SE), na.rm = TRUE),
+    n_over_one = sum(abs(IVB_SE) > 1, na.rm = TRUE)
+  )
 ```
 
 # Introduction
@@ -73,6 +201,8 @@ The formula is the first of two tools. The second is a benchmark specification. 
 
 We apply the diagnostic to six published studies in comparative politics and international political economy. For each study, we classify every control variable using DAG-based reasoning grounded in the published literature. Among 14 theoretically motivated collider candidates, the median $|\text{IVB}/\text{SE}|$ is approximately 0.13---about one-eighth of a standard error. Only GDP per capita in a growth regression \citep{rogowski_etal2022} exceeds one standard error, and its collider status is causally ambiguous because it is simultaneously a confounder. The typical finding is that the specification choice does not matter much. Knowing that is itself the point: the formula lets the researcher verify, rather than assume, that including or excluding a covariate is quantitatively inconsequential.
 
+This architecture helps distinguish the paper from two nearby contributions. It is not only a warning that time-varying controls are hard, because IVB gives that difficulty a named and estimable diagnostic. And it is not only a recommendation to use dynamic specifications, because the benchmark is presented as the main applied implication of a more general included-variable-bias framework.
+
 The remainder of this paper is organized as follows. Section~\ref{sec:control} reviews the standard heuristics for selecting control variables and identifies their limitations. Section~\ref{sec:dags} introduces DAGs, illustrates collider bias in a TSCS context, and shows how timing determines a covariate's causal role. Section~\ref{sec:ivb} presents the IVB formula for cross-sectional, TWFE, and ADL models. Section~\ref{sec:ivb_magnitude} uses Monte Carlo simulations to benchmark dynamic specifications for the CET across collider, mediator, and dual-role scenarios. Section~\ref{sec:applications} applies the formula to six published studies. Section~\ref{sec:conclusion} concludes with a practical rule, explicit limits, and directions for future work.
 
 
@@ -87,52 +217,7 @@ Our IVB formula fills this gap by expressing the change from including (or exclu
 
 # DAGs, Timing, and Causal Roles \label{sec:dags}
 
-## Preliminaries
-
-Directed Acyclic Graphs (DAGs) are part of an approach to causal inference first developed by \citet{wright1928tariff} and \citet{wright1934method}, and substantially advanced by the work of \citet{pearl2009causality} and collaborators \citep{pearl2018book}. DAGs have been applied in several domains, including epidemiology, computer science, and, more recently, political science \citep{imbens2020potential}.
-
-All DAGs comprise three primary structures: chains, forks, and colliders (or inverted forks), shown in Figure~\ref{fig:three_structures}. Understanding these structures is essential for correct control variable selection.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=1.8cm,
-    every node/.style={draw, circle, minimum size=1cm, font=\small},
-    arr/.style={-{Stealth[length=2.5mm]}, thick}
-]
-
-% Collider (inverted fork)
-\node (X0) at (0,4) {$X_0$};
-\node (Y1) at (2,4) {$Y_1$};
-\node (W) at (0,2.5) {$W$};
-\draw[arr] (X0) -- (Y1);
-\draw[arr] (W) -- (Y1);
-\node[draw=none, font=\normalsize\bfseries] at (1, 1.5) {(a) Collider};
-
-% Fork
-\node (V3) at (5.5,4) {$V_3$};
-\node (V1) at (4,2.5) {$V_1$};
-\node (V2) at (7,2.5) {$V_2$};
-\draw[arr] (V3) -- (V1);
-\draw[arr] (V3) -- (V2);
-\node[draw=none, font=\normalsize\bfseries] at (5.5, 1.5) {(b) Fork};
-
-% Chain
-\node (Z) at (10,4) {$Z$};
-\node (X1) at (11.5,2.5) {$X_1$};
-\node (Y2) at (13,4) {$Y_2$};
-\draw[arr] (Z) -- (X1);
-\draw[arr] (X1) -- (Y2);
-\node[draw=none, font=\normalsize\bfseries] at (11.5, 1.5) {(c) Chain};
-
-\end{tikzpicture}
-\caption{The three elementary structures of DAGs: (a)~a collider or inverted fork, where $Y_1$ is a common effect of $X_0$ and $W$; (b)~a fork, where $V_3$ is a common cause of $V_1$ and $V_2$; and (c)~a chain, where $X_1$ is a mediator between $Z$ and $Y_2$.}
-\label{fig:three_structures}
-\end{figure}
-
-In a **fork** (panel b), $V_3$ is a common cause of $V_1$ and $V_2$. If one is interested in the effect of $V_1$ on $V_2$, controlling for the common cause $V_3$ blocks the backdoor path and eliminates omitted variable bias. In a **chain** (panel c), $X_1$ mediates the effect of $Z$ on $Y_2$. If one is interested in the total effect, controlling for the mediator blocks the causal path and leads to underestimation. In a **collider** (panel a), $Y_1$ is a common effect of $X_0$ and $W$. A collider, unlike chains and forks, does not induce an association between its parent variables. However, conditioning on a collider (or on its descendants) *creates* a spurious association between its causes \citep{elwert2014endogenous, pearl2018book}.
-
-The heuristic behind ``confounding checking'' can be understood as an attempt to block all backdoor paths by conditioning on forks. However, this heuristic says nothing about what happens when the candidate control is a collider. This is the problem we now illustrate in a TSCS context.
+We assume familiarity with directed acyclic graphs and their three elementary structures---forks, chains, and colliders \citep[see][for introductions]{pearl2009causality, cinelli2021crash}. The key fact for what follows is that conditioning on a collider---a common effect of treatment and outcome---*creates* rather than removes a spurious association between its causes \citep{elwert2014endogenous}. We now illustrate this in a TSCS context.
 
 ## A TSCS Application: Political Change and Civil War
 
@@ -236,6 +321,32 @@ The civil war example illustrates collider bias, but the same variable can play 
 
 **Dual role across time.** In dynamic settings, the same variable often plays \textit{both} roles across different time indices. The lagged value $Z_{t-1}$ may be a confounder---affecting both $D_t$ and $Y_t$ through persistence---while the contemporaneous value $Z_t$ is a collider or mediator. This dual role creates a tension: excluding $Z$ entirely leaves confounding from $Z_{t-1}$ unaddressed, while including $Z_t$ introduces collider or mediator bias. The resolution is to condition on $Z_{t-1}$ but not on $Z_t$: the lagged value absorbs the confounding channel without opening the contemporaneous collider path or blocking the contemporaneous mediator path. This is precisely the logic behind the ADL specification with lagged state variables that we benchmark in Section~\ref{sec:ivb_magnitude}.
 
+Table~\ref{tab:timing_logic} summarizes the timing logic. The key point is that the paper's benchmark is anchored to the CET rather than to a generic slogan such as ``lag everything.''
+
+```{r timing-logic-table}
+timing_logic <- data.frame(
+  `Candidate control` = c("$Z_t$", "$Z_t$", "$Z_{t-1}$", "$Z_{t-1}$"),
+  `Likely role for CET` = c("Collider", "Mediator", "Predetermined state", "Lagged confounder"),
+  `Main risk or benefit` = c("Opens a backdoor path", "Blocks part of total effect", "Captures state dependence", "Removes OVB without blocking contemporaneous path"),
+  `Default action` = c("Do not condition unless DAG rules out post-treatment status", "Do not condition if target is total contemporaneous effect", "Candidate benchmark control", "Candidate benchmark control"),
+  stringsAsFactors = FALSE
+)
+
+kable(
+  timing_logic,
+  format = "latex",
+  row.names = FALSE,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = paste0(
+    "Timing logic for observed controls when the estimand is the CET. ",
+    "The same substantive variable can move from bad control at $t$ to useful state variable at $t-1$. ",
+    "\\label{tab:timing_logic}"
+  )
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
 The IVB formula developed in the next section quantifies the arithmetic difference between specifications that include and exclude a covariate. Whether that difference represents collider bias, over-control, or appropriate deconfounding depends on the DAG. But in all three cases, the formula gives the researcher a number---not just a qualitative classification---making the specification choice transparent and auditable.
 
 
@@ -333,9 +444,6 @@ The key difference lies in the direction of the problem. With OVB, the researche
 
 A notable practical advantage of IVB is that its components are *always* estimable: the researcher has already included $Z$ in the regression, so $\beta_2^{\star}$ is available, and $\phi_1$ comes from a simple auxiliary regression. By contrast, OVB requires observing the omitted variable---which, by definition, is often unavailable.
 
-\bigskip
-\noindent\textbf{Remark} (Generality of the IVB formula). \textit{The decomposition $\text{IVB} = -\theta^{\star} \times \pi$ is an algebraic identity of OLS that holds for any variable $Z$ correlated with both $D$ and $y$, regardless of whether $Z$ is a collider, a confounder, or a mediator. The formula quantifies the arithmetic difference between two nested specifications. Only a DAG or substantive domain expertise determines which specification is causally correct---and therefore whether the difference represents collider bias (exclude $Z$), omitted variable bias (include $Z$), or over-control of a mediator (include only $Z_{t-1}$, not $Z_t$). This generality makes the IVB formula a unified diagnostic for any covariate inclusion decision, analogous to how the sensitivity analysis of \citet{cinelli2020making} provides a unified diagnostic for omitted variable concerns. The key difference is that IVB addresses inclusion of observed covariates, while Cinelli and Hazlett address omission of unobserved confounders.}
-\bigskip
 
 ## Extension to Panel Fixed Effects \label{sec:twfe}
 
@@ -492,9 +600,7 @@ The three cases lead to fundamentally different conclusions:
 
 Only the DAG determines which case applies. The IVB formula complements DAGs but cannot substitute for them: the graph tells the researcher \textit{whether} $Z$ is a collider, and only then does the formula quantify how much damage including it causes. We illustrate this interplay in Section~\ref{sec:applications}, where we combine literature review with DAG reasoning to assess collider plausibility before computing the IVB. The Rogowski et al.\ application in particular shows that a large IVB does not automatically imply collider bias---it may instead reflect appropriate deconfounding.
 
-Sufficient conditions for classifying $Z$ as a collider include: (i)~credible evidence from separate studies that $D$ causally affects $Z$ and $Y$ causally affects $Z$; (ii)~absence of evidence that $Z$ causally affects either $D$ or $Y$; and (iii)~the causal effect of $D$ on $Z$ and $Y$ on $Z$ operating through mechanisms that are not mediated by the other. When these conditions are not met---for instance, when $Z$ is simultaneously a confounder and a collider---the IVB formula still quantifies the arithmetic difference between specifications, but its causal interpretation requires additional assumptions (see \citealt{ding2015adjust} for the ``Butterfly-Structure'' case).
-
-The empirically prevalent case in which $Z$ is simultaneously a collider and a confounder deserves particular attention. \citet{ding2015adjust} analyzed one such configuration---the ``Butterfly-Structure''---in cross-sectional LSEMs, finding that conditioning on $Z$ reduces net bias in approximately 75\% of the feasible parameter space. However, this result is specific to a single structural configuration with particular symmetry assumptions. In TSCS settings with fixed effects, the landscape is richer: FE absorbs between-unit confounding while leaving within-unit collider channels intact, potentially shifting the trade-off in ways that depend on the panel structure. A systematic FWL-based derivation of when collider bias dominates confounding bias under TWFE---yielding analytical results rather than relying solely on simulation---is a promising direction for future work that would extend both our framework and that of \citet{ding2015adjust} to the panel setting.
+When $Z$ is simultaneously a confounder and a collider---the empirically prevalent dual-role case---the IVB formula still quantifies the arithmetic difference between specifications, but its causal interpretation requires additional assumptions \citep{ding2015adjust}. The ADL benchmark resolves this dual-role tension by conditioning on $Z_{t-1}$ (which captures confounding) while leaving $Z_t$ out (which avoids the collider channel).
 
 
 # Benchmarking Dynamic Specifications for the CET \label{sec:ivb_magnitude}
@@ -509,23 +615,75 @@ The most common scenario in TSCS applications is a covariate $Z$ that plays a du
 
 Two features of TWFE already attenuate the collider channel. First, as shown in Corollary~\ref{cor:ivb_twfe}, the IVB under TWFE depends only on the within-unit components of $\theta^{\star}$ and $\pi$. If the association between $D$ and $Z$ is primarily cross-sectional (e.g., richer countries have better governance in levels), unit fixed effects absorb this association and $\pi$ is small. An analogous argument applies to $\theta^{\star}$. Second, in studies with binary, slow-moving treatments (democratization, peacekeeping deployment, policy adoption), few ``switchers'' change treatment status, inflating $\text{SE}(\hat\beta)$ while the population IVB remains roughly constant. In Monte Carlo simulations ($N = 200$, $T = 30$, $\beta = 1$, 500 replications), reducing the fraction of switchers from 70\% to 10\% increases the standard error by a factor of 2--3, reducing $|\text{IVB}/\text{SE}|$ proportionally.^[An important caveat: the fact that $|\text{IVB}/\text{SE}|$ is small does not mean the bias is harmless. The population IVB is constant regardless of the number of switchers. In a study with few switchers and a marginally significant result, the IVB could still be large enough relative to $\hat\beta$ to flip the sign or significance of the treatment effect. The researcher should therefore consider both $|\text{IVB}/\hat\beta|$ (the bias as a share of the estimated effect) and $|\text{IVB}/\text{SE}|$ (the bias relative to sampling uncertainty).]
 
-But TWFE alone does not resolve the dual-role case. To quantify the gain from dynamic specifications, we simulate a DGP with exogenous binary treatment (staggered adoption) and a $Z$ variable that is both a confounder ($Z_{t-1} \to Y_t$) and a collider ($D_t \to Z_t$, $Y_t \to Z_t$) with persistence ($Z_{t-1} \to Z_t$). We estimate nine specifications ranging from TWFE without controls to ADL models with all available lags ($Y_{t-1}$, $D_{t-1}$, $Z_{t-1}$). Across 48 scenarios ($N = 100$, $T = 30$, 500 replications), TWFE without $Z$ exhibits bias of 77--169\% of $\beta$---driven by omitted variable bias from the confounding channel of $Z$. The ADL specification including $Y_{t-1}$, $D_{t-1}$, and $Z_{t-1}$ reduces bias to less than 3\% of $\beta$ in every scenario.
+But TWFE alone does not resolve the dual-role case. To quantify the gain from dynamic specifications, we simulate a DGP with a $Z$ variable that is both a confounder ($Z_{t-1} \to Y_t$) and a collider ($D_t \to Z_t$, $Y_t \to Z_t$) with persistence ($Z_{t-1} \to Z_t$). Figure~\ref{fig:dual_role} shows the result across the full range of collider persistence.
 
-The key insight is that the ADL specification resolves the dual-role dilemma by exploiting the temporal structure: $Z_{t-1}$ captures the confounding channel (because $Z_{t-1}$ causally affects both $D_t$ and $Y_t$ through persistence), while $Y_{t-1}$ in the regression blocks the collider path $D_t \to Z_t \leftarrow Y_t$ that would otherwise transmit bias through $Z$'s persistence. The result is consistent with the identification strategy in \citet{imai_kim2021}, where the ADL model achieves sequential ignorability under weaker assumptions than TWFE.
+```{r dual-role-bias-figure, fig.cap="Dual-role simulation: ADL + FE with lagged state variables dominates static alternatives across the full range of collider persistence. \\label{fig:dual_role}", out.width="85%"}
+ggplot(dual_role_plot_data, aes(x = rho_Z, y = bias, color = model)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_x_continuous(breaks = c(0.1, 0.3, 0.5, 0.7, 0.85)) +
+  scale_color_manual(
+    values = c(
+      "TWFE short" = "#b22222",
+      "TWFE + $Z_{t-1}$" = "#1f78b4",
+      "ADL + FE" = "#33a02c",
+      "ADL + FE + $Z_{t-1}$" = "#000000"
+    )
+  ) +
+  labs(x = expression(rho[Z]), y = "Bias", color = "Specification") +
+  theme(legend.position = "bottom")
+```
+
+The bias of ADL + FE + $Z_{t-1}$ stays between `r sprintf('%.3f', dual_role_summary$adl_min)` and `r sprintf('%.3f', dual_role_summary$adl_max)`, while TWFE + $Z_{t-1}$ remains between `r sprintf('%.3f', dual_role_summary$twfe_long_min)` and `r sprintf('%.3f', dual_role_summary$twfe_long_max)`. The crucial mechanism is outcome persistence. The inherited collider path created by conditioning on $Z_{t-1}$ only becomes bias in the CET equation when the spurious association can propagate from $Y_{t-1}$ to $Y_t$. Table~\ref{tab:firewall} shows that once outcome persistence is shut down, the TWFE bias essentially disappears.
+
+```{r firewall-table}
+kable(
+  firewall_main,
+  format = "latex",
+  row.names = FALSE,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = paste0(
+    "Outcome persistence drives the inherited collider path. When $\\rho_Y = 0$, ",
+    "bias from conditioning on $Z_{t-1}$ is essentially zero even without $Y_{t-1}$. ",
+    "When $\\rho_Y > 0$, adding $Y_{t-1}$ restores the benchmark. \\label{tab:firewall}"
+  )
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+The ADL specification resolves the dual-role dilemma by exploiting the temporal structure: $Z_{t-1}$ captures the confounding channel, while $Y_{t-1}$ blocks the collider path that would otherwise transmit bias through $Z$'s persistence. The result is consistent with \citet{imai_kim2021}, where the ADL model achieves sequential ignorability under weaker assumptions than TWFE.
 
 ## Over-Control with Contemporaneous Mediators \label{sec:mech_mediator}
 
 When $Z_t$ is a contemporaneous mediator ($D_t \to Z_t \to Y_t$) rather than a collider, a different problem arises. Including $Z_t$ does not open a spurious path; instead, it blocks the indirect causal channel, so the regression recovers only the direct effect of $D_t$ on $Y_t$. If the researcher's estimand is the total contemporaneous effect (CET), this constitutes over-control bias: the estimate is attenuated by the indirect effect mediated by $Z_t$.
 
-To quantify this, we simulate a DGP with a pure contemporaneous mediator ($D_t \to Z_t \to Y_t$, $\beta = 1$, $\theta = 0.5$, $\delta_D = 0.4$), so the true total effect is $1.2 = 1.0 + 0.5 \times 0.4$. We compare three ADL specifications: ``ADL total'' (without $Z$), ``ADL bad'' (with $Z_t$ contemporaneous), and ``ADL safe'' (with $Z_{t-1}$ only). Across nonlinearity types and collider persistence levels ($N = 200$, $T = 30$, 500 replications):
+To quantify this, we simulate both a pure mediator and a mediator-plus-confounder design. Table~\ref{tab:overcontrol} summarizes the results.
 
-\begin{itemize}
-\item ADL total recovers the CET: $\hat\beta \approx 1.20$ (bias $< 0.1\%$).
-\item ADL bad recovers the direct effect: $\hat\beta \approx 1.00$, with over-control of $\approx 0.20$ (the indirect effect).
-\item ADL safe preserves the CET: $\hat\beta \approx 1.20$ (bias $< 0.2\%$), because $Z_{t-1}$ is pre-treatment for the contemporaneous effect and does not block $D_t \to Z_t \to Y_t$.
-\end{itemize}
+```{r overcontrol-table}
+kable(
+  overcontrol_table %>% dplyr::select(
+    Scenario,
+    `Target total`,
+    `Target direct`,
+    `ADL total`,
+    `ADL bad ($Z_t$)`,
+    `ADL safe ($Z_{t-1}$)`
+  ),
+  format = "latex",
+  row.names = FALSE,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = paste0(
+    "Over-control simulations for the CET. Conditioning on contemporaneous $Z_t$ pulls the estimate ",
+    "toward the direct effect; conditioning on $Z_{t-1}$ preserves the total effect. \\label{tab:overcontrol}"
+  )
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
 
-The IVB formula captures this over-control exactly: $\text{IVB} = -\hat\theta^{\star} \times \hat\pi \approx -0.20$, coinciding with the indirect effect under linearity.
+In the pure mediator design, ADL total recovers the CET ($\approx 1.20$), ADL bad lands near the direct effect ($\approx 1.00$), and ADL safe preserves the total effect. The IVB formula captures this exactly: $\text{IVB} = -\hat\theta^{\star} \times \hat\pi \approx -0.20$, coinciding with the indirect effect under linearity.
 
 A richer case arises when $Z$ is simultaneously a contemporaneous mediator and a confounder through lags ($Z_{t-1} \to D_t$, $Z_{t-1} \to Y_t$). In this configuration, the researcher \textit{needs} $Z$ to satisfy conditional parallel trends, but including $Z_t$ would generate over-control. The ADL with $Z_{t-1}$ resolves this tension: it removes confounding from $Z_{t-1}$ (satisfying conditional parallel trends) without blocking the contemporaneous causal channel $D_t \to Z_t \to Y_t$. In simulations with confounding parameters $\gamma_D = 0.15$, $\gamma_Y = 0.2$: excluding $Z$ entirely yields bias of 6--11\% of $\beta$ (OVB from the confounding channel); including $Z_t$ reduces bias to 2\% but attenuates the estimate (over-control of the indirect effect); including only $Z_{t-1}$ achieves both goals, with bias of approximately 3\% and no over-control of the contemporaneous channel.
 
@@ -549,7 +707,9 @@ The simulation evidence converges on a practical rule for TSCS researchers inter
 
 This recommendation is consistent with and reinforces the qualitative guidance of \citet{blackwell2018make}, who showed that the CET ($\beta_1$) is consistent in the ADL under linearity (p.\ 1073), and of \citet{imai_kim2021}, who recommend ADL + FE as the parametric solution for dynamic panel identification (Table 1, rows 2--4). Our contribution is to provide (a) a quantitative diagnostic formula for the change caused by specification choices, and (b) systematic Monte Carlo evidence across 238 DGP configurations---spanning collider, dual-role, and mediator cases with nonlinearities and feedback---that the ADL benchmark works uniformly for these cases. Specifically, the rule is supported by three results. First, for collider and dual-role controls, ADL + FE reduces bias to less than 3\% of $\beta$ across all 48 dual-role scenarios, compared to 77--169\% for TWFE without controls. Second, for contemporaneous mediators, conditioning on $Z_{t-1}$ instead of $Z_t$ preserves the total effect while still absorbing confounding through lags---a timing insight that, to our knowledge, has not been systematically demonstrated in prior work. Third, the results are robust to bounded nonlinearities and moderate outcome-to-treatment feedback.
 
-The rule has explicit limits. It applies to the contemporaneous effect of $D_t$ on $Y_t$; for lagged, cumulative, or long-run effects, $Z_{t-1}$ may itself be post-treatment and the timing argument does not apply. It requires that the DAG be at least approximately known---the researcher must classify each covariate as collider, confounder, mediator, or dual role before applying the benchmark. And it does not claim to replace more flexible estimators (AIPW, doubly robust) in settings where the ADL's linearity assumption is strongly violated. Extending the timing logic developed here to synthetic-control-style and interactive fixed-effects estimators is an important agenda for future work.
+Additional simulations sharpen the scope of this recommendation. When the outcome equation contains nonlinear effects of $Z_{t-1}$ or level-dependent trends of the kind emphasized in recent DID work \citep{caetano_callaway2024}, the bias of the ADL benchmark never exceeds `r sprintf('%.1f', 100 * callaway_controls_summary$max_abs_bias)` percent of $\beta$ across stable scenarios. These are therefore not practical boundary conditions for the benchmark. By contrast, ADL does not resolve contemporaneous unobserved confounding \citep{bellemare_etal2017}. In simulations where an unobserved variable affects both $D_t$ and $Y_t$ in the same period, the bias ranges from `r sprintf('%.0f', 100 * persistent_confounder_summary$min_abs_bias)` to `r sprintf('%.0f', 100 * persistent_confounder_summary$max_abs_bias)` percent of $\beta$, while an oracle specification that observes the confounder keeps bias below `r sprintf('%.1f', 100 * persistent_confounder_summary$oracle_max_abs_bias)` percent. The benchmark therefore addresses included-variable bias and related timing problems, not classical endogeneity from unobserved contemporaneous confounding.
+
+The rule has explicit limits. It applies to the contemporaneous effect of $D_t$ on $Y_t$; for lagged, cumulative, or long-run effects, $Z_{t-1}$ may itself be post-treatment and the timing argument does not apply. A lagged control is pre-treatment only relative to the effect of $D_t$ on $Y_t$; that does not make it universally innocuous for cumulative, delayed, or long-run effects. The rule requires that the DAG be at least approximately known. And it does not claim to replace more flexible estimators in settings where the ADL's linearity assumption is strongly violated or where the panel dimension $T$ is too short for Nickell bias to be negligible.
 
 
 # Empirical Applications \label{sec:applications}
@@ -847,9 +1007,11 @@ The second is a practical benchmark for the contemporaneous treatment effect (CE
 
 The temporal structure of TSCS data provides a structural advantage for this problem. In the canonical two-period DID, a covariate that is both a confounder and a contemporaneous mediator presents an inescapable dilemma: including it satisfies conditional parallel trends but blocks the indirect causal channel; excluding it avoids over-control but leaves confounding unaddressed. In TSCS, the lagged value $Z_{t-1}$ separates the two roles: it absorbs confounding without blocking the contemporaneous path $D_t \to Z_t \to Y_t$. This is the timing logic that the ADL benchmark exploits, and it connects to the active research on bad controls in the DID literature \citep{caetano_etal2022}---showing that in TSCS settings focused on the CET, a simpler solution already exists.
 
-Several limitations bound these results. The benchmark applies to the contemporaneous effect of $D_t$ on $Y_t$; for lagged, cumulative, or long-run effects, $Z_{t-1}$ may itself be post-treatment and the timing argument does not apply. The IVB formula is derived for linear models; while bounded nonlinearities preserve its practical relevance, the Frisch--Waugh--Lovell theorem does not hold for nonlinear link functions. The formula quantifies the *arithmetic* difference between nested specifications but cannot determine which specification is causally correct---only a DAG or substantive domain expertise can do that. And we do not develop a formal sensitivity analysis framework for IVB, which would allow researchers to assess how sensitive their results are to potential collider bias from unobserved variables.
+This combination of a general diagnostic and a specific benchmark is the paper's contribution. Without IVB, the paper would risk collapsing into a familiar recommendation to use dynamic specifications. Without the benchmark, IVB would risk remaining an algebraic curiosity. Put together, they provide both a language for the problem and an operational default for a common applied setting.
 
-These limitations point to three directions for future work. First, just as \citet{cinelli2020making} developed sensitivity tools that extend OVB to unobserved confounders, a parallel development for IVB would allow researchers to ask: ``How strong would the collider relationship need to be to change my conclusions?'' Second, extending the timing logic developed here to synthetic-control-style and interactive fixed-effects estimators is an important agenda---the ADL benchmark covers linear parametric models, but the growing use of SCM, SDiD, and factor models in comparative politics calls for analogous results in those frameworks. Third, an FWL-based derivation of when collider bias dominates confounding bias under TWFE---yielding closed-form conditions for the dual-role case---would extend both our framework and that of \citet{ding2015adjust} to the panel setting.
+The limits are equally important. The benchmark is local to the CET; a lagged covariate that is pre-treatment for $D_t \to Y_t$ need not be harmless for distributed, cumulative, or long-run effects. Additional simulations show that the benchmark remains robust to nonlinear effects of lagged controls and level-dependent trends, but not to persistent unobserved contemporaneous confounding \citep{bellemare_etal2017}. The IVB formula is derived for linear models; while bounded nonlinearities preserve its practical relevance, the Frisch--Waugh--Lovell theorem does not hold for nonlinear link functions. And the benchmark requires $T$ large enough for Nickell bias from $Y_{t-1}$ to be negligible---in our simulations, $T = 30$ suffices, but in panels with $T \leq 10$ the researcher should consider GMM or other short-panel methods.
+
+Two directions for future work are especially promising. First, just as \citet{cinelli2020making} developed sensitivity tools that extend OVB to unobserved confounders, a parallel development for IVB would allow researchers to ask: ``How strong would the collider relationship need to be to change my conclusions?'' Second, extending the timing logic developed here to synthetic-control-style and interactive fixed-effects estimators is an important agenda, given the growing use of these methods in comparative politics.
 
 We provide the \texttt{compute\_ivb\_multi()} function as supplementary material, enabling researchers to compute IVB decompositions for any TWFE or ADL specification with minimal effort. The combination of DAGs for classifying covariates, the IVB formula for quantifying the stakes, and the ADL benchmark for specification choice gives applied researchers a practical toolkit for the most consequential decision in observational research: which variables to include as controls.
 
