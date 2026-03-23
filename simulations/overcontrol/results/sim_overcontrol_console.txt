@@ -1,0 +1,93 @@
+
+================================================================================
+SANITY CHECKS
+= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+
+True total effect (linear):  1.030 (beta + theta*delta_D)
+True direct effect:          1.000 (beta)
+Expected IVB (linear):       -0.0300 (-theta*delta_D = -0.3*0.1)
+
+--- Check 1: Linear baseline, pure mediator ---
+  rho_Z=0.5 (n_valid=500, n_discarded=0):
+    twfe_s (no Z):   1.3105  (expected ~1.030 total)
+    twfe_Z (with Z): 1.2568  (expected ~1.000 direct)
+    IVB_twfe:        -0.0538  (expected ~-0.0300)
+    adl_all (Z_lag): 1.0272  (expected ~1.030 total)
+
+  rho_Z=0.7 (n_valid=500, n_discarded=0):
+    twfe_s (no Z):   1.3149  (expected ~1.030 total)
+    twfe_Z (with Z): 1.2470  (expected ~1.000 direct)
+    IVB_twfe:        -0.0679  (expected ~-0.0300)
+    adl_all (Z_lag): 1.0290  (expected ~1.030 total)
+
+--- Check 2: Linear baseline, mediator+confounder ---
+  rho_Z=0.5 (n_valid=500, n_discarded=0):
+    twfe_s (no Z):   1.4872
+    twfe_Z (with Z): 1.3821
+    IVB_twfe:        -0.1052
+    adl_all (Z_lag): 1.0308
+
+  rho_Z=0.7 (n_valid=500, n_discarded=0):
+    twfe_s (no Z):   1.6049
+    twfe_Z (with Z): 1.3916
+    IVB_twfe:        -0.2132
+    adl_all (Z_lag): 1.0283
+
+--- Check 3: Z_lag vs Z contemp, NL scenarios, pure_mediator ---
+  Empirical total effect (baseline twfe_s): 1.3105 / 1.3149 (rho_Z 0.5/0.7)
+  Max |bias_empirical| of adl_all (Z_lag):      0.2887
+  Max |bias_empirical| of adl_DYlag_Z (Z contemp): 0.3197
+  Max |IVB| (twfe_Z - twfe_s):                  0.2467
+  Max n_discarded:                               0
+
+--- Check 3: Z_lag vs Z contemp, NL scenarios, mediator_confounder ---
+  Empirical total effect (baseline twfe_s): 1.4872 / 1.6049 (rho_Z 0.5/0.7)
+  Max |bias_empirical| of adl_all (Z_lag):      0.5770
+  Max |bias_empirical| of adl_DYlag_Z (Z contemp): 0.6156
+  Max |IVB| (twfe_Z - twfe_s):                  0.6237
+  Max n_discarded:                               0
+
+--- Summary: mean coefs by variant x nl_type ---
+                variant   nl_type nl_strength   twfe_s   twfe_Z  adl_all
+                 <char>    <char>       <num>    <num>    <num>    <num>
+ 1: mediator_confounder      Dlog           1 1.784391 1.309536 1.093967
+ 2: mediator_confounder  baseline           0 1.546039 1.386850 1.029537
+ 3: mediator_confounder  invlogit           1 1.594296 1.374849 1.044321
+ 4: mediator_confounder      log2           1 1.549766 1.386780 1.028631
+ 5: mediator_confounder      log4           1 1.559438 1.387013 1.029834
+ 6: mediator_confounder  power1.5           1 1.750458 1.320441 1.085434
+ 7: mediator_confounder       sin           1 1.545299 1.382897 1.029127
+ 8: mediator_confounder softpoly2           1 1.545463 1.382514 1.028189
+ 9: mediator_confounder      tanh           1 1.587858 1.375806 1.043160
+10:       pure_mediator      Dlog           1 1.404805 1.183603 1.087839
+11:       pure_mediator  baseline           0 1.312688 1.251865 1.028093
+12:       pure_mediator  invlogit           1 1.340136 1.235758 1.046257
+13:       pure_mediator      log2           1 1.311840 1.250990 1.028305
+14:       pure_mediator      log4           1 1.310917 1.249933 1.027563
+15:       pure_mediator  power1.5           1 1.396274 1.193224 1.080533
+16:       pure_mediator       sin           1 1.313868 1.247931 1.030109
+17:       pure_mediator softpoly2           1 1.310557 1.249852 1.027487
+18:       pure_mediator      tanh           1 1.338454 1.237668 1.044873
+       ivb_twfe n_valid n_disc
+          <num>   <num>  <num>
+ 1: -0.47485544     500      0
+ 2: -0.15918932     500      0
+ 3: -0.21944693     500      0
+ 4: -0.16298585     500      0
+ 5: -0.17242593     500      0
+ 6: -0.43001691     500      0
+ 7: -0.16240174     500      0
+ 8: -0.16294846     500      0
+ 9: -0.21205212     500      0
+10: -0.22120256     500      0
+11: -0.06082308     500      0
+12: -0.10437767     500      0
+13: -0.06084985     500      0
+14: -0.06098376     500      0
+15: -0.20305011     500      0
+16: -0.06593694     500      0
+17: -0.06070445     500      0
+18: -0.10078602     500      0
+
+
+Done. Results saved to simulations/overcontrol/results/
