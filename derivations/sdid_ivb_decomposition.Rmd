@@ -35,7 +35,7 @@ This note derives the Included Variable Bias (IVB) decomposition for the Synthet
 
 The Coefficient Effect (CE) captures bias from conditioning on $Z$ with fixed weights—the direct analogue of the TWFE formula $\text{IVB} = -\theta^\star \times \pi$. The Reweighting Effect (RE) captures the additional change from $Z$ distorting the synthetic weights. RE is new and specific to adaptive-weight estimators like SDiD.
 
-This note establishes the mathematical foundation. Conditions for $\text{RE} = 0$ (Step 2), practical diagnostics (Step 3), and applied illustration (Step 4) are deferred to subsequent notes.
+The practical contribution of this decomposition is that it transforms an opaque modeling choice---``include or exclude $Z$?''---into a quantified, transparent trade-off, even without resolving the underlying causal graph. This note derives the decomposition (Sections 2--4), establishes sufficient conditions for $\text{RE} = 0$ (Section 6), presents a diagnostic protocol for applied researchers (Section 7), and illustrates the procedure on real data from a study of foreign policy alignment (Section 8).
 
 # Setup and Notation
 
@@ -599,6 +599,10 @@ Three additional findings:
 \begin{remark}[Practical implication for the RDD-Trade paper]
 The IVB diagnostic confirms that the main SDiD result ($\hat{\tau} \approx -0.27$, $p = 0.011$) is robust to the inclusion or exclusion of current account deficit. The researcher can report either specification with confidence that the choice does not affect the substantive conclusion.
 \end{remark}
+
+# Concluding Remark
+
+The decomposition does not resolve which covariates are confounders and which are post-treatment---that requires a causal graph, not a formula. What it does is transform an opaque modeling choice (``include or exclude $Z$?'') into a quantified, transparent trade-off. The researcher sees \emph{how much} the estimate changes, \emph{through which channel} (coefficient vs.\ weight distortion), and \emph{which covariates drive the change}---even without resolving the underlying DAG.
 
 # References
 

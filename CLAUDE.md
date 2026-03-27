@@ -15,6 +15,8 @@ IVB = Coefficient Effect (CE) + Reweighting Effect (RE)
 - **CE**: vies de condicionar em collider/mediador, mantendo pesos fixos. FWL se aplica → CE = -theta*_omega x pi_omega
 - **RE**: vies adicional pela distorcao dos pesos sinteticos/fatores latentes ao incluir Z. Novo e especifico de estimadores com pesos adaptativos.
 
+**Take-away**: A decomposicao transforma uma escolha opaca ("incluir ou nao Z?") em um trade-off quantificado e transparente — mesmo sem resolver o DAG. O pesquisador ve *quanto* o estimador muda, *por qual canal* (coeficiente vs distorcao de pesos), e *quais covariadas importam*.
+
 ## Formula central (TWFE como benchmark)
 
 IVB = beta_long - beta_short = -theta* x pi (identidade FWL)
