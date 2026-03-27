@@ -31,7 +31,7 @@ header-includes:
   - \usepackage{geometry}
   - \geometry{margin=1in}
 abstract: |
-  Researchers using panel data routinely face a covariate inclusion dilemma: the same time-varying variable $Z$ can be both a confounder (omitting it biases the estimate) and a collider or mediator (including it biases the estimate in a different direction). In cross-sectional settings with acyclic causal graphs, such dual roles are structurally impossible. In time-series cross-sectional (TSCS) data, the temporal dimension resolves this: $Z_{t-1}$ can be a confounder while $Z_t$ is a collider, without creating cycles. We introduce the Included Variable Bias (IVB) formula---$\text{IVB} = -\theta^{\star} \times \pi$---a diagnostic that quantifies the change in the treatment estimate from including or excluding a covariate, using quantities the researcher already has. The formula mirrors the classic Omitted Variable Bias formula but addresses the opposite problem. For modern panel estimators with adaptive weights, such as Synthetic Difference-in-Differences (SDiD), we decompose IVB into a Coefficient Effect (CE) and a Reweighting Effect (RE), where CE preserves the familiar product structure and RE captures weight distortion from covariate inclusion. Applied to [NUMBER] published studies, the diagnostic transforms an opaque specification choice into a quantified, transparent trade-off---even without fully resolving the causal graph.
+  Researchers using panel data routinely face a covariate inclusion dilemma: the same time-varying variable $Z$ can be both a confounder (omitting it biases the estimate) and a collider or mediator (including it biases the estimate in a different direction). We introduce the Included Variable Bias (IVB) formula, a diagnostic that quantifies the change in the treatment estimate from including or excluding a covariate, using quantities the researcher already has. The formula mirrors the classic Omitted Variable Bias formula but addresses the opposite problem. For modern panel estimators with adaptive weights, such as Synthetic Difference-in-Differences (SDiD), we decompose IVB into a Coefficient Effect (CE) and a Reweighting Effect (RE), where CE preserves the IVB product structure and RE captures weight distortion from covariate inclusion. Applied to [NUMBER] published studies, the diagnostic transforms an opaque specification choice into a quantified, transparent trade-off.
 ---
 
 ```{r setup, include=FALSE}
@@ -58,17 +58,31 @@ theme_set(theme_minimal(base_size = 12))
 
 # Introduction
 
-Researchers using panel data constantly face a deceptively simple specification choice: should a time-varying covariate be included in the regression? The decision matters because the same variable can play opposite roles. Consider a scholar studying the effect of UN peacekeeping on democratization. Conflict intensity is a confounder---more severe conflicts attract peacekeeping missions and impede democratization---so omitting it risks bias. But peacekeeping can itself reduce violence, making realized conflict a post-treatment variable. Including it conditions on a consequence of treatment and may introduce a different bias. The researcher is stuck: omit and risk omitted variable bias, or include and risk included variable bias.
+Should a time-varying covariate be included in a panel regression? Consider a scholar estimating the effect of UN peacekeeping on democratization. Conflict intensity predicts both the deployment of peacekeeping missions and the prospects for democratic transition, so omitting it risks confounding bias. But peacekeeping can itself reduce violence, making realized conflict a consequence of treatment. Including it opens a different source of bias. The researcher must choose: omit the covariate and risk omitted variable bias, or include it and risk what we call included variable bias.
 
-This dilemma arises whenever researchers want to control for GDP, trade, aid, inflation, or any other variable that evolves jointly with treatment and outcome. The problem is not merely theoretical. Time-varying covariates are ubiquitous in TSCS designs, and researchers lack a framework to quantify the cost of including or excluding them. We provide one.
+This is not a special case. GDP, trade flows, foreign aid, inflation, and dozens of other variables evolve alongside treatment and outcome in panel data. Researchers routinely decide whether to condition on them, and the decision can move the point estimate. The Omitted Variable Bias formula gives researchers a way to assess the cost of excluding a confounder. No analogous tool exists for the cost of including a covariate that may be post-treatment, a collider, or a mediator. We provide one.
 
-## Why dynamic settings are special
+We introduce the Included Variable Bias (IVB) formula:
+\begin{equation}
+\text{IVB} = -\theta^{\star} \times \pi
+\label{eq:ivb_intro}
+\end{equation}
+where $\theta^{\star}$ is the coefficient on the covariate in the augmented regression and $\pi$ is the coefficient on the treatment in an auxiliary regression of the covariate on the treatment and legitimate controls. Both quantities come from regressions the researcher has already run. Where OVB measures the cost of leaving a variable out, IVB measures the change from putting one in. Combined with a causal graph, the formula tells the researcher whether the change represents collider bias, confounding removal, or over-control of a mediator, and how large it is. We derive the formula for two-way fixed effects, autoregressive distributed lag, and difference-in-differences specifications with time-varying covariates.
 
-The dual-role problem---a variable that is simultaneously a good control and a bad control---has a structural basis in dynamic settings that does not arise in cross-sectional data under standard assumptions.
+A growing literature on difference-in-differences, synthetic control, and synthetic difference-in-differences recognizes that parallel trends often hold only conditionally on covariates [@santanna_zhao2020; @callaway_santanna2021; @roth_etal2023], and recent work develops methods for incorporating covariates optimally into these estimators [@botosaru_ferman2019; @hirshberg_klosin2024; @arkhangelsky_imbens2024]. These contributions assume the covariates are exogenous. When a covariate needed for identification may also respond to treatment, the dual-role dilemma reappears in a setting where no diagnostic exists. Estimators that construct counterfactuals using adaptive weights compound the problem: including a covariate changes which units and periods form the comparison group, not just the regression coefficients. We extend IVB to this class of estimators by decomposing the total sensitivity into a Coefficient Effect, which preserves the product structure of the formula above, and a Reweighting Effect, which captures weight distortion from covariate inclusion.
 
-In cross-section, researchers typically work with directed acyclic graphs (DAGs). Under acyclicity, a variable $Z$ being both a confounder ($Z \to D$ or $Z \to Y$) and a collider ($D \to Z \leftarrow Y$) would require cycles in the causal graph---which is excluded by construction. A variable is either one or the other; the researcher's task is classification, not quantification of a trade-off.
+We apply the diagnostic to [NUMBER] published studies in [FIELDS], identify covariates with plausible dual roles, and assess whether the specification choice is consequential. The applications show when IVB is small enough to ignore and when the decomposition reveals offsetting forces invisible from comparing point estimates alone.
 
-In TSCS data, the temporal dimension resolves this apparent contradiction. The same variable $Z$ can be a confounder in one period and a collider in another, without creating cycles in the time-indexed DAG:
+Section~\ref{sec:ivb} derives the IVB formula and discusses dual-role covariates in dynamic settings. Section~\ref{sec:sdid} extends the decomposition to estimators with adaptive weights. Section~\ref{sec:applications} applies the diagnostic to published studies. Section~\ref{sec:conclusion} concludes.
+
+
+# The IVB Formula \label{sec:ivb}
+
+## Dual-Role Covariates in Dynamic Settings \label{sec:dual_role}
+
+The covariate inclusion dilemma described in the introduction has a structural basis in dynamic settings. In cross-sectional work with directed acyclic graphs (DAGs), a variable cannot simultaneously be a confounder and a collider: the first requires $Z \to D$ or $Z \to Y$; the second requires $D \to Z \leftarrow Y$. Both together imply a cycle, which acyclic graphs exclude by construction. A variable is one or the other; the researcher's task is classification, not quantification of a trade-off.
+
+In TSCS data, the temporal dimension dissolves this constraint. The same variable $Z$ can be a confounder in one period and a collider in another, without creating cycles in the time-indexed DAG:
 
 \begin{center}
 \begin{tikzpicture}[
@@ -97,73 +111,15 @@ In TSCS data, the temporal dimension resolves this apparent contradiction. The s
 \end{tikzpicture}
 \end{center}
 
-In this DAG, $Z_{t-1}$ is a confounder for the effect $D_t \to Y_t$ (blue arrows: $Z_{t-1} \to D_t$ and $Z_{t-1} \to Y_t$) and simultaneously a collider opened by $D_{t-1}$ and $Y_{t-1}$ (red arrows). No cycle exists because the nodes are indexed by time. Conditioning on $Z_{t-1}$ removes confounding but opens a collider path. The researcher faces a genuine trade-off---and until now, had no tool to quantify it.
+Here $Z_{t-1}$ is a confounder for the effect $D_t \to Y_t$ (blue arrows: $Z_{t-1} \to D_t$ and $Z_{t-1} \to Y_t$) and simultaneously a collider opened by $D_{t-1}$ and $Y_{t-1}$ (red arrows). No cycle exists because the nodes are indexed by time. Conditioning on $Z_{t-1}$ removes confounding but opens a collider path. The researcher faces a genuine trade-off, and the magnitude of that trade-off depends on the data. We note that dual-role variables can also arise outside the acyclic framework, for instance in simultaneous equations or network settings; our argument is specific to the acyclic graphs that dominate applied practice in political science.
 
-We note that dual-role variables can also arise outside the acyclic DAG framework---for instance, in simultaneous equations models or network settings where mutual causation is the norm. Our argument is specific to the acyclic framework that dominates applied practice in political science.
+A practical difficulty compounds the problem. Establishing that a covariate is a collider often requires consulting literatures outside the researcher's own field. We call this *foreign collider bias*: the risk of conditioning on a collider whose status depends on causal evidence from adjacent disciplines. A political scientist studying whether democracy reduces ethnic inequality may include GDP per capita as a control, since wealth correlates with both democracy and equality. The collider channels are visible only from adjacent fields: growth economists estimate that democratization raises GDP by roughly 20\% over 25 years [@acemoglu_etal2019]; development economists find that ethnic inequality reduces GDP per capita by 12--15\% [@grundler_link2024]. Both $D \to Z$ and $Y \to Z$ are active, making GDP a collider. The researcher who does not consult both literatures will not realize it.
 
-## Foreign collider bias
+The IVB formula provides a way to assess the consequences of this uncertainty. Even when the researcher cannot fully resolve the DAG, the formula quantifies how much the estimate changes from including or excluding the covariate, and decomposes that change into interpretable components.
 
-The dual-role problem is compounded by a practical difficulty: establishing that a variable is a collider often requires consulting literatures *outside* the researcher's primary field. We call this **foreign collider bias**---the risk of conditioning on a collider whose status is only apparent from adjacent disciplines.
+## The Formula \label{sec:formula}
 
-Consider a scholar studying whether democracy reduces ethnic inequality. GDP per capita is a natural control: wealthier countries tend to be more democratic and less unequal. But GDP per capita is also plausibly a collider. The $D \to Z$ channel comes from growth economics: democratization increases long-run GDP by approximately 20\% [@acemoglu_etal2019]. The $Y \to Z$ channel comes from development economics: ethnic inequality reduces GDP per capita by 12--15\% [@grundler_link2024]. The political scientist studying ethnic inequality may not consult either literature---and may condition on GDP per capita without realizing it opens a collider path.
-
-This is not a hypothetical concern. In Section~\ref{sec:applications}, we show that classifying covariates as potential colliders in published studies consistently required evidence from adjacent fields. The IVB formula provides a simple way to assess the consequences: even if the researcher is uncertain about the DAG, the formula quantifies how much the estimate changes from including or excluding the covariate.
-
-## This paper
-
-We introduce the **Included Variable Bias** (IVB) formula as a diagnostic for covariate inclusion decisions. In its simplest form:
-\begin{equation}
-\text{IVB} = -\theta^{\star} \times \pi
-\label{eq:ivb_intro}
-\end{equation}
-where $\theta^{\star}$ is the coefficient on the covariate in the augmented regression and $\pi$ is the coefficient on the treatment in an auxiliary regression of the covariate on the treatment and legitimate controls. Both quantities come from regressions the researcher has already run or can run immediately. The formula mirrors the Omitted Variable Bias (OVB) formula but addresses the opposite problem: where OVB measures the cost of leaving out a confounder, IVB measures the change from putting in an additional variable.
-
-In cross-section, this decomposition is a known algebraic identity [e.g., @goldberger1991course, pp. 197--198]. Our contribution begins in dynamic panel settings---TWFE, ADL, and DiD with time-varying controls---where the formula has not been derived or applied as a diagnostic tool. We further extend it to modern panel estimators with adaptive weights. For Synthetic Difference-in-Differences [SDiD; @arkhangelsky2021sdid], the IVB decomposes into two components:
-\[
-\text{IVB} = \underbrace{\text{CE}}_{\text{Coefficient Effect}} + \underbrace{\text{RE}}_{\text{Reweighting Effect}}
-\]
-The Coefficient Effect preserves the product structure $\text{CE} = -\hat{\beta}_h \times \hat{\tau}_Z$ and captures the bias from conditioning on the covariate with fixed weights. The Reweighting Effect captures the additional change from the covariate distorting the synthetic weights---a phenomenon with no analogue in TWFE.
-
-The formula does not resolve the causal graph. It does not tell the researcher whether $Z$ is a confounder, a collider, or a mediator---that requires substantive reasoning. What it does is transform an opaque specification choice into a quantified, transparent trade-off. The researcher sees how much the estimate changes, through which channel, and---in the SDiD case---which covariates drive the change. This is valuable whether or not the DAG is fully resolved.
-
-We apply the diagnostic to [NUMBER] published studies spanning [FIELDS], following the approach of @oster2019unobservable, who applies her OVB-based sensitivity tool to a portfolio of existing results. The applications illustrate the protocol and demonstrate the tool's practical value across different estimators and substantive domains.
-
-The scope of the paper is explicitly limited to the contemporaneous treatment effect (CET)---the effect of $D_t$ on $Y_t$. Cumulative, delayed, or impulse-response effects require different tools [e.g., @blackwell2018make]. We state this limitation upfront rather than relegating it to a discussion section.
-
-The remainder of the paper is organized as follows. Section~\ref{sec:ivb} derives the IVB formula for cross-sectional, TWFE, and ADL models. Section~\ref{sec:sdid} extends the decomposition to SDiD estimators. Section~\ref{sec:applications} applies the diagnostic to published studies. Section~\ref{sec:conclusion} concludes.
-
-
-# The IVB Formula \label{sec:ivb}
-
-## Cross-Section Derivation \label{sec:cs_derivation}
-
-We begin with the cross-sectional case to establish notation and intuition. The true (``short'') model relating the outcome $y$ to the treatment $D$ is:
-\begin{equation}
-y = \beta_0 + \beta_1 D + e, \qquad \mathbb{E}[e \mid D] = 0
-\label{eq:short}
-\end{equation}
-
-Now suppose a researcher includes an additional variable $Z$ in the regression, estimating the ``long'' model:
-\begin{equation}
-y = \beta_0^{\star} + \beta_1^{\star} D + \beta_2^{\star} Z + e^{\star}
-\label{eq:long}
-\end{equation}
-
-By the standard short-versus-long regression decomposition, the change in the treatment coefficient is:
-
-\begin{proposition}[IVB, Cross-Section]
-\label{prop:ivb_cs}
-When an additional variable $Z$ is included in a regression of $y$ on $D$, the change in the treatment effect estimate is:
-\begin{equation}
-\boxed{\textit{IVB} = \beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1}
-\label{eq:ivb_cs}
-\end{equation}
-where $\beta_2^{\star}$ is the coefficient on $Z$ in the long regression and $\phi_1$ is the coefficient from regressing $Z$ on $D$.
-\end{proposition}
-
-Both components are directly estimable from data. No knowledge of structural parameters is needed. The full derivation is in Appendix~\ref{app:cs_derivation}.
-
-In cross-section, this is an algebraic identity---the complement of the OVB formula, well known in econometrics. Table~\ref{tab:ovb_ivb} presents the comparison.
+To build intuition, consider the cross-sectional case. In a regression of $y$ on $D$ (``short'' model), adding a variable $Z$ produces the ``long'' model with coefficients $\beta_1^{\star}$ (on $D$) and $\beta_2^{\star}$ (on $Z$). The change in the treatment coefficient satisfies $\text{IVB} = \beta_1^{\star} - \beta_1 = -\beta_2^{\star} \times \phi_1$, where $\phi_1$ is the coefficient from regressing $Z$ on $D$. This is the standard short-versus-long regression decomposition, well known in econometrics [e.g., @goldberger1991course, pp. 197--198; see Appendix~\ref{app:cs_derivation} for details]. Table~\ref{tab:ovb_ivb} presents the comparison with OVB.
 
 \begin{table}[H]
 \centering
@@ -187,9 +143,9 @@ Estimable? & Only if confounder is observed & Yes, both components from data \\
 
 A notable practical advantage of IVB is that its components are *always* estimable: the researcher has already included $Z$ in the regression, so $\beta_2^{\star}$ is available, and $\phi_1$ comes from a simple auxiliary regression. By contrast, OVB requires observing the omitted variable---which, by definition, is often unavailable.
 
-## Extension to Panel Fixed Effects \label{sec:twfe}
+## Panel Fixed Effects \label{sec:twfe}
 
-The cross-sectional result extends to two-way fixed effects models. Consider the correct model:
+The cross-sectional identity extends to panel models, where it becomes a new diagnostic tool. Consider the short model:
 \begin{equation}
 y_{it} = \alpha_i + \mu_t + \beta D_{it} + e_{it}
 \label{eq:twfe_short}
@@ -200,17 +156,17 @@ y_{it} = \alpha_i^{\star} + \mu_t^{\star} + \beta^{\star} D_{it} + \theta^{\star
 \label{eq:twfe_long}
 \end{equation}
 
-By FWL, unit and time fixed effects are absorbed by projecting all variables onto the space spanned by the unit and time dummies. The argument from Proposition~\ref{prop:ivb_cs} applies to the doubly-demeaned residuals:
+By the Frisch-Waugh-Lovell theorem, unit and time fixed effects are absorbed by projecting all variables onto the space spanned by the unit and time dummies. The cross-sectional decomposition applies to the doubly-demeaned residuals:
 
-\begin{corollary}[IVB under TWFE]
-\label{cor:ivb_twfe}
-In a TWFE model, the change in the treatment effect from including $Z_{it}$ is:
+\begin{proposition}[IVB under TWFE]
+\label{prop:ivb_twfe}
+In a two-way fixed effects model, the change in the treatment effect from including $Z_{it}$ is:
 \begin{equation}
 \text{IVB} = \beta^{\star} - \beta = -\theta^{\star} \times \pi
 \label{eq:ivb_twfe}
 \end{equation}
 where $\theta^{\star}$ is the coefficient on $Z_{it}$ in the long TWFE regression and $\pi$ is the coefficient on $D_{it}$ in the auxiliary TWFE regression $Z_{it} = \alpha_i' + \mu_t' + \pi D_{it} + \eta_{it}$.
-\end{corollary}
+\end{proposition}
 
 The corollary has a substantive implication. Because unit fixed effects absorb any time-invariant component of the association between $D$ and $Z$, the auxiliary coefficient $\pi$ reflects only the *within-unit* co-movement of treatment and covariate. If $D$ and $Z$ are correlated primarily in levels across units, unit fixed effects remove this correlation and $\pi$ is small. This is one reason why IVB tends to be modest in panel applications: fixed effects absorb between-unit collider channels.
 
@@ -383,7 +339,7 @@ Future work could develop a sensitivity framework in the spirit of @oster2019uno
 
 ## A. Cross-Section Derivation \label{app:cs_derivation}
 
-\textit{[Full derivation of Proposition~\ref{prop:ivb_cs}. Reuse from existing paper Appendix A.]}
+\textit{[Full cross-section derivation of IVB = $-\beta_2^{\star} \times \phi_1$. Reuse from existing paper Appendix A.]}
 
 ## B. ADL Derivation \label{app:adl_derivation}
 
