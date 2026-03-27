@@ -1,0 +1,609 @@
+---
+title: "IVB Decomposition for the Synthetic Difference-in-Differences Estimator"
+author: "Manoel Galdino"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: true
+    keep_tex: true
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{geometry}
+  - \usepackage{booktabs}
+  - \geometry{margin=1in}
+  - \newtheorem{proposition}{Proposition}
+  - \newtheorem{corollary}{Corollary}
+  - \newtheorem{definition}{Definition}
+  - \newtheorem{remark}{Remark}
+  - \DeclareMathOperator*{\argmin}{arg\,min}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Introduction
+
+This note derives the Included Variable Bias (IVB) decomposition for the Synthetic Difference-in-Differences (SDiD) estimator of Arkhangelsky et al. (2021). When a researcher includes a time-varying covariate $Z$ that may be both a confounder and post-treatment, the estimate changes. We decompose this change into two components:
+
+\[
+\text{IVB} = \underbrace{\text{CE}}_{\text{Coefficient Effect}} + \underbrace{\text{RE}}_{\text{Reweighting Effect}}
+\]
+
+The Coefficient Effect (CE) captures bias from conditioning on $Z$ with fixed weights—the direct analogue of the TWFE formula $\text{IVB} = -\theta^\star \times \pi$. The Reweighting Effect (RE) captures the additional change from $Z$ distorting the synthetic weights. RE is new and specific to adaptive-weight estimators like SDiD.
+
+This note establishes the mathematical foundation. Conditions for $\text{RE} = 0$ (Step 2), practical diagnostics (Step 3), and applied illustration (Step 4) are deferred to subsequent notes.
+
+# Setup and Notation
+
+## Panel data
+
+Consider a balanced panel with $N$ units observed over $T$ periods. Let $N_0$ denote control units and $N_1 = N - N_0$ treated units. Let $T_0$ denote pre-treatment periods and $T_1 = T - T_0$ post-treatment periods. Define:
+
+- $Y_{it}$: outcome for unit $i$ at time $t$
+- $D_{it}$: treatment indicator; $D_{it} = 1$ iff $i > N_0$ and $t > T_0$ (block treatment assignment)
+- $Z_{it}$: a scalar time-varying covariate
+
+Collect outcomes in the $N \times T$ matrix $\mathbf{Y}$ with entries $Y_{it}$, and similarly $\mathbf{Z}$ for the covariate.
+
+## SDiD weights
+
+The SDiD estimator uses two weight vectors:
+
+- **Unit weights**: $\omega = (\omega_1, \ldots, \omega_{N_0})' \in \Delta_{N_0}$, where $\Delta_{N_0}$ is the unit simplex
+- **Time weights**: $\lambda = (\lambda_1, \ldots, \lambda_{T_0})' \in \Delta_{T_0}$
+
+These weights are chosen to minimize a regularized objective that balances pre-treatment trends between a weighted combination of controls and the treated units (Arkhangelsky et al. 2021, Algorithm 1).
+
+Define the **extended weight vectors** that span all units and periods:
+
+\begin{align}
+\tilde{\omega} &= (-\omega_1, \ldots, -\omega_{N_0}, \underbrace{1/N_1, \ldots, 1/N_1}_{N_1})' \in \mathbb{R}^N \label{eq:omega_ext} \\
+\tilde{\lambda} &= (-\lambda_1, \ldots, -\lambda_{T_0}, \underbrace{1/T_1, \ldots, 1/T_1}_{T_1})' \in \mathbb{R}^T \label{eq:lambda_ext}
+\end{align}
+
+Note that treated units receive uniform weight $1/N_1$ and post-treatment periods receive uniform weight $1/T_1$, following the SDiD specification.
+
+## The collapsed form
+
+The \texttt{synthdid} package operates on a **collapsed form** $\mathbf{Y}^c$ of dimension $(N_0 + 1) \times (T_0 + 1)$:
+
+\[
+Y^c_{it} = \begin{cases}
+Y_{it} & \text{if } i \leq N_0 \text{ and } t \leq T_0 \\
+\frac{1}{T_1} \sum_{s=T_0+1}^{T} Y_{is} & \text{if } i \leq N_0 \text{ and } t = T_0 + 1 \\
+\frac{1}{N_1} \sum_{j=N_0+1}^{N} Y_{jt} & \text{if } i = N_0 + 1 \text{ and } t \leq T_0 \\
+\frac{1}{N_1 T_1} \sum_{j=N_0+1}^{N} \sum_{s=T_0+1}^{T} Y_{js} & \text{if } i = N_0 + 1 \text{ and } t = T_0 + 1
+\end{cases}
+\]
+
+The collapsed form averages over treated units and post-treatment periods, exploiting the fact that SDiD assigns uniform weights to these dimensions. The same collapsing applies to $\mathbf{Z}$, yielding $\mathbf{Z}^c$.
+
+\begin{remark}[Collapsing preserves the bilinear form]
+\label{rem:collapse}
+For any extended weight vectors $\tilde{\omega}$, $\tilde{\lambda}$ and matrix $\mathbf{M}$ (either $\mathbf{Y}$ or $\mathbf{Z}$):
+\[
+\tilde{\omega}' \mathbf{M} \tilde{\lambda} = \tilde{\omega}^{c\prime} \mathbf{M}^c \tilde{\lambda}^c
+\]
+where $\tilde{\omega}^c = (-\omega_1, \ldots, -\omega_{N_0}, 1)' \in \mathbb{R}^{N_0+1}$ and $\tilde{\lambda}^c = (-\lambda_1, \ldots, -\lambda_{T_0}, 1)' \in \mathbb{R}^{T_0+1}$.
+
+This follows because the last entry of $\tilde{\omega}^c$ is 1 (not $1/N_1$), applied to the last row of $\mathbf{M}^c$ which is already the average over treated units. Similarly for $\tilde{\lambda}^c$.
+\end{remark}
+
+## Notation bridge to the IVB paper
+
+The IVB formula for TWFE is $\text{IVB} = -\theta^\star \times \pi$, where $\theta^\star$ is the coefficient of $Z$ in the long TWFE model and $\pi$ is the coefficient of $D$ in the auxiliary regression $Z \sim D + \text{FE}$. The SDiD analogues are:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+& \textbf{TWFE} & \textbf{SDiD} \\
+\midrule
+$Z \to Y$ coefficient & $\theta^\star$ & $\hat{\beta}_h$ \\
+$D \to Z$ effect & $\pi$ & $\hat{\tau}_Z$ \\
+IVB formula & $-\theta^\star \times \pi$ & $-\hat{\beta}_h \times \hat{\tau}_Z$ (CE only) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+# SDiD Estimator with Covariates
+
+## Without covariates
+
+The SDiD estimate without $Z$ is the weighted double-difference:
+
+\begin{equation}
+\hat{\tau}_{\text{short}} = \tilde{\omega}_{\text{short}}' \, \mathbf{Y} \, \tilde{\lambda}_{\text{short}}
+\label{eq:tau_short}
+\end{equation}
+
+where $(\omega_{\text{short}}, \lambda_{\text{short}})$ solve the regularized optimization in Arkhangelsky et al. (2021, Algorithm 1).
+
+## With covariates
+
+When a covariate $Z$ is included, the SDiD estimator jointly optimizes weights and the covariate coefficient:
+
+\begin{equation}
+\hat{\tau}_{\text{long}} = \tilde{\omega}_{\text{long}}' \, (\mathbf{Y} - \mathbf{Z} \hat{\beta}_{\text{long}}) \, \tilde{\lambda}_{\text{long}}
+\label{eq:tau_long}
+\end{equation}
+
+where $(\omega_{\text{long}}, \lambda_{\text{long}}, \hat{\beta}_{\text{long}})$ are jointly estimated via alternating optimization: for fixed $\hat{\beta}$, update $(\omega, \lambda)$ by Frank-Wolfe on the residualized outcome $\mathbf{Y} - \mathbf{Z}\hat{\beta}$; for fixed $(\omega, \lambda)$, update $\hat{\beta}$ by gradient descent.
+
+A key property of this optimization is that $\hat{\beta}$ is estimated from variation where $D = 0$. On the collapsed form, the optimization uses: (i) control units in pre-treatment periods ($D = 0$), (ii) control units' post-treatment average ($D = 0$), and (iii) the treated units' pre-treatment values ($D = 0$). The treated post-treatment cell enters the objective only through $\hat{\tau}$, not through $\hat{\beta}$. Therefore, $\hat{\beta}$ captures the $Z \to Y$ relationship uncontaminated by treatment.
+
+# Three Estimators and the IVB Decomposition
+
+\begin{definition}[Three estimators]
+\label{def:three}
+Given a panel $(\mathbf{Y}, \mathbf{D}, \mathbf{Z})$:
+
+\begin{enumerate}
+\item \textbf{Short model}: $\hat{\tau}_{\text{short}}$ is the SDiD estimate without $Z$, with optimized weights $(\omega_{\text{short}}, \lambda_{\text{short}})$.
+
+\item \textbf{Long model}: $\hat{\tau}_{\text{long}}$ is the SDiD estimate with $Z$, with jointly optimized $(\omega_{\text{long}}, \lambda_{\text{long}}, \hat{\beta}_{\text{long}})$.
+
+\item \textbf{Hybrid model}: $\hat{\tau}_{\text{hybrid}}$ is the SDiD estimate with $Z$ included, but with weights \emph{fixed} at $(\omega_{\text{short}}, \lambda_{\text{short}})$ from the short model. Only $\hat{\beta}_h$ is optimized:
+\begin{equation}
+\hat{\tau}_{\text{hybrid}} = \tilde{\omega}_{\text{short}}' \, (\mathbf{Y} - \mathbf{Z} \hat{\beta}_h) \, \tilde{\lambda}_{\text{short}}
+\label{eq:tau_hybrid}
+\end{equation}
+\end{enumerate}
+\end{definition}
+
+The hybrid estimator is the bridge between the short and long models. It isolates the effect of adding $Z$ to the regression (via $\hat{\beta}_h$) from the effect of $Z$ on weight optimization.
+
+\begin{definition}[IVB decomposition for SDiD]
+\label{def:ivb}
+The Included Variable Bias is:
+\[
+\text{IVB} \equiv \hat{\tau}_{\text{long}} - \hat{\tau}_{\text{short}}
+\]
+
+Decompose by adding and subtracting $\hat{\tau}_{\text{hybrid}}$:
+
+\begin{equation}
+\boxed{
+\text{IVB} = \underbrace{(\hat{\tau}_{\text{hybrid}} - \hat{\tau}_{\text{short}})}_{\text{CE: Coefficient Effect}} + \underbrace{(\hat{\tau}_{\text{long}} - \hat{\tau}_{\text{hybrid}})}_{\text{RE: Reweighting Effect}}
+}
+\label{eq:decomposition}
+\end{equation}
+\end{definition}
+
+The decomposition is exact by construction—no approximation is involved. CE measures the change from including $Z$ while holding weights fixed. RE measures the additional change from weight re-optimization.
+
+# The Coefficient Effect: An FWL-like Identity
+
+\begin{proposition}[FWL-like identity for CE]
+\label{prop:ce}
+Under the SDiD estimator with a scalar covariate $Z$ and fixed weights $(\omega_{\text{short}}, \lambda_{\text{short}})$:
+\begin{equation}
+\text{CE} = -\hat{\beta}_h \times \hat{\tau}_Z
+\label{eq:ce_fwl}
+\end{equation}
+where:
+\begin{itemize}
+\item $\hat{\beta}_h$ is the coefficient of $Z$ in the hybrid model (Definition~\ref{def:three}), estimated from $D = 0$ variation on the collapsed form;
+\item $\hat{\tau}_Z \equiv \tilde{\omega}_{\text{short}}' \, \mathbf{Z} \, \tilde{\lambda}_{\text{short}}$ is the SDiD double-difference applied to $Z$---i.e., the ``SDiD treatment effect on $Z$,'' computed with the short-model weights.
+\end{itemize}
+\end{proposition}
+
+\begin{proof}
+From equations \eqref{eq:tau_short} and \eqref{eq:tau_hybrid}, both $\hat{\tau}_{\text{short}}$ and $\hat{\tau}_{\text{hybrid}}$ use the same extended weight vectors $\tilde{\omega}_{\text{short}}$ and $\tilde{\lambda}_{\text{short}}$. Therefore:
+
+\begin{align}
+\text{CE} &= \hat{\tau}_{\text{hybrid}} - \hat{\tau}_{\text{short}} \nonumber \\
+&= \tilde{\omega}_{\text{short}}' \, (\mathbf{Y} - \mathbf{Z} \hat{\beta}_h) \, \tilde{\lambda}_{\text{short}} - \tilde{\omega}_{\text{short}}' \, \mathbf{Y} \, \tilde{\lambda}_{\text{short}} \nonumber \\
+&= \tilde{\omega}_{\text{short}}' \, \mathbf{Y} \, \tilde{\lambda}_{\text{short}} - \hat{\beta}_h \cdot \tilde{\omega}_{\text{short}}' \, \mathbf{Z} \, \tilde{\lambda}_{\text{short}} - \tilde{\omega}_{\text{short}}' \, \mathbf{Y} \, \tilde{\lambda}_{\text{short}} \nonumber \\
+&= -\hat{\beta}_h \cdot \tilde{\omega}_{\text{short}}' \, \mathbf{Z} \, \tilde{\lambda}_{\text{short}} \nonumber \\
+&= -\hat{\beta}_h \times \hat{\tau}_Z \label{eq:ce_proof}
+\end{align}
+
+The key step uses the bilinearity of the double-difference operator: $\tilde{\omega}' (\mathbf{Y} - \mathbf{Z}\beta) \tilde{\lambda} = \tilde{\omega}' \mathbf{Y} \tilde{\lambda} - \beta \cdot \tilde{\omega}' \mathbf{Z} \tilde{\lambda}$, which holds because $\hat{\beta}_h$ is a scalar (single covariate $Z$) and the weights $(\tilde{\omega}_{\text{short}}, \tilde{\lambda}_{\text{short}})$ are the same in both terms.
+\end{proof}
+
+\begin{remark}[The identity is purely algebraic]
+\label{rem:algebraic}
+The identity $\text{CE} = -\beta \cdot \hat{\tau}_Z$ holds for \emph{any} scalar $\beta$, not just the optimized $\hat{\beta}_h$. The proof depends only on the bilinearity of the double-difference operator and the fact that the same weights appear in both $\hat{\tau}_{\text{hybrid}}$ and $\hat{\tau}_{\text{short}}$. The SDiD optimization procedure determines the \emph{value} of $\hat{\beta}_h$ (and hence the numerical value of CE), but the product structure is a tautology of the estimator's algebraic form---analogous to how the Frisch-Waugh-Lovell identity holds regardless of the data-generating process.
+\end{remark}
+
+\begin{remark}[Generalization to multiple covariates]
+\label{rem:multi}
+With $K$ covariates $\mathbf{Z}_1, \ldots, \mathbf{Z}_K$ and coefficient vector $\hat{\boldsymbol{\beta}}_h = (\hat{\beta}_{h,1}, \ldots, \hat{\beta}_{h,K})'$, the identity generalizes to:
+\[
+\text{CE} = -\sum_{k=1}^{K} \hat{\beta}_{h,k} \times \hat{\tau}_{Z_k}
+\]
+where $\hat{\tau}_{Z_k} = \tilde{\omega}_{\text{short}}' \mathbf{Z}_k \tilde{\lambda}_{\text{short}}$ is the SDiD double-difference of the $k$-th covariate. The proof follows identically from the linearity of the $\text{contract}_3$ operator $\mathbf{Y} - \sum_k \mathbf{Z}_k \hat{\beta}_{h,k}$.
+\end{remark}
+
+## Interpretation of the two factors
+
+**$\hat{\beta}_h$ (the $Z \to Y$ channel):** This coefficient captures how much $Z$ predicts $Y$, conditional on unit and time structure, using only $D = 0$ variation. It reflects the ``clean'' association between $Z$ and $Y$ uncontaminated by treatment. It is the SDiD analogue of $\theta^\star$ in the TWFE IVB formula.
+
+**$\hat{\tau}_Z$ (the $D \to Z$ channel):** This is the SDiD double-difference applied to $Z$ as if it were the outcome. It measures how much treatment changes $Z$, net of the SDiD-weighted parallel trends adjustment. It is the SDiD analogue of $\pi$ in the TWFE IVB formula.
+
+**Sign of CE:** The direction of the Coefficient Effect depends on the product $\hat{\beta}_h \times \hat{\tau}_Z$:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$\hat{\beta}_h$ & $\hat{\tau}_Z$ & CE & Including $Z$\ldots \\
+\midrule
+$+$ & $+$ & $-$ & reduces $\hat{\tau}$ \\
+$+$ & $-$ & $+$ & increases $\hat{\tau}$ \\
+$-$ & $+$ & $+$ & increases $\hat{\tau}$ \\
+$-$ & $-$ & $-$ & reduces $\hat{\tau}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+# Fixed Weights and the Relationship to TWFE
+
+\begin{corollary}[Fixed weights imply $\text{RE} = 0$]
+\label{cor:fixed}
+If the weight vectors $(\omega, \lambda)$ are pre-specified and not re-optimized when $Z$ is included, then the Reweighting Effect is zero:
+\[
+\text{RE} = 0 \qquad \Longrightarrow \qquad \text{IVB} = \text{CE} = -\hat{\beta}_h \times \hat{\tau}_Z
+\]
+\end{corollary}
+
+\begin{proof}
+When the weights are fixed, the long model uses the same $(\omega, \lambda)$ as the short model. By definition, the hybrid estimator also uses these weights. Therefore $\hat{\tau}_{\text{long}} = \hat{\tau}_{\text{hybrid}}$ and $\text{RE} = 0$.
+\end{proof}
+
+\begin{remark}[Relationship to TWFE]
+\label{rem:twfe}
+In TWFE (OLS with unit and time fixed effects), there are no adaptive weights---the implicit ``weights'' on observations are determined by the OLS projection and the treatment structure, not by an optimization over $(\omega, \lambda)$. The standard IVB formula for TWFE,
+\[
+\text{IVB}_{\text{TWFE}} = -\theta^\star \times \pi,
+\]
+follows directly from the Frisch-Waugh-Lovell theorem, where $\theta^\star$ is the coefficient of $Z$ in the long TWFE model and $\pi$ is the coefficient of $D$ in the auxiliary regression $Z \sim D + \alpha_i + \mu_t$.
+
+The SDiD decomposition \emph{generalizes} this result: in any estimator with adaptive weights, the total sensitivity to covariate inclusion has an additional component (RE) beyond the FWL-like coefficient channel (CE). TWFE is the limiting case where RE vanishes.
+
+Note, however, that SDiD with uniform weights is \emph{not identical} to TWFE when covariates are present. SDiD estimates $\hat{\beta}$ from the collapsed form via gradient descent, while TWFE estimates $\theta^\star$ via full-panel OLS---these are different optimization problems yielding different coefficient values (confirmed numerically in Step 0: $\hat{\beta}_h = 0.285$ vs.\ $\hat{\theta}_{\text{WLS}} = 0.557$). The structural parallel is in the \emph{form} of the decomposition ($-\text{coefficient} \times \text{effect on } Z$), not in the numerical values.
+\end{remark}
+
+The novelty of the SDiD decomposition is the RE term, which arises only in estimators with adaptive weights and has no TWFE analogue.
+
+# Characterization of the Reweighting Effect
+
+## Definition
+
+The Reweighting Effect is:
+
+\begin{equation}
+\text{RE} = \hat{\tau}_{\text{long}} - \hat{\tau}_{\text{hybrid}} = \tilde{\omega}_{\text{long}}' (\mathbf{Y} - \mathbf{Z}\hat{\beta}_{\text{long}}) \tilde{\lambda}_{\text{long}} - \tilde{\omega}_{\text{short}}' (\mathbf{Y} - \mathbf{Z}\hat{\beta}_h) \tilde{\lambda}_{\text{short}}
+\label{eq:re}
+\end{equation}
+
+This expression involves three simultaneous changes between the hybrid and long models:
+
+\begin{enumerate}
+\item $\omega_{\text{long}}$ vs.\ $\omega_{\text{short}}$ (unit weight distortion)
+\item $\lambda_{\text{long}}$ vs.\ $\lambda_{\text{short}}$ (time weight distortion)
+\item $\hat{\beta}_{\text{long}}$ vs.\ $\hat{\beta}_h$ (coefficient change from re-optimization)
+\end{enumerate}
+
+## No closed-form expression
+
+Unlike CE, the Reweighting Effect does not simplify to a product of two interpretable quantities. One could attempt a sub-decomposition by changing $\omega$, $\lambda$, and $\hat{\beta}$ one at a time, but the result would depend on the order of changes (a path-dependence problem analogous to Shapley value decomposition). Since the three changes arise jointly from a single re-optimization, no natural ordering exists.
+
+Despite the absence of a closed form, RE is always **computable**: three calls to \texttt{synthdid\_estimate} (short, long, hybrid) suffice, with no latent quantities required.
+
+## Empirical pattern from Step 0
+
+In the feasibility check (Step 0 report), weight changes were asymmetric:
+
+- Unit weights: $\max_i |\omega_{\text{long},i} - \omega_{\text{short},i}| = 0.007$ (negligible)
+- Time weights: $\max_t |\lambda_{\text{long},t} - \lambda_{\text{short},t}| = 0.111$ (substantial)
+
+This suggests that **time-weight distortion** is the primary channel for RE in this DGP. Intuitively, including $Z$ changes which pre-treatment periods are informative for constructing the counterfactual trend, while the cross-sectional matching (unit weights) is more robust to covariate inclusion.
+
+## Sufficient conditions for RE = 0
+
+We now derive conditions under which the SDiD weights are invariant to covariate adjustment, so that $\text{RE} = 0$ and $\text{IVB} = \text{CE} = -\hat{\beta}_h \times \hat{\tau}_Z$.
+
+The SDiD weight optimization (Arkhangelsky et al. 2021, Algorithm 1) involves two sub-problems on the collapsed form $\mathbf{M}^c = (\mathbf{Y} - \mathbf{Z}\hat{\beta})^c$:
+
+\begin{itemize}
+\item \textbf{Unit weights} $\omega$: find $\omega \in \Delta_{N_0}$ and intercept $c_\omega$ minimizing a regularized MSE that matches the $\omega$-weighted control average to the treated average across $T_0$ pre-treatment periods.
+\item \textbf{Time weights} $\lambda$: find $\lambda \in \Delta_{T_0}$ and intercept $c_\lambda$ minimizing a regularized MSE that matches the $\lambda$-weighted pre-treatment average to the post-treatment average across $N_0$ control units.
+\end{itemize}
+
+Two algebraic properties of the SDiD weights are key:
+
+\begin{enumerate}
+\item[\textbf{P1.}] \textbf{Weights sum to one}: $\sum_{i=1}^{N_0} \omega_i = 1$ and $\sum_{t=1}^{T_0} \lambda_t = 1$ (simplex constraint).
+\item[\textbf{P2.}] \textbf{Intercepts}: Both $\omega$ and $\lambda$ optimizations include a free intercept (default in \texttt{synthdid}).
+\end{enumerate}
+
+\begin{proposition}[Additive $Z$ implies $\text{RE} = 0$]
+\label{prop:re_zero}
+Assume the SDiD optimization uses intercepts (\texttt{omega.intercept = lambda.intercept = TRUE}). If $Z_{it} = a_i + b_t$ for some unit-specific $a_i$ and time-specific $b_t$, then:
+\[
+\omega_{\text{long}} = \omega_{\text{short}}, \qquad \lambda_{\text{long}} = \lambda_{\text{short}}, \qquad \hat{\beta}_{\text{long}} = \hat{\beta}_h, \qquad \text{RE} = 0.
+\]
+\end{proposition}
+
+\begin{proof}
+It suffices to show that the $\omega$ and $\lambda$ optimization objectives are invariant to the covariate adjustment $\mathbf{Z}\beta$ for any scalar $\beta$, so that the weight minimizers do not depend on whether $Z$ is included. We treat the two components $a_i$ and $b_t$ separately.
+
+\medskip
+\textbf{Part A: Time-invariant component} ($Z_{it} = a_i$).
+
+\emph{$\lambda$ objective.} The $\lambda$ optimization minimizes (on the collapsed form, after optimizing the intercept $c_\lambda$):
+\[
+\frac{1}{N_0} \sum_{i=1}^{N_0} \left( r_i(\lambda) - \bar{r}(\lambda) \right)^2 + \zeta_\lambda^2 \|\lambda\|^2
+\]
+where $r_i(\lambda) = \sum_{t=1}^{T_0} \lambda_t M^c_{it} - M^c_{i,T_0+1}$ and $\bar{r}$ is the mean across controls (the intercept absorbs the mean). When we residualize by $Z_{it} = a_i$:
+\[
+r_i^Z(\lambda) = \sum_{t=1}^{T_0} \lambda_t (M^c_{it} - a_i\beta) - (M^c_{i,T_0+1} - a_i\beta) = r_i(\lambda) - a_i\beta\left(\sum_t \lambda_t - 1\right) = r_i(\lambda)
+\]
+by property \textbf{P1} ($\sum_t \lambda_t = 1$). The $a_i\beta$ terms cancel exactly, so $r_i^Z = r_i$ and the $\lambda$ objective is unchanged.
+
+\emph{$\omega$ objective.} The $\omega$ optimization minimizes (after optimizing $c_\omega$):
+\[
+\frac{1}{T_0}\sum_{t=1}^{T_0} \left(s_t(\omega) - \bar{s}(\omega)\right)^2 + \zeta_\omega^2 \|\omega\|^2
+\]
+where $s_t(\omega) = \sum_{i=1}^{N_0} \omega_i M^c_{it} - M^c_{N_0+1,t}$. When we residualize by $Z_{it} = a_i$:
+\[
+s_t^Z(\omega) = s_t(\omega) - \beta\left(\sum_i \omega_i a_i - \bar{a}_{\text{treated}}\right)
+\]
+The shift $-\beta(\sum_i \omega_i a_i - \bar{a}_{\text{treated}})$ is constant across $t$ (since $a_i$ does not depend on $t$). After subtracting the mean $\bar{s}^Z = \bar{s} - \beta(\cdots)$, the residuals $s_t^Z - \bar{s}^Z = s_t - \bar{s}$ are identical. The objective is unchanged.
+
+\medskip
+\textbf{Part B: Unit-invariant component} ($Z_{it} = b_t$).
+
+\emph{$\omega$ objective.} With $Z_{it} = b_t$, the residualized values are $M^c_{it} - b_t\beta$ for all $i$. Since $b_t$ is common to all units at time $t$:
+\[
+s_t^Z(\omega) = \sum_i \omega_i(M^c_{it} - b_t\beta) - (M^c_{N_0+1,t} - b_t\beta) = s_t(\omega) - b_t\beta\left(\sum_i \omega_i - 1\right) = s_t(\omega)
+\]
+by property \textbf{P1} ($\sum_i \omega_i = 1$). The $b_t\beta$ terms cancel exactly.
+
+\emph{$\lambda$ objective.} With $Z_{it} = b_t$:
+\[
+r_i^Z(\lambda) = r_i(\lambda) - \beta\left(\sum_t \lambda_t b_t - \bar{b}_{\text{post}}\right)
+\]
+The shift is constant across $i$ (since $b_t$ does not depend on $i$). After demeaning (intercept), $r_i^Z - \bar{r}^Z = r_i - \bar{r}$. The objective is unchanged.
+
+\medskip
+\textbf{Combining.} Since the $\omega$ and $\lambda$ objectives are invariant to both $a_i$ and $b_t$ components of $Z$, they are invariant to $Z_{it} = a_i + b_t$. Therefore $\omega^*(\beta) = \omega^*(0) = \omega_{\text{short}}$ and $\lambda^*(\beta) = \lambda^*(0) = \lambda_{\text{short}}$ for all $\beta$.
+
+With weights fixed at $(\omega_{\text{short}}, \lambda_{\text{short}})$, the alternating optimization converges to $\hat{\beta}_{\text{long}} = \hat{\beta}_h$ (since the $\beta$ sub-problem is identical). Therefore $\hat{\tau}_{\text{long}} = \hat{\tau}_{\text{hybrid}}$ and $\text{RE} = 0$.
+\end{proof}
+
+\begin{remark}[Special cases]
+\label{rem:special}
+Proposition~\ref{prop:re_zero} includes two important special cases:
+\begin{itemize}
+\item \textbf{Time-invariant $Z$} ($Z_{it} = a_i$, $b_t = 0$): covariates that capture permanent unit characteristics (e.g., GDP level, geographic features, regime type). RE = 0.
+\item \textbf{Unit-invariant $Z$} ($Z_{it} = b_t$, $a_i = 0$): covariates that capture common shocks (e.g., global oil price, a crisis dummy). RE = 0.
+\end{itemize}
+In both cases, the two cancellation mechanisms work together: the simplex constraint ($\sum \omega_i = \sum \lambda_t = 1$) eliminates one component, and the intercept absorbs the other.
+\end{remark}
+
+\begin{remark}[Approximate $\text{RE} \approx 0$ for near-additive $Z$]
+\label{rem:approx}
+In practice, most covariates are not exactly additive. Write $Z_{it} = a_i + b_t + \varepsilon_{it}$, where $\varepsilon_{it}$ is the within-unit-and-time residual (the ``interactive'' component of $Z$). By Proposition~\ref{prop:re_zero}, the $a_i + b_t$ component does not affect the weights. Only the $\varepsilon_{it}$ component can induce weight distortion.
+
+Therefore, RE is driven by $\hat{\beta} \times \varepsilon_{it}$---the interaction between $Z$'s predictive power for $Y$ (through $\hat{\beta}$) and $Z$'s within-variation (through $\varepsilon_{it}$). A practical diagnostic: if a two-way fixed effects regression of $Z$ on unit and time dummies yields high $R^2$, then $\varepsilon_{it}$ is small and RE is expected to be small.
+\end{remark}
+
+\begin{remark}[When is RE large?]
+\label{rem:re_large}
+RE is expected to be large when:
+\begin{enumerate}
+\item $Z$ has substantial interactive variation ($\varepsilon_{it}$ large relative to $a_i + b_t$), AND
+\item $Z$ strongly predicts $Y$ ($|\hat{\beta}|$ large), AND
+\item the interactive variation is heterogeneous across units or periods in a way that shifts the optimal synthetic control weights.
+\end{enumerate}
+A covariate with strong unit $\times$ time interactions (e.g., bilateral trade flows, unit-specific policy responses to a common shock) is most likely to generate large RE.
+\end{remark}
+
+# Diagnostic Procedure
+
+This section presents the IVB diagnostic as a structured procedure the applied researcher can follow.
+
+## The researcher's problem
+
+The researcher has estimated a treatment effect $\hat{\tau}$ using SDiD and is considering whether to include a time-varying covariate $Z_{it}$. The covariate may play a dual role:
+
+\begin{itemize}
+\item \textbf{Confounder channel} ($Z \to D$ or $Z \to Y$): including $Z$ removes omitted variable bias.
+\item \textbf{Post-treatment channel} ($D \to Z \to Y$): including $Z$ introduces overcontrol bias by removing an indirect effect.
+\end{itemize}
+
+The researcher does not know a priori which role dominates. The IVB decomposition does not resolve this ambiguity---that requires causal knowledge---but it quantifies the \emph{consequences} of inclusion and decomposes them into interpretable components.
+
+## Protocol
+
+\textbf{Step 1. Pre-diagnostic for RE magnitude.} Before running the full decomposition, assess whether $Z$ has substantial interactive variation:
+\[
+Z_{it} \sim \alpha_i + \mu_t + \varepsilon_{it} \qquad \text{(TWFE regression of } Z \text{)}
+\]
+If $R^2_Z$ is high (e.g., $> 0.90$), Proposition~\ref{prop:re_zero} implies RE will be small and $\text{IVB} \approx \text{CE}$. The full decomposition may still be run as confirmation, but the researcher can anticipate that the FWL-like formula will dominate.
+
+\medskip
+\textbf{Step 2. Compute the three estimates.}
+
+\begin{enumerate}
+\item[(a)] $\hat{\tau}_{\text{short}} \gets \texttt{synthdid\_estimate}(\mathbf{Y}, N_0, T_0)$
+\item[(b)] $\hat{\tau}_{\text{long}} \gets \texttt{synthdid\_estimate}(\mathbf{Y}, N_0, T_0, X = \mathbf{Z})$
+\item[(c)] Extract $\omega_{\text{short}}, \lambda_{\text{short}}$ from (a). Then:
+\[
+\hat{\tau}_{\text{hybrid}} \gets \texttt{synthdid\_estimate}(\mathbf{Y}, N_0, T_0, X = \mathbf{Z}, \text{weights} = (\omega_{\text{short}}, \lambda_{\text{short}}), \text{update} = \texttt{FALSE})
+\]
+\end{enumerate}
+
+\textbf{Step 3. Decompose.}
+
+\begin{align*}
+\text{IVB} &= \hat{\tau}_{\text{long}} - \hat{\tau}_{\text{short}} \\
+\text{CE} &= \hat{\tau}_{\text{hybrid}} - \hat{\tau}_{\text{short}} \\
+\text{RE} &= \hat{\tau}_{\text{long}} - \hat{\tau}_{\text{hybrid}}
+\end{align*}
+
+Extract $\hat{\beta}_h$ from the hybrid fit and compute $\hat{\tau}_Z = \tilde{\omega}_{\text{short}}' \mathbf{Z} \tilde{\lambda}_{\text{short}}$.
+
+Verify: $\text{CE} = -\hat{\beta}_h \times \hat{\tau}_Z$ (numerical check; should hold to machine precision).
+
+\medskip
+\textbf{Step 4. Report.} Present the following table:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+& Value & Share of IVB \\
+\midrule
+$\hat{\tau}_{\text{short}}$ (without $Z$) & & \\
+$\hat{\tau}_{\text{long}}$ (with $Z$) & & \\
+\midrule
+IVB $= \hat{\tau}_{\text{long}} - \hat{\tau}_{\text{short}}$ & & 100\% \\
+\quad CE (coefficient effect) & & \% \\
+\quad RE (reweighting effect) & & \% \\
+\midrule
+$\hat{\beta}_h$ ($Z \to Y$ in hybrid) & & \\
+$\hat{\tau}_Z$ ($D \to Z$ via SDiD) & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+## Interpretation guide
+
+The five reported quantities tell a coherent story:
+
+\begin{enumerate}
+\item \textbf{$|\text{IVB}|$ small relative to $\text{SE}(\hat{\tau})$}: Including or excluding $Z$ does not materially change the estimate. Report either specification; note the robustness.
+
+\item \textbf{$|\text{IVB}|$ large, CE-dominated} ($|\text{CE}/\text{IVB}| > 0.7$): The change is driven by the coefficient channel ($-\hat{\beta}_h \times \hat{\tau}_Z$). The researcher can reason about the two factors:
+\begin{itemize}
+\item $\hat{\beta}_h$ reflects how strongly $Z$ predicts $Y$ (conditional on unit/time structure). This is estimable and interpretable.
+\item $\hat{\tau}_Z$ reflects how much treatment changes $Z$. If treatment \emph{should} change $Z$ (mediation), CE captures overcontrol. If $Z$ changes for confounding reasons, CE captures bias removal.
+\item The sign of $\hat{\beta}_h \times \hat{\tau}_Z$ reveals the direction (see sign table in Section 4).
+\end{itemize}
+
+\item \textbf{$|\text{IVB}|$ large, RE-dominated} ($|\text{RE}/\text{IVB}| > 0.7$): The change is mainly from weight distortion---including $Z$ changes which units/periods form the counterfactual. The researcher should:
+\begin{itemize}
+\item Examine whether the reweighted synthetic control has better or worse pre-treatment fit.
+\item Check the $R^2_Z$ diagnostic: low $R^2_Z$ (high interactive variation in $Z$) is consistent with large RE.
+\item Consider whether the weight change is substantively desirable (e.g., $Z$ helps target a more appropriate donor pool) or an artifact.
+\end{itemize}
+
+\item \textbf{CE and RE of opposite signs}: Partial cancellation. The total IVB may be small even though each component is large. This masking is invisible without the decomposition and warrants careful examination---the ``right'' answer depends on which channel the researcher trusts.
+\end{enumerate}
+
+## What the diagnostic does NOT do
+
+The decomposition is a \emph{sensitivity analysis}, not a specification test. It cannot:
+
+\begin{itemize}
+\item Determine whether $Z$ is a confounder, a mediator, or both. That requires causal reasoning beyond the data.
+\item Identify the ``correct'' specification. Both $\hat{\tau}_{\text{short}}$ and $\hat{\tau}_{\text{long}}$ are valid under their respective identifying assumptions.
+\item Replace domain knowledge about the causal structure connecting $D$, $Z$, and $Y$.
+\end{itemize}
+
+What it \emph{can} do is quantify the stakes: how much does the choice matter, and through which channel? This converts an opaque modeling choice into a transparent, interpretable trade-off.
+
+## Inference
+
+Standard errors for $\hat{\tau}_{\text{short}}$ and $\hat{\tau}_{\text{long}}$ are available from the \texttt{synthdid} package via placebo variance estimation (Arkhangelsky et al. 2021, Section 5). For inference on the decomposition components:
+
+\begin{enumerate}
+\item \textbf{Placebo-based}: Apply the full diagnostic procedure (Steps 2--3) to each placebo draw (permuting treatment assignment among control units). The distribution of placebo CE and RE provides standard errors and confidence intervals for both components.
+
+\item \textbf{Jackknife}: For each control unit $j$, recompute the three estimates dropping unit $j$. The jackknife variance of CE and RE captures sensitivity to individual units.
+\end{enumerate}
+
+In both cases, the key question is whether $|\text{IVB}|$ is large relative to the sampling uncertainty in $\hat{\tau}_{\text{short}}$. If $|\text{IVB}| \ll \text{SE}(\hat{\tau}_{\text{short}})$, the decomposition is informative but the specification choice is immaterial for inference.
+
+## Numerical verification (Step 0)
+
+The feasibility check confirmed all identities on a DGP with $N = 40$, $T = 20$, $Z$ purely post-treatment:
+
+\begin{center}
+\begin{tabular}{lrl}
+\toprule
+Quantity & Value & Check \\
+\midrule
+$\hat{\tau}_{\text{short}}$ & 1.673 & \\
+$\hat{\tau}_{\text{long}}$ & 1.151 & \\
+$\hat{\tau}_{\text{hybrid}}$ & 1.362 & \\
+\midrule
+IVB & $-0.522$ & \\
+CE & $-0.311$ & $= -\hat{\beta}_h \times \hat{\tau}_Z = -0.285 \times 1.089$ (error $< 10^{-15}$) \\
+RE & $-0.211$ & $\neq 0$ (weights changed) \\
+CE share & 59.6\% & \\
+RE share & 40.4\% & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+# Applied Illustration: RDD-Trade
+
+We apply the IVB diagnostic to the author's paper on foreign policy alignment when China overtakes the United States as a country's top trade partner (currently in R\&R). The treatment is Brazil ($N_1 = 1$), the treatment year is 2008 ($T_0 = 12$, $T_1 = 7$), and the outcome is UNGA voting distance from China. The panel has $N = 96$ units and $T = 19$ periods.
+
+The problematic covariate is current account deficit as a share of GDP ($\text{CA\_GDP}$). It may act as a confounder (the 2008 crisis affected both trade patterns and political alignment) or as post-treatment (treatment changes trade flows, which affect the deficit).
+
+## Pre-diagnostic
+
+Following the protocol in Section 7, we first assess whether RE is expected to be large:
+\[
+R^2(\text{CA\_GDP} \sim \alpha_i + \mu_t) = 0.494
+\]
+This moderate $R^2$ indicates that roughly half of the variation in CA\_GDP is interactive ($\varepsilon_{it}$), so RE may be substantial (Proposition~\ref{prop:re_zero}).
+
+## Results
+
+We run three analyses: (1) CA\_GDP as the only covariate, (2) all 13 covariates used in the paper, and (3) the marginal effect of adding CA\_GDP to the existing specification.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+& \textbf{CA\_GDP only} & \textbf{All covariates} & \textbf{Marginal} \\
+& (Analysis 1) & (Analysis 2) & (Analysis 3) \\
+\midrule
+$\hat{\tau}_{\text{short}}$ & $-0.2720$ & $-0.2720$ & $-0.2585$ \\
+$\hat{\tau}_{\text{long}}$ & $-0.2685$ & $-0.2639$ & $-0.2639$ \\
+$\hat{\tau}_{\text{hybrid}}$ & $-0.2699$ & $-0.2874$ & $-0.2677$ \\
+\midrule
+IVB & $0.004$ & $0.008$ & $-0.005$ \\
+CE & $0.002$ (60.7\%) & $-0.015$ ($-191\%$) & $-0.009$ (169\%) \\
+RE & $0.001$ (39.3\%) & $0.023$ (291\%) & $0.004$ ($-69\%$) \\
+\midrule
+$\hat{\beta}_h$ (CA\_GDP) & $0.011$ & $-0.019$ & -- \\
+$\hat{\tau}_Z$ (CA\_GDP) & $-0.202$ & $-0.202$ & -- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All decomposition identities and FWL checks pass to machine precision.
+
+## Interpretation
+
+**The inclusion of CA\_GDP has a negligible effect on the SDiD estimate.** Across all three analyses, $|\text{IVB}| < 0.01$, compared to $\hat{\tau}_{\text{short}} \approx -0.272$ (SE $\approx 0.133$ from the paper). The IVB is less than 3\% of $\hat{\tau}$ and less than 8\% of the standard error. The specification choice---include or exclude CA\_GDP---is immaterial for inference.
+
+Three additional findings:
+
+\begin{enumerate}
+\item \textbf{Analysis 2 reveals cancellation.} When all 13 covariates are included, CE and RE have opposite signs and partially cancel: CE pulls the estimate down ($-0.015$) while RE pushes it up ($+0.023$). The total IVB ($+0.008$) masks large offsetting forces. This cancellation is invisible without the decomposition.
+
+\item \textbf{CA\_GDP is not the dominant covariate.} In the per-covariate CE decomposition (Analysis 2), the largest contributor is government deficit (\texttt{govdef\_GDP}, $\text{CE}_k = -0.016$), not CA\_GDP ($\text{CE}_k = -0.004$). Trade with China (\texttt{perc\_trade\_with\_china}, $\text{CE}_k = +0.004$) partially offsets.
+
+\item \textbf{Weight distortion is small.} Maximum unit weight change is 0.005 and maximum time weight change is 0.048 (Analysis 2). The synthetic control is stable across specifications.
+\end{enumerate}
+
+\begin{remark}[Practical implication for the RDD-Trade paper]
+The IVB diagnostic confirms that the main SDiD result ($\hat{\tau} \approx -0.27$, $p = 0.011$) is robust to the inclusion or exclusion of current account deficit. The researcher can report either specification with confidence that the choice does not affect the substantive conclusion.
+\end{remark}
+
+# References
+
+Arkhangelsky, D., Athey, S., Hirshberg, D. A., Imbens, G. W., \& Wager, S. (2021). Synthetic Difference-in-Differences. \textit{American Economic Review}, 111(12), 4088--4118.
+
+Caetano, C., \& Callaway, B. (2024). Difference in Differences when Parallel Trends Holds Conditionally. arXiv:2406.15288.
+
+Lin, Z., \& Zhang, Y. (2022). Covariate Effect Bias in Dynamic Two-Way Fixed Effects Models. \textit{Economics Letters}, 221, 110902.
