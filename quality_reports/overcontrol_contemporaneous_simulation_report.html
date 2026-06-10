@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>overcontrol_contemporaneous_simulation_report</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1 id="relatório-over-control-contemporâneo">Relatório: Over-control
+Contemporâneo</h1>
+<p><strong>Data</strong>: 2026-03-22<br />
+<strong>Status</strong>: COMPLETE<br />
+<strong>Script</strong>:
+<code>simulations/nonlinearity/sim_overcontrol_contemporaneous.R</code><br />
+<strong>Resultados</strong>:
+<code>simulations/nonlinearity/results/sim_overcontrol_contemporaneous_results.csv</code></p>
+<h2 id="objetivo">1. Objetivo</h2>
+<p>Validar o caso faltante do novo framing: <strong>mediador
+contemporâneo puro</strong>,</p>
+<p><code>D_t -&gt; Z_t -&gt; Y_t</code>, sem
+<code>Y_t -&gt; Z_t</code>.</p>
+<p>Perguntas:</p>
+<ol type="1">
+<li>Incluir <code>Z_t</code> contemporâneo gera over-control no
+painel?</li>
+<li>O resultado é limpo sob linearidade?</li>
+<li>O padrão sobrevive sob não linearidade no canal
+<code>D -&gt; Z</code>?</li>
+<li>Usar <code>Z_{t-1}</code> em ADL evita esse problema por
+timing?</li>
+</ol>
+<h2 id="dgp">2. DGP</h2>
+<p>O experimento usa:</p>
+<pre class="text"><code>D_t = alpha_D + rho_D D_{t-1} + u_t
+Z_t = alpha_Z + delta_D D_t + f_nl(D_t) + rho_Z Z_{t-1} + nu_t
+Y_t = alpha_Y + beta D_t + theta Z_t + rho_Y Y_{t-1} + e_t</code></pre>
+<p>Parâmetros base:</p>
+<ul>
+<li><code>beta = 1.0</code> (efeito direto)</li>
+<li><code>theta = 0.5</code></li>
+<li><code>delta_D = 0.4</code></li>
+<li><code>rho_D = 0.5</code></li>
+<li><code>rho_Y = 0.5</code></li>
+<li><code>rho_Z in {0.3, 0.7}</code></li>
+<li><code>N = 100</code>, <code>T = 30</code>,
+<code>T_burn = 100</code></li>
+<li><code>500</code> repetições por cenário</li>
+</ul>
+<p>No caso linear, o efeito total contemporâneo verdadeiro é:</p>
+<p><code>beta_total = beta + theta * delta_D = 1.2</code></p>
+<h2 id="modelos-estimados">3. Modelos estimados</h2>
+<ul>
+<li><code>TWFE short</code>: <code>Y ~ D | FE</code></li>
+<li><code>TWFE bad</code>: <code>Y ~ D + Z | FE</code></li>
+<li><code>ADL(Y_lag)</code>: <code>Y ~ D + Y_lag | FE</code></li>
+<li><code>ADL total</code>: <code>Y ~ D + D_lag + Y_lag | FE</code></li>
+<li><code>ADL bad</code>:
+<code>Y ~ D + D_lag + Y_lag + Z | FE</code></li>
+<li><code>ADL safe</code>:
+<code>Y ~ D + D_lag + Y_lag + Z_lag | FE</code></li>
+<li><code>ADL both</code>:
+<code>Y ~ D + D_lag + Y_lag + Z + Z_lag | FE</code></li>
+</ul>
+<p>O benchmark substantivo para o efeito total no painel dinâmico foi
+<code>ADL total</code>.</p>
+<h2 id="resultado-principal">4. Resultado principal</h2>
+<h3 id="linear-over-control-aparece-com-nitidez">4.1 Linear:
+over-control aparece com nitidez</h3>
+<p>Nos cenários lineares:</p>
+<ul>
+<li><code>ADL total</code> ficou em
+<code>1.199</code>-<code>1.201</code>, praticamente igual ao efeito
+total verdadeiro <code>1.2</code></li>
+<li><code>ADL bad</code> ficou em <code>0.992</code>-<code>0.998</code>,
+praticamente igual ao efeito direto <code>1.0</code></li>
+<li><code>ADL safe</code> ficou em
+<code>1.197</code>-<code>1.199</code>, colado ao benchmark total</li>
+<li>O shift de over-control em ADL foi <code>-0.203</code> a
+<code>-0.206</code></li>
+</ul>
+<p>Interpretação:</p>
+<ul>
+<li>Incluir <code>Z_t</code> contemporâneo retira exatamente o canal
+indireto</li>
+<li>Substituir <code>Z_t</code> por <code>Z_{t-1}</code> evita o
+over-control contemporâneo</li>
+</ul>
+<h3 id="a-fórmula-ivb-funciona-exatamente-no-caso-mediador">4.2 A
+fórmula IVB funciona exatamente no caso mediador</h3>
+<p>Em todos os cenários, a diferença:</p>
+<p><code>coef(ADL bad) - coef(ADL total)</code></p>
+<p>coincide com:</p>
+<p><code>-theta_star * pi</code></p>
+<p>até precisão de máquina. O erro médio absoluto da identidade foi da
+ordem de <code>1e-16</code> a <code>1e-12</code>.</p>
+<h2 id="não-linearidade">5. Não linearidade</h2>
+<h3 id="bounded-nl">5.1 Bounded NL</h3>
+<p>Nos casos <code>log2</code> e <code>softpoly2</code>, o over-control
+em ADL ficou muito perto do linear:</p>
+<ul>
+<li><code>-0.203</code> a <code>-0.211</code></li>
+</ul>
+<p>Ou seja, o padrão substantivo sobrevive quase intacto.</p>
+<h3 id="bounded-mas-mais-forte">5.2 Bounded mas mais forte</h3>
+<p>No caso <code>tanh</code>, o over-control cresce com a força da não
+linearidade:</p>
+<ul>
+<li><code>-0.258</code> a <code>-0.434</code></li>
+</ul>
+<p>Aqui o efeito indireto bloqueado deixa de ser aproximadamente linear,
+mas o mecanismo continua o mesmo.</p>
+<h3 id="unbounded">5.3 Unbounded</h3>
+<p>No caso <code>Dlog</code>, o over-control cresce bastante:</p>
+<ul>
+<li><code>-0.406</code> a <code>-1.035</code></li>
+</ul>
+<p>Isto é consistente com o restante das simulações do projeto: formas
+unbounded podem fazer o deslocamento de projeção linear crescer
+muito.</p>
+<h3 id="timing-continua-protegendo">5.4 Timing continua protegendo</h3>
+<p>Mesmo nos cenários não lineares, <code>ADL safe</code> ficou
+praticamente igual a <code>ADL total</code>:</p>
+<ul>
+<li><code>safe_shift_adl</code> entre aproximadamente
+<code>-0.009</code> e <code>0.001</code></li>
+</ul>
+<p>Ou seja, usar <code>Z_{t-1}</code> em vez de <code>Z_t</code>
+continua evitando o over-control contemporâneo.</p>
+<h2 id="achado-metodológico-importante">6. Achado metodológico
+importante</h2>
+<p><code>TWFE short</code> não é um benchmark limpo neste DGP
+dinâmico.</p>
+<p>Ele ficou sistematicamente acima do efeito total:</p>
+<ul>
+<li>linear: <code>1.552</code>-<code>1.586</code></li>
+<li>NL forte: até <code>2.874</code></li>
+</ul>
+<p>Portanto, no painel dinâmico o contraste mais limpo para comunicar
+over-control não é:</p>
+<ul>
+<li><code>TWFE short</code> vs <code>TWFE + Z_t</code></li>
+</ul>
+<p>e sim:</p>
+<ul>
+<li><code>ADL total</code> vs <code>ADL + Z_t</code></li>
+</ul>
+<p>Isto importa para o paper porque evita misturar:</p>
+<ol type="1">
+<li>over-control do mediador</li>
+<li>erro de especificação dinâmica por omitir <code>Y_{t-1}</code> e
+<code>D_{t-1}</code></li>
+</ol>
+<h2 id="implicações-para-o-framing">7. Implicações para o framing</h2>
+<p>O gate do mediador está <strong>fechado positivamente</strong> para
+TSCS:</p>
+<ul>
+<li>o caso linear funciona como previsto</li>
+<li>o caso NL confirma a direção e a robustez qualitativa</li>
+<li>o timing via lags evita o problema</li>
+<li>a fórmula IVB continua válida como diferença entre projeções
+lineares</li>
+</ul>
+<h2 id="recomendação-editorial">8. Recomendação editorial</h2>
+<p>Para o paper:</p>
+<ol type="1">
+<li>Usar este experimento para sustentar a seção de over-control
+contemporâneo.</li>
+<li>Comunicar o resultado principal via <strong>ADL total vs ADL bad vs
+ADL safe</strong>.</li>
+<li>Não vender <code>TWFE short</code> como benchmark causal limpo no
+caso dinâmico.</li>
+<li>Se quiser reforçar o lado DID do título, um experimento extra de 2
+períodos seria útil, mas não é necessário para sustentar o claim TSCS do
+mediador.</li>
+</ol>
+</body>
+</html>

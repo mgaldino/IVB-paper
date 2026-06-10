@@ -1,0 +1,211 @@
+---
+title: "Jensen (2025) through Our Framework: A Modest Bayesian Reframing of DiD Specification"
+author: ""
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    keep_tex: false
+geometry: margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7.5,
+  fig.height = 4.8,
+  dpi = 300
+)
+
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(readr)
+library(tidyr)
+
+rep_dir <- if (dir.exists("replication")) "replication" else "../replication"
+sim_dir <- if (dir.exists("simulations")) "simulations" else "../simulations"
+
+jensen_ext <- readr::read_csv(
+  file.path(rep_dir, "jensen_extension_results.csv"),
+  show_col_types = FALSE
+)
+
+sim_decomp <- readr::read_csv(
+  file.path(sim_dir, "dynamics", "results", "sim_jensen_two_period_decomp.csv"),
+  show_col_types = FALSE
+)
+
+fmt <- function(x, digits = 3) {
+  formatC(x, format = "f", digits = digits)
+}
+```
+
+# Q&A
+
+1. **If our framework had been available to Jensen (2025), what would the authors have done differently?**  
+They likely would have reorganized the robustness hierarchy. The key comparison would not be “with” versus “without” time-varying controls, but rather: common time structure already in the DiD, then a treatment-invariant adjustment generated from pre-treatment covariates, and only then a sensitivity layer with realized post-treatment controls.
+
+2. **What is the Bayesian update?**  
+The update is not “time-varying controls are always bad,” and it is not “time FE create bias.” It is: *first separate the common temporal structure from the additional adjustments; then ask whether the next useful step can be built from pre-treatment information alone; only after that evaluate how much realized post-treatment controls move the estimate*.
+
+3. **Why is Jensen a useful illustration?**  
+Because the application already contains the relevant ingredients. All specifications already include the common temporal component, and our extension shows that the larger movement comes from a pre-treatment-generated adjustment rather than from realized time-varying controls alone.
+
+# Lead
+
+If our framework had been available when Jensen (2025) was written, the article's substantive conclusion would probably not have changed much. The gain would have been interpretive. The robustness table would be read through a more disciplined hierarchy of adjustments rather than through a generic contrast between specifications with fewer and more controls.
+
+This is a modest Bayesian reframing, not a psychological claim about the authors. The posterior shift is from putting most weight on covariate richness to putting first-order weight on a three-part decomposition: the common temporal structure already built into DiD, a treatment-invariant adjustment generated from pre-treatment covariates, and only then realized post-treatment controls. In short, the relevant contrast is not simply “without controls” versus “with controls.” It is “common time structure,” then “common time structure plus pre-treatment-generated adjustment,” and only then “common time structure plus pre-treatment-generated adjustment plus realized controls.”
+
+# Conceptual Distinction
+
+Let \(H_t\) denote the observed period index used by the analyst and \(S_t\) denote the latent state of the world in period \(t\), such as the substantive temporal environment that may affect treatment and outcomes. In DiD, `Post_t` and time fixed effects are devices for absorbing the common temporal component indexed by \(H_t\). They are not post-treatment controls.
+
+Now consider an analyst-generated regressor of the form
+
+\[
+A_{it} = B_i \times H_t,
+\]
+
+where \(B_i\) is measured before treatment. This variable is treatment-invariant: treatment does not change \(B_i\), and it does not change which period the observation belongs to. But that does not make it sufficient for identification. Crucially, \(A_{it}\) does **not** replace `time FE`; it only allows the common temporal component to vary with baseline traits. If the latent period state \(S_t\) affects outcomes heterogeneously in ways \(A_{it}\) does not capture, the design can still be biased. The advantage of \(A_{it}\) is narrower and more defensible: it does not itself introduce a regressor whose realized value may have been altered by treatment.
+
+# Evidence from Jensen
+
+The relevant empirical point in Jensen is therefore not that time itself is dangerous. All reported models already contain the common temporal structure. The question is what happens when the analyst adds, on top of that shared structure, either a pre-treatment-generated adjustment or realized time-varying controls.
+
+```{r jensen-table}
+jensen_tab <- jensen_ext |>
+  filter(model_id %in% c("m1", "m2", "m_safe_full", "m3", "m4", "m5", "m_safe_restricted", "m6")) |>
+  mutate(
+    spec_display = case_when(
+      model_id == "m1" ~ "Base: common time structure",
+      model_id == "m2" ~ "Base + realized controls",
+      model_id == "m_safe_full" ~ "Base + pre-treatment-generated adjustment",
+      model_id == "m3" ~ "Base + pre-treatment-generated adjustment + realized controls",
+      model_id == "m4" ~ "Restricted base: common time structure",
+      model_id == "m5" ~ "Restricted base + realized controls",
+      model_id == "m_safe_restricted" ~ "Restricted base + pre-treatment-generated adjustment",
+      model_id == "m6" ~ "Restricted base + pre-treatment-generated adjustment + realized controls",
+      TRUE ~ spec_label
+    )
+  ) |>
+  select(panel, spec_display, estimate, delta_vs_base, delta_vs_safe_dyn) |>
+  mutate(across(c(estimate, delta_vs_base, delta_vs_safe_dyn), ~ round(.x, 3)))
+
+kable(
+  jensen_tab,
+  col.names = c("Panel", "Specification", "Estimate", "Delta vs. Base", "Delta vs. Pre-Treatment Adjustment"),
+  caption = "Table 1. Jensen (2025): coefficient movements once the pre-treatment-generated adjustment is isolated"
+)
+```
+
+The application yields a clear interpretive lesson.
+
+In the full sample, the baseline estimate is `r fmt(jensen_ext$estimate[jensen_ext$model_id == "m1"])`. Adding the paper's realized time-varying controls moves it to `r fmt(jensen_ext$estimate[jensen_ext$model_id == "m2"])`, a shift of `r fmt(jensen_ext$delta_vs_base[jensen_ext$model_id == "m2"])`. But adding only the pre-treatment-generated adjustment moves the estimate to `r fmt(jensen_ext$estimate[jensen_ext$model_id == "m_safe_full"])`, a larger shift of `r fmt(jensen_ext$delta_vs_base[jensen_ext$model_id == "m_safe_full"])`. Once that adjustment is in place, adding realized controls changes the estimate only from `r fmt(jensen_ext$estimate[jensen_ext$model_id == "m_safe_full"])` to `r fmt(jensen_ext$estimate[jensen_ext$model_id == "m3"])`.
+
+In the restricted-control-group sample, the contrast is even more revealing. The pre-treatment-generated adjustment moves the coefficient down, whereas the realized controls move it up. This is exactly the kind of mixture our framework is designed to separate. The core message is not that `time FE` bias the estimate. It is that, after the common temporal component is already in the model, different additional adjustments play very different causal roles.
+
+# Evidence from the Simulation
+
+The Jensen-calibrated simulation asks whether this logic is peculiar to one application or whether it reflects a broader geometry. In the simulation, all specifications share the common two-period temporal component. What varies is whether the analyst adds a pre-treatment-generated adjustment, realized controls, or both.
+
+```{r sim-table}
+sim_tab <- sim_decomp |>
+  mutate(
+    scenario = case_when(
+      scenario == "jensen_full_like" ~ "Jensen-like (full sample)",
+      scenario == "jensen_restricted_like" ~ "Jensen-like (restricted sample)",
+      scenario == "ivb_post_dominant" ~ "Realized-controls-dominant",
+      TRUE ~ scenario
+    )
+  ) |>
+  select(
+    scenario,
+    achieved_base_minus_safe,
+    achieved_full_minus_safe,
+    achieved_tvc_minus_base,
+    target_base_minus_safe,
+    target_full_minus_safe,
+    target_tvc_minus_base
+  ) |>
+  mutate(across(-scenario, ~ round(.x, 3)))
+
+kable(
+  sim_tab,
+  col.names = c(
+    "Scenario", "Base - Pre-Treatment Adj.", "Full - Pre-Treatment Adj.", "Realized Ctrls - Base",
+    "Target Base - Pre-Treatment Adj.", "Target Full - Pre-Treatment Adj.", "Target Realized Ctrls - Base"
+  ),
+  caption = "Table 2. Jensen-calibrated simulation: achieved versus target shifts"
+)
+```
+
+```{r sim-figure, fig.cap="Figure 1. Mean coefficient shifts in the Jensen-calibrated simulation."}
+plot_df <- sim_decomp |>
+  mutate(
+    scenario = case_when(
+      scenario == "jensen_full_like" ~ "Jensen-like (full sample)",
+      scenario == "jensen_restricted_like" ~ "Jensen-like (restricted sample)",
+      scenario == "ivb_post_dominant" ~ "Realized-controls-dominant",
+      TRUE ~ scenario
+    )
+  ) |>
+  select(
+    scenario,
+    achieved_base_minus_safe,
+    achieved_full_minus_safe,
+    achieved_tvc_minus_base
+  ) |>
+  tidyr::pivot_longer(
+    cols = -scenario,
+    names_to = "shift",
+    values_to = "value"
+  ) |>
+  mutate(
+    shift = case_when(
+      shift == "achieved_base_minus_safe" ~ "Base - Pre-Treatment Adj.",
+      shift == "achieved_full_minus_safe" ~ "Full - Pre-Treatment Adj.",
+      shift == "achieved_tvc_minus_base" ~ "Realized Ctrls - Base",
+      TRUE ~ shift
+    )
+  )
+
+ggplot(plot_df, aes(x = shift, y = value, fill = scenario)) +
+  geom_hline(yintercept = 0, linewidth = 0.4, linetype = "dashed", color = "gray50") +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  scale_fill_manual(values = c(
+    "Jensen-like (full sample)" = "#2f5c8a",
+    "Jensen-like (restricted sample)" = "#b2472f",
+    "Realized-controls-dominant" = "#6a994e"
+  )) +
+  labs(x = NULL, y = "Mean shift", fill = NULL) +
+  theme_minimal(base_size = 11)
+```
+
+The simulation sharpens the substantive lesson.
+
+- In the Jensen-like full-sample scenario, most of the movement comes from the pre-treatment-generated adjustment, while the realized controls have a smaller incremental effect.
+- In the Jensen-like restricted-sample scenario, the realized controls and the pre-treatment-generated adjustment can move the estimate in different directions.
+- In the realized-controls-dominant scenario, the same framework warns the researcher that the post-treatment control layer has become the main source of movement.
+
+This is the key lesson: the role of realized post-treatment controls is an empirical object that must be isolated, not inferred from a single comparison between a short and a long DiD specification.
+
+# Bottom Line
+
+If our framework had been available, Jensen's authors would likely have presented their robustness logic in a more structured way.
+
+- First, they would have stated more clearly that `Post_t` and the common temporal component are already built into the DiD design.
+- Second, they would have separated the pre-treatment-generated adjustment from the realized-control layer instead of folding both into a generic notion of “more controls.”
+- Third, they would have treated realized time-varying controls as sensitivity analysis rather than as the main source of design credibility.
+
+Nothing in this reframing proves that the treatment-invariant block identifies the true ATT in Jensen. The latent period state \(S_t\) may still generate residual bias if its heterogeneity is not well captured. That is why the claim here is deliberately modest. The framework improves the interpretation of specification movements and the discipline of the robustness argument; it does not deliver definitive validation of the causal effect in the application.
+
+The modest Bayesian update is therefore:
+
+> Put less weight on generic covariate richness, and more weight on a disciplined hierarchy: common time structure first, pre-treatment-generated temporal heterogeneity next, realized post-treatment controls last.
+
+That is the contribution of the framework in this application. It does not reverse the result. It changes what the result is taken to mean, and it does so without treating time itself as the source of bias.
