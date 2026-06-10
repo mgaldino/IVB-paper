@@ -4,6 +4,8 @@
 
 Paper academico sobre **Included Variable Bias (IVB)** — o vies que surge quando se inclui um colisor (collider) como controle em regressao. Aplicado a paineis com TWFE (two-way fixed effects) em Ciencia Politica.
 
+**Benchmark de exposição**: Imai, Kim & Wang (2023) AJPS; Blackwell (2013) AJPS. Ver `Papers/references/benchmark_library.md` Gênero 4.
+
 **Formula central**: IVB = beta_long - beta_short = -theta* x pi (identidade FWL)
 - theta* = coeficiente de Z no modelo longo
 - pi = coeficiente de D na regressao auxiliar Z ~ D + FE

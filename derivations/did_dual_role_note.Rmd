@@ -1,0 +1,240 @@
+---
+title: "Nota formal: controles dual-role em DiD não escalonado"
+author: "Manoel Galdino"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{bm}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+  - \newtheorem{proposition}{Proposição}
+  - \newtheorem{corollary}{Corolário}
+  - \newtheorem{remark}{Observação}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Q\&A
+
+**Pergunta.** Em um DiD não escalonado, com alvo igual ao efeito causal total sobre os tratados, o que o pesquisador deve fazer quando acredita que o PTA só é plausível após ajustar por uma covariável *time-varying*, mas suspeita que essa covariável pode ser dual-role ou triple-role?
+
+**Resposta curta.** O ponto de partida não deve ser a escolha binária entre incluir ou omitir a covariável realizada no pós-tratamento. O procedimento mais defensável é: (i) construir um bloco de ajuste ``safe'' usando apenas informação pré-tratamento capaz de capturar a heterogeneidade relevante do choque; (ii) estimar o DiD principal com esse bloco seguro; e (iii) tratar a inclusão da covariável realizada no pós-tratamento como análise de sensibilidade. A extensão natural da fórmula IVB mede exatamente quanto a estimativa se move ao passar do modelo seguro para o modelo contaminado.
+
+# 1. Setup
+
+Considere municípios \(i = 1, \ldots, N\) observados em períodos \(t = 1, \ldots, T\). O tratamento é não escalonado: municípios tratados recebem a política pública simultaneamente a partir de \(t^\star\), de modo que
+
+\[
+D_i \in \{0,1\}, \qquad Post_t = \mathbf{1}\{t \geq t^\star\}, \qquad T_{it} = D_i \times Post_t.
+\]
+
+O outcome observado é \(Y_{it}\). O alvo causal é o efeito total médio sobre os tratados no horizonte \(e \geq 0\):
+
+\[
+ATT_e = \mathbb{E}\!\left[ Y_{i,t^\star+e}(1) - Y_{i,t^\star+e}(0) \mid D_i = 1 \right].
+\]
+
+Suponha ainda que, em algum período \(s > t^\star\), ocorre um choque agregado \(Shock_t = \mathbf{1}\{t \geq s\}\) que afeta o outcome mesmo na ausência de tratamento. O impacto desse choque varia entre municípios de acordo com uma característica latente de capacidade de resposta \(R_i\). O pesquisador observa uma covariável \(Z_{it}\), por exemplo PIB per capita municipal, e suspeita que ela possa desempenhar três papéis:
+
+1. **Confounder do choque heterogêneo**, porque \(Z\) é um bom proxy para \(R_i\), que modula a trajetória de \(Y_{it}(0)\) após o choque.
+2. **Mediator ou post-treatment state**, porque a política pode alterar \(Z_{it}\) após \(t^\star\).
+3. **Collider**, porque \(Z_{it}\) pode ser afetado tanto pela política quanto por determinantes não observados do outcome.
+
+O problema aplicado é escolher entre:
+
+- omitir \(Z_{it}\), arriscando viés por heterogeneidade não controlada do choque;
+- incluir \(Z_{it}\), arriscando post-treatment bias por mediação, collider bias, ou ambos.
+
+# 2. Regra de timing para controles defasados
+
+O primeiro ponto é que, em DiD dinâmico, ``lagging'' não resolve automaticamente o problema.
+
+\begin{proposition}[Quando um lag é automaticamente pré-tratamento]
+Para estimar \(ATT_e\), a variável realizada \(Z_{i,t^\star+e-\ell}\) é automaticamente pré-tratamento apenas se \(t^\star + e - \ell < t^\star\), isto é, se \(\ell > e\).
+\end{proposition}
+
+\begin{proof}
+O efeito \(ATT_e\) compara resultados no período \(t^\star + e\). Um controle observado em \(t^\star + e - \ell\) é pré-tratamento apenas se for medido antes do início da política, isto é, antes de \(t^\star\). A desigualdade \(t^\star + e - \ell < t^\star\) equivale a \(\ell > e\).
+\end{proof}
+
+\begin{remark}
+Logo, em um DiD com vários períodos pós-tratamento, um lag rolante de ordem fixa deixa de ser seguro à medida que o horizonte \(e\) aumenta. Para efeitos de médio prazo, a estratégia correta não é usar lags correntes arbitrários, mas sim ancorar o ajuste em informação observada estritamente antes de \(t^\star\).
+\end{remark}
+
+# 3. Bloco de ajuste seguro
+
+Se o pesquisador tem uma hipótese substantiva clara sobre o mecanismo da heterogeneidade do choque, é possível construir um bloco de ajuste que preserve o alvo \(ATT_e\) e evite usar a covariável contaminada no pós-tratamento.
+
+Defina uma característica de base observada antes da política,
+
+\[
+B_i = Z_{i,t^\star-1},
+\]
+
+e construa um vetor de controles seguros \(W_{it}\) usando apenas informação pré-tratamento. Dois exemplos naturais são:
+
+\[
+W_{it} = B_i \times Shock_t
+\]
+
+ou, de forma mais flexível,
+
+\[
+W_{it} = \left( B_i \times \mathbf{1}\{t = 1\}, \ldots, B_i \times \mathbf{1}\{t = T\} \right).
+\]
+
+A interpretação é simples: o pesquisador não controla pelo PIB per capita realizado no pós-tratamento, mas pela capacidade pré-tratamento do município de absorver choques, permitindo que essa capacidade interaja com o tempo ou com o período do choque.
+
+# 4. Modelo seguro versus modelo contaminado
+
+Considere dois modelos lineares aninhados. O modelo seguro é
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau^S T_{it} + \Gamma' W_{it} + u_{it},
+\]
+
+e o modelo contaminado é
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau^L T_{it} + \Gamma' W_{it} + \beta Z_{it} + v_{it}.
+\]
+
+O primeiro tenta preservar o alvo \(ATT\) ao ajustar apenas pela heterogeneidade relevante do choque usando informação pré-tratamento. O segundo adiciona a covariável realizada \(Z_{it}\), que pode estar contaminada por canais pós-tratamento.
+
+\begin{proposition}[Extensão IVB após ajuste seguro]
+Sejam \(\tilde{Y}_{it}\), \(\tilde{T}_{it}\) e \(\tilde{Z}_{it}\) os resíduos de \(Y_{it}\), \(T_{it}\) e \(Z_{it}\) após projeção linear em \(\alpha_i\), \(\lambda_t\) e \(W_{it}\). Então:
+
+\[
+\tau^L - \tau^S = - \beta \pi,
+\]
+
+onde
+
+\[
+\pi = \frac{\operatorname{Cov}(\tilde{T}_{it}, \tilde{Z}_{it})}{\operatorname{Var}(\tilde{T}_{it})}
+\]
+
+é o coeficiente da regressão auxiliar de \(Z_{it}\) em \(T_{it}\), condicional em efeitos fixos e no bloco seguro \(W_{it}\).
+\end{proposition}
+
+\begin{proof}
+Pelo teorema de Frisch-Waugh-Lovell, o coeficiente de \(T_{it}\) no modelo contaminado é o coeficiente da regressão de \(\tilde{Y}_{it}\) em \(\tilde{T}_{it}\) e \(\tilde{Z}_{it}\). Já o coeficiente no modelo seguro é o coeficiente da regressão de \(\tilde{Y}_{it}\) apenas em \(\tilde{T}_{it}\). Aplicando a identidade padrão para regressões aninhadas, obtemos
+
+\[
+\tau^L - \tau^S = - \beta \frac{\operatorname{Cov}(\tilde{T}_{it}, \tilde{Z}_{it})}{\operatorname{Var}(\tilde{T}_{it})} = - \beta \pi.
+\]
+\end{proof}
+
+\begin{remark}
+Essa é a extensão direta da lógica IVB para o problema aplicado relevante. O número \(-\beta \pi\) mede quanto a estimativa do efeito da política se move ao passar do ajuste seguro para o ajuste contaminado. Ele não identifica sozinho se o movimento é ``bom'' ou ``ruim''; a interpretação depende do alvo causal e do mecanismo substantivo.
+\end{remark}
+
+# 5. Decomposição operacional para o pesquisador aplicado
+
+Considere agora um terceiro modelo, sem ajuste para a heterogeneidade do choque:
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau^O T_{it} + \varepsilon_{it}.
+\]
+
+Defina:
+
+\[
+OVB_{safe} = \tau^O - \tau^S
+\]
+
+como o custo de omitir o bloco seguro, e
+
+\[
+IVB_{post} = \tau^L - \tau^S = -\beta \pi
+\]
+
+como o custo marginal de incluir a covariável realizada no pós-tratamento, dado que o bloco seguro já está no modelo.
+
+\begin{corollary}[Decomposição da escolha aplicada]
+A diferença entre a especificação contaminada e a especificação sem qualquer ajuste pode ser decomposta como
+
+\[
+\tau^L - \tau^O = (\tau^L - \tau^S) + (\tau^S - \tau^O) = IVB_{post} - OVB_{safe}.
+\]
+\end{corollary}
+
+Essa decomposição organiza a decisão aplicada:
+
+1. **Se \(|OVB_{safe}|\) é grande**, omitir completamente o mecanismo do choque heterogêneo é custoso.
+2. **Se \(|IVB_{post}|\) é grande**, a covariável realizada no pós-tratamento move muito a estimativa mesmo após o ajuste seguro e, portanto, não deve ser tratada como controle inocente.
+3. **Se ambos são grandes e em sinais opostos**, o pesquisador enfrenta um trade-off genuíno de dual-role ou triple-role.
+
+# 6. Exemplo: merenda escolar, quebra de safra e obesidade infantil
+
+Seja \(Y_{it}\) a obesidade infantil, \(D_i\) o indicador de adesão à política de merenda escolar e \(Z_{it}\) o PIB per capita municipal. Após a implementação da política, uma quebra de safra em \(s > t^\star\) reduz a oferta de alimentos regionais, afetando a aceitação da merenda. Municípios mais ricos têm maior capacidade de substituir produtos e amortecer o choque.
+
+Nesse caso, a ameaça ao PTA não é o nível contemporâneo de PIB per capita em si, mas a **heterogeneidade do efeito do choque** sobre a trajetória contrafactual. Logo, a especificação principal não deveria ser:
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau T_{it} + \beta PIBpc_{it} + u_{it}.
+\]
+
+Uma especificação mais defensável é:
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau^S T_{it} + \eta \left( PIBpc_{i,t^\star-1} \times Shock_t \right) + u_{it},
+\]
+
+ou, mais flexivelmente,
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau^S T_{it} + \sum_t \eta_t \left( PIBpc_{i,t^\star-1} \times \mathbf{1}\{t\} \right) + u_{it}.
+\]
+
+Depois, o pesquisador pode estimar a versão contaminada
+
+\[
+Y_{it} = \alpha_i + \lambda_t + \tau^L T_{it} + \eta \left( PIBpc_{i,t^\star-1} \times Shock_t \right) + \beta PIBpc_{it} + v_{it}
+\]
+
+e computar
+
+\[
+IVB_{GDP} = \tau^L - \tau^S = -\beta \pi,
+\]
+
+onde \(\pi\) é o coeficiente da regressão auxiliar de \(PIBpc_{it}\) em \(T_{it}\), condicionando no bloco seguro.
+
+Em termos substantivos:
+
+- \(\tau^O - \tau^S\) mede quanto importa modelar a heterogeneidade do choque de safra;
+- \(\tau^L - \tau^S\) mede quanto a inclusão do PIB per capita realizado no pós-tratamento contamina adicionalmente a estimativa;
+- o sinal e a magnitude relativos desses dois componentes informam se o risco dominante é omissão de heterogeneidade, post-treatment bias, ou ambos.
+
+# 7. O que esta nota entrega
+
+Esta nota não resolve o problema geral de identificação com bad controls em DiD. O que ela entrega é algo mais modesto e, para o pesquisador aplicado, frequentemente mais útil:
+
+1. Uma **regra de timing**: lags rolantes não são automaticamente seguros para efeitos dinâmicos.
+2. Uma **estratégia de ajuste seguro**: modelar a heterogeneidade substantiva com informação estritamente pré-tratamento.
+3. Uma **extensão operacional da fórmula IVB**: quantificar quanto a estimativa se move ao adicionar o controle contaminado, depois de já controlar pelo bloco seguro.
+
+Em um artigo aplicado, a recomendação prática seria:
+
+- usar o modelo seguro como especificação principal para o \(ATT\) total;
+- reportar o modelo contaminado como sensibilidade;
+- apresentar explicitamente \(OVB_{safe}\) e \(IVB_{post}\) como duas quantidades empíricas distintas.
+
+# 8. Próximo passo lógico
+
+O passo natural seguinte é uma simulação Monte Carlo com três estimadores:
+
+1. DiD sem ajuste para a heterogeneidade do choque;
+2. DiD com bloco seguro baseado em informação pré-tratamento;
+3. DiD com bloco seguro mais a covariável realizada no pós-tratamento.
+
+Essa simulação permitiria mostrar, em um ambiente controlado, quando \(|OVB_{safe}| > |IVB_{post}|\), quando a desigualdade se inverte, e quando o pesquisador enfrenta um trade-off substantivamente relevante.
