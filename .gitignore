@@ -50,7 +50,17 @@ rsconnect/
 
 # Large data files (GitHub 100MB limit)
 *.dta
+!replication/candidate_papers/kronick_2020/ReplicationData_DK_toJCR_v2/analysis_data/EdoMstr_R.dta
+!replication/candidate_papers/kronick_2020/ReplicationData_DK_toJCR_v2/analysis_data/MuniMstr_R.dta
 *.zip
+
+# R Markdown / LaTeX intermediate outputs
+*.log
+*_files/
 
 # macOS
 .DS_Store
+__MACOSX/
+
+# Git worktrees
+.worktrees/
