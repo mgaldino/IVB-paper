@@ -1,0 +1,55 @@
+﻿This codebook lists the definitions of variables included in the municipality-level panel data set used in “Profits and Violence in Illegal Markets: Evidence from Venezuela” (Kronick 2020).
+
+
+estado: Name of the state
+
+
+municipio: Name of the municipality
+
+
+ci_mun: Numeric ID of the municipality. Note that (as in Mexico) these are not the same as the numeric IDs used by the electoral institute.
+
+
+year: Calendar year
+
+
+pob_cgr: Municipal population; constant growth rate interpolation from decennial census counts
+
+
+ln_pob: ln(pob_cgr). Note, there are no observations with population zero.
+
+
+pob_1990: ln(municipal population in 1990)
+
+
+hrate_combo: Violent deaths per 100,000 population. See Appendix A of the paper for details on the source and the definition.
+
+
+ln_hrate_combo: ln(1+hrate_combo)
+
+
+M1year_rate_combo: Deaths of children under one year per 100,000 population
+
+
+srate_combo: Suicides per 100,000 population
+
+
+panam_sucre: Indicator for whether a municipality is adjacent to the Panamerican Highway between the Colombian border and Sucre state. See map in Appendix F.
+
+
+panam_neighbors: Indicator for municipalities adjacent to the municipalities in panam_sucre
+
+
+treat_panam_sucre: panam_sucre interacted with an indicator for years >= 1989 
+
+
+pol_local: Indicator for presence of municipal police
+
+
+alc_oficialista: Mayor is pro-Chavez
+
+
+hrate_demean: violent death rate, de-meaned by municipality 
+
+
+m1year_demean: m1year_rate_combo, de-meaned by municipality

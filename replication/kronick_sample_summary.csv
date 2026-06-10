@@ -1,0 +1,2 @@
+n_obs,n_municipios,n_treated,n_control,year_min,year_max,treat_share_obs
+7613,331,80,251,1958,2013,0.24169184290030213

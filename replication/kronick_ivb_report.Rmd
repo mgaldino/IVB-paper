@@ -1,0 +1,233 @@
+---
+title: "Kronick (2020) e o dilema entre ajuste safe e controle contaminado em DiD"
+author: ""
+date: "`r Sys.Date()`"
+lang: pt-BR
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    keep_tex: false
+geometry: margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 8,
+  fig.height = 4.8,
+  dpi = 300
+)
+
+options(scipen = 999)
+
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(readr)
+library(scales)
+
+replication_dir <- if (dir.exists("replication")) "replication" else "."
+source(file.path(replication_dir, "kronick_replication_ivb.R"))
+
+sample_summary <- readr::read_csv(
+  file.path(replication_dir, "kronick_sample_summary.csv"),
+  show_col_types = FALSE
+)
+validation_checks <- readr::read_csv(
+  file.path(replication_dir, "kronick_validation_checks.csv"),
+  show_col_types = FALSE
+)
+specs <- readr::read_csv(
+  file.path(replication_dir, "kronick_specification_estimates.csv"),
+  show_col_types = FALSE
+)
+ivb_diag <- readr::read_csv(
+  file.path(replication_dir, "kronick_ivb_diagnostics.csv"),
+  show_col_types = FALSE
+)
+
+fmt_num <- function(x, digits = 3) {
+  formatC(x, format = "f", digits = digits, big.mark = ",")
+}
+```
+
+# Q&A
+
+1. **A aplicação da Kronick encaixa bem na extensão do paper?**  
+Sim. O tratamento é não escalonado, o paper já compara uma especificação sem ajuste adicional com uma especificação que inclui um controle time-varying (`ln_pob`) e, crucialmente, também inclui um bloco de ajuste pré-tratamento `safe` baseado em `população de 1990 × ano`.
+
+2. **Qual é o principal resultado substantivo?**  
+O grande movimento vem de passar do modelo sem ajuste para o modelo `safe`. O coeficiente cai de `r fmt_num(specs$estimate[specs$spec_id == "omit"])` para `r fmt_num(specs$estimate[specs$spec_id == "safe"])`, uma diferença de `r fmt_num(specs$delta_vs_safe[specs$spec_id == "omit"])` mortes violentas por 100 mil. Depois disso, adicionar `ln_pob` quase não altera a estimativa: o deslocamento é de apenas `r fmt_num(specs$delta_vs_safe[specs$spec_id == "safe_ln_pob"])`.
+
+3. **O que isso sugere para a agenda do paper?**  
+Sugere que uma ferramenta útil para o pesquisador aplicado é decompor separadamente o custo de omitir o bloco `safe` e o custo adicional de incluir um controle time-varying potencialmente contaminado. Neste caso, o primeiro é grande; o segundo é pequeno.
+
+# Desenho empírico
+
+Kronick (2020) estima o efeito de um choque no mercado ilegal de drogas sobre mortes violentas em municípios venezuelanos. O tratamento municipal é fixo no tempo (`panam_sucre`) e o choque entra a partir de 1989, de modo que o regressor de interesse é:
+
+$$
+Treat_{it} = Panam_i \times \mathbb{1}(t \geq 1989).
+$$
+
+O ponto que interessa aqui é a comparação entre três famílias de especificação:
+
+- **Sem ajuste adicional**: apenas tratamento, efeitos fixos de município e ano.
+- **Ajuste safe**: efeitos fixos + interações entre ano e população municipal em 1990.
+- **Controle contaminado**: ajuste `safe` + uma covariável time-varying realizada no pós-tratamento.
+
+Na lógica da nota formal, o bloco `ano × população de 1990` é `safe` porque usa apenas informação pré-tratamento para permitir tendências diferenciadas por porte municipal. Já `ln_pob`, `pol_local` e `alc_oficialista` são covariáveis realizadas no painel e, portanto, candidatas a gerar viés por inclusão.
+
+# Dados e validações
+
+```{r sample-summary}
+sample_summary |>
+  mutate(
+    treat_share_obs = percent(treat_share_obs, accuracy = 0.1)
+  ) |>
+  kable(
+    caption = "Tabela 1. Resumo amostral do painel municipal de Kronick (2020)"
+  )
+```
+
+```{r validation-checks}
+validation_checks |>
+  kable(
+    caption = "Tabela 2. Checagens lógicas do painel e do tratamento"
+  )
+```
+
+Há `r validation_checks$value[validation_checks$check == "Valores ausentes nas variáveis centrais"]` observações com valores ausentes nas variáveis centrais, concentradas nas extensões que usam `alc_oficialista`. O tratamento coincide exatamente com `panam_sucre × pós-1989`, não há duplicatas município-ano, e a população interpolada é sempre positiva.
+
+# Replicação das especificações principais
+
+```{r specification-table}
+spec_table <- specs |>
+  dplyr::select(
+    spec_label, estimate, std_error, conf_low, conf_high,
+    n_obs, published_benchmark, benchmark_gap, delta_vs_safe
+  ) |>
+  mutate(
+    across(
+      c(estimate, std_error, conf_low, conf_high, published_benchmark, benchmark_gap, delta_vs_safe),
+      ~ ifelse(is.na(.x), NA, round(.x, 3))
+    )
+  )
+
+kable(
+  spec_table,
+  col.names = c(
+    "Especificação", "Estimativa", "Erro-padrão", "IC 95% inf.",
+    "IC 95% sup.", "N", "Benchmark publicado", "Gap vs. benchmark",
+    "Delta vs. safe"
+  ),
+  caption = "Tabela 3. Efeito estimado do tratamento sobre mortes violentas por 100 mil habitantes"
+)
+```
+
+Os dois números mais importantes são:
+
+- **Sem ajuste adicional**: `r fmt_num(specs$estimate[specs$spec_id == "omit"])`.
+- **Safe + `ln_pob`**: `r fmt_num(specs$estimate[specs$spec_id == "safe_ln_pob"])`.
+
+Eles reproduzem muito de perto a narrativa do artigo, que reporta algo em torno de 16 mortes por 100 mil na especificação simples e 6,8 na coluna com população realizada e tendências diferenciadas por tamanho municipal. O ganho analítico da nossa extensão é inserir explicitamente o modelo `safe` intermediário, que não aparece como coluna central no artigo, mas é o que explica quase todo o deslocamento.
+
+```{r coefficient-figure, fig.cap="Figura 1. Coeficiente do tratamento em cada especificação com intervalo de confiança de 95%."}
+plot_df <- specs |>
+  mutate(
+    spec_label = factor(spec_label, levels = rev(spec_label))
+  )
+
+ggplot(plot_df, aes(x = estimate, y = spec_label)) +
+  geom_vline(xintercept = 0, linewidth = 0.4, linetype = "dashed", color = "gray50") +
+  geom_errorbarh(aes(xmin = conf_low, xmax = conf_high), height = 0.15, color = "#2f5c8a") +
+  geom_point(size = 2.5, color = "#b2472f") +
+  labs(
+    x = "Efeito do tratamento sobre mortes violentas por 100 mil",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 11)
+```
+
+A figura deixa claro que o salto substantivo é entre `Sem ajuste adicional` e `Bloco safe`. Depois disso, as extensões com controles time-varying deslocam pouco a estimativa.
+
+# Decomposição IVB em torno do modelo safe
+
+Definimos:
+
+$$
+OVB_{safe} = \hat{\tau}^{omit} - \hat{\tau}^{safe}
+$$
+
+e, para cada controle pós-tratamento candidato $Z_{it}$,
+
+$$
+IVB_{post}(Z) = \hat{\tau}^{long}(Z) - \hat{\tau}^{safe} = -\hat{\theta}_Z \hat{\pi}_Z.
+$$
+
+Aqui, $\hat{\theta}_Z$ é o coeficiente de $Z_{it}$ no modelo longo, e $\hat{\pi}_Z$ é o coeficiente do tratamento na regressão auxiliar de $Z_{it}$ sobre o tratamento e o bloco `safe`.
+
+```{r ivb-table}
+ivb_table <- ivb_diag |>
+  dplyr::select(
+    control_label, beta_safe, beta_long, theta, pi,
+    ivb_formula, ivb_direct, check, ovb_safe, aux_n_obs
+  ) |>
+  mutate(
+    across(
+      c(beta_safe, beta_long, theta, pi, ivb_formula, ivb_direct, check, ovb_safe),
+      ~ round(.x, 3)
+    )
+  )
+
+kable(
+  ivb_table,
+  col.names = c(
+    "Controle", "Beta safe", "Beta longo", "Theta",
+    "Pi", "IVB = -theta*pi", "IVB direto", "Check",
+    "OVB_safe", "N"
+  ),
+  caption = "Tabela 4. Decomposição do deslocamento ao incluir cada controle time-varying"
+)
+```
+
+Os resultados são nítidos:
+
+- Para `ln_pob`, o deslocamento em relação ao modelo `safe` é de apenas `r fmt_num(ivb_diag$ivb_direct[ivb_diag$control_var == "ln_pob"])`.
+- Para `pol_local`, o deslocamento é maior em valor absoluto, `r fmt_num(ivb_diag$ivb_direct[ivb_diag$control_var == "pol_local"])`, mas ainda muito menor que `OVB_safe`.
+- Para `alc_oficialista`, o deslocamento é de `r fmt_num(ivb_diag$ivb_direct[ivb_diag$control_var == "alc_oficialista"])` numa amostra menor por conta de dados ausentes.
+
+Em todos os casos, a identidade `IVB = -theta*pi` fecha numericamente. Isso é exatamente a extensão aplicada que a agenda do paper pede: quantificar o custo de incluir um controle potencialmente contaminado **condicionalmente** a um bloco `safe` bem escolhido.
+
+# Implicações para a simulação
+
+Esta aplicação sugere um tom específico para a próxima rodada de simulação:
+
+1. O cenário base deve permitir um grande `OVB_safe`, porque a heterogeneidade de tendência por porte municipal claramente importa.
+2. O cenário base não precisa impor um grande `IVB_post` para `ln_pob`; pelo contrário, um caso em que ele é pequeno é empiricamente plausível.
+3. Vale incluir extensões em que um controle time-varying adicional, como `pol_local`, gere deslocamentos moderados, mas ainda inferiores ao custo de omitir o bloco `safe`.
+
+Em termos práticos, Kronick (2020) parece menos um caso em que “controlar a variável realizada destrói a identificação” e mais um caso em que “não separar ajuste safe de ajuste contaminado leva o pesquisador a fazer a pergunta errada”.
+
+# Reprodutibilidade
+
+O relatório executa o script [kronick_replication_ivb.R](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/kronick_replication_ivb.R), que por sua vez:
+
+- extrai os dados brutos a partir de [replicationdata_dk_tojcr_v2.zip](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/replicationdata_dk_tojcr_v2.zip), se necessário;
+- valida o painel;
+- estima todas as especificações;
+- salva os resultados em CSV.
+
+Os arquivos intermediários produzidos pelo script são:
+
+- [kronick_sample_summary.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/kronick_sample_summary.csv)
+- [kronick_validation_checks.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/kronick_validation_checks.csv)
+- [kronick_specification_estimates.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/kronick_specification_estimates.csv)
+- [kronick_ivb_diagnostics.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/kronick_ivb_diagnostics.csv)
+
+```{r session-info}
+sessionInfo()
+```

@@ -1,0 +1,7 @@
+check,value,status
+Duplicatas id-per<c3><ad>odo,0,OK
+PostPeriod assume apenas 0/1,TRUE,OK
+eligible_voter_2004 assume apenas 0/1,TRUE,OK
+treatment_level_at_t2 assume apenas 0/1/NA,TRUE,OK
+restr_treatment_level_at_t2 assume apenas 0/1/NA,TRUE,OK
+Valores ausentes nas vari<c3><a1>veis centrais,16446,ALERTA

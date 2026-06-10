@@ -1,0 +1,19 @@
+﻿This codebook lists the definitions of variables included in the state-level panel data set used in “Profits and Violence in Illegal Markets: Evidence from Venezuela” (Kronick 2020).
+
+
+estado: Name of the state
+
+
+year: Calendar year
+
+
+pob_cgr: Municipal population; constant growth rate interpolation from decennial census counts
+
+
+mv_rate: Violent deaths per 100,000 population. See Appendix A of the paper for details on the source and the definition.
+
+
+pct_treat: Percent of state population residing in municipalities along the Panamerican Highway
+
+
+weight: = pct_treat for states along the Panamericana and one otherwise (because in the “control” group of states not along the Panamericana, each state is weighted equally). See Appendix D8 for other weighting choices.

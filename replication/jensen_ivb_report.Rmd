@@ -1,0 +1,257 @@
+---
+title: "Jensen (2025): replicação da Tabela 1 e extensão safe vs. contaminated control"
+author: ""
+date: "`r Sys.Date()`"
+lang: pt-BR
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    keep_tex: false
+geometry: margin=1in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 8,
+  fig.height = 4.8,
+  dpi = 300
+)
+
+options(scipen = 999)
+
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(readr)
+library(scales)
+
+replication_dir <- if (dir.exists("replication")) "replication" else "."
+source(file.path(replication_dir, "jensen_replication_ivb.R"))
+
+sample_summary <- readr::read_csv(
+  file.path(replication_dir, "jensen_sample_summary.csv"),
+  show_col_types = FALSE
+)
+validation_checks <- readr::read_csv(
+  file.path(replication_dir, "jensen_validation_checks.csv"),
+  show_col_types = FALSE
+)
+table1_results <- readr::read_csv(
+  file.path(replication_dir, "jensen_table1_replication.csv"),
+  show_col_types = FALSE
+)
+extension_results <- readr::read_csv(
+  file.path(replication_dir, "jensen_extension_results.csv"),
+  show_col_types = FALSE
+)
+
+fmt_num <- function(x, digits = 3) {
+  formatC(x, format = "f", digits = digits, big.mark = ",")
+}
+```
+
+# Q&A
+
+1. **A replicação da Tabela 1 bateu?**  
+Sim. As oito colunas principais do artigo foram reproduzidas com alta proximidade em `R`, inclusive os modelos de amostra restrita e os modelos ponderados de matching.
+
+2. **Qual é o achado novo que interessa ao seu paper?**  
+O artigo compara `com` e `sem` controles time-varying. Mas, quando incluímos um modelo intermediário com apenas covariáveis pré-tratamento interagidas com tempo, sem os controles time-varying realizados, o grosso do deslocamento da estimativa já aparece ali.
+
+3. **O que isso implica?**  
+Implica que, no Jensen, os controles time-varying realizados não parecem ser o principal motor da mudança no coeficiente. O bloco `safe`, construído com covariáveis pré-tratamento × tempo, faz mais trabalho.
+
+# Desenho empírico
+
+Jensen (2025) estima o efeito de frequentar faculdade entre 2004 e 2008 sobre participação política, usando um DiD com dois períodos e efeitos fixos individuais. Os elementos centrais da Tabela 1 são:
+
+- amostra principal ELS;
+- tratamento não escalonado (`treatment_level_at_t2`);
+- efeito fixo individual;
+- `PostPeriod` como efeito de tempo comum;
+- ajuste de baseline via `prior voting × time`;
+- controles time-varying adicionais;
+- em algumas especificações, interações entre `PostPeriod` e covariáveis pré-tratamento.
+
+O ponto para o seu paper é separar três coisas:
+
+- base com ajuste seguro mínimo (`prior voting × time`);
+- inclusão de time-varying controls realizados;
+- inclusão de covariáveis pré-tratamento × tempo.
+
+# Dados e validações
+
+```{r sample-summary}
+sample_summary |>
+  mutate(post_share = percent(post_share, accuracy = 0.1)) |>
+  kable(
+    caption = "Tabela 1. Resumo amostral do painel ELS usado na replicação de Jensen (2025)"
+  )
+```
+
+```{r validation-checks}
+validation_checks |>
+  kable(
+    caption = "Tabela 2. Checagens lógicas do painel e das variáveis centrais"
+  )
+```
+
+Os arquivos usados foram baixados para [jensen_2025](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/candidate_papers/jensen_2025), preservando o `analysis.do` original e as bases tabulares do Dataverse.
+
+# Replicação da Tabela 1
+
+```{r table1-replication}
+table1_print <- table1_results |>
+  dplyr::select(
+    panel, spec_label, estimate, std_error, conf_low,
+    conf_high, n_obs, published_estimate, benchmark_gap
+  ) |>
+  mutate(
+    across(
+      c(estimate, std_error, conf_low, conf_high, published_estimate, benchmark_gap),
+      ~ round(.x, 3)
+    )
+  )
+
+kable(
+  table1_print,
+  col.names = c(
+    "Painel", "Especificação", "Estimativa", "Erro-padrão",
+    "IC 95% inf.", "IC 95% sup.", "N", "Publicado", "Gap"
+  ),
+  caption = "Tabela 3. Replicação em R da Tabela 1 de Jensen (2025)"
+)
+```
+
+A replicação bate muito de perto:
+
+- modelo 1: `r fmt_num(table1_results$estimate[table1_results$model_id == "m1"])` versus `0.137`;
+- modelo 3: `r fmt_num(table1_results$estimate[table1_results$model_id == "m3"])` versus `0.107`;
+- modelo 6: `r fmt_num(table1_results$estimate[table1_results$model_id == "m6"])` versus `0.089`;
+- modelo 8: `r fmt_num(table1_results$estimate[table1_results$model_id == "m8"])` versus `0.101`.
+
+Isso é suficiente para tomar a implementação em `R` como base confiável para a extensão analítica.
+
+# Extensão: modelo safe intermediário
+
+O artigo não reporta explicitamente um modelo com:
+
+- `prior voting × time`;
+- `covariáveis pré-tratamento × time`;
+- **sem** os time-varying controls realizados.
+
+Esse é exatamente o modelo que interessa para o seu paper, porque ele aproxima o ajuste `safe` antes de inserir covariáveis possivelmente contaminadas.
+
+```{r extension-table}
+extension_print <- extension_results |>
+  dplyr::select(
+    panel, spec_label, estimate, std_error, n_obs,
+    delta_vs_base, delta_vs_safe_dyn
+  ) |>
+  mutate(
+    across(c(estimate, std_error, delta_vs_base, delta_vs_safe_dyn), ~ round(.x, 3))
+  )
+
+kable(
+  extension_print,
+  col.names = c(
+    "Painel", "Especificação", "Estimativa", "Erro-padrão",
+    "N", "Delta vs. base", "Delta vs. safe-dyn"
+  ),
+  caption = "Tabela 4. Extensão safe vs. time-varying controls na amostra ELS"
+)
+```
+
+Os resultados-chave são:
+
+## Full sample
+
+- base (`m1`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m1"])`
+- base + TVC (`m2`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m2"])`
+- base + pré-tratamento × tempo (`m_safe_full`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m_safe_full"])`
+- base + TVC + pré-tratamento × tempo (`m3`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m3"])`
+
+Logo:
+
+- `m2 - m1 = r fmt_num(extension_results$delta_vs_base[extension_results$model_id == "m2"])`
+- `m_safe_full - m1 = r fmt_num(extension_results$delta_vs_base[extension_results$model_id == "m_safe_full"])`
+- `m3 - m_safe_full = r fmt_num(extension_results$delta_vs_safe_dyn[extension_results$model_id == "m3"])`
+
+## Restricted control group
+
+- base (`m4`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m4"])`
+- base + TVC (`m5`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m5"])`
+- base + pré-tratamento × tempo (`m_safe_restricted`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m_safe_restricted"])`
+- base + TVC + pré-tratamento × tempo (`m6`): `r fmt_num(extension_results$estimate[extension_results$model_id == "m6"])`
+
+Logo:
+
+- `m5 - m4 = r fmt_num(extension_results$delta_vs_base[extension_results$model_id == "m5"])`
+- `m_safe_restricted - m4 = r fmt_num(extension_results$delta_vs_base[extension_results$model_id == "m_safe_restricted"])`
+- `m6 - m_safe_restricted = r fmt_num(extension_results$delta_vs_safe_dyn[extension_results$model_id == "m6"])`
+
+```{r extension-figure, fig.cap="Figura 1. Coeficiente do tratamento nas especificações base, com time-varying controls e com ajuste safe adicional."}
+plot_df <- extension_results |>
+  filter(model_id %in% c("m1", "m2", "m_safe_full", "m3", "m4", "m5", "m_safe_restricted", "m6")) |>
+  mutate(
+    spec_label = factor(spec_label, levels = rev(unique(spec_label)))
+  )
+
+ggplot(plot_df, aes(x = estimate, y = spec_label, color = panel)) +
+  geom_vline(xintercept = 0, linewidth = 0.4, linetype = "dashed", color = "gray50") +
+  geom_errorbarh(aes(xmin = conf_low, xmax = conf_high), height = 0.15) +
+  geom_point(size = 2.5) +
+  scale_color_manual(values = c("Full sample" = "#2f5c8a", "Restricted control group" = "#b2472f")) +
+  labs(
+    x = "Efeito estimado de frequentar faculdade sobre voto",
+    y = NULL,
+    color = NULL
+  ) +
+  theme_minimal(base_size = 11)
+```
+
+# Interpretação
+
+O achado substantivo é mais interessante do que na Kronick.
+
+Na amostra completa:
+
+- adicionar os **time-varying controls** move o coeficiente de `0.137` para `0.130`;
+- adicionar apenas o bloco `safe` com covariáveis pré-tratamento × tempo move de `0.137` para `0.111`;
+- depois que o bloco `safe` entra, adicionar os TVCs muda pouco: `0.111` para `0.107`.
+
+Na amostra restrita:
+
+- os TVCs, sozinhos, movem o coeficiente **para cima** (`0.096` para `0.106`);
+- o bloco `safe` o move **para baixo** (`0.096` para `0.078`);
+- o modelo completo termina em `0.089`.
+
+Isso sugere que o Jensen é um caso melhor do que a Kronick para o seu argumento:
+
+- os controles time-varying são mais plausivelmente problemáticos;
+- o artigo os discute explicitamente;
+- mas, uma vez separado um bloco `safe`, o papel dos TVCs fica bem mais nítido.
+
+Em outras palavras, o paper do Jensen já estava preocupado com post-treatment bias, mas ainda misturava duas operações:
+
+1. ajustar por heterogeneidade plausível com covariáveis pré-tratamento;
+2. incluir controles realizados no pós-tratamento.
+
+O seu framework separa essas duas coisas de forma mais limpa.
+
+# Reprodutibilidade
+
+O relatório executa o script [jensen_replication_ivb.R](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/jensen_replication_ivb.R), que lê os arquivos em [jensen_2025](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/candidate_papers/jensen_2025) e salva:
+
+- [jensen_table1_replication.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/jensen_table1_replication.csv)
+- [jensen_extension_results.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/jensen_extension_results.csv)
+- [jensen_validation_checks.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/jensen_validation_checks.csv)
+- [jensen_sample_summary.csv](/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/replication/jensen_sample_summary.csv)
+
+```{r session-info}
+sessionInfo()
+```

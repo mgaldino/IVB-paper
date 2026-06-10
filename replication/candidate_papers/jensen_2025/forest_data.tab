@@ -1,0 +1,16 @@
+study	beta	se	var4	design	mean_turnout_dif_study	MDE	MDE_70	short_term
+"Kam & Palmer 2008 #1 [USA]"	0.023	0.47	1.0		0.0	1.316	1.1656	
+"Kam & Palmer 2008 #2 [USA]"	0.15	0.48	2.0		0.0	1.344	1.1904	
+"Kam & Palmer 2008 #3 [USA]"	0.026	0.06	3.0		0.0	0.168	0.1488	
+"Mayer 2011 [USA]"	0.533	0.153	4.0		0.0	0.42839998	0.37943998	
+"Henderson 2011 [USA]"	1.02	0.166	5.0		0.0	0.46479997	0.41167998	
+"Dinesen et al. 2016 #1 [Sweden]"	0.064	0.169	6.0		0.0	0.4732	0.41912	
+"Dinesen et al. 2016 #2 [Denmark]"	0.236	0.25	7.0		0.0	0.7	0.62	
+"Dinesen et al. 2016 #3 [USA]"	0.576	0.401	8.0		0.0	1.1228	0.99447995	
+"Burden et al. 2020 [USA]"	0.036	0.022	1.0	"{it:Sibling FEs}"	1.0	0.0616	0.05456	0.0
+"Persson 2014 [United Kingdom]"	0.039	0.0304	2.0	"{it:Genetic Matching}"	1.0	0.08512	0.075392	0.0
+"Berinsky & Lenz 2011 [USA]"	0.065	0.15	3.0	"{it:Vietnam Draft IV}"	1.0	0.42000002	0.372	0.0
+"Dee 2004 [USA]"	0.171	0.0967	4.0	"{it:College Distance IV}"	1.0	0.27076	0.239816	1.0
+"Apfeld et al. 2021 [Romania]"	0.19	0.099	5.0	"{it:Grade Cutoff RDD}"	1.0	0.27719998	0.24552	1.0
+"This Study [USA]"	0.096	0.028	6.0	"{it:Individual Level DiD}"	1.0	0.0784	0.06944	1.0
+"This Study, Repl. Sample [USA]"	0.126	0.023	7.0	"{it:Individual Level DiD}"	1.0	0.0644	0.05704	
