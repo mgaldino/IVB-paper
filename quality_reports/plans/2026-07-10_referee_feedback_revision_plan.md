@@ -27,9 +27,21 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 - **Gate D — aplicações:** Tasks 19–23.
 - **Gate E — integração e saída:** Tasks 24–26.
 
+**Convenção de roteamento:** “esforço” significa `model_reasoning_effort`, não duração em horas. Sol é reservado para trabalho formal, causal, ambíguo, editorial ou de alto valor; Terra é usado para implementação, auditoria, visualização e execução de especificações já estabilizadas. Tasks 02, 04, 07, 09, 13, 24 e 26 exigem revisão independente por um segundo modelo em esforço `high` ou superior.
+
+| Rota | Tasks | Uso principal |
+|---|---|---|
+| Sol `xhigh` | 02, 04, 07, 09, 13, 24, 26 | Derivações, identificação, desenho metodológico crítico, reescrita e gate final |
+| Sol `high` | 03, 05, 06, 17, 18, 19, 21, 22 | Timing causal, DAGs, escopo e julgamento substantivo |
+| Terra `xhigh` | 14, 15, 16, 25 | Simulações complexas já especificadas e pipeline integral |
+| Terra `high` | 08, 11, 12, 20, 23 | Implementação analítica, figuras, auditoria e tabelas |
+| Terra `medium` | 01, 10 | Matrizes e inventários estruturados |
+
 ## Task 01 — Criar matriz de resposta ao parecer
 
 **Prioridade:** P0  
+**Modelo recomendado:** Terra  
+**Esforço:** medium  
 **Objetivo:** transformar as recomendações do PDF em uma matriz rastreável: comentário, validade, evidência já existente, ação, arquivo responsável e status.  
 **Entregáveis:** `quality_reports/referee_feedback_response_matrix.csv` e nota curta em Markdown.  
 **Validação:** todo item das seções 5, 8, 9, 10 e 12 do feedback deve aparecer exatamente uma vez; nenhuma recomendação pode ficar sem decisão explícita.  
@@ -38,6 +50,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 02 — Separar formalmente deslocamento de especificação e viés causal
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Objetivo:** definir três objetos distintos: deslocamento populacional `Delta_Z = beta_long - beta_short`, deslocamento amostral `hat(Delta)_Z`, e viés causal `Bias(hat(beta); beta_CET)`. Reservar “included variable bias” para casos em que o DAG e as hipóteses de identificação estabelecem que a inclusão de `Z` afasta o estimador do CET.  
 **Derivação:** mostrar por FWL que `hat(Delta)_Z = -hat(theta)'hat(pi)` é uma identidade de projeção. Demonstrar separadamente: collider, mediador com alvo total, confounder e papel ambíguo.  
 **Entregáveis:** nota formal em `derivations/specification_shift_vs_ivb.Rmd` e PDF correspondente.  
@@ -47,6 +61,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 03 — Definir o CET e a ordem causal dentro do período
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Objetivo:** substituir a leitura mecânica dos subscritos por uma sequência substantiva: estado no início de `t`, tratamento, resposta da covariável e mensuração do desfecho. Explicitar antecipação, tratamentos contínuos dentro do período e agregação anual.  
 **Entregáveis:** definição do CET, tabela de timestamp mínimo para `D`, `Z` e `Y`, e checklist aplicado para justificar quando `Z_{t-1}` é realmente pré-tratamento.  
 **Validação:** aplicar o checklist às duas aplicações detalhadas e mostrar onde a ordem é conhecida, plausível ou ambígua.  
@@ -55,6 +71,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 04 — Derivar as condições de identificação do benchmark ADL + FE
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Dependência:** Tasks 02–03.  
 **Objetivo:** enunciar uma proposição que separe identificação populacional do CET e propriedades do estimador within em amostra finita.  
 **Hipóteses a tratar:** consistência e ausência de interferência; história observada `H_{i,t-1}`; ausência de antecipação; exogeneidade condicional/sequencial de `D_it`; ausência de confounding contemporâneo não observado; ausência de feedback simultâneo `Y_it -> D_it`; lag structure corretamente especificada; suporte/positividade; linearidade e homogeneidade necessárias para interpretar um único coeficiente; papel dos efeitos fixos e dos choques temporais.  
@@ -66,6 +84,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 05 — Substituir DAGs genéricos por três DAGs dinâmicos
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Dependência:** Tasks 03–04.  
 **Objetivo:** representar os mecanismos efetivamente testados, não apenas collider, fork e chain elementares.  
 **DAGs exigidos:** contemporaneous collider; dual role com `Z_{t-1}` confounder e `Z_t` collider; mediator contemporâneo com confounding defasado. No dual-role, destacar o caminho herdado e mostrar por d-separation quando condicionar em `Y_{t-1}` bloqueia sua transmissão.  
@@ -76,6 +96,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 06 — Tornar a regra prática condicional e neutralizar os rótulos
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Dependência:** Tasks 03–05.  
 **Objetivo:** trocar “safe”, “bad” e “dominates” por nomes descritivos das especificações. Reformular o benchmark como baseline condicional às hipóteses, não como estimador causal geral.  
 **Entregáveis:** vocabulário padronizado e tabela de scope conditions: CET, timing conhecido, `T` adequado ou correção de viés, lag structure plausível, ausência de confounding contemporâneo não observado, sem spillovers relevantes.  
@@ -85,6 +107,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 07 — Derivar a decomposição conjunta para múltiplos controles
 
 **Prioridade:** P1  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Dependência:** Task 02.  
 **Objetivo:** generalizar o diagnóstico para um vetor `Z`, demonstrando `Delta_Z = -theta'pi`. Distinguir deslocamento conjunto, inclusão sequencial e contribuição leave-one-control-out.  
 **Derivação:** provar por FWL a forma vetorial; provar que contribuições sequenciais telescopam mas dependem da ordem; mostrar por que leave-one-out não precisa somar ao deslocamento conjunto.  
@@ -95,6 +119,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 08 — Definir a alocação do deslocamento entre controles correlacionados
 
 **Prioridade:** P1  
+**Modelo recomendado:** Terra  
+**Esforço:** high  
 **Dependência:** Task 07.  
 **Objetivo:** comparar três diagnósticos: one-at-a-time, leave-one-out condicional e média de Shapley sobre ordens de inclusão. A alocação de Shapley só será usada se acrescentar interpretação sem dominar o paper.  
 **Entregáveis:** definição, algoritmo em R e exemplo mínimo mostrando order dependence.  
@@ -104,6 +130,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 09 — Desenvolver inferência para o deslocamento de especificação
 
 **Prioridade:** P1  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Dependência:** Task 02.  
 **Objetivo:** substituir `|IVB/SE|` como métrica principal por `Delta_Z`, intervalo de confiança e magnitudes relativas claramente definidas.  
 **Método principal:** bootstrap por unidade que reestima conjuntamente modelos short, long e auxiliar, preservando a dependência entre estimadores.  
@@ -115,6 +143,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 10 — Produzir um inventário unificado das simulações existentes
 
 **Prioridade:** P0  
+**Modelo recomendado:** Terra  
+**Esforço:** medium  
 **Objetivo:** documentar cada DGP já existente com equações, DAG, estimando, parâmetros, `N`, `T`, burn-in, repetições, erros, efeitos fixos, modelos, métricas, script e arquivo de resultados.  
 **Cobertura obrigatória:** dual role, firewall, mediator/over-control, nonlinearity, feedback, carryover, tratamento binário escalonado, erro de medida, Callaway-style trends e confounding contemporâneo não observado.  
 **Entregáveis:** `quality_reports/simulation_design_inventory.csv` e apêndice reproduzível.  
@@ -124,6 +154,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 11 — Refazer a Figura 2 e a tabela do mecanismo firewall
 
 **Prioridade:** P0  
+**Modelo recomendado:** Terra  
+**Esforço:** high  
 **Dependência:** Tasks 05 e 10.  
 **Objetivo:** reconstruir a evidência central a partir dos resultados brutos, com incerteza Monte Carlo e informações suficientes para leitura autônoma.  
 **Entregáveis:** script R separado para figura e tabela; linha zero proeminente; intervalos de Monte Carlo; `N`, `T` e número de repetições na caption; painel de bias relativo ou RMSE.  
@@ -133,6 +165,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 12 — Integrar robustez já existente sem novas simulações
 
 **Prioridade:** P0  
+**Modelo recomendado:** Terra  
+**Esforço:** high  
 **Dependência:** Task 10.  
 **Objetivo:** incorporar resultados já produzidos sobre `T`, tratamento binário, não linearidade, erro de medida, feedback, carryover, staggered absorbing treatment e confounding não observado.  
 **Entregáveis:** tabela de boundary conditions com resultado, magnitude, script e interpretação; correção de inconsistências entre relatórios antigos e o manuscrito atual.  
@@ -142,6 +176,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 13 — Nova simulação: finite-T dynamic panel bias e escolha do estimador
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Dependência:** Tasks 04 e 10.  
 **Objetivo:** identificar quando o viés de estimação dinâmica se torna comparável ou maior que o deslocamento causado pelo controle.  
 **Grid principal:** `N in {50, 100, 250}`, `T in {8, 10, 15, 20, 30, 50}`, `rho_Y in {0.2, 0.5, 0.8}`; manter os demais parâmetros no DGP dual-role.  
@@ -155,6 +191,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 14 — Nova simulação: misspecification do lag e persistência do tratamento
 
 **Prioridade:** P1  
+**Modelo recomendado:** Terra  
+**Esforço:** xhigh  
 **Dependência:** Tasks 04 e 13.  
 **Objetivo:** testar se a regra ADL(1) sobrevive quando o DGP verdadeiro possui dois ou três lags e quando `D` é persistente.  
 **Design:** DGPs verdadeiros ADL(1), ADL(2) e ADL(3); estimar um lag, dois lags, lag correto e lag selecionado por AIC/BIC; variar `rho_D` e carryover.  
@@ -166,6 +204,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 15 — Nova simulação: múltiplos controles correlacionados com papéis causais diferentes
 
 **Prioridade:** P1  
+**Modelo recomendado:** Terra  
+**Esforço:** xhigh  
 **Dependência:** Tasks 07–08.  
 **Objetivo:** mostrar como funcionam os diagnósticos conjunto e condicionais quando há um confounder, um mediator e um collider correlacionados.  
 **Design:** variar correlação entre controles, força de cada seta causal e ordem de inclusão. Comparar deslocamento conjunto, one-at-a-time, leave-one-out e Shapley.  
@@ -177,6 +217,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 16 — Nova simulação: calibração dos intervalos para `Delta_Z`
 
 **Prioridade:** P1  
+**Modelo recomendado:** Terra  
+**Esforço:** xhigh  
 **Dependência:** Task 09.  
 **Objetivo:** verificar cobertura e comprimento dos intervalos bootstrap/delta sob dependência serial e clustering por unidade.  
 **Design:** DGP linear simples e dual-role; `N` e `T` baixos/moderados; erros iid e AR(1); deslocamento nulo, pequeno e grande.  
@@ -188,6 +230,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 17 — Gate condicional para heterogeneidade dinâmica
 
 **Prioridade:** P2  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Dependência:** Tasks 13–14.  
 **Objetivo:** decidir, antes de rodar novas baterias, se as alegações revisadas ainda exigem evidência sobre `rho_i` ou `beta_i`.  
 **Procedimento:** auditar `simulations/diagnostics/diag_heterogeneous.R`; formular previamente qual claim seria testada; executar uma simulação formal apenas se o claim permanecer no texto principal.  
@@ -198,6 +242,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 18 — Gate condicional para fatores comuns e dependência transversal
 
 **Prioridade:** P2  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Dependência:** Tasks 13–14.  
 **Objetivo:** decidir se a revisão precisa de um DGP com common shocks e loadings heterogêneos ou apenas de uma delimitação explícita do escopo inferencial.  
 **Procedimento:** separar dois problemas: identificação sob fatores omitidos e inferência sob erros correlacionados entre unidades. Não abrir uma comparação geral com CCE/IFE nesta revisão.  
@@ -208,6 +254,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 19 — Formalizar o protocolo de seleção e codificação das aplicações
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Objetivo:** declarar que a amostra é purposiva, ou construir um frame sistemático defensável. Não apresentar seis estudos como representativos sem evidência.  
 **Protocolo:** critérios de journal/período/design/dados públicos; log de busca e exclusões; classificação causal refeita sem acesso às magnitudes do deslocamento; dois codificadores independentes; adjudicação e registro da concordância.  
 **Entregáveis:** protocolo em Markdown, planilha de coding, codebook e fluxograma de seleção.  
@@ -217,6 +265,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 20 — Auditar a reprodução dos seis estudos e dos 14 controles
 
 **Prioridade:** P0  
+**Modelo recomendado:** Terra  
+**Esforço:** high  
 **Dependência:** Task 19.  
 **Objetivo:** verificar amostra comum, estimativa original, clustering, tratamento de missing, timing e valores impossíveis antes de recalcular diagnósticos.  
 **Entregáveis:** uma ficha PASS/FAIL por estudo, tabela com `N`, períodos, coeficiente original versus replicado e motivo de qualquer discrepância.  
@@ -226,6 +276,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 21 — Construir DAGs concorrentes para Leipziger
 
 **Prioridade:** P1  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Dependência:** Tasks 03, 05 e 20.  
 **Objetivo:** representar um DAG em que GDP é confounder legítimo e outro em que é treatment-responsive ou dual role. Explicitar por que o mesmo `Delta_Z` recebe interpretações diferentes.  
 **Entregáveis:** dois DAGs time-indexed, justificativas bibliográficas para cada seta e tabela de implicações.  
@@ -235,6 +287,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 22 — Construir DAGs concorrentes para Rogowski
 
 **Prioridade:** P1  
+**Modelo recomendado:** Sol  
+**Esforço:** high  
 **Dependência:** Tasks 03, 05 e 20.  
 **Objetivo:** representar um DAG em que GDP defasado é confounder de crescimento e outro em que incorpora resposta acumulada ao tratamento, mediação ou papel dual. Explicitar por que a grande mudança do coeficiente não decide automaticamente qual modelo identifica o CET.  
 **Entregáveis:** dois DAGs time-indexed, justificativas bibliográficas para cada seta e tabela de implicações.  
@@ -244,6 +298,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 23 — Refazer as tabelas empíricas com diagnósticos conjuntos e incerteza
 
 **Prioridade:** P1  
+**Modelo recomendado:** Terra  
+**Esforço:** high  
 **Dependência:** Tasks 07–09 e 19–22.  
 **Objetivo:** abandonar a dependência exclusiva de `|IVB/SE|` e reportar um conjunto interpretável de medidas.  
 **Colunas mínimas:** `beta_short`, `beta_long`, `Delta`, `CI(Delta)`, `|Delta|/|beta_benchmark|`, papel causal codificado, classificação de ambiguidade e deslocamento conjunto quando houver vários controles.  
@@ -254,6 +310,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 24 — Reestruturar e reescrever o manuscrito
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Dependência:** Gates A–D.  
 **Estrutura proposta:** motivação e CET; ordem temporal e DAGs dinâmicos; deslocamento de especificação; condições que transformam deslocamento em bias; identificação e estimação do benchmark ADL; simulações; aplicações; scope conditions e extensões.  
 **Posicionamento:** incluir uma tabela “conhecido versus acrescentado” comparando FWL, Blackwell–Glynn, Imai–Kim e Caetano–Callaway. A contribuição principal será o workflow integrado, não a novidade da álgebra isolada.  
@@ -265,6 +323,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 25 — Construir o pipeline reproduzível
 
 **Prioridade:** P0  
+**Modelo recomendado:** Terra  
+**Esforço:** xhigh  
 **Dependência:** Task 24.  
 **Objetivo:** garantir que dados, simulações, tabelas, figuras e PDF possam ser reconstruídos sem computação escondida no RMarkdown.  
 **Pipeline:** scripts R numerados; outputs brutos preservados; outputs derivados separados; seeds e session info; script mestre em modo smoke/full; manifesto de arquivos; `dplyr::select` em toda seleção de colunas.  
@@ -275,6 +335,8 @@ O parecer exagera ao sugerir que a revisão deva comparar de forma abrangente AD
 ## Task 26 — Executar QA visual, auditoria numérica e gate editorial final
 
 **Prioridade:** P0  
+**Modelo recomendado:** Sol  
+**Esforço:** xhigh  
 **Dependência:** Task 25.  
 **Objetivo:** verificar o produto final sem misturar implementação e avaliação.  
 **Testes:** auditoria de todos os números do texto contra CSVs; inspeção visual de todas as páginas do PDF; conferência de captions, numeração, referências cruzadas e bibliografia; proofread; checagem do pacote em ambiente limpo.  
