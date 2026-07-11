@@ -73,6 +73,11 @@ task11_bias_summary <- task11_figure_data %>%
     .groups = "drop"
   )
 
+boundary_conditions_compact <- fread(
+  "quality_reports/task12_boundary_conditions_compact.csv"
+) %>%
+  as_tibble()
+
 oc_clean <- fread("simulations/nonlinearity/results/sim_overcontrol_contemporaneous_results.csv") %>%
   as_tibble() %>%
   filter(nl_type == "linear") %>%
@@ -545,6 +550,30 @@ knitr::include_graphics(
 ```
 
 In the main dual-role design, the bias of ADL + FE + $Z_{t-1}$ stays between `r sprintf('%.3f', filter(task11_bias_summary, model == "ADL + FE + lagged Z")$min_bias)` and `r sprintf('%.3f', filter(task11_bias_summary, model == "ADL + FE + lagged Z")$max_bias)`, while the bias of TWFE + $Z_{t-1}$ remains between `r sprintf('%.3f', filter(task11_bias_summary, model == "TWFE + lagged Z")$min_bias)` and `r sprintf('%.3f', filter(task11_bias_summary, model == "TWFE + lagged Z")$max_bias)`. The static short model has the largest reported bias, reaching `r sprintf('%.3f', filter(task11_bias_summary, model == "TWFE short")$max_bias)` in the most persistent scenarios. For this DGP, the relevant comparison is therefore between specifications that represent $Z$ as a lagged state inside the dynamic outcome model and specifications that omit part of that state.
+
+The additional existing designs delimit, rather than generalize, this comparison. Table \ref{tab:boundary_conditions_pa} records the main boundaries: each row describes a tested family of DGPs and should not be read as evidence that the conditional baseline is robust or identified outside its stated assumptions. Detailed grids, outcome measures, retained replication counts, and provenance are recorded in the static audit.
+
+```{r boundary-conditions-table}
+kable(
+  boundary_conditions_compact %>% dplyr::select(
+    `Boundary examined in existing DGPs`,
+    `Existing evidence`,
+    `Interpretation boundary`
+  ),
+  format = "latex",
+  row.names = FALSE,
+  booktabs = TRUE,
+  caption = paste0(
+    "Boundary conditions represented by existing Monte Carlo artifacts. Each row is a design-specific result, ",
+    "not a general robustness or identification claim. Exact grids and provenance are in the Task 12 audit. ",
+    "\\label{tab:boundary_conditions_pa}"
+  )
+) %>%
+  column_spec(1, width = "3.1cm") %>%
+  column_spec(2, width = "6.1cm") %>%
+  column_spec(3, width = "5.4cm") %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"), font_size = 7)
+```
 
 In the displayed DGP, outcome persistence transmits both the inherited collider path and the ordinary lagged treatment--outcome path through $Y_{t-1}$. Table \ref{tab:firewall_pa} shows that when this edge is removed by setting $\rho_Y=0$, the TWFE bias is approximately zero across the reported values of $\rho_Z$. Conditioning on $Y_{t-1}$ blocks both displayed paths when $\rho_Y>0$, subject to the graph and scope conditions stated above; the simulation contrast does not identify how much of the improvement comes from each path.
 

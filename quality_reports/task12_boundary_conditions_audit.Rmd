@@ -1,0 +1,118 @@
+---
+title: "Task 12 Static Audit: Simulation Boundary Conditions and Scope"
+author: "Implementation audit"
+date: "2026-07-11"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+geometry: margin=0.75in
+fontsize: 10pt
+header-includes:
+  - \usepackage{pdflscape}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(data.table)
+library(kableExtra)
+
+audit_dir <- if (file.exists("task12_boundary_conditions.csv")) "." else "quality_reports"
+boundary <- fread(file.path(audit_dir, "task12_boundary_conditions.csv"))
+compact <- fread(file.path(audit_dir, "task12_boundary_conditions_compact.csv"))
+reconciliation <- fread(file.path(audit_dir, "task12_reconciliation.csv"))
+validation <- fread(file.path(audit_dir, "task12_static_validation.csv"))
+
+make_longtable <- function(data, caption, widths, font_size = 7) {
+  out <- knitr::kable(data, format = "latex", longtable = TRUE, booktabs = TRUE,
+                      escape = TRUE, caption = caption)
+  out <- kableExtra::column_spec(out, column = seq_along(widths), width = widths)
+  kableExtra::kable_styling(out, latex_options = "repeat_header", font_size = font_size)
+}
+```
+
+# Audit rule and scope
+
+This is a static audit of already-versioned simulation scripts and result CSVs. It does not run or source any simulation, create any Monte Carlo draw, or modify a raw/result artifact. The companion script, `quality_reports/build_task12_boundary_conditions_audit.R`, reads the Task 10 inventory and existing CSVs and writes only the audit products under `quality_reports/`.
+
+The evidentiary labels have a deliberately narrow meaning:
+
+* **Existing result** means that Task 10 records both a source script and a declared versioned result artifact, and the Task 12 builder confirmed that both paths exist.
+* **Declared output missing** means that the source script specifies an output path but the audited tree contains no corresponding versioned result. It cannot support a numerical conclusion.
+* **Legacy artifact** means that a retained exploratory script has no persisted result artifact. It is not numerical evidence.
+
+This audit reports the magnitudes stored in the existing result CSVs only to delimit the represented DGPs. A coefficient shift becomes causal bias only with the manuscript's DAG, timing, target estimand, and identification assumptions.
+
+# Boundary-condition record
+
+Table 1 records, family by family, what the existing code actually varies and holds fixed; what the retained artifacts measure; what remains unidentified; provenance; replication counts; and the appropriate interpretation boundary. A requested replication count is not silently substituted for the count actually persisted in the summary CSV when unstable draws were discarded.
+
+```{=latex}
+\begin{landscape}
+```
+
+```{r boundary-table, results='asis'}
+boundary_detail <- boundary[, .(
+  `Family` = family,
+  `Design: varied versus fixed` = paste0("Varied: ", actually_varied, " Fixed: ", held_fixed),
+  `Evidence, magnitude, and replications` = paste0("Status: ", evidence_status, ". ", measured, " Replications: ", replication_count),
+  `Not identified and interpretation boundary` = paste0(not_identified, " Scope: ", interpretation_boundary),
+  `Task 10 inventory IDs` = inventory_ids
+)]
+
+make_longtable(
+  boundary_detail,
+  "Static boundary-condition record for the existing simulation artifacts.",
+  c("2.7cm", "4.8cm", "5.0cm", "5.7cm", "4.4cm"),
+  font_size = 5
+)
+```
+
+```{=latex}
+\end{landscape}
+```
+
+# Reader-facing compact table
+
+The manuscript uses the following compact version after Figure 2. It is a map of what the reported simulations delimit, not a claim that the conditional baseline is generally robust.
+
+```{r compact-table, results='asis'}
+compact_out <- knitr::kable(
+  compact,
+  format = "latex",
+  booktabs = TRUE,
+  longtable = TRUE,
+  escape = TRUE,
+  caption = paste0(
+    "Boundary conditions represented by existing Monte Carlo artifacts. Each row is a design-specific result, ",
+    "not a general robustness or identification claim. Exact grids and provenance are in the Task 12 audit."
+  )
+)
+compact_out <- kableExtra::column_spec(compact_out, 1, width = "3.1cm")
+compact_out <- kableExtra::column_spec(compact_out, 2, width = "6.1cm")
+compact_out <- kableExtra::column_spec(compact_out, 3, width = "5.4cm")
+kableExtra::kable_styling(compact_out, latex_options = "repeat_header", font_size = 7)
+```
+
+# Reconciliation with the Task 10 inventory and manuscript
+
+```{r reconciliation-table, results='asis'}
+make_longtable(
+  reconciliation,
+  "Reconciliation of the Task 10 inventory with the current PA manuscript claims.",
+  c("4.4cm", "8.5cm", "3.2cm"),
+  font_size = 7
+)
+```
+
+The material correction is negative rather than additive: no numerical finite-\( T \) conclusion can be drawn from `sim_dual_role_z_varyT.R`, because its declared 200-rep output is absent. The existing eight-model finite-\( T \) result is distinct, has a saved CSV, and keeps \( N=100 \) and burn-in 100 fixed. Similarly, `sim_ivb_completa.R` remains a legacy exploratory source without a persisted result and is excluded from numerical support.
+
+# Validation record
+
+```{r validation-table, results='asis'}
+knitr::kable(validation, format = "latex", booktabs = TRUE,
+             caption = "Static validation checks performed by the Task 12 builder.") %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+```
+
+The complete source-script paths and result-artifact paths are retained, without abbreviation, in `quality_reports/task12_boundary_conditions.csv`; the concise Task 10 inventory identifiers in Table 1 keep the rendered audit legible. The protected simulation directory is checked again after rendering against the SHA-256 manifest created before this audit. Rendering this report reads only the generated Task 12 tables and does not execute a simulation.

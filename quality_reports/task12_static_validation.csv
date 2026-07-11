@@ -1,0 +1,7 @@
+check,value,pass
+required Task 12 inventory rows present,14,TRUE
+source scripts exist,14,TRUE
+declared result artifacts for verified rows exist,35,TRUE
+dual_role_varyT is explicitly classified as missing output,declared_output_missing,TRUE
+v1_legacy_completa is explicitly classified as legacy without persisted result,legacy_no_persisted_result,TRUE
+no simulation code sourced or executed by this script,static reads only,TRUE
