@@ -109,26 +109,27 @@ Moreira\footnote{Professor of Quantitative Methods, Mitch Daniels School
 \begin{document}
 \maketitle
 \begin{abstract}
-We study included variable bias as a general diagnostic problem that
-arises when researchers condition on observed covariates that may
-themselves respond to treatment. Recent work on
-difference-in-differences with time-varying covariates shows that in
-such settings both conditioning on the realized covariate and omitting
-it can be problematic, because the causally relevant object may resemble
-an untreated potential covariate that is not directly observed. We
-derive a closed-form included variable bias diagnostic for linear nested
-models, \(\mathrm{IVB} = -\theta^{\star}\pi\), and show how directed
-acyclic graphs determine whether the resulting specification shift
-reflects collider bias, over-control, or deconfounding. We then develop
-the paper's main applied implication: in time-series cross-sectional
-settings focused on the contemporaneous treatment effect, ADL + FE with
-lagged state variables provides a practical benchmark. Simulations
-covering collider, dual-role, and mediator designs show that this
-benchmark reduces bias in the reported designs and preserves the
-contemporaneous total effect when lagged rather than contemporaneous
-controls are used. Applications illustrate how IVB quantifies
-specification shifts while the benchmark provides a defensible starting
-point for applied work.
+We study specification shifts that arise when researchers condition on
+observed covariates that may themselves respond to treatment. For linear
+nested models, the sample shift
+\(\widehat{\Delta}_Z=\widehat{\beta}^{\star}-\widehat{\beta}\) has the
+exact decomposition \(-\widehat{\theta}^{\star}\widehat{\pi}\). This
+algebra does not by itself establish causal bias: directed acyclic
+graphs, substantive timing, and identification assumptions determine
+whether the shift reflects collider bias, over-control, deconfounding,
+or an ambiguous change in projection. For time-series cross-sectional
+settings that target a linear, homogeneous contemporaneous treatment
+effect (CET), we evaluate ADL + FE with lagged state variables as a
+conditional baseline. In the reported collider, dual-role, and mediator
+designs, specifications with the relevant lagged state produce smaller
+CET bias than the displayed alternatives, while conditioning on a
+contemporaneous mediator moves the coefficient toward the direct effect.
+Applications illustrate the descriptive diagnostic and the timing
+judgments required before interpreting a shift causally. The baseline
+applies only with a defended causal clock and history, sequential
+exchangeability, adequate dynamics and support, no relevant
+interference, and a time dimension or bias correction appropriate for
+dynamic fixed-effects estimation.
 \end{abstract}
 
 \section{Introduction}\label{introduction}
@@ -170,22 +171,25 @@ resulting specification shift admits a simple closed-form decomposition:
 \] where \(\widehat{\theta}^{\star}\) is the coefficient on the
 candidate control in the long regression and \(\widehat{\pi}\) is the
 coefficient on treatment in an auxiliary regression for that control.
-Directed acyclic graphs (DAGs) tell the researcher what kind of variable
-\(Z\) is; IVB tells the researcher how much including it moves the
-treatment coefficient. This is the paper's general contribution. The
-current manuscript develops it for the linear models most common in TSCS
-work, where the diagnostic is exact and directly estimable.
+The sample object
+\(\widehat{\Delta}_Z=\widehat{\beta}^{\star}-\widehat{\beta}\) measures
+how much including \(Z\) moves the treatment coefficient. Directed
+acyclic graphs (DAGs), timing, and identification assumptions determine
+whether that descriptive shift can be interpreted as causal bias. This
+is the paper's general contribution. The current manuscript develops it
+for the linear models most common in TSCS work, where the decomposition
+is exact and directly estimable.
 
 The paper's main applied payoff is narrower. For TSCS settings focused
-on the contemporaneous treatment effect (CET), the IVB logic and the
-associated timing argument imply a practical benchmark: start from ADL +
-FE with lagged state variables, use lagged covariates when substantively
-justified, and treat contemporaneous time-varying controls as suspect
-until the timing is explicit. This is not the claim that ADL solves
-every panel-data problem. It is the claim that, for the CET, ADL + FE
-provides a defensible baseline when controlling correctly for
-time-varying covariates would otherwise require stronger and often
-untestable assumptions.
+on the contemporaneous treatment effect (CET), we study ADL + FE with
+lagged state variables as a conditional baseline: lagged covariates
+enter only when their timestamps and causal roles are defended, while
+contemporaneous time-varying controls require an explicit causal clock.
+The coefficient can represent the CET only under the identification,
+functional-form, support, and estimation conditions stated below. The
+baseline is therefore a comparison specification for a defined TSCS
+problem, not a universal causal estimator or a rule that lagging a
+variable makes it admissible.
 
 This architecture helps distinguish the paper from two nearby
 contributions. It is not only a warning that time-varying controls are
@@ -242,29 +246,32 @@ respond to treatment, neither conditioning on realized \(Z_t\) nor
 omitting it necessarily identifies the target estimand, because the
 relevant object may be the untreated potential covariate \(Z_t(0)\)
 rather than the observed \(Z_t\)
-\citep{caetano_callaway2024, caetano_etal2022}. We do not solve that
+\citep{caetano_callaway2024, caetano_etal2022}. We do not resolve that
 identification problem in general. Instead, we ask a more operational
 question. When applied researchers condition on an observed time-varying
 covariate that may respond to treatment, how much does that choice move
-the treatment coefficient, and what is the safest default specification
-in the TSCS case?
+the treatment coefficient, and under what conditions can a dynamic TSCS
+specification serve as a CET baseline?
 
-Our answer has two parts. The general contribution is IVB: a named
-diagnostic problem and an exact decomposition for linear nested models.
-The more specific contribution is the paper's payoff in TSCS settings
-with the CET: a dynamic benchmark based on ADL + FE with lagged state
-variables. In other words, the paper is not only about a safer
-specification rule and not only about a formula. It is about how the
-formula makes the safer rule operational.
+Our answer has two parts. The general contribution is an exact
+decomposition of the specification shift in linear nested models;
+calling that shift causal bias requires a DAG, a target estimand, and
+identification assumptions. The more specific contribution is the
+paper's payoff in TSCS settings with the CET: evaluating a dynamic
+baseline based on ADL + FE with lagged state variables under stated
+scope conditions. The formula quantifies the change between
+specifications, while the causal argument determines what that change
+means.
 
 The scope qualification matters. A lagged control can be called
 pre-treatment only relative to the effect of \(D_t\) on \(Y_t\), and
 only when its substantive timestamp supports that ordering. Even then,
-it need not be innocuous for cumulative, delayed, or long-run effects.
-The paper's positive recommendation is therefore explicitly local to the
-CET. Difference-in-differences and related panel designs remain part of
-the motivation for why time-varying controls are hard, but the paper's
-formal and applied results are developed in the linear TSCS setting.
+it can be treatment-responsive relative to cumulative, delayed, or
+long-run effects. The paper's conditional baseline is therefore
+explicitly local to the CET. Difference-in-differences and related panel
+designs remain part of the motivation for why time-varying controls are
+hard, but the paper's formal and applied results are developed in the
+linear TSCS setting.
 
 \section{\texorpdfstring{DAGs, Timing, and Why \(Z_t\) Is Not
 \(Z_{t-1}\)
@@ -473,12 +480,12 @@ CET rather than to a generic slogan such as ``lag everything.'\,'
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{llll}
 \toprule
-Candidate.control & Possible.role.for.the.CET & Main.risk.or.benefit & Default.action\\
+Candidate.control & Possible.role.for.the.CET & Main.risk.or.benefit & Conditional.action\\
 \midrule
 $Z_t$ & Collider if post-treatment & Opens a noncausal collider path & Do not condition unless the DAG and causal clock rule out post-treatment status\\
 $Z_t$ & Mediator if post-treatment & Blocks part of the total effect & Do not condition if the target is the total contemporaneous effect\\
-$Z_{t-1}$ & Predetermined state if timestamp passes & Captures state dependence & Candidate benchmark control only after the timestamp check\\
-$Z_{t-1}$ & Lagged confounder if timestamp passes & Removes OVB without blocking the contemporaneous path & Candidate benchmark control only after the timestamp check\\
+$Z_{t-1}$ & Predetermined state if timestamp passes & Captures state dependence & Candidate baseline control only after the timestamp check\\
+$Z_{t-1}$ & Lagged confounder if timestamp passes & Removes OVB without blocking the contemporaneous path & Candidate baseline control only after the timestamp check\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -541,33 +548,35 @@ covariates shows why observed controls may be problematic
 contributes a different object: a named and estimable decomposition of
 the specification shift itself. The current paper develops that object
 in the linear TSCS domain, where it yields both a diagnostic and, in the
-next section, a practical benchmark. Whether analogous IVB diagnostics
-can be built for synthetic-control-style estimators, synthetic DID, or
-factor models is an important agenda, but not a result claimed here.
+next section, a conditional comparison baseline. Whether analogous IVB
+diagnostics can be built for synthetic-control-style estimators,
+synthetic DID, or factor models is an important agenda, but not a result
+claimed here.
 
 For the CET in TSCS settings, the practically relevant auxiliary
 regression is dynamic. If the benchmark specification is
 \begin{equation}
 Y_{it} = \beta D_{it} + \rho Y_{i,t-1} + \kappa D_{i,t-1} + X_{i,t-1}'\lambda + \alpha_i + \tau_t + \varepsilon_{it},
 \label{eq:benchmark_pa}
-\end{equation} then the corresponding IVB decomposition asks how much
-the treatment coefficient shifts when a candidate control is moved from
-the lagged-state set \(X_{i,t-1}\) into the contemporaneous set. This is
-the operational meaning of ``diagnosing bad controls'\,' in the
-remainder of the paper.
+\end{equation} then the corresponding decomposition asks how much the
+treatment coefficient shifts when a candidate control is moved from the
+lagged-state set \(X_{i,t-1}\) into the contemporaneous set. This is the
+operational meaning of diagnosing a candidate time-varying control in
+the remainder of the paper.
 
 The formula also clarifies a point that is easy to miss in practice:
-lagging the treatment is not a mechanical cure. If \(D_t\) is
-autocorrelated, a collider that is contemporaneous with \(D_t\) can
-remain associated with \(D_{t-1}\). What matters is not whether the
-treatment index moved backward by one period, but whether the
-specification blocks the transmission of the bad-control path for the
-estimand of interest.
+lagging the treatment does not mechanically remove the problematic path.
+If \(D_t\) is autocorrelated, a collider that is contemporaneous with
+\(D_t\) can remain associated with \(D_{t-1}\). What matters is not
+whether the treatment index moved backward by one period, but whether
+the specification blocks the relevant noncausal path for the estimand of
+interest.
 
-\subsection{When ADL + FE Identifies the
-CET}\label{when-adl-fe-identifies-the-cet}
+\subsection{Conditions Under Which the ADL + FE Coefficient Represents
+the
+CET}\label{conditions-under-which-the-adl-fe-coefficient-represents-the-cet}
 
-The ADL + FE benchmark identifies the CET only under explicit scope
+The ADL + FE coefficient represents the CET only under explicit scope
 conditions. Let \(H_{it}^{-}\) be the observed pre-exposure history
 defined above. A calendar-lag vector \(H_{i,t-1}\) is a valid
 implementation only when the timestamp checklist establishes
@@ -618,25 +627,26 @@ If treatment effects or dynamics vary over units, periods, or histories,
 the single coefficient is generally a projection-weighted summary rather
 than a common CET.
 
-\begin{table}[!h]
+\begin{table}[H]
 \centering
-\caption{\label{tab:adl-identification-estimation-table}Scope conditions for the ADL + FE benchmark: identification versus estimation and inference. \label{tab:adl_identification_estimation_pa}}
-\centering
-\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\begin{tabular}[t]{lll}
+\caption{Standardized scope conditions for using ADL + FE with lagged state variables as a CET baseline.}
+\label{tab:adl_identification_estimation_pa}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.16\linewidth} >{\raggedright\arraybackslash}p{0.46\linewidth} >{\raggedright\arraybackslash}p{0.28\linewidth}}
 \toprule
-Layer & Scope condition & Interpretation when the condition fails\\
+Condition & Required scope condition & If unmet \\
 \midrule
-Population identification & Consistency; no interference; sequential mean exchangeability given the pre-exposure history; no unobserved contemporaneous confounding & The ADL coefficient need not equal the CET\\
-History and timing & No anticipation; $H_{i,t-1}\subseteq H_{it}^{-}$ with sufficient included history; no simultaneous $Y_{it}\rightarrow D_{it}$ feedback & A nominal lag may be post-treatment, or omitted history and simultaneity may invalidate the comparison\\
-Conditional support & The target treatment levels lie in the conditional support; continuous doses have local common support & The causal contrast requires unsupported extrapolation\\
-Projection rank & $0<\mathbb{E}[\widetilde D_{it}^{2}]<\infty$ after partialling out included history and fixed effects & The population FWL coefficient is not well defined even if causal overlap holds for some contrasts\\
-Fixed effects and functional form & Additive unit effects and common time shocks; correct lag structure; a linear, homogeneous CET if one coefficient is to have that interpretation & Fixed effects need not remove the omitted process; the coefficient may be only a best linear approximation\\
-\addlinespace
-Finite-$T$ estimation & A time dimension or correction adequate for bias from within-transforming lagged outcomes and other predetermined regressors & The population CET may be identified while the conventional within estimator has Nickell-type finite-$T$ bias\\
-Inference & An uncertainty procedure appropriate for residual serial and cross-sectional dependence & The population target can remain unchanged while standard errors and confidence intervals are invalid\\
+CET target and causal clock & A well-defined CET; consistency; no relevant spillovers or interference; defended within-period timing; no anticipation or simultaneous $Y_{it}\rightarrow D_{it}$ feedback & The stated intervention, ordering, or unit-level causal contrast is not identified \\
+Observed history and exchangeability & $H_{i,t-1}\subseteq H_{it}^{-}$ and sufficient observed history; sequential mean exchangeability; no unobserved contemporaneous cause of $D_{it}$ and $Y_{it}$ & The coefficient can retain confounding or condition on a treatment-responsive state \\
+Dynamic conditional mean & Plausible lag order and transformations that span assignment and the dynamic conditional outcome mean & The regression can omit relevant dynamics even when every included variable is correctly timed \\
+Functional form and effect summary & An additive linear response and a homogeneous CET if one coefficient is to represent a common effect & The coefficient is generally a projection-weighted or best-linear-approximation parameter \\
+Fixed effects and common shocks & Additive unit heterogeneity and common time shocks; no omitted treatment-correlated time-varying unit process or heterogeneous common-shock response & Fixed effects do not absorb the omitted process, so population identification can fail \\
+Support and projection rank & Conditional overlap for the target contrast and $0<\mathbb{E}[\widetilde D_{it}^{2}]<\infty$ after partialling out history and fixed effects & The contrast extrapolates, or the population FWL coefficient is undefined \\
+Finite-$T$ estimation & A time dimension adequate for within-estimator bias, or a bias correction or alternative estimator whose assumptions fit the panel & The population CET can be identified while the conventional within estimate has Nickell-type bias \\
+Inference & An uncertainty procedure appropriate for serial and cross-sectional dependence & Point identification can be unchanged while standard errors and confidence intervals are invalid \\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 The distinction between population identification and estimation matters
@@ -658,12 +668,14 @@ the sequential-identification logic in the dynamic-panel literature
 \label{sec:benchmark}}{Benchmarking Dynamic Specifications for the CET }}\label{benchmarking-dynamic-specifications-for-the-cet}
 
 This section develops the paper's main applied implication of the IVB
-framework. For the CET, the default applied comparison should be between
-dynamic specifications that differ in whether they condition on
-contemporaneous \(Z_t\), not between a dynamic model and a static TWFE
-short regression treated as a causal gold standard. The benchmark is
-therefore not a substitute for IVB. It is the most important operational
-payoff of IVB in the TSCS setting studied here.
+framework. Conditional on
+Table\textasciitilde{}\ref{tab:adl_identification_estimation_pa}, an
+informative applied comparison for the CET is between dynamic
+specifications that differ in whether they condition on contemporaneous
+\(Z_t\), rather than treating a static TWFE short regression as a causal
+reference. The baseline does not substitute for the specification-shift
+diagnostic: the former defines a conditional comparison specification,
+while the latter measures the coefficient change.
 
 \subsection{Collider and Dual-Role Controls in
 TSCS}\label{collider-and-dual-role-controls-in-tscs}
@@ -769,11 +781,12 @@ Outcome persistence ($\rho_Y$) & TWFE + $Z_{t-1}$ & ADL + FE + $Z_{t-1}$\\
 \end{table}
 
 This finding disciplines the paper's recommendation. The lagged outcome
-is not a general fix. In the displayed DGP, it conditions on the
+is not generally sufficient. In the displayed DGP, it conditions on the
 persistent outcome state through which both cited lag paths reach
-\(Y_t\). The practical benchmark for this dual-role design is therefore
-ADL + FE with \(Y_{t-1}\) and substantively justified lags of candidate
-controls, subject to the identification and estimation conditions above.
+\(Y_t\). ADL + FE with \(Y_{t-1}\) and substantively justified lags of
+candidate controls is therefore the comparison baseline for this
+dual-role design, conditional on the identification and estimation
+conditions above.
 
 \subsection{Over-Control with Contemporaneous
 Mediators}\label{over-control-with-contemporaneous-mediators}
@@ -781,19 +794,20 @@ Mediators}\label{over-control-with-contemporaneous-mediators}
 The second recurring problem is not collider bias but over-control. When
 \(Z_t\) lies on the path from \(D_t\) to \(Y_t\), conditioning on
 \(Z_t\) shifts the estimate toward the direct effect. For the CET, the
-right benchmark is again dynamic: compare an ADL specification that
-leaves the contemporaneous mediator out of the regression with one that
-conditions on \(Z_t\), and ask whether a lagged version \(Z_{t-1}\) can
-enter the benchmark without blocking the contemporaneous path.
+reported comparison is dynamic: an ADL specification that leaves the
+contemporaneous mediator out of the regression, one that conditions on
+\(Z_t\), and one that includes \(Z_{t-1}\). Whether the lagged version
+belongs in the baseline depends on the timing and adjustment conditions
+above.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:overcontrol-table}Over-control simulations for the CET. In both the pure-mediator and mediator-plus-confounder designs, conditioning on contemporaneous $Z_t$ pulls the estimate toward the direct effect, whereas conditioning on $Z_{t-1}$ preserves the contemporaneous total effect. \label{tab:overcontrol_pa}}
+\caption{\label{tab:overcontrol-table}Over-control simulations for the CET. In both the pure-mediator and mediator-plus-confounder designs, the displayed ADL specification with contemporaneous $Z_t$ produces a coefficient near the direct-effect target, whereas the displayed specification with $Z_{t-1}$ produces a coefficient near the total-effect target. These are design-specific comparisons. \label{tab:overcontrol_pa}}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
-Scenario & Target total & Target direct & ADL total & ADL bad ($Z_t$) & ADL safe ($Z_{t-1}$)\\
+Scenario & Target total & Target direct & ADL, no $Z$ & ADL + $Z_t$ & ADL + $Z_{t-1}$\\
 \midrule
 Pure mediator, $\rho_Z = 0.3$ & 1.20 & 1 & 1.201 & 0.998 & 1.199\\
 Pure mediator, $\rho_Z = 0.7$ & 1.20 & 1 & 1.199 & 0.992 & 1.197\\
@@ -803,80 +817,87 @@ Mediator + confounder, $\rho_Z = 0.7$ & 1.03 & 1 & 1.111 & 1.016 & 1.028\\
 \end{tabular}}
 \end{table}
 
-The clean mediator design is the simplest illustration. ADL total
-recovers the true contemporaneous total effect of about 1.20, ADL bad
-(\(Z_t\)) lands near the direct effect of 1.00, and ADL safe
-(\(Z_{t-1}\)) remains essentially equal to the total effect. The general
-design strengthens the same conclusion. When \(Z_{t-1}\) is also a
-confounder, including it improves the estimate by removing lagged
-omitted variable bias without blocking the contemporaneous path
-\(D_t \rightarrow Z_t \rightarrow Y_t\).
+The clean mediator design is the simplest illustration. The ADL
+specification without \(Z\) estimates about 1.20, the ADL specification
+with \(Z_t\) estimates about 1.00, and the ADL specification with
+\(Z_{t-1}\) remains near 1.20. In this DGP, those values correspond
+respectively to the total-effect target, the direct-effect target, and
+the total-effect target. In the mediator-plus-confounder design,
+including \(Z_{t-1}\) removes the displayed lagged backdoor path without
+blocking \(D_t \rightarrow Z_t \rightarrow Y_t\); that interpretation
+depends on the known DGP and does not follow from the specification
+label alone.
 
-This is why TWFE short is not the right benchmark for the mediator case.
-A static specification without the relevant dynamics mixes over-control
-with omitted dynamics, making the comparison harder rather than easier
-to interpret. The operational contrast should instead be ADL total
-versus ADL bad versus ADL safe.
+For this reason, the static TWFE short specification is not the primary
+comparison for the mediator DGP. Without the relevant dynamics, its
+coefficient mixes the effect of conditioning on \(Z_t\) with lag
+misspecification. The reported operational contrast is therefore ADL
+without \(Z\), ADL with \(Z_t\), and ADL with \(Z_{t-1}\).
 
-\subsection{Practical Benchmark}\label{practical-benchmark}
+\subsection{Conditional Workflow for the CET
+Baseline}\label{conditional-workflow-for-the-cet-baseline}
 
-The evidence above yields a simple rule for applied TSCS work centered
-on the CET:
+For applied TSCS work centered on the CET, the baseline is usable only
+through the following conditional workflow:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Start from an ADL + FE specification with lagged state variables,
-  including \(Y_{t-1}\) and any substantively justified lagged controls.
+  Define the CET and document the exposure, covariate, and outcome
+  windows; do not infer causal order from panel subscripts.
 \item
-  Treat any contemporaneous time-varying covariate \(Z_t\) as a
-  potential bad control until the DAG rules out collider and mediator
-  status.
+  Assess every condition in
+  Table\textasciitilde{}\ref{tab:adl_identification_estimation_pa},
+  including history sufficiency, exchangeability, lag structure,
+  support, finite-\(T\) behavior, and interference.
 \item
-  Use the IVB decomposition to quantify the shift in the treatment
-  coefficient when a candidate control is included.
+  If those conditions are defended, use ADL + FE with the required
+  lagged state variables as a baseline and state the exact lag order and
+  transformations.
 \item
-  Interpret that shift through the DAG: collider, mediator, confounder,
-  or dual-role variable.
+  Compare that baseline with the specification containing a candidate
+  contemporaneous \(Z_t\) and report the resulting specification shift
+  \(\widehat{\Delta}_Z\).
 \item
-  Revisit the benchmark if the estimand is not the CET. A control that
-  is pre-treatment for the CET need not be innocuous for long-run or
-  cumulative effects.
+  Interpret \(\widehat{\Delta}_Z\) as causal bias only when the DAG,
+  timing, and identifying assumptions establish the CET interpretation;
+  otherwise retain the descriptive specification-shift language.
+\item
+  Choose another target and method when the estimand is distributed,
+  cumulative, long-run, or a treatment regime rather than the CET.
 \end{enumerate}
 
-Additional simulations sharpen the scope of this recommendation. When
-the outcome equation contains nonlinear effects of \(Z_{t-1}\) or
-level-dependent trends of the kind emphasized in the recent DID
-literature, the bias of ADL(all) never exceeds 0.4 percent of \(\beta\)
-across stable scenarios. These are therefore not practical boundary
-conditions for the benchmark in our TSCS setting. By contrast, ADL(all)
-does not resolve contemporaneous unobserved confounding. In simulations
-where an unobserved variable affects both \(D_t\) and \(Y_t\) in the
-same period, the bias of ADL(all) ranges from 8 to 53 percent of
-\(\beta\), while an oracle specification that observes the confounder
-keeps bias below 0.3 percent. The benchmark therefore addresses
-included-variable bias and related timing problems, not classical
-endogeneity from unobserved contemporaneous confounding.
+Additional simulations delimit this recommendation. When the reported
+outcome equations contain the tested nonlinear effects of \(Z_{t-1}\) or
+level-dependent trends, the absolute bias of ADL(all) does not exceed
+0.4 percent of \(\beta\) across the stable scenarios in that grid. This
+result describes those scenarios; it does not establish adequacy under
+untested nonlinearities or lag structures. In the
+contemporaneous-confounding simulations, the bias of ADL(all) instead
+ranges from 8 to 53 percent of \(\beta\), while the oracle specification
+that observes the confounder keeps bias below 0.3 percent. The baseline
+therefore does not address unobserved contemporaneous confounding.
 
-This benchmark is intentionally narrower than a universal recommendation
-for all panel estimators. It is a defensible default for the specific
-but common problem the paper studies: deciding what to do with observed
-time-varying controls when the goal is the contemporaneous treatment
-effect.
+This baseline is intentionally narrower than a recommendation for panel
+estimators in general. It is one conditional comparison specification
+for observed time-varying controls when the target is the CET and the
+scope conditions in
+Table\textasciitilde{}\ref{tab:adl_identification_estimation_pa} are
+defended.
 
 \section{\texorpdfstring{Applications
 \label{sec:applications}}{Applications }}\label{applications}
 
-The applications serve two purposes. First, they show that IVB yields
-interpretable empirical diagnostics rather than only theoretical
-algebra. Second, they show how the TSCS benchmark disciplines the
-interpretation of those diagnostics. Across 14 collider candidates in
-six studies, the median \(|\mathrm{IVB}/\mathrm{SE}|\) is 0.13, and only
-1 case exceeds one standard error. That pattern is consistent with the
-simulation evidence: many applied settings contain candidate bad
-controls, but dynamic benchmarking and careful timing often keep the
-practically relevant distortion modest.
+The applications serve two purposes. First, they show that the
+decomposition yields empirical specification-shift diagnostics rather
+than only theoretical algebra. Second, they show why those shifts
+require separate timing and causal judgments. Across the 14
+theory-selected candidate controls in these six studies, the median
+\(|\mathrm{IVB}/\mathrm{SE}|\) is 0.13, and 1 case exceeds one standard
+error. These are descriptive results from a purposive set of
+applications, not estimates of the prevalence or magnitude of causal
+bias in TSCS research.
 
 \subsection{\texorpdfstring{Application 1: Democracy and Ethnic
 Inequality
@@ -906,9 +927,11 @@ GDP per capita is a plausible dual-role variable in this setting.
 Democratization can raise income over time
 \citep{acemoglu_etal2019, papaioannou_siourounis2008}, while ethnic
 inequality can depress income through weaker public-goods provision and
-conflict channels \citep{grundler_link2024}. The IVB decomposition
-therefore does not mechanically tell us to drop GDP. It tells us what
-the treatment estimate pays for including it.
+conflict channels \citep{grundler_link2024}. The decomposition therefore
+does not mechanically tell us to drop GDP. It reports how the treatment
+coefficient changes when GDP enters the specification; the ambiguous
+timing prevents that shift from receiving a unique causal
+interpretation.
 
 \begin{table}[!h]
 \centering
@@ -931,11 +954,12 @@ $|\mathrm{IVB}|/|\hat\beta_{\text{long}}|$ & 15.9\%\\
 \end{tabular}}
 \end{table}
 
-The estimated IVB is 0.0056, or about 0.48 standard errors. The
-treatment effect is attenuated by roughly 16 percent, but the shift
-remains well within ordinary sampling uncertainty. This is a useful
-example of the paper's practical stance: a candidate dual-role control
-can matter substantively without overturning the empirical conclusion.
+The estimated specification shift is 0.0056, or about 0.48 standard
+errors. The coefficient in the specification with GDP is roughly 16
+percent smaller in absolute shift terms, but the difference remains
+below one reported standard error. Because GDP's causal role and
+within-year timing are ambiguous, this comparison does not establish
+attenuation bias or deconfounding.
 
 \subsection{\texorpdfstring{Application 2: Postal Infrastructure and
 Economic Growth
@@ -987,49 +1011,50 @@ a dual role. The large coefficient shift is therefore descriptive until
 a DAG and evidence on the relevant measurement and exposure windows
 establish more. The lesson is not ``drop GDP.'\,' The lesson is that a
 large specification shift demands explicit causal reasoning about timing
-and role. This is exactly the use case for IVB in a paper whose applied
-payoff is a benchmark rather than an automatic decision rule.
+and role. This is the use case for a diagnostic paired with a
+conditional baseline rather than an automatic decision rule.
 
 \section{\texorpdfstring{Conclusion
 \label{sec:conclusion}}{Conclusion }}\label{conclusion}
 
-This paper introduces included variable bias as a general diagnostic
-problem that arises when researchers condition on observed covariates
-that may themselves respond to treatment. In the linear nested models
-used throughout TSCS work, IVB admits a simple closed-form
-decomposition. That decomposition does not decide whether a control is
-admissible; DAGs and timing do that work. But it does quantify the size
-and direction of the resulting specification shift in a way that
-existing discussions of time-varying controls typically do not.
+This paper studies specification shifts that arise when researchers
+condition on observed covariates that may themselves respond to
+treatment. In the linear nested models used throughout TSCS work,
+\(\widehat{\Delta}_Z\) admits a simple closed-form decomposition. That
+identity does not decide whether a control is admissible and does not,
+by itself, measure causal bias. It quantifies the size and direction of
+the coefficient shift; a CET, a time-indexed DAG, defended timing, and
+identification assumptions are required for causal interpretation.
 
 The paper's main applied payoff is narrower and more concrete. For TSCS
-settings focused on the contemporaneous treatment effect, the IVB
-framework implies a practical benchmark: ADL + FE with lagged state
-variables. That benchmark is not a universal solution for all panel
-estimators, nor is it a claim that lagged controls are always innocuous.
-It is a defensible starting point for the specific setting studied here.
-The simulations show why it works in the cases most likely to worry
-applied researchers: dual-role controls, inherited collider paths, and
-contemporaneous mediators.
+settings focused on the CET, ADL + FE with lagged state variables is a
+conditional baseline only when the target and causal clock are defined,
+the observed history is sufficient, sequential exchangeability and
+support are credible, the dynamic conditional mean is plausible,
+relevant interference is absent, and finite-\(T\) bias is negligible or
+addressed. The simulations show how that specification compares with the
+displayed alternatives in the reported dual-role, inherited-path, and
+mediator DGPs; they do not establish it as a causal estimator outside
+those conditions.
 
-This combination of a general diagnostic and a specific benchmark is the
-paper's contribution. Without IVB, the paper would risk collapsing into
-a familiar recommendation to use dynamic specifications. Without the
-benchmark, IVB would risk remaining an algebraic curiosity. Put
-together, they provide both a language for the problem and an
-operational default for a common applied setting.
+This combination of a descriptive diagnostic and a conditional TSCS
+baseline is the paper's contribution. The diagnostic reports how
+coefficients move across nested specifications; the baseline defines a
+structured comparison when the CET scope conditions hold. Keeping those
+roles separate prevents the observed specification shift from being
+treated as causal bias without the required assumptions.
 
-The limits are equally important. The benchmark is local to the CET. A
-lagged covariate that is pre-treatment for \(D_t \rightarrow Y_t\) need
-not be harmless for distributed, cumulative, or long-run effects.
-Additional simulations further show that the benchmark remains robust to
-nonlinear effects of lagged controls and level-dependent trends, but not
-to persistent unobserved contemporaneous confounding. And although the
-IVB idea may extend beyond the current domain, this paper does not claim
-results for synthetic-control-style estimators, synthetic DID, or factor
-models. Extending IVB to those settings is an important agenda for
-future work. The present paper establishes the idea and its main payoff
-in the linear TSCS case.
+The limits are equally important. The baseline is local to the CET. A
+lagged covariate that is pre-treatment for \(D_t \rightarrow Y_t\) can
+be treatment-responsive for distributed, cumulative, or long-run
+effects. The reported nonlinearity results cover only the tested stable
+scenarios, while the contemporaneous-confounding designs show
+substantial remaining bias when a current common cause is unobserved.
+This paper also does not claim results for synthetic-control-style
+estimators, synthetic DID, factor models, treatment regimes, or
+nonlinear links. The present contribution is limited to the
+specification-shift diagnostic and its conditional use in linear TSCS
+settings.
 
 \singlespacing
 \bibliographystyle{apsr}
