@@ -50,7 +50,7 @@ The **leave-one-control-out** (LOO) conditional increment is
 \ell_j=\beta(\mathcal Z)-\beta(\mathcal Z\setminus\{j\}).
 \]
 
-It answers how much the coefficient moves when $Z_j$ is deleted from the full model while all other candidates remain. Thus it is a last-in conditional sensitivity, not a share of $\Delta_{\mathcal Z}$; across $j$, these increments need not add to the joint shift.
+It is the increment from adding $Z_j$ last to a model that already contains all other candidates. Equivalently, deleting $Z_j$ from the full model changes the coefficient by $-\ell_j$. Thus $\ell_j$ is a last-in conditional sensitivity, not a share of $\Delta_{\mathcal Z}$; across $j$, these increments need not add to the joint shift.
 
 For an inclusion order $\sigma$, write $P_j^\sigma$ for the controls preceding $j$. The path-specific sequential increment is
 
@@ -130,6 +130,11 @@ order_comparison <- merge(
 )
 order_comparison <- order_comparison[match(colnames(Z), order_comparison$control), ]
 order_sums <- c(sum(order_123$contribution), sum(order_321$contribution))
+
+all_orders <- .all_permutations(colnames(Z))
+all_order_sums <- vapply(seq_len(nrow(all_orders)), function(index) {
+  sum(sequential_contributions(y, d, W, Z, all_orders[index, ])$contribution)
+}, numeric(1))
 ```
 
 ```{r order-dependence-table}
@@ -152,34 +157,54 @@ The two paths both sum to the same joint shift (`r format(joint_shift, digits = 
 ```{r validation, include=FALSE}
 tolerance <- 1e-10
 shapley_error <- abs(sum(shapley_results$shapley) - joint_shift)
-sequential_error <- max(abs(order_sums - joint_shift))
+sequential_error <- max(abs(all_order_sums - joint_shift))
 order_difference <- max(abs(order_comparison[[2L]] - order_comparison[[3L]]))
+minimum_control_correlation <- min(abs(
+  stats::cor(Z)[upper.tri(stats::cor(Z))]
+))
 
 permuted_Z <- Z[, c("Z3", "Z1", "Z2"), drop = FALSE]
 permuted_shapley <- shapley_allocation(y, d, W, permuted_Z)
-permutation_error <- max(abs(
+column_order_error <- max(abs(
   shapley_results$shapley[match(colnames(Z), shapley_results$control)] -
     permuted_shapley$shapley[match(colnames(Z), permuted_shapley$control)]
+))
+
+rename_map <- c(Z1 = "Alpha", Z2 = "Beta", Z3 = "Gamma")
+renamed_Z <- Z
+colnames(renamed_Z) <- unname(rename_map[colnames(Z)])
+renamed_shapley <- shapley_allocation(y, d, W, renamed_Z)
+original_names <- names(rename_map)[
+  match(renamed_shapley$control, unname(rename_map))
+]
+relabeling_error <- max(abs(
+  shapley_results$shapley[match(original_names, shapley_results$control)] -
+    renamed_shapley$shapley
 ))
 
 validation_table <- data.frame(
   check = c(
     "Shapley contributions sum to the joint shift",
-    "Sequential paths telescope to the joint shift",
-    "Shapley allocation is invariant to a permutation of control names",
+    "All six sequential paths telescope to the joint shift",
+    "Shapley is invariant to candidate-column order",
+    "Shapley is invariant to bijective variable relabeling",
     "Sequential control contributions differ across displayed orders",
-    "One-at-a-time and LOO diagnostics differ for at least one control"
+    "One-at-a-time and LOO diagnostics differ for at least one control",
+    "Candidate controls are substantively correlated"
   ),
   metric = c(
     shapley_error,
     sequential_error,
-    permutation_error,
+    column_order_error,
+    relabeling_error,
     order_difference,
-    max(abs(diagnostic_table$one_at_a_time - diagnostic_table$leave_one_out))
+    max(abs(diagnostic_table$one_at_a_time - diagnostic_table$leave_one_out)),
+    minimum_control_correlation
   ),
   criterion = c(
     "error < 1e-10", "error < 1e-10", "error < 1e-10",
-    "difference > 1e-4", "difference > 1e-4"
+    "error < 1e-10", "difference > 1e-4", "difference > 1e-4",
+    "minimum |correlation| > 0.20"
   ),
   stringsAsFactors = FALSE
 )
@@ -187,9 +212,11 @@ validation_table$result <- ifelse(
   c(
     shapley_error < tolerance,
     sequential_error < tolerance,
-    permutation_error < tolerance,
+    column_order_error < tolerance,
+    relabeling_error < tolerance,
     order_difference > 1e-4,
-    validation_table$metric[5L] > 1e-4
+    validation_table$metric[6L] > 1e-4,
+    minimum_control_correlation > 0.20
   ),
   "PASS",
   "FAIL"
@@ -211,10 +238,10 @@ kableExtra::kable_styling(
 )
 ```
 
-The name-permutation check permutes the columns and their names together, then realigns estimates by control name. It checks that the Shapley allocation is independent of an arbitrary input-column order.
+The column-order check changes the input order and realigns estimates by control name. The separate relabeling check assigns a deterministic one-to-one set of new names, maps the results back, and verifies that labels do not affect the allocation.
 
 # Reporting guidance and limitations
 
 For the paper's linear TSCS/CET use case, report the endpoint shift and LOO increments as transparent conditional sensitivity checks. Report one-at-a-time increments only when the short-model comparison is substantively useful. Reserve Shapley values for an online appendix or replication package: they are a coherent symmetric allocation of a projection shift, but they do not determine a unique causal contribution of correlated controls.
 
-The functions in `scripts/shift_allocation_correlated_controls.R` require a common complete sample and full rank for every requested nested model. They enumerate all $q!$ orders, which is appropriate for a small, prespecified set of candidate controls but not automatically for high-dimensional specifications. They do not cover weighted least squares, non-nested models, regularized estimators, missing-data-induced sample changes, or causal identification of the CET.
+The functions in `scripts/shift_allocation_correlated_controls.R` require numeric finite inputs, a common complete sample, and full rank for every requested nested model. They enumerate all $q!$ orders and stop by default above nine controls, which is appropriate for a small, prespecified set of candidate controls but not automatically for high-dimensional specifications. They do not cover weighted least squares, non-nested models, regularized estimators, missing-data-induced sample changes, or causal identification of the CET.

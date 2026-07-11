@@ -2,8 +2,13 @@
 # All functions use unweighted OLS on a common, complete sample. They describe
 # movements between nested linear projections; they do not identify causal bias.
 
+options(scipen = 999)
+
 .as_control_matrix <- function(controls) {
   controls <- as.matrix(controls)
+  if (!is.numeric(controls)) {
+    stop("Candidate controls must be numeric.")
+  }
   if (is.null(colnames(controls)) || any(colnames(controls) == "")) {
     stop("Candidate controls must be a matrix with unique column names.")
   }
@@ -14,15 +19,28 @@
 }
 
 .validate_inputs <- function(outcome, treatment, common_controls, controls) {
+  if (!is.numeric(outcome) || !is.numeric(treatment) ||
+      is.factor(outcome) || is.factor(treatment)) {
+    stop("Outcome and treatment must be numeric vectors.")
+  }
   controls <- .as_control_matrix(controls)
-  common_controls <- as.matrix(common_controls)
+  if (is.null(common_controls)) {
+    common_controls <- matrix(
+      numeric(0), nrow = length(outcome), ncol = 0L
+    )
+  } else {
+    common_controls <- as.matrix(common_controls)
+    if (!is.numeric(common_controls)) {
+      stop("Common controls must be numeric.")
+    }
+  }
   if (length(outcome) != length(treatment) ||
       nrow(common_controls) != length(outcome) ||
       nrow(controls) != length(outcome)) {
     stop("Outcome, treatment, common controls, and candidate controls need a common sample.")
   }
-  if (anyNA(c(outcome, treatment, common_controls, controls))) {
-    stop("Inputs must be complete; missing values would change the estimation sample.")
+  if (any(!is.finite(c(outcome, treatment, common_controls, controls)))) {
+    stop("Inputs must be finite and complete; invalid values would change the estimation sample.")
   }
   list(
     outcome = as.numeric(outcome),
@@ -161,9 +179,22 @@ leave_one_out <- function(outcome, treatment, common_controls, controls) {
 }
 
 # Shapley allocation: average each control's sequential contribution over q! orders.
-shapley_allocation <- function(outcome, treatment, common_controls, controls) {
+shapley_allocation <- function(outcome,
+                               treatment,
+                               common_controls,
+                               controls,
+                               max_controls = 9L) {
   inputs <- .validate_inputs(outcome, treatment, common_controls, controls)
   names <- colnames(inputs$controls)
+  if (length(names) == 0L) {
+    stop("At least one candidate control is required.")
+  }
+  if (length(names) > max_controls) {
+    stop(
+      "Exact Shapley enumeration requires q! orders. ",
+      "Increase max_controls explicitly or use a separately validated approximation."
+    )
+  }
   orders <- .all_permutations(names)
   contributions <- matrix(
     NA_real_, nrow = nrow(orders), ncol = length(names),

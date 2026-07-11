@@ -1,0 +1,264 @@
+---
+title: "Uncertainty for the Specification Shift"
+subtitle: "Paired unit bootstrap, covariance of nested estimators, and a product-form verification"
+author: "Technical derivation for the IVB paper"
+date: "11 July 2026"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    toc: true
+    keep_tex: false
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{booktabs}
+  - \usepackage{array}
+  - \usepackage{float}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+  - \newtheorem{proposition}{Proposition}
+  - \newtheorem{remark}{Remark}
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+options(scipen = 999)
+source("scripts/specification_shift_uncertainty.R")
+source("scripts/test_specification_shift_uncertainty.R", local = knitr::knit_global())
+```
+
+# Purpose and boundary
+
+This note develops sampling uncertainty for the scalar specification shift
+
+\begin{equation}
+\widehat\Delta_Z
+=
+\widehat\beta_L-\widehat\beta_S,
+\label{eq:delta-definition}
+\end{equation}
+
+where the short and long linear models are nested, use the same observations and weights, and differ only by the candidate control $Z$. The target is the uncertainty of the *paired coefficient contrast*. The two coefficients are computed from the same outcome and panel, so they are dependent estimators. An uncertainty calculation that treats them as independent answers the wrong sampling question.
+
+The primary procedure is a bootstrap that resamples whole units and re-estimates the short, long, and auxiliary equations on the same resampled rows. The secondary procedure is a first-order cluster-sandwich variance for Equation \eqref{eq:delta-definition} that retains the covariance between $\widehat\beta_L$ and $\widehat\beta_S$. The delta method applied to the product $-\widehat\theta\widehat\pi$ is retained as a verification path, not as an automatic replacement for the paired difference.
+
+This document implements but does not execute a bootstrap. It contains no Monte Carlo experiment, coverage calculation, or new simulation. Calibration of interval coverage is a separate task.
+
+# Common-sample system
+
+Let $W$ contain the intercept and every regressor common to the nested specifications. In a linear TSCS application, $W$ may contain fixed-effect indicators, time indicators, lagged outcomes, lagged treatments, and defended lagged state variables. Define
+
+\begin{align}
+y &= X_S b_S+u_S,
+&X_S&=[d,W],
+\label{eq:short-system}\\
+y &= X_L b_L+u_L,
+&X_L&=[d,W,z],
+\label{eq:long-system}\\
+z &= X_A b_A+v,
+&X_A&=[d,W].
+\label{eq:aux-system}
+\end{align}
+
+The coefficient on $d$ in Equations \eqref{eq:short-system} and \eqref{eq:long-system} is respectively $\widehat\beta_S$ and $\widehat\beta_L$. The coefficient on $z$ in the long equation is $\widehat\theta$, and the coefficient on $d$ in Equation \eqref{eq:aux-system} is $\widehat\pi$. Under the full-rank conditions for unweighted OLS,
+
+\begin{equation}
+\widehat\beta_L-\widehat\beta_S
+=
+-\widehat\theta\widehat\pi
+\label{eq:sample-identity}
+\end{equation}
+
+exactly, up to floating-point error.
+
+The common-sample requirement is inferential as well as algebraic. If missingness in $Z$ changes the long-model sample, the short model must be re-estimated on that same sample. Every bootstrap occurrence must then apply one row index to all variables and all three equations. Reusing a short-model estimate from a larger sample, drawing separate resamples by equation, or changing the common regressors breaks the paired comparison.
+
+# Primary procedure: bootstrap by unit
+
+Suppose the panel contains $G$ observed units. For bootstrap replication $b$, draw $G$ unit labels with replacement from the observed labels. If unit $g$ is drawn, include all of its observed rows, preserving their original within-unit order. If it is drawn more than once, copy all of its rows once for each occurrence and assign each occurrence a distinct bootstrap-unit identifier. The latter relabeling prevents two independent bootstrap occurrences of the same source unit from being treated as one cluster in any subsequent cluster calculation.
+
+On the resulting paired resample, estimate Equations \eqref{eq:short-system}--\eqref{eq:aux-system} and store
+
+\begin{equation}
+\widehat\Delta_Z^{(b)}
+=
+\widehat\beta_L^{(b)}-\widehat\beta_S^{(b)}.
+\label{eq:bootstrap-delta}
+\end{equation}
+
+Also compute $-\widehat\theta^{(b)}\widehat\pi^{(b)}$ and require it to agree with Equation \eqref{eq:bootstrap-delta} within a prespecified numerical tolerance. This equality is a replicate-level implementation check. It is not a coverage result.
+
+For a two-sided percentile interval with nominal level $1-\alpha$, use the empirical $\alpha/2$ and $1-\alpha/2$ quantiles of the direct paired differences. Other intervals, including studentized or bias-corrected intervals, require their own validation and are not claimed here.
+
+The unit bootstrap preserves arbitrary dependence among observations within a resampled unit and preserves the dependence among the three estimators because they use the same draw. Its validity nevertheless requires an asymptotic argument in which units are the resampling clusters. It is not automatically valid under residual dependence across units, a small number of units, highly influential units, or a sampling design whose independent clusters are not the panel units. Those cases require a procedure matched to the actual dependence and design.
+
+## Algorithm implemented in R
+
+The separate script `scripts/specification_shift_uncertainty.R` implements the following operations:
+
+```{r function-table}
+function_table <- data.frame(
+  Function = c(
+    "fit_specification_shift()",
+    "stacked_cluster_vcov()",
+    "delta_variance_difference()",
+    "product_delta_variance()",
+    "expand_unit_bootstrap_indices()",
+    "validate_unit_bootstrap_indices()",
+    "bootstrap_specification_shift()"
+  ),
+  Purpose = c(
+    "Fits short, long, and auxiliary equations on one complete sample",
+    "Builds a stacked cluster-sandwich covariance with cross-equation blocks",
+    "Computes the variance of the paired coefficient difference",
+    "Computes the first-order variance of the product as a check",
+    "Expands sampled unit labels into whole-unit row indices",
+    "Checks row preservation and distinct identifiers for repeated units",
+    "Draws units and jointly re-estimates all equations when explicitly called"
+  ),
+  stringsAsFactors = FALSE
+)
+
+kableExtra::kable_styling(
+  knitr::kable(
+    function_table,
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Functions implemented for paired specification-shift inference."
+  ),
+  latex_options = c("HOLD_position", "scale_down")
+)
+```
+
+Sourcing the script only defines functions. It neither creates random numbers nor fits a bootstrap sample. Random unit draws require an explicit replication count and seed. Alternatively, a caller may supply a prespecified list of unit draws, which makes the resampling plan separately auditable.
+
+# Secondary procedure: covariance of the coefficient difference
+
+Because Equation \eqref{eq:delta-definition} is a linear contrast, its variance is
+
+\begin{equation}
+\operatorname{Var}(\widehat\Delta_Z)
+=
+\operatorname{Var}(\widehat\beta_L)
++
+\operatorname{Var}(\widehat\beta_S)
+-
+2\operatorname{Cov}(\widehat\beta_L,\widehat\beta_S).
+\label{eq:difference-variance}
+\end{equation}
+
+Dropping the covariance term is equivalent to imposing independence between two estimates computed on the same observations. That restriction is neither implied by nesting nor made plausible by reporting separately clustered standard errors for the two regressions.
+
+The implementation estimates the covariance term with a stacked cluster sandwich. For equation $m\in\{S,L,A\}$, let
+
+\[
+A_m=(X_m'X_m)^{-1},
+\qquad
+s_{mg}=X_{mg}'\widehat u_{mg},
+\]
+
+where $X_{mg}$ and $\widehat u_{mg}$ collect the rows for unit $g$. The cross-equation covariance block for equations $m$ and $n$ is
+
+\begin{equation}
+\widehat V_{mn}
+=
+A_m
+\left(\sum_{g=1}^{G}s_{mg}s_{ng}'\right)
+A_n.
+\label{eq:cross-sandwich}
+\end{equation}
+
+The relevant entry of $\widehat V_{LS}$ supplies $\widehat{\operatorname{Cov}}(\widehat\beta_L,\widehat\beta_S)$ in Equation \eqref{eq:difference-variance}. The script exposes an unadjusted cluster sandwich (CR0) and a scalar $G/(G-1)$ correction (CR1). These are transparent first-order choices, not a claim that either is adequate with few clusters. A normal-approximation interval could be formed from the direct contrast and this standard error, but no such interval is calculated for the paper's applications in this task.
+
+# Why the product delta method is a verification
+
+Equation \eqref{eq:sample-identity} makes the point estimates identical on every admissible sample. It does not make every approximate variance calculation identical in finite samples. For
+
+\[
+g(\theta,\pi)=-\theta\pi,
+\qquad
+\nabla g(\theta,\pi)=(-\pi,-\theta)',
+\]
+
+the first-order delta variance is
+
+\begin{equation}
+\widehat{\operatorname{Var}}_{\mathrm{prod}}(\widehat\Delta_Z)
+=
+\widehat\pi^2\widehat{\operatorname{Var}}(\widehat\theta)
++
+\widehat\theta^2\widehat{\operatorname{Var}}(\widehat\pi)
++
+2\widehat\theta\widehat\pi
+\widehat{\operatorname{Cov}}(\widehat\theta,\widehat\pi).
+\label{eq:product-delta}
+\end{equation}
+
+The covariance in Equation \eqref{eq:product-delta} is cross-equation covariance between the long and auxiliary regressions. Combining two marginal standard errors while setting this covariance to zero does not implement the stated delta method.
+
+There are four reasons to treat Equation \eqref{eq:product-delta} as a check rather than the automatic primary calculation. First, the direct estimand is already a linear paired contrast, whereas the product representation introduces a nonlinear first-order approximation. Second, omitted higher-order terms can matter in finite samples. Third, when both $\theta$ and $\pi$ are near zero, the first-order gradient can be nearly zero even though second-order product variation remains; the origin is a particularly weak point for a first-order product approximation. Fourth, any mismatch in samples, weights, or common regressors can make a product calculation look numerically plausible while no longer representing the desired coefficient difference.
+
+Accordingly, the recommended hierarchy is:
+
+1. compute $\widehat\Delta_Z$ as the paired coefficient difference;
+2. verify the exact sample identity with $-\widehat\theta\widehat\pi$;
+3. use the paired unit bootstrap as the primary interval procedure once its calibration has been assessed for the application class;
+4. use Equation \eqref{eq:difference-variance} as a secondary first-order procedure; and
+5. compare Equation \eqref{eq:product-delta} as an implementation and linearization check.
+
+# Relative magnitude and reporting
+
+Uncertainty does not replace substantive scale. A complete diagnostic should report the signed point shift, an interval for the shift, and a prespecified relative magnitude
+
+\begin{equation}
+R_Z
+=
+\frac{|\widehat\Delta_Z|}{|\widehat\beta_{\mathrm{benchmark}}|}.
+\label{eq:relative-magnitude}
+\end{equation}
+
+The benchmark coefficient must be named rather than chosen after seeing the results. Depending on the application, it may be the coefficient from the paper's defended baseline, a substantively meaningful reference effect, or a prespecified original estimate. When $|\widehat\beta_{\mathrm{benchmark}}|$ is near zero, Equation \eqref{eq:relative-magnitude} becomes unstable and should not be used as the sole magnitude summary; report the raw shift and an outcome- or treatment-standardized scale instead.
+
+The ratio $|\widehat\Delta_Z|/\widehat{\operatorname{SE}}(\widehat\beta_L)$ is not a test statistic for the shift. Its denominator is the uncertainty of one endpoint, not the uncertainty of their paired difference. Existing application values based on that ratio can remain as clearly labeled scale comparisons, but they cannot substitute for $\operatorname{CI}(\Delta_Z)$.
+
+# Deterministic validation
+
+The accompanying test file uses a fixed panel made from trigonometric sequences and fixed unit indicators. It contains no random-number generation. It checks the difference-product identity on the fixed sample, the cross-covariance algebra in Equation \eqref{eq:difference-variance}, the gradient formula in Equation \eqref{eq:product-delta}, and the structure of a prespecified whole-unit row index. It does not fit even one bootstrap resample.
+
+```{r deterministic-test-table}
+test_display <- test_summary
+test_display$diagnostic <- format(
+  test_display$diagnostic,
+  scientific = TRUE,
+  digits = 4
+)
+names(test_display) <- c("Check", "Diagnostic", "Criterion", "Result")
+
+kableExtra::kable_styling(
+  knitr::kable(
+    test_display,
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Deterministic validation of the inference utilities."
+  ),
+  latex_options = c("HOLD_position", "scale_down"),
+  font_size = 8
+)
+```
+
+In the fixed-sample identity check, the direct difference is `r format(fit$estimates["delta_direct"], digits = 12)` and the product is `r format(fit$estimates["delta_product"], digits = 12)`. The simple covariance example sets $\operatorname{Var}(\widehat\beta_L)=0.04$, $\operatorname{Var}(\widehat\beta_S)=0.09$, and $\operatorname{Cov}(\widehat\beta_L,\widehat\beta_S)=0.03$. Equation \eqref{eq:difference-variance} then gives $0.07$, whereas incorrectly imposing independence gives $0.13$.
+
+The index test draws no units. It supplies a fixed vector of source-unit labels, verifies that every occurrence contains all rows of its source unit exactly once, verifies that two occurrences of the same source unit receive distinct bootstrap-unit identifiers, and confirms that a deliberately malformed row index is rejected.
+
+# Deliberately unexecuted work and limitations
+
+No bootstrap replication, confidence interval, simulation, coverage calculation, or new application inference is produced here. The script provides the machinery for those steps, but empirical execution requires a separate, approved run and a decision about the appropriate resampling design for each application.
+
+The current implementation is deliberately narrow. It covers a scalar candidate control, unweighted full-rank OLS, a common complete sample, and clustering by one unit identifier. Fixed effects must be supplied as common design columns. It does not implement weights, multiway clustering, cross-sectional dependence, few-cluster corrections beyond the displayed scalar CR1 factor, wild bootstrap, studentized bootstrap, nonlinear models, regularized estimators, or simultaneous inference across many candidate controls. The product-form calculation is not robust to changing any part of the nested-model definition. Finally, none of these uncertainty procedures determines whether the specification shift is causal bias relative to the CET; that interpretation still requires the causal clock, DAG, target, and identification conditions developed elsewhere in the paper.
