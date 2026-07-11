@@ -386,17 +386,17 @@ The formula also clarifies a point that is easy to miss in practice: lagging the
 
 ## When ADL + FE Identifies the CET
 
-The ADL + FE benchmark identifies the CET only under explicit scope conditions. Let $H_{i,t-1}$ contain the observed outcome, treatment, and covariate history needed for current assignment and the outcome process. A sufficient constant-coefficient restriction is
+The ADL + FE benchmark identifies the CET only under explicit scope conditions. Let $H_{it}^{-}$ be the observed pre-exposure history defined above. A calendar-lag vector $H_{i,t-1}$ is a valid implementation only when the timestamp checklist establishes $H_{i,t-1}\subseteq H_{it}^{-}$ and the included lags and transformations are sufficient for current assignment and the conditional outcome mean. A lag label alone establishes neither condition. A sufficient constant-coefficient restriction is
 
 \[
-\mathbb{E}[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t]
+\mathbb{E}[Y_{it}(d)\mid H_{it}^{-},\alpha_i,\tau_t]
 =
-\alpha_i+\tau_t+r(H_{i,t-1})'\gamma+\beta_{\mathrm{CET}}d,
+\alpha_i+\tau_t+r(H_{it}^{-})'\gamma+\beta_{\mathrm{CET}}d,
 \]
 
-together with consistency, no interference, no anticipation, conditional mean exchangeability of $D_{it}$ given that history, and support for treatment after the history and fixed effects have been partialled out. The causal clock must also be recursive: $D_{it}$ precedes the contemporaneous outcome innovation, so simultaneous $Y_{it}\rightarrow D_{it}$ feedback is excluded. By contrast, $Y_{i,t-1}\rightarrow D_{it}$ feedback is compatible with identification when $Y_{i,t-1}$ and any other relevant past state are correctly included in $H_{i,t-1}$.
+together with consistency, no interference, no anticipation, sequential mean exchangeability of $D_{it}$ given $H_{it}^{-}$, and conditional positivity for the treatment contrast. For discrete treatment, the target levels must have positive conditional probability; for continuous treatment, the target doses must lie in the conditional common support with local support around them. The causal clock must also be recursive: $D_{it}$ precedes the contemporaneous outcome innovation, so simultaneous $Y_{it}\rightarrow D_{it}$ feedback is excluded. By contrast, $Y_{i,t-1}\rightarrow D_{it}$ feedback is compatible with identification when $Y_{i,t-1}\in H_{it}^{-}$ and the conditioned history is sufficient.
 
-Under those conditions, if $\widetilde D_{it}$ is the population residual from projecting $D_{it}$ on the included history and the unit and time effects, then
+These causal support conditions are distinct from the rank condition for the population projection. If $\widetilde D_{it}$ is the population residual from projecting $D_{it}$ on the included history and the unit and time effects, and $0<\mathbb{E}[\widetilde D_{it}^{2}]<\infty$, then
 
 \[
 \beta_D^P
@@ -413,13 +413,17 @@ adl_scope_table <- data.frame(
   Layer = c(
     "Population identification",
     "History and timing",
+    "Conditional support",
+    "Projection rank",
     "Fixed effects and functional form",
     "Finite-$T$ estimation",
     "Inference"
   ),
   `Scope condition` = c(
-    "Consistency; no interference or a valid exposure mapping; conditional exchangeability; no unobserved contemporaneous confounding; residual treatment support",
-    "No anticipation; a correctly specified observed history $H_{i,t-1}$; no simultaneous $Y_{it}\\rightarrow D_{it}$ feedback",
+    "Consistency; no interference; sequential mean exchangeability given the pre-exposure history; no unobserved contemporaneous confounding",
+    "No anticipation; $H_{i,t-1}\\subseteq H_{it}^{-}$ with sufficient included history; no simultaneous $Y_{it}\\rightarrow D_{it}$ feedback",
+    "The target treatment levels lie in the conditional support; continuous doses have local common support",
+    "$0<\\mathbb{E}[\\widetilde D_{it}^{2}]<\\infty$ after partialling out included history and fixed effects",
     "Additive unit effects and common time shocks; correct lag structure; a linear, homogeneous CET if one coefficient is to have that interpretation",
     "A time dimension or correction adequate for bias from within-transforming lagged outcomes and other predetermined regressors",
     "An uncertainty procedure appropriate for residual serial and cross-sectional dependence"
@@ -427,6 +431,8 @@ adl_scope_table <- data.frame(
   `Interpretation when the condition fails` = c(
     "The ADL coefficient need not equal the CET",
     "A nominal lag may be post-treatment, or omitted history and simultaneity may invalidate the comparison",
+    "The causal contrast requires unsupported extrapolation",
+    "The population FWL coefficient is not well defined even if causal overlap holds for some contrasts",
     "Fixed effects need not remove the omitted process; the coefficient may be only a best linear approximation",
     "The population CET may be identified while the conventional within estimator has Nickell-type finite-$T$ bias",
     "The population target can remain unchanged while standard errors and confidence intervals are invalid"

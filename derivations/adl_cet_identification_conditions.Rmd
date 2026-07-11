@@ -27,7 +27,7 @@ fontsize: 11pt
 
 This note gives conditions under which the population coefficient on current treatment in an autoregressive distributed-lag model with unit and time fixed effects equals the contemporaneous treatment effect (CET). It then separates that population identification result from finite-$T$ bias of the within estimator and from inference under dependent errors. The target follows the within-period clock in the paper: the observed history is fixed, current treatment begins, within-period responses may occur, and the outcome is measured after the relevant exposure window.
 
-For unit $i$ in period $t$, let
+For unit $i$ in period $t$, let $H_{it}^{-}$ denote the observed information and state variables fixed immediately before the first exposure represented by $D_{it}$. A common calendar-lag vector is
 
 \[
 H_{i,t-1}
@@ -39,14 +39,14 @@ X_{i,t-1},\ldots,X_{i,t-r}
 \right)
 \]
 
-denote the observed history required by the data-generating process. The notation allows more than one lag; writing an ADL(1) is a substantive restriction, not part of the definition. Let $R_{it}=r(H_{i,t-1})$ collect the transformations of that history included in the regression. For treatment levels $d$ and $d'$ in the relevant support, define
+where the number of lags is not restricted to one. Calendar-lag notation is a valid implementation of the causal history only when the timestamp checklist establishes both $H_{i,t-1}\subseteq H_{it}^{-}$ and that the recorded lag vector is sufficient for current assignment and the conditional outcome mean. A lag label alone establishes neither condition. Let $R_{it}=r(H_{it}^{-})$ collect the transformations of the pre-exposure history included in the regression; under a valid calendar-lag implementation, these transformations can be written as $r(H_{i,t-1})$. For treatment levels $d$ and $d'$ in the relevant conditional support, define
 
 \[
 \tau_{\mathrm{CET}}(d,d';h,a,t)
 =
 \mathbb{E}\!\left[
 Y_{it}(d)-Y_{it}(d')
-\mid H_{i,t-1}=h,\alpha_i=a,t
+\mid H_{it}^{-}=h,\alpha_i=a,t
 \right].
 \]
 
@@ -56,26 +56,26 @@ Here $Y_{it}(d)$ sets current treatment to $d$ while holding the realized pretre
 
 The following conditions are sufficient for the constant-coefficient result below. They are scope conditions, not consequences of estimating an ADL.
 
-1. **Consistency and no interference.** If $D_{it}=d$, then $Y_{it}=Y_{it}(d)$. Unit $i$'s contemporaneous potential outcome does not depend on other units' current treatments, except through an exposure mapping explicitly included in the model. Treatment versions are well defined.
+1. **Consistency and no interference.** If $D_{it}=d$, then $Y_{it}=Y_{it}(d)$. Unit $i$'s contemporaneous potential outcome does not depend on other units' treatments, and treatment versions are well defined.
 
-2. **Observed history and no anticipation.** $H_{i,t-1}$ is fixed before the first exposure relevant to $D_{it}$ and contains the observed state needed to render current treatment conditionally as-if assigned. Anticipatory responses to $D_{it}$ are absent or are explicitly included in the treatment intervention and history. A lag label alone does not establish this condition.
+2. **Observed pre-exposure history and no anticipation.** $H_{it}^{-}$ is fixed before the first exposure relevant to $D_{it}$ and contains the observed state needed to render current treatment conditionally as-if assigned. Anticipatory responses to $D_{it}$ are absent. A calendar-lag vector $H_{i,t-1}$ can implement this condition only when its components are contained in $H_{it}^{-}$ and are sufficient; coarse calendar labels do not establish either requirement.
 
 3. **Sequential mean exchangeability.** For every supported $d$,
 
    \[
-   \mathbb{E}\!\left[Y_{it}(d)\mid D_{it},H_{i,t-1},\alpha_i,\tau_t\right]
+   \mathbb{E}\!\left[Y_{it}(d)\mid D_{it},H_{it}^{-},\alpha_i,\tau_t\right]
    =
-   \mathbb{E}\!\left[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t\right].
+   \mathbb{E}\!\left[Y_{it}(d)\mid H_{it}^{-},\alpha_i,\tau_t\right].
    \]
 
-   Equivalently for the linear model below, the contemporaneous innovation satisfies $\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0$. Thus there is no unobserved contemporaneous cause of both $D_{it}$ and $Y_{it}$ after conditioning on the history, unit effect, and common time shock.
+   Together with consistency and the linear conditional-mean restriction in Condition 5, sequential exchangeability implies $\mathbb{E}[u_{it}\mid D_{it},H_{it}^{-},\alpha_i,\tau_t]=0$. The residual condition is therefore a consequence of the causal and functional-form restrictions, not an equivalent restatement of sequential exchangeability. Thus there is no unobserved contemporaneous cause of both $D_{it}$ and $Y_{it}$ after conditioning on the pre-exposure history, unit effect, and common time shock.
 
-4. **Recursive within-period timing.** $D_{it}$ is determined before the contemporaneous outcome innovation. There is no simultaneous feedback $Y_{it}\rightarrow D_{it}$ within the period represented by the model. Feedback $Y_{i,t-1}\rightarrow D_{it}$ is compatible with identification when $Y_{i,t-1}$ is correctly included in $H_{i,t-1}$; it is not a violation of sequential exchangeability. The problems are contemporaneous feedback or omission of the relevant past state.
+4. **Recursive within-period timing.** $D_{it}$ is determined before the contemporaneous outcome innovation. There is no simultaneous feedback $Y_{it}\rightarrow D_{it}$ within the period represented by the model. Feedback $Y_{i,t-1}\rightarrow D_{it}$ is compatible with identification when $Y_{i,t-1}\in H_{it}^{-}$ and the conditioned history is sufficient; it is not a violation of sequential exchangeability. The problems are contemporaneous feedback or omission of the relevant pre-exposure state.
 
 5. **Correct dynamic conditional mean.** The included lag structure and transformations span the relevant conditional mean, and the response is additive and linear:
 
    \[
-   \mathbb{E}\!\left[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t\right]
+   \mathbb{E}\!\left[Y_{it}(d)\mid H_{it}^{-},\alpha_i,\tau_t\right]
    =
    \alpha_i+\tau_t+R_{it}'\gamma+\beta_{\mathrm{CET}}d.
    \tag{1}
@@ -85,21 +85,23 @@ The following conditions are sufficient for the constant-coefficient result belo
 
 6. **Homogeneity for a single coefficient.** The slope $\beta_{\mathrm{CET}}$ in (1) is constant over units, periods, histories, and the treatment contrasts being summarized. If effects or dynamics are heterogeneous, the regression coefficient generally becomes a projection-weighted summary rather than a common CET.
 
-7. **Positivity and identifying variation.** Each treatment contrast has positive conditional support where it is interpreted. In linear-projection notation, if $C_{it}$ collects $R_{it}$ and the unit and time indicators and $\widetilde D_{it}=D_{it}-P_C D_{it}$, then
+7. **Conditional positivity and overlap.** For every $(h,a,t)$ where the CET is interpreted, both $d$ and $d'$ belong to the conditional support of $D_{it}$ given $H_{it}^{-}=h$, $\alpha_i=a$, and $t$. For a binary or other discrete treatment, the relevant levels have positive conditional probability. For a continuous treatment, the target doses lie in the conditional common support and have local support, so the comparison does not extrapolate across unsupported dose regions. This causal support condition is not a rank condition for a linear projection.
+
+8. **Residual treatment variance and projection rank.** If $C_{it}$ collects $R_{it}$ and the unit and time indicators and $\widetilde D_{it}=D_{it}-P_C D_{it}$, then
 
    \[
    0<\mathbb{E}[\widetilde D_{it}^2]<\infty.
    \tag{2}
    \]
 
-   Hence treatment varies within units and periods after the observed history and fixed effects have been partialled out.
+   Hence the population FWL coefficient is defined and treatment varies after the included history and fixed effects have been partialled out. This condition does not by itself establish conditional positivity for a causal contrast.
 
-8. **Role of fixed effects and time shocks.** $\alpha_i$ absorbs additive time-invariant unit causes, and $\tau_t$ absorbs additive shocks common to all units in period $t$. These terms do not absorb unobserved time-varying unit-level confounding, unit-specific responses to common shocks, differential trends, or spillovers.
+9. **Role of fixed effects and time shocks.** $\alpha_i$ absorbs additive time-invariant unit causes, and $\tau_t$ absorbs additive shocks common to all units in period $t$. These terms do not absorb unobserved time-varying unit-level confounding, unit-specific responses to common shocks, differential trends, or interference.
 
 # Population identification
 
 \begin{proposition}[Population CET and finite-$T$ within estimation]
-Suppose Conditions 1--8 hold and all variables have finite second moments. Define the population ADL + FE coefficient on $D_{it}$ as the coefficient $\beta_D^P$ in the linear projection of $Y_{it}$ on $D_{it}$, $R_{it}$, unit indicators, and time indicators. Then
+Suppose Conditions 1--9 hold and all variables have finite second moments. Define the population ADL + FE coefficient on $D_{it}$ as the coefficient $\beta_D^P$ in the linear projection of $Y_{it}$ on $D_{it}$, $R_{it}$, unit indicators, and time indicators. Then
 \[
 \beta_D^P=\beta_{\mathrm{CET}},
 \]
@@ -114,11 +116,11 @@ This population equality does not imply that the conventional within estimator i
 
 \[
 \begin{aligned}
-\mathbb{E}[Y_{it}\mid D_{it}=d,H_{i,t-1},\alpha_i,\tau_t]
+\mathbb{E}[Y_{it}\mid D_{it}=d,H_{it}^{-},\alpha_i,\tau_t]
 &=
-\mathbb{E}[Y_{it}(d)\mid D_{it}=d,H_{i,t-1},\alpha_i,\tau_t]\\
+\mathbb{E}[Y_{it}(d)\mid D_{it}=d,H_{it}^{-},\alpha_i,\tau_t]\\
 &=
-\mathbb{E}[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t].
+\mathbb{E}[Y_{it}(d)\mid H_{it}^{-},\alpha_i,\tau_t].
 \end{aligned}
 \tag{3}
 \]
@@ -131,7 +133,7 @@ Y_{it}
 \alpha_i+\tau_t+R_{it}'\gamma
 +\beta_{\mathrm{CET}}D_{it}+u_{it},
 \qquad
-\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0.
+\mathbb{E}[u_{it}\mid D_{it},H_{it}^{-},\alpha_i,\tau_t]=0.
 \tag{4}
 \]
 
@@ -166,15 +168,15 @@ Substitution of (4), orthogonality of $\widetilde D_{it}$ to $C_{it}$, and condi
 \tag{7}
 \]
 
-Condition (2) therefore implies $\beta_D^P=\beta_{\mathrm{CET}}$. Unit and time fixed effects contribute to this result only by spanning the additive unit factors and common time shocks specified in (1); they do not make (7) true when the conditional mean omits relevant time-varying causes.
+The residual-variance condition in (2) therefore implies $\beta_D^P=\beta_{\mathrm{CET}}$. Conditional positivity in Condition 7 identifies the causal contrasts being summarized, while the distinct rank condition in (2) makes the population projection coefficient well defined. Unit and time fixed effects contribute to this result only by spanning the additive unit factors and common time shocks specified in (1); they do not make (7) true when the conditional mean omits relevant time-varying causes.
 
-**Step 3: What the coefficient means without linearity or homogeneity.** If the conditional response is instead $\beta_{it}(H_{i,t-1})D_{it}$, while the remaining conditional mean is correctly spanned, then
+**Step 3: What the coefficient means without linearity or homogeneity.** If the conditional response is instead $\beta_{it}(H_{it}^{-})D_{it}$, while the remaining conditional mean is correctly spanned, then
 
 \[
 \beta_D^P
 =
 \frac{
-\mathbb{E}[\widetilde D_{it}\,\beta_{it}(H_{i,t-1})D_{it}]
+\mathbb{E}[\widetilde D_{it}\,\beta_{it}(H_{it}^{-})D_{it}]
 }{
 \mathbb{E}[\widetilde D_{it}^2]
 }.
@@ -192,7 +194,7 @@ This expression need not equal an unweighted average CET and need not have conve
 \tag{9}
 \]
 
-The level restriction $\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0$ does not generally imply $\mathbb{E}[X'M_Fu]=0$ at fixed $T$. To see the source, suppress time effects for notation and write
+The level restriction $\mathbb{E}[u_{it}\mid D_{it},H_{it}^{-},\alpha_i,\tau_t]=0$ does not generally imply $\mathbb{E}[X'M_Fu]=0$ at fixed $T$. To see the source, suppress time effects for notation and write
 
 \[
 \ddot u_{it}=u_{it}-\bar u_i,
@@ -201,7 +203,7 @@ The level restriction $\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0
 \tag{10}
 \]
 
-The lagged outcome contains earlier innovations such as $u_{i,t-1}$, while $\bar u_i$ also contains those innovations. Consequently $\mathbb{E}[\ddot Y_{i,t-1}\ddot u_{it}]\neq0$ in general, even when the level innovation is sequentially mean independent. If $D_{it}$ responds to $Y_{i,t-1}$ or other past shocks, the transformed treatment can inherit the same finite-$T$ correlation. Thus lagged feedback $Y_{i,t-1}\rightarrow D_{it}$ is compatible with the population argument in Steps 1--2 when the lagged outcome is in the observed history, yet it can still matter for the finite-$T$ behavior of the within estimator.
+The lagged outcome contains earlier innovations such as $u_{i,t-1}$, while $\bar u_i$ also contains those innovations. Consequently $\mathbb{E}[\ddot Y_{i,t-1}\ddot u_{it}]\neq0$ in general, even when the level innovation is sequentially mean independent. If $D_{it}$ responds to $Y_{i,t-1}$ or other past shocks, the transformed treatment can inherit the same finite-$T$ correlation. Thus lagged feedback $Y_{i,t-1}\rightarrow D_{it}$ is compatible with the population argument in Steps 1--2 when $Y_{i,t-1}\in H_{it}^{-}$ and the conditioned history is sufficient, yet it can still matter for the finite-$T$ behavior of the within estimator.
 
 In the standard dynamic fixed-effects setting, this is the source of Nickell-type bias \citep{nickell1981biases}. Its leading order is commonly $1/T$ under the usual stationary large-$N$, large-$T$ regularity conditions, so increasing $N$ with fixed $T$ does not remove it. The exact magnitude and the induced bias in the treatment coefficient depend on persistence, treatment assignment, the regressor covariance matrix, initial conditions, and the panel design. Equation (9) therefore separates the identified population coefficient from the estimator used to approximate it. This completes the proof. $\square$
 
@@ -216,7 +218,9 @@ In the standard dynamic fixed-effects setting, this is the source of Nickell-typ
 \toprule
 Layer & Question & Required conditions & What failure means \\
 \midrule
-Population identification & Does the coefficient equal the CET? & Defended causal clock, consistency, no interference or a valid exposure mapping, sequential exchangeability given complete history and fixed effects, correct lagged conditional mean, support, linearity, and homogeneity & The coefficient may reflect confounding, simultaneity, misspecified dynamics, or only a best linear approximation \\
+Population identification & Does the coefficient equal the CET? & Defended causal clock, consistency, no interference, sequential exchangeability given $H_{it}^{-}$ and fixed effects, correct conditional mean, linearity, and homogeneity & The coefficient may reflect confounding, simultaneity, misspecified dynamics, or only a best linear approximation \\
+Conditional support & Is the target causal contrast supported? & Positive conditional probability for discrete levels; local conditional common support for continuous doses & The contrast requires unsupported extrapolation even if a linear coefficient exists \\
+Projection rank & Is the population FWL coefficient well defined? & $0<\mathbb{E}[\widetilde D_{it}^{2}]<\infty$ after projecting on the included history and fixed effects & The linear coefficient is not well defined even if some causal contrasts have overlap \\
 Finite-$T$ estimation & Does the within estimator recover the identified coefficient in the available panel? & Sufficient time dimension or an estimator/correction whose moments and asymptotics fit the design & Lagged outcomes and predetermined regressors can produce Nickell-type bias even when the population CET is identified \\
 Inference & Are standard errors and confidence intervals valid? & An uncertainty procedure appropriate for serial dependence, cross-sectional dependence, clustering structure, and the relevant asymptotic sequence & Point identification need not change, but reported uncertainty can be wrong; a residual common factor correlated with treatment is instead an identification failure \\
 \bottomrule
@@ -233,6 +237,6 @@ The distinction mirrors the broader dynamic-panel literature: causal identificat
 
 # Empirical scope conditions left to defend
 
-The proposition is conditional. An application must still establish that the recorded treatment precedes the outcome innovation; that the chosen lag vector is a sufficient observed history; that anticipation and spillovers are absent or modeled; that remaining unit and time heterogeneity is additive; that treatment has residual support; and that a constant linear CET is substantively meaningful. It must separately assess whether $T$ is long enough for within-estimator bias to be negligible or corrected and whether the uncertainty procedure matches the serial and cross-sectional dependence in the data.
+The proposition is conditional. An application must still establish that the recorded treatment precedes the outcome innovation; that any calendar-lag vector lies within $H_{it}^{-}$ and is a sufficient observed history; that anticipation and interference are absent; that remaining unit and time heterogeneity is additive; that the target contrast has conditional overlap; that treatment retains nonzero residual variance for the population projection; and that a constant linear CET is substantively meaningful. It must separately assess whether $T$ is long enough for within-estimator bias to be negligible or corrected and whether the uncertainty procedure matches the serial and cross-sectional dependence in the data.
 
 # References

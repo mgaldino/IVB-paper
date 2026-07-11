@@ -16,6 +16,8 @@ The intended sequence is:
 
 The CET is a total within-period effect unless a controlled direct effect is explicitly stated, so a path through a contemporaneous mediator is part of the estimand. For a continuous treatment, the scalar marginal effect is meaningful only if the recorded dose maps to a well-defined intervention. If intensity changes within the period, the treatment should instead be described as a trajectory `d_it(s)`, and the estimand should contrast trajectories.
 
+Calendar-lag notation is only an implementation of this causal history. Let `H_i,t-1` collect recorded outcome, treatment, and covariate lags. It can stand in for `H_it^-` only when the timestamp checks establish `H_i,t-1 subseteq H_it^-` and the chosen lag vector and transformations are sufficient for current treatment assignment and the conditional outcome mean. The subset condition is a timing claim; sufficiency is a separate identification and specification claim.
+
 ## Minimum timestamp checklist
 
 **Table 1. Minimum timestamp information for the CET causal clock**
@@ -62,7 +64,7 @@ These applications audit exposure horizons adjacent to, but distinct from, the m
 
 ## Implication for the PA manuscript
 
-The new opening subsection of “DAGs, Timing, and Why `Z_t` Is Not `Z_{t-1}`” now defines the CET, states the within-period causal clock, supplies the minimum timestamp table, and conditions the lagged-control benchmark on substantive timing. Each detailed application also states its timing verdict. Neither application is presented as proof that a lagged GDP variable is automatically safe.
+The new opening subsection of "DAGs, Timing, and Why `Z_t` Is Not `Z_{t-1}`" now defines the CET, states the within-period causal clock, supplies the minimum timestamp table, and conditions the lagged-control benchmark on both `H_i,t-1 subseteq H_it^-` and sufficiency. Each detailed application also states its timing verdict. Neither application is presented as proof that a lagged GDP variable is automatically safe.
 
 ## Materials inspected
 
