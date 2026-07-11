@@ -1,0 +1,498 @@
+---
+title: "Multivariate Specification Shifts in Linear TSCS Models"
+subtitle: "Joint, sequential, and leave-one-control-out decompositions"
+author: "Technical derivation for the IVB paper"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    toc: true
+    keep_tex: false
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{booktabs}
+  - \usepackage{array}
+  - \usepackage{float}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+  - \newtheorem{proposition}{Proposition}
+  - \newtheorem{corollary}{Corollary}
+  - \newtheorem{remark}{Remark}
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  results = "asis"
+)
+```
+
+# Purpose and scope
+
+This note extends the scalar specification-shift identity to a vector of candidate controls. It distinguishes three objects that answer different questions:
+
+1. the **joint shift**, which compares a model containing none of the candidate controls with a model containing all of them;
+2. **sequential increments**, which allocate that joint shift along one specified order of inclusion; and
+3. **leave-one-control-out increments**, which compare the full model with a model that removes one control while retaining every other candidate control.
+
+All three are contrasts between nested linear projections. They remain descriptive unless a causal target, a within-period ordering, a time-indexed DAG, and identification assumptions warrant a causal interpretation. In particular, neither the vector product nor any allocation of it automatically equals bias relative to the contemporaneous treatment effect (CET).
+
+The formulas apply directly to linear TSCS specifications. Unit and time indicators, lagged outcomes, lagged treatments, and predetermined state variables can enter the common regressor vector $W$. Their presence does not change the algebra, but the algebra does not establish that the dynamics are correctly specified, that the within estimator is free of finite-$T$ bias, or that any control is causally admissible.
+
+# Setup and notation
+
+Let $Y$ and $D$ be scalar random variables, let $W$ be a $k\times1$ vector of common regressors that includes an intercept, and let
+
+\[
+Z=(Z_1,\ldots,Z_q)'
+\]
+
+be a $q\times1$ vector of candidate controls. Assume finite second moments and full rank for every projection used below. Define the short population linear projection by
+
+\begin{equation}
+(\beta_{\varnothing},\gamma_{\varnothing})
+=
+\arg\min_{b,g}
+\mathbb{E}\!\left[(Y-bD-W'g)^2\right],
+\label{eq:short-pop-vector}
+\end{equation}
+
+and the joint long projection by
+
+\begin{equation}
+(\beta_{\mathcal{Z}},\theta,\gamma_{\mathcal{Z}})
+=
+\arg\min_{b,t,g}
+\mathbb{E}\!\left[(Y-bD-t'Z-W'g)^2\right],
+\label{eq:long-pop-vector}
+\end{equation}
+
+where $\mathcal{Z}=\{1,\ldots,q\}$ and $\theta$ is $q\times1$. The joint population shift is
+
+\begin{equation}
+\Delta_{\mathcal{Z}}
+:=
+\beta_{\mathcal{Z}}-\beta_{\varnothing}.
+\label{eq:joint-shift}
+\end{equation}
+
+For any scalar or vector random variable $A$, write $\widetilde A_W=A-P_WA$ for the residual from its population linear projection on $W$. Define the vector auxiliary projection
+
+\begin{equation}
+Z=\pi D+KW+r,
+\qquad
+\mathbb{E}[Dr']=0,
+\qquad
+\mathbb{E}[Wr']=0,
+\label{eq:vector-auxiliary}
+\end{equation}
+
+where $\pi$ is $q\times1$ and $K$ is $q\times k$. Component $\pi_j$ is the coefficient on $D$ in the auxiliary projection of $Z_j$ on $D$ and the common regressors $W$. By partial regression,
+
+\begin{equation}
+\pi
+=
+\frac{\mathbb{E}[\widetilde Z_W\widetilde D_W]}
+{\mathbb{E}[\widetilde D_W^2]}.
+\label{eq:vector-pi}
+\end{equation}
+
+# Joint vector identity
+
+\begin{proposition}[Joint multivariate specification shift]
+Under the stated moment and rank conditions,
+
+\begin{equation}
+\boxed{
+\Delta_{\mathcal{Z}}
+=
+\beta_{\mathcal{Z}}-\beta_{\varnothing}
+=
+-\theta'\pi
+}.
+\label{eq:joint-vector-identity}
+\end{equation}
+
+This is an identity between coefficients of nested population linear projections.
+\end{proposition}
+
+\begin{proof}
+Residualize $Y$, $D$, and $Z$ with respect to $W$. The normal equation for $D$ in the joint long projection is
+
+\[
+\mathbb{E}[\widetilde D_W\widetilde Y_W]
+=
+\beta_{\mathcal{Z}}\mathbb{E}[\widetilde D_W^2]
++
+\mathbb{E}[\widetilde D_W\widetilde Z_W']\theta.
+\]
+
+The short projection and Equation \eqref{eq:vector-pi} give
+
+\[
+\beta_{\varnothing}
+=
+\frac{\mathbb{E}[\widetilde D_W\widetilde Y_W]}
+{\mathbb{E}[\widetilde D_W^2]},
+\qquad
+\mathbb{E}[\widetilde D_W\widetilde Z_W']
+=
+\mathbb{E}[\widetilde D_W^2]\pi'.
+\]
+
+Substitution in the long-model normal equation yields
+
+\[
+\beta_{\varnothing}
+=
+\beta_{\mathcal{Z}}+\pi'\theta.
+\]
+
+Because $\pi'\theta=\theta'\pi$ is scalar, rearrangement proves Equation \eqref{eq:joint-vector-identity}.
+\end{proof}
+
+## Projection-substitution verification
+
+The sign can be checked independently. Write the joint long projection as
+
+\[
+Y=\beta_{\mathcal{Z}}D+\theta'Z+W'\gamma_{\mathcal{Z}}+u_{\mathcal{Z}},
+\]
+
+where $u_{\mathcal{Z}}$ is orthogonal to $D$, $Z$, and $W$. Substitute Equation \eqref{eq:vector-auxiliary}:
+
+\[
+Y
+=
+(\beta_{\mathcal{Z}}+\theta'\pi)D
++
+W'(\gamma_{\mathcal{Z}}+K'\theta)
++
+(u_{\mathcal{Z}}+\theta'r).
+\]
+
+The composite residual is orthogonal to $D$ and $W$. Uniqueness of the short projection therefore implies $\beta_{\varnothing}=\beta_{\mathcal{Z}}+\theta'\pi$, again giving the negative sign in the joint shift.
+
+# Exact sample identity
+
+Let $y$ and $d$ be $n\times1$ vectors, $Z$ an $n\times q$ matrix, and $W$ the common $n\times k$ design matrix. Let
+
+\[
+M_W=I-W(W'W)^{-1}W'.
+\]
+
+Assume $W$ and the augmented design have full column rank and $d'M_Wd>0$. If $\widehat\theta$ is the coefficient vector on $Z$ in the joint long regression and
+
+\[
+\widehat\pi
+=
+\frac{Z'M_Wd}{d'M_Wd},
+\]
+
+then the sample normal equation for $d$ gives
+
+\begin{equation}
+\boxed{
+\widehat\Delta_{\mathcal{Z}}
+=
+\widehat\beta_{\mathcal{Z}}-\widehat\beta_{\varnothing}
+=
+-\widehat\theta'\widehat\pi
+}.
+\label{eq:sample-vector-identity}
+\end{equation}
+
+This equality is exact for OLS point estimates. It requires the same observations, weights, and common regressors in the short, joint long, and auxiliary regressions. Standard-error choices do not change it. With missing candidate controls, the short model must be re-estimated on the complete sample used by the joint model.
+
+# Sequential inclusion
+
+Let $\sigma=(\sigma_1,\ldots,\sigma_q)$ be a permutation of $\mathcal{Z}$. Define the nested sets
+
+\[
+S_0=\varnothing,
+\qquad
+S_k=\{\sigma_1,\ldots,\sigma_k\},
+\qquad k=1,\ldots,q,
+\]
+
+and let $\beta_{S_k}$ be the coefficient on $D$ in the projection containing $W$ and the controls indexed by $S_k$. The sequential increment assigned to the control entering at step $k$ is
+
+\begin{equation}
+c_{\sigma_k\mid S_{k-1}}
+:=
+\beta_{S_k}-\beta_{S_{k-1}}.
+\label{eq:sequential-increment}
+\end{equation}
+
+Let $\theta_{\sigma_k\mid S_{k-1}}$ be the coefficient on $Z_{\sigma_k}$ in the outcome projection containing $D$, $W$, $Z_{S_{k-1}}$, and $Z_{\sigma_k}$. Let $\pi_{\sigma_k\mid S_{k-1}}$ be the coefficient on $D$ in the auxiliary projection of $Z_{\sigma_k}$ on $D$, $W$, and $Z_{S_{k-1}}$.
+
+\begin{proposition}[Path-specific sequential decomposition]
+For every order $\sigma$,
+
+\begin{equation}
+c_{\sigma_k\mid S_{k-1}}
+=
+-\theta_{\sigma_k\mid S_{k-1}}
+\pi_{\sigma_k\mid S_{k-1}},
+\label{eq:conditional-scalar-identity}
+\end{equation}
+
+and
+
+\begin{equation}
+\sum_{k=1}^{q}c_{\sigma_k\mid S_{k-1}}
+=
+\Delta_{\mathcal{Z}}.
+\label{eq:telescope}
+\end{equation}
+
+The total is invariant to $\sigma$, but the individual increments generally are not.
+\end{proposition}
+
+\begin{proof}
+At step $k$, absorb $Z_{S_{k-1}}$ into the common regressor vector. The scalar FWL identity applied to the addition of $Z_{\sigma_k}$ gives Equation \eqref{eq:conditional-scalar-identity}. Summing the direct coefficient differences gives
+
+\[
+\sum_{k=1}^{q}
+(\beta_{S_k}-\beta_{S_{k-1}})
+=
+\beta_{S_q}-\beta_{S_0}
+=
+\beta_{\mathcal{Z}}-\beta_{\varnothing},
+\]
+
+because adjacent terms cancel. This proves telescoping. The conditional outcome slope and the conditional treatment--control association in Equation \eqref{eq:conditional-scalar-identity} both depend on $S_{k-1}$. With correlated controls, changing the order changes the variation assigned at each step, so the individual increments need not be invariant.
+\end{proof}
+
+For two controls, the two valid paths make the source of order dependence transparent:
+
+\begin{equation}
+c_{1\mid\varnothing}+c_{2\mid\{1\}}
+=
+\Delta_{\{1,2\}}
+=
+c_{2\mid\varnothing}+c_{1\mid\{2\}}.
+\label{eq:two-paths}
+\end{equation}
+
+Equation \eqref{eq:two-paths} constrains the sums, not the terms. Unless special covariance restrictions make the conditional and unconditional increments equal, $c_{1\mid\varnothing}\neq c_{1\mid\{2\}}$ and $c_{2\mid\varnothing}\neq c_{2\mid\{1\}}$.
+
+# Leave-one-control-out increments
+
+For each $j\in\mathcal{Z}$, define
+
+\begin{equation}
+\ell_j
+:=
+\beta_{\mathcal{Z}}-\beta_{\mathcal{Z}\setminus\{j\}}.
+\label{eq:loo-definition}
+\end{equation}
+
+This is the increment from adding $Z_j$ **last**, conditional on all other candidate controls. The scalar conditional identity gives
+
+\begin{equation}
+\ell_j
+=
+-\theta_{j\mid -j}\pi_{j\mid -j},
+\label{eq:loo-product}
+\end{equation}
+
+where $\theta_{j\mid -j}$ is the coefficient on $Z_j$ in the full outcome projection and $\pi_{j\mid -j}$ is the coefficient on $D$ in the auxiliary projection of $Z_j$ on $D$, $W$, and $Z_{-j}$.
+
+\begin{corollary}[Leave-one-out increments are not an additive decomposition]
+In general,
+
+\begin{equation}
+\sum_{j=1}^{q}\ell_j
+\neq
+\Delta_{\mathcal{Z}}.
+\label{eq:loo-nonadditivity}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Each $\ell_j$ is a terminal edge from a different path through the lattice of nested models. These edges do not form a single path from $\varnothing$ to $\mathcal{Z}$, so their endpoints do not cancel. For $q=2$, Equations \eqref{eq:two-paths} and \eqref{eq:loo-definition} imply
+
+\[
+(\ell_1+\ell_2)-\Delta_{\{1,2\}}
+=
+(c_{1\mid\{2\}}+c_{2\mid\{1\}})
+-(c_{1\mid\varnothing}+c_{2\mid\{1\}})
+=
+c_{1\mid\{2\}}-c_{1\mid\varnothing}.
+\]
+
+There is no projection identity forcing the final difference to be zero. Equality can occur under special covariance restrictions, but it is not guaranteed. With correlated controls, the terminal comparisons can allocate shared predictive variation more than once or omit variation that appears only along another path.
+\end{proof}
+
+Thus the three diagnostics should not be interchanged. The joint shift measures total movement across the two endpoint models. A sequential decomposition allocates that movement along one chosen path and therefore sums by construction. A leave-one-out increment measures the conditional sensitivity to deleting one control from the full model and is not an allocation of the joint total.
+
+# Deterministic numerical verification
+
+The accompanying R script constructs 240 deterministic observations from trigonometric sequences. It is not a Monte Carlo experiment and does not execute any simulation used by the paper. The design contains two common regressors, one focal treatment, and three correlated candidate controls. Every projection uses the same observations and unweighted OLS. The test tolerance is $10^{-12}$, which is stricter than $10^{-10}$.
+
+```{r run-tests, include=FALSE}
+source("scripts/test_multivariate_specification_shift.R")
+```
+
+```{r correlation-table}
+kableExtra::kable_styling(
+  knitr::kable(
+    round(correlation_matrix, 4),
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Correlation matrix in the deterministic numerical design."
+  ),
+  latex_options = "HOLD_position"
+)
+```
+
+The correlation matrix confirms that the candidate controls share substantial variation with one another and with the focal treatment. This makes the allocation problem nontrivial while retaining full column rank.
+
+```{r joint-table}
+joint_table <- data.frame(
+  quantity = c(
+    "$\\widehat\\beta_{\\varnothing}$",
+    "$\\widehat\\beta_{\\mathcal{Z}}$",
+    "$\\widehat\\Delta_{\\mathcal{Z}}$",
+    "$-\\widehat\\theta'\\widehat\\pi$",
+    "Absolute identity error"
+  ),
+  value = c(
+    format(beta_short, digits = 13),
+    format(beta_joint, digits = 13),
+    format(delta_joint, digits = 13),
+    format(joint_product, digits = 13),
+    format(joint_error, scientific = TRUE, digits = 4)
+  ),
+  stringsAsFactors = FALSE
+)
+
+kableExtra::kable_styling(
+  knitr::kable(
+    joint_table,
+    format = "latex",
+    booktabs = TRUE,
+    escape = FALSE,
+    caption = "Joint multivariate specification-shift identity."
+  ),
+  latex_options = "HOLD_position"
+)
+```
+
+```{r telescope-table}
+telescope_display <- telescope_results
+telescope_display$sequential_sum <- round(telescope_display$sequential_sum, 12)
+telescope_display$joint_shift <- round(telescope_display$joint_shift, 12)
+telescope_display$telescope_error <- format(
+  telescope_display$telescope_error,
+  scientific = TRUE,
+  digits = 3
+)
+names(telescope_display) <- c(
+  "Order",
+  "Sequential sum",
+  "Joint shift",
+  "Absolute error"
+)
+
+kableExtra::kable_styling(
+  knitr::kable(
+    telescope_display,
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Sequential contributions telescope for every order of three controls."
+  ),
+  latex_options = "HOLD_position"
+)
+```
+
+```{r order-dependence-table}
+order_display <- order_dependence
+names(order_display) <- c(
+  "Control",
+  "Minimum increment",
+  "Maximum increment",
+  "Range across orders"
+)
+
+kableExtra::kable_styling(
+  knitr::kable(
+    order_display,
+    format = "latex",
+    booktabs = TRUE,
+    digits = 8,
+    caption = "Order dependence of control-specific sequential increments."
+  ),
+  latex_options = "HOLD_position"
+)
+```
+
+Every order reaches the same endpoint shift, while the increment attributed to each control changes with the preceding set. This is the empirical content of telescoping with order-dependent allocations.
+
+```{r loo-table}
+loo_display <- leave_one_out_results
+loo_display$conditional_identity_error <- format(
+  loo_display$conditional_identity_error,
+  scientific = TRUE,
+  digits = 3
+)
+names(loo_display) <- c(
+  "Control",
+  "Direct leave-one-out increment",
+  "Conditional product",
+  "Absolute identity error"
+)
+
+kableExtra::kable_styling(
+  knitr::kable(
+    loo_display,
+    format = "latex",
+    booktabs = TRUE,
+    digits = 12,
+    caption = "Leave-one-control-out increments and their conditional product identities."
+  ),
+  latex_options = c("HOLD_position", "scale_down")
+)
+```
+
+In this deterministic design, the leave-one-out increments sum to `r format(leave_one_out_sum, digits = 10)`, whereas the joint shift is `r format(delta_joint, digits = 10)`. Their difference is `r format(leave_one_out_gap, digits = 10)`. Each leave-one-out comparison satisfies its own conditional scalar identity, but the collection of terminal comparisons does not telescope.
+
+```{r test-summary-table}
+test_display <- test_summary
+test_display$diagnostic <- format(
+  test_display$diagnostic,
+  scientific = TRUE,
+  digits = 4
+)
+names(test_display) <- c("Check", "Diagnostic", "Criterion", "Result")
+
+kableExtra::kable_styling(
+  knitr::kable(
+    test_display,
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Deterministic verification summary."
+  ),
+  latex_options = c("HOLD_position", "scale_down"),
+  font_size = 8
+)
+```
+
+# Interpretation and boundaries
+
+The joint product $-\theta'\pi$ is the multivariate analogue of the scalar diagnostic. Its terms combine the conditional association between each candidate control and the outcome with the association between that control and treatment after partialling out $W$. When controls are correlated, however, the coordinate products should not be read as a unique allocation of the joint shift: $\theta$ is estimated jointly, while each component of $\pi$ comes from an auxiliary projection conditional only on $W$. The scalar sum is invariant to a nonsingular reparameterization of the span of $Z$, but its coordinate-level representation is basis dependent.
+
+Sequential increments answer a path-specific question. They are useful when the order has a substantive justification, such as a prespecified sequence from pretreatment history to increasingly contemporaneous measurements. Without that justification, an order-specific allocation is not unique. Leave-one-out increments answer a different robustness question: how much the treatment coefficient changes when one control is removed from an otherwise full specification. They are conditional sensitivities and should not be normalized as though they were shares of the joint shift.
+
+None of these statements turns a coefficient movement into causal bias. If the endpoint models differ in their discrepancies from $\beta_{\mathrm{CET}}$, then the joint shift is the difference between those discrepancies. Determining whether the movement is deconfounding, collider bias, over-control, or a mixture requires the causal clock, the role of every candidate control, and identification conditions outside the FWL algebra.
+
+# Reproducibility record
+
+The numerical verification is implemented in `scripts/test_multivariate_specification_shift.R`. It uses base R only, contains no random-number generation, and stops with an error unless all joint, conditional, and telescoping identities satisfy the stated tolerance. The script also requires nontrivial control correlation, nonzero order dependence, and a nonzero gap between the leave-one-out sum and the joint shift. No file in `simulations/` or `replication/` is read or modified.
