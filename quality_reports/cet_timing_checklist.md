@@ -41,9 +41,11 @@ The CET is a total within-period effect unless a controlled direct effect is exp
 
 The compact row-level audit is stored in `quality_reports/cet_application_timing_audit.csv`.
 
+These applications audit exposure horizons adjacent to, but distinct from, the manuscript's core contemporaneous `D_t -> Y_t` CET. Leipziger indexes a lagged annual exposure against the current outcome; Rogowski indexes a baseline cumulative stock against an outcome led by one five-year panel step. Re-indexing each application by its focal exposure period makes those horizons explicit. The comparisons remain useful because they apply the same timestamp discipline to pretreatment claims and show how sensitive each published exposure contrast is to conditioning on GDP; they are not offered as direct demonstrations of the core CET.
+
 ### Leipziger (2024): democracy and ethnic inequality
 
-- **Known:** The unit is the country-year. The published baseline regresses ethnic inequality in calendar year `t` on both democracy and latent log GDP per capita lagged one year. The article and replication do-file explicitly state that all right-hand-side variables are lagged one year.
+- **Known:** The unit is the country-year. The published baseline regresses ethnic inequality in calendar year `t` on both democracy and latent log GDP per capita lagged one year. The article and replication do-file explicitly state that all right-hand-side variables are lagged one year. Thus the contrast is `D_{t-1} -> Y_t`, or `D_s -> Y_{s+1}` when the exposure year is re-indexed as `s = t-1`; it is not the core contemporaneous CET.
 - **Plausible:** Year-`t-1` GDP is plausibly a state relevant to subsequent inequality and may capture development-related confounding.
 - **Ambiguous:** Democracy and GDP have the same annual index (`t-1`). The available materials do not timestamp the democratic transition, the GDP reference window, or the V-Dem outcome assessment within the year. Anticipatory economic responses to an expected transition are not ruled out. Because both predictors are annual measures, `GDP_{t-1}` is pre-outcome but not shown to close before the treatment represented by `Democracy_{t-1}`.
 - **Assessment:** `Z` is **ambiguous**, not genuinely established as pretreatment for the focal democracy contrast.
@@ -51,10 +53,11 @@ The compact row-level audit is stored in `quality_reports/cet_application_timing
 
 ### Rogowski et al. (2022): postal infrastructure and economic growth
 
-- **Known:** The country panel advances in five-year steps (`xtset country_id trend`). The published replication code uses `F.e_migdpgro_5yr` as the outcome. The post-office stock and GDP-per-capita variables enter the same regression row; the post-office variable is a cumulative stock, and the outcome is one panel period ahead.
+- **Known:** The country panel advances in five-year steps (`xtset country_id trend`). The published replication code uses `F.e_migdpgro_5yr` as the outcome. The post-office stock and GDP-per-capita variables enter the same regression row; the post-office variable is a cumulative stock, and the outcome is one panel period ahead. Indexing the baseline row as `s`, the contrast is cumulative stock `D_s -> Y_{s+1}`, with `s+1` the next five-year step; it is a forward contrast rather than the core contemporaneous CET.
 - **Plausible:** GDP recorded in the baseline row is a plausible initial state for growth in the subsequent outcome window and is a standard conditional-convergence covariate.
 - **Ambiguous:** The codebook names the variables but does not document the opening and closing dates of their five-year constructions. More importantly, a cumulative post-office stock embodies treatment received before the baseline row. Baseline GDP may therefore already respond to earlier postal infrastructure even if it precedes the forward growth outcome. The same row does not establish whether GDP precedes the incremental treatment contrast, follows prior treatment, or overlaps its accumulation.
 - **Assessment:** `Z` is **plausibly pre-outcome but ambiguous as pretreatment** for the postal-stock contrast; it is not genuinely established as pretreatment.
+- **Causal role:** Unresolved. Baseline GDP may be a confounder through conditional convergence, a legacy treatment-responsive state or mediator because inherited postal infrastructure may already have affected it, or a dual-role variable. The specification shift is descriptive unless a DAG and timing evidence distinguish these possibilities.
 - **Minimum resolution:** Document the source-year windows used to construct postal stock, GDP level, and GDP growth; distinguish the effect of the inherited stock from the effect of new postal investment over the next five years; and specify how prior postal exposure enters `H^-`. If the target remains the inherited cumulative stock, a claim that baseline GDP is wholly pretreatment is not supportable without additional assumptions.
 
 ## Implication for the PA manuscript
