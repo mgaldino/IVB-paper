@@ -257,10 +257,11 @@ variables. In other words, the paper is not only about a safer
 specification rule and not only about a formula. It is about how the
 formula makes the safer rule operational.
 
-The scope qualification matters. A lagged control is pre-treatment only
-relative to the effect of \(D_t\) on \(Y_t\). That does not make it
-universally innocuous for cumulative, delayed, or long-run effects. The
-paper's positive recommendation is therefore explicitly local to the
+The scope qualification matters. A lagged control can be called
+pre-treatment only relative to the effect of \(D_t\) on \(Y_t\), and
+only when its substantive timestamp supports that ordering. Even then,
+it need not be innocuous for cumulative, delayed, or long-run effects.
+The paper's positive recommendation is therefore explicitly local to the
 CET. Difference-in-differences and related panel designs remain part of
 the motivation for why time-varying controls are hard, but the paper's
 formal and applied results are developed in the linear TSCS setting.
@@ -269,11 +270,82 @@ formal and applied results are developed in the linear TSCS setting.
 \(Z_{t-1}\)
 \label{sec:timing}}{DAGs, Timing, and Why Z\_t Is Not Z\_\{t-1\} }}\label{dags-timing-and-why-z_t-is-not-z_t-1}
 
-The causal role of a time-varying covariate is inseparable from its time
-index. For the CET, \(Z_t\) is contemporaneous with both treatment and
-outcome. That is exactly where post-treatment bad controls live. By
-contrast, \(Z_{t-1}\) precedes \(D_t\) and \(Y_t\), so it can operate as
-a lagged state variable even when \(Z_t\) is a collider or mediator.
+The causal role of a time-varying covariate depends on its substantive
+timing, not its subscript alone. Before classifying a control, we
+therefore need to map the variables recorded in a panel row onto a
+causal sequence within the period.
+
+\subsection{The CET and the Within-Period Causal
+Clock}\label{the-cet-and-the-within-period-causal-clock}
+
+Let \(H_{it}^{-}\) denote the information and state variables fixed
+immediately before the period-\(t\) treatment begins. For two
+well-defined treatment levels \(d\) and \(d'\), we define the
+contemporaneous treatment effect as
+
+\[
+\tau_{\mathrm{CET}}(d,d';h)
+=
+\mathbb{E}\!\left[Y_{it}(d)-Y_{it}(d')\mid H_{it}^{-}=h\right],
+\]
+
+where \(Y_{it}(d)\) is measured after the period-\(t\) intervention and
+any within-period responses it induces. Thus, unless a controlled direct
+effect is explicitly targeted, the CET includes paths such as
+\(D_{it}\rightarrow Z_{it}\rightarrow Y_{it}\). In a constant linear
+model with a scalar treatment, \(\beta_{\mathrm{CET}}\) is the
+corresponding unit contrast, or marginal effect for a continuous dose.
+
+The substantive clock underlying this definition is
+
+\[
+H_{it}^{-}
+\;\longrightarrow\;
+D_{it}
+\;\longrightarrow\;
+Z_{it}
+\;\longrightarrow\;
+Y_{it}^{+},
+\]
+
+where \(H_{it}^{-}\) is the state at the opening of the causal period,
+\(D_{it}\) records the onset and intensity of treatment, \(Z_{it}\) is
+allowed to respond, and \(Y_{it}^{+}\) is measured after the relevant
+exposure window. This ordering is an empirical claim, not a consequence
+of notation. Table\textasciitilde{}\ref{tab:min_timestamp} states the
+minimum timestamp information needed to assess it.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:minimum-timestamp-table}Minimum timestamp record for defining the contemporaneous treatment effect. A lag label is not evidence that a covariate is pretreatment. \label{tab:min_timestamp}}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\begin{tabular}[t]{lll}
+\toprule
+Variable & Minimum.timestamp.record & Requirement.for.the.CET.clock\\
+\midrule
+$D$ & Onset, end, and intensity window; whether the measure is a stock, flow, event, or period average & Defines the intervention or exposure contrast within period $t$\\
+$Z$ & Reference and measurement window; whether it can respond to anticipated, prior, or current treatment & Must close before the first relevant exposure to be called pretreatment; otherwise classify its timing as plausible or ambiguous\\
+$Y$ & Reference window and measurement time; whether any part is recorded before treatment begins & Must follow the relevant exposure window for the stated CET; overlapping aggregates require a finer estimand\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Three complications are common in annual and other aggregated panels.
+First, anticipation can make a recorded \(Z_{t-1}\) treatment-responsive
+before the formal onset of \(D_t\). Second, when treatment varies
+continuously within the period, a scalar annual value may summarize a
+treatment path with repeated \(D\leftrightarrow Z\leftrightarrow Y\)
+feedback; the relevant intervention is then a contrast between exposure
+trajectories, not automatically a one-unit change in the annual average.
+Third, annual measures may overlap: a late-year treatment can occur
+after much of \(Z_t\) or \(Y_t\) has already been realized, while a
+beginning-of-year outcome may precede the nominally contemporaneous
+treatment. When documentation establishes nonoverlapping windows, timing
+is known; when institutional knowledge supports but does not timestamp
+the sequence, it is plausible; and when windows overlap or remain
+undocumented, it is ambiguous. The lagged-control benchmark below
+applies only after this clock has been defended.
 
 \subsection{Preliminaries}\label{preliminaries}
 
@@ -307,17 +379,17 @@ a lagged state variable even when \(Z_t\) is a collider or mediator.
 \node[draw=none, font=\normalsize\bfseries] at (11.5, 1.5) {(c) Chain};
 
 \end{tikzpicture}
-\caption{The three elementary DAG structures. For the CET, the practical question is whether a candidate control behaves like a fork at $t-1$ or like a collider or mediator at $t$.}
+\caption{The three elementary DAG structures. For the CET, the practical question is whether the documented causal clock makes a candidate control a fork, collider, or mediator.}
 \label{fig:three_structures_pa}
 \end{figure}
 
 Forks, chains, and colliders remain the fundamental building blocks
 \citep{pearl2009causality, elwert2014endogenous}. What changes in TSCS
 work is that the same substantive variable can move across these roles
-as we shift its time index. A lagged income measure may be a fork that
-blocks omitted variable bias; contemporaneous income may instead be a
-mediator or collider if both treatment and outcome affect it within
-period \(t\).
+as its causal timing changes. An income measure recorded before
+treatment begins may be a fork that blocks omitted variable bias; income
+measured after exposure begins may instead be a mediator or collider if
+treatment or the outcome process affects it.
 
 \subsection{Timing Logic for Candidate
 Controls}\label{timing-logic-for-candidate-controls}
@@ -328,17 +400,17 @@ CET rather than to a generic slogan such as ``lag everything.'\,'
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:timing-logic-table}Timing logic for observed controls when the estimand is the contemporaneous treatment effect. The same substantive variable can move from bad control at $t$ to useful state variable at $t-1$. \label{tab:timing_logic}}
+\caption{\label{tab:timing-logic-table}Timing logic for observed controls when the estimand is the contemporaneous treatment effect. Subscripts identify candidate roles; the substantive clock determines the causal classification. \label{tab:timing_logic}}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{llll}
 \toprule
-Candidate.control & Likely.role.for.the.CET & Main.risk.or.benefit & Default.action\\
+Candidate.control & Possible.role.for.the.CET & Main.risk.or.benefit & Default.action\\
 \midrule
-$Z_t$ & Collider & Opens a backdoor path & Do not condition unless the DAG rules out post-treatment status\\
-$Z_t$ & Mediator & Blocks part of the total effect & Do not condition if the target is the total contemporaneous effect\\
-$Z_{t-1}$ & Predetermined state & Captures state dependence & Candidate benchmark control\\
-$Z_{t-1}$ & Lagged confounder & Removes OVB without blocking the contemporaneous path & Candidate benchmark control\\
+$Z_t$ & Collider if post-treatment & Opens a backdoor path & Do not condition unless the DAG and causal clock rule out post-treatment status\\
+$Z_t$ & Mediator if post-treatment & Blocks part of the total effect & Do not condition if the target is the total contemporaneous effect\\
+$Z_{t-1}$ & Predetermined state if timestamp passes & Captures state dependence & Candidate benchmark control only after the timestamp check\\
+$Z_{t-1}$ & Lagged confounder if timestamp passes & Removes OVB without blocking the contemporaneous path & Candidate benchmark control only after the timestamp check\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -349,8 +421,9 @@ creates IVB. Second, a contemporaneous mediator \(Z_t\) creates
 over-control if the target is the total contemporaneous effect. Third, a
 dual-role variable can be both a lagged confounder and a contemporaneous
 collider. In that case, the empirical question is not whether the
-variable should ever appear in the specification, but whether it should
-enter as \(Z_t\) or as \(Z_{t-1}\).
+variable should ever appear in the specification, but whether its
+documented measurement window places it before or after the relevant
+treatment begins.
 
 \section{\texorpdfstring{The Included Variable Bias Diagnostic
 \label{sec:ivb}}{The Included Variable Bias Diagnostic }}\label{the-included-variable-bias-diagnostic}
@@ -422,6 +495,96 @@ remain associated with \(D_{t-1}\). What matters is not whether the
 treatment index moved backward by one period, but whether the
 specification blocks the transmission of the bad-control path for the
 estimand of interest.
+
+\subsection{When ADL + FE Identifies the
+CET}\label{when-adl-fe-identifies-the-cet}
+
+The ADL + FE benchmark identifies the CET only under explicit scope
+conditions. Let \(H_{it}^{-}\) be the observed pre-exposure history
+defined above. A calendar-lag vector \(H_{i,t-1}\) is a valid
+implementation only when the timestamp checklist establishes
+\(H_{i,t-1}\subseteq H_{it}^{-}\) and the included lags and
+transformations are sufficient for current assignment and the
+conditional outcome mean. A lag label alone establishes neither
+condition. A sufficient constant-coefficient restriction is
+
+\[
+\mathbb{E}[Y_{it}(d)\mid H_{it}^{-},\alpha_i,\tau_t]
+=
+\alpha_i+\tau_t+r(H_{it}^{-})'\gamma+\beta_{\mathrm{CET}}d,
+\]
+
+together with consistency, no interference, no anticipation, sequential
+mean exchangeability of \(D_{it}\) given \(H_{it}^{-}\), and conditional
+positivity for the treatment contrast. For discrete treatment, the
+target levels must have positive conditional probability; for continuous
+treatment, the target doses must lie in the conditional common support
+with local support around them. The causal clock must also be recursive:
+\(D_{it}\) precedes the contemporaneous outcome innovation, so
+simultaneous \(Y_{it}\rightarrow D_{it}\) feedback is excluded. By
+contrast, \(Y_{i,t-1}\rightarrow D_{it}\) feedback is compatible with
+identification when \(Y_{i,t-1}\in H_{it}^{-}\) and the conditioned
+history is sufficient.
+
+These causal support conditions are distinct from the rank condition for
+the population projection. If \(\widetilde D_{it}\) is the population
+residual from projecting \(D_{it}\) on the included history and the unit
+and time effects, and \(0<\mathbb{E}[\widetilde D_{it}^{2}]<\infty\),
+then
+
+\[
+\beta_D^P
+=
+\frac{\mathbb{E}[\widetilde D_{it}Y_{it}]}{\mathbb{E}[\widetilde D_{it}^2]}
+=
+\beta_{\mathrm{CET}}.
+\]
+
+The online appendix states this result as a proposition and gives the
+full proof. This equality is a population identification result. Unit
+effects absorb additive time-invariant unit factors and time effects
+absorb additive common shocks; neither removes omitted time-varying
+confounding or heterogeneous responses to common shocks. A misspecified
+lag order or nonlinear history also breaks the stated conditional mean.
+If treatment effects or dynamics vary over units, periods, or histories,
+the single coefficient is generally a projection-weighted summary rather
+than a common CET.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:adl-identification-estimation-table}Scope conditions for the ADL + FE benchmark: identification versus estimation and inference. \label{tab:adl_identification_estimation_pa}}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\begin{tabular}[t]{lll}
+\toprule
+Layer & Scope condition & Interpretation when the condition fails\\
+\midrule
+Population identification & Consistency; no interference; sequential mean exchangeability given the pre-exposure history; no unobserved contemporaneous confounding & The ADL coefficient need not equal the CET\\
+History and timing & No anticipation; $H_{i,t-1}\subseteq H_{it}^{-}$ with sufficient included history; no simultaneous $Y_{it}\rightarrow D_{it}$ feedback & A nominal lag may be post-treatment, or omitted history and simultaneity may invalidate the comparison\\
+Conditional support & The target treatment levels lie in the conditional support; continuous doses have local common support & The causal contrast requires unsupported extrapolation\\
+Projection rank & $0<\mathbb{E}[\widetilde D_{it}^{2}]<\infty$ after partialling out included history and fixed effects & The population FWL coefficient is not well defined even if causal overlap holds for some contrasts\\
+Fixed effects and functional form & Additive unit effects and common time shocks; correct lag structure; a linear, homogeneous CET if one coefficient is to have that interpretation & Fixed effects need not remove the omitted process; the coefficient may be only a best linear approximation\\
+\addlinespace
+Finite-$T$ estimation & A time dimension or correction adequate for bias from within-transforming lagged outcomes and other predetermined regressors & The population CET may be identified while the conventional within estimator has Nickell-type finite-$T$ bias\\
+Inference & An uncertainty procedure appropriate for residual serial and cross-sectional dependence & The population target can remain unchanged while standard errors and confidence intervals are invalid\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+The distinction between population identification and estimation matters
+in dynamic panels. With lagged outcomes, demeaning generally correlates
+the transformed lag with the transformed innovation, producing
+Nickell-type bias at finite \(T\) even when the level conditional mean
+identifies \(\beta_{\mathrm{CET}}\) \citep{nickell1981biases}. Serial
+and cross-sectional dependence are separately inference problems when
+the remaining innovations are conditionally mean zero; an omitted common
+factor correlated with treatment is instead an identification problem.
+For short panels, bias corrections or Arellano--Bond may be useful
+alternatives under their own moment and instrument conditions, but GMM
+is not uniformly superior and does not repair a failed causal clock
+\citep{arellano_bond1991}. These qualifications align the benchmark with
+the sequential-identification logic in the dynamic-panel literature
+\citep{blackwell2018make,imai_kim2021}.
 
 \section{\texorpdfstring{Benchmarking Dynamic Specifications for the CET
 \label{sec:benchmark}}{Benchmarking Dynamic Specifications for the CET }}\label{benchmarking-dynamic-specifications-for-the-cet}
@@ -598,10 +761,24 @@ Inequality
 \label{sec:app_leipziger_pa}}{Application 1: Democracy and Ethnic Inequality }}\label{application-1-democracy-and-ethnic-inequality}
 
 \citet{leipziger2024} estimates the effect of democratization on ethnic
-inequality with a two-way fixed-effects design that includes lagged GDP
-per capita. In the reframed paper, the practical question is whether GDP
-should be treated as a lagged confounder, a lagged bad control, or a
-dual-role variable.
+inequality with a two-way fixed-effects design in which democracy and
+GDP per capita are both lagged one calendar year relative to the
+outcome. Indexing by the outcome year, the estimated exposure contrast
+is therefore \(D_{t-1}\rightarrow Y_t\); equivalently, if \(s=t-1\)
+denotes the exposure year, it is \(D_s\rightarrow Y_{s+1}\). This
+application is an audit of a lagged exposure contrast, not a direct
+demonstration of the manuscript's core contemporaneous
+\(D_t\rightarrow Y_t\) CET. The comparison remains useful because the
+same timestamp questions determine whether GDP closes before the
+democracy exposure in year \(s\) and because the coefficient shift shows
+how sensitive the lagged contrast is to conditioning on GDP. GDP is
+pre-outcome, but not demonstrably pretreatment relative to democracy:
+the two predictors share the same annual index, and the replication
+documentation does not provide within-year transition and measurement
+dates. We therefore classify the timing of GDP as ambiguous for the
+treatment contrast, rather than treating its lag label as dispositive.
+The practical question is whether GDP should be treated as a confounder,
+a treatment-responsive variable, or a dual-role variable.
 
 GDP per capita is a plausible dual-role variable in this setting.
 Democratization can raise income over time
@@ -642,11 +819,24 @@ can matter substantively without overturning the empirical conclusion.
 Economic Growth
 \label{sec:app_rogowski_pa}}{Application 2: Postal Infrastructure and Economic Growth }}\label{application-2-postal-infrastructure-and-economic-growth}
 
-\citet{rogowski_etal2022} provide the complementary case. Their
-country-panel growth regression includes lagged GDP per capita, which is
-both a plausible collider and a textbook growth confounder. Here the IVB
-formula reveals a large arithmetic shift but cannot decide, by itself,
-whether dropping GDP improves identification.
+\citet{rogowski_etal2022} provide the complementary case. Their panel is
+organized in five-year steps, the outcome is led one panel period, and
+the postal-stock and GDP measures enter the same regression row. Letting
+\(s\) index the baseline five-year row, the estimated exposure contrast
+relates the cumulative postal stock \(D_s\) to forward growth
+\(Y_{s+1}\), where \(s+1\) is the next five-year panel step. This
+application is therefore an audit of a forward exposure contrast, not a
+direct demonstration of the manuscript's core contemporaneous
+\(D_t\rightarrow Y_t\) CET. It remains useful for timing and sensitivity
+because a cumulative stock makes prior exposure explicit and because the
+coefficient shift reveals how strongly the forward contrast depends on
+conditioning on baseline GDP. Baseline GDP is a plausible state variable
+for subsequent growth, but it is not demonstrably prior to the treatment
+represented by an accumulated stock of post offices; it may already
+embody responses to earlier postal investment. Its timing is ambiguous
+for the treatment contrast even though it precedes the measured outcome
+window. Here the IVB formula reveals a large arithmetic shift but cannot
+decide, by itself, whether dropping GDP improves identification.
 
 \begin{table}[!h]
 \centering
@@ -667,14 +857,16 @@ Polity2 & 0.0191 & 0.0198 & 0.0341 & -0.0221 & 0.0008 & 0.14 & 3.8\\
 
 For lagged GDP per capita, \(|\mathrm{IVB}/\mathrm{SE}| = 2.11\), the
 largest value among the published applications. But this is precisely
-the case in which the formula must not be overread. GDP is a plausible
-collider because postal infrastructure is part of the paper's
-development mechanism and growth cumulates into future income levels. It
-is also a plausible confounder because of conditional convergence. The
-lesson is not ``drop GDP.'\,' The lesson is that a large specification
-shift demands explicit causal reasoning about timing and role. This is
-exactly the use case for IVB in a paper whose applied payoff is a
-benchmark rather than an automatic decision rule.
+the case in which the formula must not be overread. GDP's causal role is
+unresolved: conditional convergence makes it a possible confounder;
+inherited postal infrastructure may make it a legacy
+treatment-responsive state or mediator; and both channels could give it
+a dual role. The large coefficient shift is therefore descriptive until
+a DAG and evidence on the relevant measurement and exposure windows
+establish more. The lesson is not ``drop GDP.'\,' The lesson is that a
+large specification shift demands explicit causal reasoning about timing
+and role. This is exactly the use case for IVB in a paper whose applied
+payoff is a benchmark rather than an automatic decision rule.
 
 \section{\texorpdfstring{Conclusion
 \label{sec:conclusion}}{Conclusion }}\label{conclusion}
