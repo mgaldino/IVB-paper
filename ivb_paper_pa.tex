@@ -90,14 +90,14 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={Included Variable Bias in Dynamic Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the Contemporaneous Treatment Effect},
+  pdftitle={From Specification Shifts to Included Variable Bias in Dynamic Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the Contemporaneous Treatment Effect},
   pdfauthor={Manoel Galdino; Davi Moreira; Carolina Dolleans},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{Included Variable Bias in Dynamic Panels: A Diagnostic for
-Time-Varying Controls and a Benchmark for the Contemporaneous Treatment
-Effect}
+\title{From Specification Shifts to Included Variable Bias in Dynamic
+Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the
+Contemporaneous Treatment Effect}
 \author{Manoel Galdino\footnote{Assistant Professor of Political
   Science, Universidade de São Paulo. E-mail:
   \href{mailto:mgaldino@usp.br}{\nolinkurl{mgaldino@usp.br}}} \and Davi
@@ -162,11 +162,10 @@ covariates can create demanding identification problems
 as the starting point rather than the target of critique.
 
 Our contribution is different and narrower, but also more operational.
-We introduce included variable bias (IVB) as a general diagnostic
-problem that arises when researchers condition on observed covariates
-that may themselves respond to treatment. In linear nested models, the
-resulting specification shift admits a simple closed-form decomposition:
-\[
+We introduce the specification-shift diagnostic for cases in which
+researchers condition on observed covariates that may themselves respond
+to treatment. In linear nested models, the resulting shift admits a
+simple closed-form decomposition: \[
 \widehat{\beta}^{\star} - \widehat{\beta} = - \widehat{\theta}^{\star}\widehat{\pi},
 \] where \(\widehat{\theta}^{\star}\) is the coefficient on the
 candidate control in the long regression and \(\widehat{\pi}\) is the
@@ -193,27 +192,26 @@ variable makes it admissible.
 
 This architecture helps distinguish the paper from two nearby
 contributions. It is not only a warning that time-varying controls are
-hard, because IVB gives that difficulty a named and estimable
-diagnostic. And it is not only a recommendation to use dynamic
-specifications, because the benchmark is presented as the main applied
-implication of a more general included-variable-bias framework. The
-broader research program behind IVB may well travel beyond the current
-setting, but this paper develops its full payoff in the linear TSCS
-case.
+hard, because the specification-shift decomposition gives that
+difficulty a named and estimable diagnostic. And it is not only a
+recommendation to use dynamic specifications, because the benchmark is
+presented as the main applied implication of a more general
+specification-shift framework. The broader research program behind this
+diagnostic may well travel beyond the current setting, but this paper
+develops its full payoff in the linear TSCS case.
 
 We proceed in four steps. Section\textasciitilde{}\ref{sec:control}
 defines the control-variable problem when observed covariates may
 themselves respond to treatment.
 Section\textasciitilde{}\ref{sec:timing} uses DAG logic to show why the
 same substantive variable can be harmful at \(t\) and useful at \(t-1\).
-Section\textasciitilde{}\ref{sec:ivb} presents IVB as the paper's
-general diagnostic contribution and derives the closed-form
-decomposition used in linear TSCS models.
-Section\textasciitilde{}\ref{sec:benchmark} then develops the main
-applied implication of that framework: a benchmark for the CET based on
-ADL + FE with lagged state variables.
-Section\textasciitilde{}\ref{sec:applications} shows how IVB and the
-benchmark interact in published TSCS studies.
+Section\textasciitilde{}\ref{sec:ivb} presents the specification-shift
+diagnostic and derives the closed-form decomposition used in linear TSCS
+models. Section\textasciitilde{}\ref{sec:benchmark} then develops the
+main applied implication of that framework: a benchmark for the CET
+based on ADL + FE with lagged state variables.
+Section\textasciitilde{}\ref{sec:applications} shows how the diagnostic
+and the benchmark interact in published TSCS studies.
 Section\textasciitilde{}\ref{sec:conclusion} closes with the paper's
 claim, its limits, and the agenda it opens.
 
@@ -335,16 +333,16 @@ clock.
 \centering
 \caption{\label{tab:minimum-timestamp-table}Minimum timestamp record for defining the contemporaneous treatment effect. A lag label is not evidence that a covariate is pretreatment. \label{tab:min_timestamp}}
 \centering
-\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\begin{tabular}[t]{lll}
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{0.45in}>{\raggedright\arraybackslash}p{2.35in}>{\raggedright\arraybackslash}p{2.85in}}
 \toprule
-Variable & Minimum.timestamp.record & Requirement.for.the.CET.clock\\
+Variable & Minimum timestamp record & Requirement for the CET clock\\
 \midrule
 $D$ & Onset, end, and intensity window; whether the measure is a stock, flow, event, or period average & Defines the intervention or exposure contrast within period $t$\\
 $Z$ & Reference and measurement window; whether it can respond to anticipated, prior, or current treatment & Must close before the first relevant exposure to be called pretreatment; otherwise classify its timing as plausible or ambiguous\\
 $Y$ & Reference window and measurement time; whether any part is recorded before treatment begins & Must follow the relevant exposure window for the stated CET; overlapping aggregates require a finer estimand\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 Three complications are common in annual and other aggregated panels.
@@ -477,38 +475,43 @@ CET rather than to a generic slogan such as ``lag everything.'\,'
 \centering
 \caption{\label{tab:timing-logic-table}Timing logic for observed controls when the estimand is the contemporaneous treatment effect. Subscripts identify candidate roles; the substantive clock determines the causal classification. \label{tab:timing_logic}}
 \centering
-\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\begin{tabular}[t]{llll}
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{>{\raggedright\arraybackslash}p{0.70in}>{\raggedright\arraybackslash}p{1.35in}>{\raggedright\arraybackslash}p{1.45in}>{\raggedright\arraybackslash}p{2.20in}}
 \toprule
-Candidate.control & Possible.role.for.the.CET & Main.risk.or.benefit & Conditional.action\\
+Candidate control & Possible role for the CET & Main risk or benefit & Conditional action\\
 \midrule
 $Z_t$ & Collider if post-treatment & Opens a noncausal collider path & Do not condition unless the DAG and causal clock rule out post-treatment status\\
 $Z_t$ & Mediator if post-treatment & Blocks part of the total effect & Do not condition if the target is the total contemporaneous effect\\
 $Z_{t-1}$ & Predetermined state if timestamp passes & Captures state dependence & Candidate baseline control only after the timestamp check\\
 $Z_{t-1}$ & Lagged confounder if timestamp passes & Removes OVB without blocking the contemporaneous path & Candidate baseline control only after the timestamp check\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 Three cases are especially relevant for the remainder of the paper.
 First, conditioning on a contemporaneous collider \(Z_t\) opens a
-noncausal collider path and can create IVB. Second, a contemporaneous
-mediator \(Z_t\) creates over-control if the target is the total
-contemporaneous effect. Third, a dual-role variable can be both a lagged
-confounder and a contemporaneous collider. In that case, the empirical
-question is not whether the variable should ever appear in the
-specification, but whether its documented measurement window places it
-before or after the relevant treatment begins.
+noncausal collider path and can create included variable bias relative
+to the CET when the graph and identification assumptions establish that
+interpretation. Second, a contemporaneous mediator \(Z_t\) creates
+over-control if the target is the total contemporaneous effect. Third, a
+dual-role variable can be both a lagged confounder and a contemporaneous
+collider. In that case, the empirical question is not whether the
+variable should ever appear in the specification, but whether its
+documented measurement window places it before or after the relevant
+treatment begins.
 
-\section{\texorpdfstring{The Included Variable Bias Diagnostic
-\label{sec:ivb}}{The Included Variable Bias Diagnostic }}\label{the-included-variable-bias-diagnostic}
+\section{\texorpdfstring{The Specification-Shift Diagnostic
+\label{sec:ivb}}{The Specification-Shift Diagnostic }}\label{the-specification-shift-diagnostic}
 
-The paper's general contribution is to define included variable bias as
-a distinct diagnostic problem. Once researchers accept that an observed
+The paper's general contribution is to define the specification shift as
+a distinct diagnostic object. Once researchers accept that an observed
 control may itself respond to treatment, they need a language for the
-resulting specification shift. DAGs classify the control. IVB quantifies
-what that classification means for the treatment coefficient in a given
-linear specification.
+resulting coefficient change. The decomposition quantifies that change
+in a given linear specification; the DAG, timing, estimand, and
+identification assumptions determine its causal meaning. We reserve the
+term included variable bias (IVB) for cases in which those elements
+establish that including \(Z\) moves the estimator away from the
+contemporaneous-effect target \(\beta_{\mathrm{CET}}\).
 
 Consider the short model \begin{equation}
 Y = \beta D + W \delta + u
@@ -525,10 +528,9 @@ the auxiliary regression of \(Z\) on \(D\) and \(W\). In cross-sections,
 \(W\) may contain baseline covariates. In TSCS settings, \(W\) can
 include fixed effects, lagged dependent variables, lagged treatment, and
 other lagged state variables. The formula is therefore an exact
-linear-model identity, not a separate estimator. That exactness is what
-makes IVB useful as more than a metaphor: the diagnostic can be read
-directly off nested linear regressions already familiar to applied
-researchers.
+linear-model identity, not a separate estimator. That exactness makes
+the specification-shift diagnostic directly readable from nested linear
+regressions already familiar to applied researchers.
 
 Two interpretive points matter. First, the formula is diagnostic rather
 than self-justifying. If \(Z\) is a confounder, the same arithmetic
@@ -544,11 +546,11 @@ partialled out.
 This is also where the paper's originality lies. Work on dynamic
 identification, sequential ignorability, and DID with time-varying
 covariates shows why observed controls may be problematic
-\citep{blackwell2018make, imai_kim2021, caetano_callaway2024}. IVB
+\citep{blackwell2018make, imai_kim2021, caetano_callaway2024}. The paper
 contributes a different object: a named and estimable decomposition of
-the specification shift itself. The current paper develops that object
-in the linear TSCS domain, where it yields both a diagnostic and, in the
-next section, a conditional comparison baseline. Whether analogous IVB
+the specification shift itself. It develops that object in the linear
+TSCS domain, where it yields both a diagnostic and, in the next section,
+a conditional comparison baseline. Whether analogous specification-shift
 diagnostics can be built for synthetic-control-style estimators,
 synthetic DID, or factor models is an important agenda, but not a result
 claimed here.
@@ -667,8 +669,8 @@ the sequential-identification logic in the dynamic-panel literature
 \section{\texorpdfstring{Benchmarking Dynamic Specifications for the CET
 \label{sec:benchmark}}{Benchmarking Dynamic Specifications for the CET }}\label{benchmarking-dynamic-specifications-for-the-cet}
 
-This section develops the paper's main applied implication of the IVB
-framework. Conditional on
+This section develops the paper's main applied implication of the
+specification-shift framework. Conditional on
 Table\textasciitilde{}\ref{tab:adl_identification_estimation_pa}, an
 informative applied comparison for the CET is between dynamic
 specifications that differ in whether they condition on contemporaneous
@@ -894,8 +896,8 @@ decomposition yields empirical specification-shift diagnostics rather
 than only theoretical algebra. Second, they show why those shifts
 require separate timing and causal judgments. Across the 14
 theory-selected candidate controls in these six studies, the median
-\(|\mathrm{IVB}/\mathrm{SE}|\) is 0.13, and 1 case exceeds one standard
-error. These are descriptive results from a purposive set of
+\(|\widehat{\Delta}_Z|/\mathrm{SE}\) is 0.13, and 1 case exceeds one
+standard error. These are descriptive results from a purposive set of
 applications, not estimates of the prevalence or magnitude of causal
 bias in TSCS research.
 
@@ -935,7 +937,7 @@ interpretation.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:leipziger-ivb-table}IVB decomposition for Leipziger (2024), public-services inequality measure.}
+\caption{\label{tab:leipziger-ivb-table}Specification-shift decomposition for Leipziger (2024), public-services inequality measure.}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{ll}
@@ -946,10 +948,10 @@ $\hat\beta_{\text{short}}$ & -0.0407\\
 $\hat\beta_{\text{long}}$ & -0.0352\\
 $\hat\theta^{\star}$ & -0.0497\\
 $\hat\pi$ & 0.1123\\
-IVB $= -\hat\theta^{\star}\hat\pi$ & 0.0056\\
+$\widehat{\Delta}_Z = -\hat\theta^{\star}\hat\pi$ & 0.0056\\
 \addlinespace
-$|\mathrm{IVB}/\mathrm{SE}|$ & 0.48\\
-$|\mathrm{IVB}|/|\hat\beta_{\text{long}}|$ & 15.9\%\\
+$|\widehat{\Delta}_Z|/\mathrm{SE}$ & 0.48\\
+$|\widehat{\Delta}_Z|/|\hat\beta_{\text{long}}|$ & 15.9\%\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -981,17 +983,18 @@ for subsequent growth, but it is not demonstrably prior to the treatment
 represented by an accumulated stock of post offices; it may already
 embody responses to earlier postal investment. Its timing is ambiguous
 for the treatment contrast even though it precedes the measured outcome
-window. Here the IVB formula reveals a large arithmetic shift but cannot
-decide, by itself, whether dropping GDP improves identification.
+window. Here the specification-shift decomposition reveals a large
+arithmetic shift but cannot decide, by itself, whether dropping GDP
+improves identification.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:rogowski-ivb-table}IVB decomposition for Rogowski et al. (2022).}
+\caption{\label{tab:rogowski-ivb-table}Specification-shift decomposition for Rogowski et al. (2022).}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrr}
 \toprule
-Control as $z$ & $\hat\beta_{\text{short}}$ & $\hat\beta_{\text{long}}$ & $\hat\theta^{\star}$ & $\hat\pi$ & IVB & $|\mathrm{IVB}/\mathrm{SE}|$ & IVB/$\hat\beta$ (\%)\\
+Control as $z$ & $\hat\beta_{\text{short}}$ & $\hat\beta_{\text{long}}$ & $\hat\theta^{\star}$ & $\hat\pi$ & $\widehat{\Delta}_Z$ & $|\widehat{\Delta}_Z|/\mathrm{SE}$ & $\widehat{\Delta}_Z/\hat\beta$ (\%)\\
 \midrule
 Log GDP p.c. & 0.0083 & 0.0198 & -4.0130 & 0.0029 & 0.0115 & 2.11 & 58.0\\
 Log population & 0.0206 & 0.0198 & -1.9465 & -0.0004 & -0.0008 & 0.15 & -4.0\\
@@ -1001,11 +1004,11 @@ Polity2 & 0.0191 & 0.0198 & 0.0341 & -0.0221 & 0.0008 & 0.14 & 3.8\\
 \end{tabular}}
 \end{table}
 
-For lagged GDP per capita, \(|\mathrm{IVB}/\mathrm{SE}| = 2.11\), the
-largest value among the published applications. But this is precisely
-the case in which the formula must not be overread. GDP's causal role is
-unresolved: conditional convergence makes it a possible confounder;
-inherited postal infrastructure may make it a legacy
+For lagged GDP per capita, \(|\widehat{\Delta}_Z|/\mathrm{SE} = 2.11\),
+the largest value among the published applications. But this is
+precisely the case in which the formula must not be overread. GDP's
+causal role is unresolved: conditional convergence makes it a possible
+confounder; inherited postal infrastructure may make it a legacy
 treatment-responsive state or mediator; and both channels could give it
 a dual role. The large coefficient shift is therefore descriptive until
 a DAG and evidence on the relevant measurement and exposure windows

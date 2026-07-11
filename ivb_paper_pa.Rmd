@@ -1,5 +1,5 @@
 ---
-title: "Included Variable Bias in Dynamic Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the Contemporaneous Treatment Effect"
+title: "From Specification Shifts to Included Variable Bias in Dynamic Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the Contemporaneous Treatment Effect"
 author:
   - "Manoel Galdino^[Assistant Professor of Political Science, Universidade de São Paulo. E-mail: mgaldino@usp.br]"
   - "Davi Moreira^[Professor of Quantitative Methods, Mitch Daniels School of Business, Purdue University.]"
@@ -66,9 +66,9 @@ dual_role_plot_data <- dual_role_results %>%
   transmute(
     rho_Z = rho_Z,
     `TWFE short` = twfe_s_bias,
-    `TWFE + $Z_{t-1}$` = twfe_l_bias,
+    `TWFE + lagged Z` = twfe_l_bias,
     `ADL + FE` = adl_s_fe_bias,
-    `ADL + FE + $Z_{t-1}$` = adl_l_fe_bias
+    `ADL + FE + lagged Z` = adl_l_fe_bias
   ) %>%
   pivot_longer(
     cols = -rho_Z,
@@ -195,7 +195,7 @@ Researchers using time-series cross-sectional data constantly face a deceptively
 
 Recent work on difference-in-differences with time-varying covariates makes this problem stark. When a covariate can itself respond to treatment, both conditioning on the realized covariate and omitting it can be problematic, because the causally relevant object may be something like the untreated potential covariate $Z_t(0)$ rather than the realized $Z_t$ \citep{caetano_callaway2024, caetano_etal2022, lin_zhang2022}. Related work on panels and causal dynamics likewise shows that time-varying covariates can create demanding identification problems \citep{blackwell2018make, imai_kim2021}. We take that broader literature as the starting point rather than the target of critique.
 
-Our contribution is different and narrower, but also more operational. We introduce included variable bias (IVB) as a general diagnostic problem that arises when researchers condition on observed covariates that may themselves respond to treatment. In linear nested models, the resulting specification shift admits a simple closed-form decomposition:
+Our contribution is different and narrower, but also more operational. We introduce the specification-shift diagnostic for cases in which researchers condition on observed covariates that may themselves respond to treatment. In linear nested models, the resulting shift admits a simple closed-form decomposition:
 \[
 \widehat{\beta}^{\star} - \widehat{\beta} = - \widehat{\theta}^{\star}\widehat{\pi},
 \]
@@ -203,9 +203,9 @@ where $\widehat{\theta}^{\star}$ is the coefficient on the candidate control in 
 
 The paper's main applied payoff is narrower. For TSCS settings focused on the contemporaneous treatment effect (CET), we study ADL + FE with lagged state variables as a conditional baseline: lagged covariates enter only when their timestamps and causal roles are defended, while contemporaneous time-varying controls require an explicit causal clock. The coefficient can represent the CET only under the identification, functional-form, support, and estimation conditions stated below. The baseline is therefore a comparison specification for a defined TSCS problem, not a universal causal estimator or a rule that lagging a variable makes it admissible.
 
-This architecture helps distinguish the paper from two nearby contributions. It is not only a warning that time-varying controls are hard, because IVB gives that difficulty a named and estimable diagnostic. And it is not only a recommendation to use dynamic specifications, because the benchmark is presented as the main applied implication of a more general included-variable-bias framework. The broader research program behind IVB may well travel beyond the current setting, but this paper develops its full payoff in the linear TSCS case.
+This architecture helps distinguish the paper from two nearby contributions. It is not only a warning that time-varying controls are hard, because the specification-shift decomposition gives that difficulty a named and estimable diagnostic. And it is not only a recommendation to use dynamic specifications, because the benchmark is presented as the main applied implication of a more general specification-shift framework. The broader research program behind this diagnostic may well travel beyond the current setting, but this paper develops its full payoff in the linear TSCS case.
 
-We proceed in four steps. Section~\ref{sec:control} defines the control-variable problem when observed covariates may themselves respond to treatment. Section~\ref{sec:timing} uses DAG logic to show why the same substantive variable can be harmful at $t$ and useful at $t-1$. Section~\ref{sec:ivb} presents IVB as the paper's general diagnostic contribution and derives the closed-form decomposition used in linear TSCS models. Section~\ref{sec:benchmark} then develops the main applied implication of that framework: a benchmark for the CET based on ADL + FE with lagged state variables. Section~\ref{sec:applications} shows how IVB and the benchmark interact in published TSCS studies. Section~\ref{sec:conclusion} closes with the paper's claim, its limits, and the agenda it opens.
+We proceed in four steps. Section~\ref{sec:control} defines the control-variable problem when observed covariates may themselves respond to treatment. Section~\ref{sec:timing} uses DAG logic to show why the same substantive variable can be harmful at $t$ and useful at $t-1$. Section~\ref{sec:ivb} presents the specification-shift diagnostic and derives the closed-form decomposition used in linear TSCS models. Section~\ref{sec:benchmark} then develops the main applied implication of that framework: a benchmark for the CET based on ADL + FE with lagged state variables. Section~\ref{sec:applications} shows how the diagnostic and the benchmark interact in published TSCS studies. Section~\ref{sec:conclusion} closes with the paper's claim, its limits, and the agenda it opens.
 
 # The Time-Varying Control Problem for the Contemporaneous Treatment Effect \label{sec:control}
 
@@ -264,7 +264,8 @@ minimum_timestamp <- data.frame(
     "Must close before the first relevant exposure to be called pretreatment; otherwise classify its timing as plausible or ambiguous",
     "Must follow the relevant exposure window for the stated CET; overlapping aggregates require a finer estimand"
   ),
-  stringsAsFactors = FALSE
+  stringsAsFactors = FALSE,
+  check.names = FALSE
 )
 
 kable(
@@ -279,7 +280,10 @@ kable(
     "\\label{tab:min_timestamp}"
   )
 ) %>%
-  kable_styling(latex_options = c("hold_position", "scale_down"))
+  kable_styling(latex_options = "hold_position", font_size = 9) %>%
+  column_spec(1, width = "0.45in") %>%
+  column_spec(2, width = "2.35in") %>%
+  column_spec(3, width = "2.85in")
 ```
 
 Three complications are common in annual and other aggregated panels. First, anticipation can make a recorded $Z_{t-1}$ treatment-responsive before the formal onset of $D_t$. Second, when treatment varies continuously within the period, a scalar annual value may summarize a treatment path with repeated $D\leftrightarrow Z\leftrightarrow Y$ feedback; the relevant intervention is then a contrast between exposure trajectories, not automatically a one-unit change in the annual average. Third, annual measures may overlap: a late-year treatment can occur after much of $Z_t$ or $Y_t$ has already been realized, while a beginning-of-year outcome may precede the nominally contemporaneous treatment. When documentation establishes nonoverlapping windows, timing is known; when institutional knowledge supports but does not timestamp the sequence, it is plausible; and when windows overlap or remain undocumented, it is ambiguous. The lagged-control benchmark below applies only after this clock has been defended.
@@ -369,7 +373,8 @@ timing_logic <- data.frame(
   `Possible role for the CET` = c("Collider if post-treatment", "Mediator if post-treatment", "Predetermined state if timestamp passes", "Lagged confounder if timestamp passes"),
   `Main risk or benefit` = c("Opens a noncausal collider path", "Blocks part of the total effect", "Captures state dependence", "Removes OVB without blocking the contemporaneous path"),
   `Conditional action` = c("Do not condition unless the DAG and causal clock rule out post-treatment status", "Do not condition if the target is the total contemporaneous effect", "Candidate baseline control only after the timestamp check", "Candidate baseline control only after the timestamp check"),
-  stringsAsFactors = FALSE
+  stringsAsFactors = FALSE,
+  check.names = FALSE
 )
 
 kable(
@@ -384,14 +389,18 @@ kable(
     "\\label{tab:timing_logic}"
   )
 ) %>%
-  kable_styling(latex_options = c("hold_position", "scale_down"))
+  kable_styling(latex_options = "hold_position", font_size = 9) %>%
+  column_spec(1, width = "0.70in") %>%
+  column_spec(2, width = "1.35in") %>%
+  column_spec(3, width = "1.45in") %>%
+  column_spec(4, width = "2.20in")
 ```
 
-Three cases are especially relevant for the remainder of the paper. First, conditioning on a contemporaneous collider $Z_t$ opens a noncausal collider path and can create IVB. Second, a contemporaneous mediator $Z_t$ creates over-control if the target is the total contemporaneous effect. Third, a dual-role variable can be both a lagged confounder and a contemporaneous collider. In that case, the empirical question is not whether the variable should ever appear in the specification, but whether its documented measurement window places it before or after the relevant treatment begins.
+Three cases are especially relevant for the remainder of the paper. First, conditioning on a contemporaneous collider $Z_t$ opens a noncausal collider path and can create included variable bias relative to the CET when the graph and identification assumptions establish that interpretation. Second, a contemporaneous mediator $Z_t$ creates over-control if the target is the total contemporaneous effect. Third, a dual-role variable can be both a lagged confounder and a contemporaneous collider. In that case, the empirical question is not whether the variable should ever appear in the specification, but whether its documented measurement window places it before or after the relevant treatment begins.
 
-# The Included Variable Bias Diagnostic \label{sec:ivb}
+# The Specification-Shift Diagnostic \label{sec:ivb}
 
-The paper's general contribution is to define included variable bias as a distinct diagnostic problem. Once researchers accept that an observed control may itself respond to treatment, they need a language for the resulting specification shift. DAGs classify the control. IVB quantifies what that classification means for the treatment coefficient in a given linear specification.
+The paper's general contribution is to define the specification shift as a distinct diagnostic object. Once researchers accept that an observed control may itself respond to treatment, they need a language for the resulting coefficient change. The decomposition quantifies that change in a given linear specification; the DAG, timing, estimand, and identification assumptions determine its causal meaning. We reserve the term included variable bias (IVB) for cases in which those elements establish that including $Z$ moves the estimator away from the contemporaneous-effect target $\beta_{\mathrm{CET}}$.
 
 Consider the short model
 \begin{equation}
@@ -408,11 +417,11 @@ where $W$ collects admissible controls. By the Frisch--Waugh--Lovell theorem,
 \widehat{\beta}^{\star} - \widehat{\beta} = - \widehat{\theta}^{\star} \widehat{\pi},
 \label{eq:ivb_main_pa}
 \end{equation}
-where $\widehat{\pi}$ is the coefficient on $D$ in the auxiliary regression of $Z$ on $D$ and $W$. In cross-sections, $W$ may contain baseline covariates. In TSCS settings, $W$ can include fixed effects, lagged dependent variables, lagged treatment, and other lagged state variables. The formula is therefore an exact linear-model identity, not a separate estimator. That exactness is what makes IVB useful as more than a metaphor: the diagnostic can be read directly off nested linear regressions already familiar to applied researchers.
+where $\widehat{\pi}$ is the coefficient on $D$ in the auxiliary regression of $Z$ on $D$ and $W$. In cross-sections, $W$ may contain baseline covariates. In TSCS settings, $W$ can include fixed effects, lagged dependent variables, lagged treatment, and other lagged state variables. The formula is therefore an exact linear-model identity, not a separate estimator. That exactness makes the specification-shift diagnostic directly readable from nested linear regressions already familiar to applied researchers.
 
 Two interpretive points matter. First, the formula is diagnostic rather than self-justifying. If $Z$ is a confounder, the same arithmetic difference reflects deconfounding rather than harm. If $Z$ is a mediator, the difference reflects movement from the total to the direct effect \citep{acharya_etal2016}. Only the DAG tells the researcher which interpretation applies. Second, the formula remains useful precisely because it converts a vague modeling dispute into two estimable components: how strongly $Z$ predicts the outcome in the long model, and how strongly $D$ predicts $Z$ once admissible controls have been partialled out.
 
-This is also where the paper's originality lies. Work on dynamic identification, sequential ignorability, and DID with time-varying covariates shows why observed controls may be problematic \citep{blackwell2018make, imai_kim2021, caetano_callaway2024}. IVB contributes a different object: a named and estimable decomposition of the specification shift itself. The current paper develops that object in the linear TSCS domain, where it yields both a diagnostic and, in the next section, a conditional comparison baseline. Whether analogous IVB diagnostics can be built for synthetic-control-style estimators, synthetic DID, or factor models is an important agenda, but not a result claimed here.
+This is also where the paper's originality lies. Work on dynamic identification, sequential ignorability, and DID with time-varying covariates shows why observed controls may be problematic \citep{blackwell2018make, imai_kim2021, caetano_callaway2024}. The paper contributes a different object: a named and estimable decomposition of the specification shift itself. It develops that object in the linear TSCS domain, where it yields both a diagnostic and, in the next section, a conditional comparison baseline. Whether analogous specification-shift diagnostics can be built for synthetic-control-style estimators, synthetic DID, or factor models is an important agenda, but not a result claimed here.
 
 For the CET in TSCS settings, the practically relevant auxiliary regression is dynamic. If the benchmark specification is
 \begin{equation}
@@ -473,7 +482,7 @@ The distinction between population identification and estimation matters in dyna
 
 # Benchmarking Dynamic Specifications for the CET \label{sec:benchmark}
 
-This section develops the paper's main applied implication of the IVB framework. Conditional on Table~\ref{tab:adl_identification_estimation_pa}, an informative applied comparison for the CET is between dynamic specifications that differ in whether they condition on contemporaneous $Z_t$, rather than treating a static TWFE short regression as a causal reference. The baseline does not substitute for the specification-shift diagnostic: the former defines a conditional comparison specification, while the latter measures the coefficient change.
+This section develops the paper's main applied implication of the specification-shift framework. Conditional on Table~\ref{tab:adl_identification_estimation_pa}, an informative applied comparison for the CET is between dynamic specifications that differ in whether they condition on contemporaneous $Z_t$, rather than treating a static TWFE short regression as a causal reference. The baseline does not substitute for the specification-shift diagnostic: the former defines a conditional comparison specification, while the latter measures the coefficient change.
 
 ## Collider and Dual-Role Controls in TSCS
 
@@ -528,12 +537,13 @@ ggplot(dual_role_plot_data, aes(x = rho_Z, y = bias, color = model)) +
   scale_color_manual(
     values = c(
       "TWFE short" = "#b22222",
-      "TWFE + $Z_{t-1}$" = "#1f78b4",
+      "TWFE + lagged Z" = "#1f78b4",
       "ADL + FE" = "#33a02c",
-      "ADL + FE + $Z_{t-1}$" = "#000000"
+      "ADL + FE + lagged Z" = "#000000"
     )
   ) +
   labs(x = expression(rho[Z]), y = "Bias", color = "Specification") +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
   theme(legend.position = "bottom")
 ```
 
@@ -610,7 +620,7 @@ This baseline is intentionally narrower than a recommendation for panel estimato
 
 # Applications \label{sec:applications}
 
-The applications serve two purposes. First, they show that the decomposition yields empirical specification-shift diagnostics rather than only theoretical algebra. Second, they show why those shifts require separate timing and causal judgments. Across the `r cc_summary$n_candidates` theory-selected candidate controls in these six studies, the median $|\mathrm{IVB}/\mathrm{SE}|$ is `r sprintf('%.2f', cc_summary$median_ivb_se)`, and `r cc_summary$n_over_one` case exceeds one standard error. These are descriptive results from a purposive set of applications, not estimates of the prevalence or magnitude of causal bias in TSCS research.
+The applications serve two purposes. First, they show that the decomposition yields empirical specification-shift diagnostics rather than only theoretical algebra. Second, they show why those shifts require separate timing and causal judgments. Across the `r cc_summary$n_candidates` theory-selected candidate controls in these six studies, the median $|\widehat{\Delta}_Z|/\mathrm{SE}$ is `r sprintf('%.2f', cc_summary$median_ivb_se)`, and `r cc_summary$n_over_one` case exceeds one standard error. These are descriptive results from a purposive set of applications, not estimates of the prevalence or magnitude of causal bias in TSCS research.
 
 ## Application 1: Democracy and Ethnic Inequality \label{sec:app_leipziger_pa}
 
@@ -669,9 +679,9 @@ tab_lp <- data.frame(
     "$\\hat\\beta_{\\text{long}}$",
     "$\\hat\\theta^{\\star}$",
     "$\\hat\\pi$",
-    "IVB $= -\\hat\\theta^{\\star}\\hat\\pi$",
-    "$|\\mathrm{IVB}/\\mathrm{SE}|$",
-    "$|\\mathrm{IVB}|/|\\hat\\beta_{\\text{long}}|$"
+    "$\\widehat{\\Delta}_Z = -\\hat\\theta^{\\star}\\hat\\pi$",
+    "$|\\widehat{\\Delta}_Z|/\\mathrm{SE}$",
+    "$|\\widehat{\\Delta}_Z|/|\\hat\\beta_{\\text{long}}|$"
   ),
   Estimate = c(
     round(r_lp$beta_short, 4),
@@ -691,7 +701,7 @@ kable(
   row.names = FALSE,
   booktabs = TRUE,
   escape = FALSE,
-  caption = "IVB decomposition for Leipziger (2024), public-services inequality measure."
+  caption = "Specification-shift decomposition for Leipziger (2024), public-services inequality measure."
 ) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"))
 ```
@@ -700,7 +710,7 @@ The estimated specification shift is `r round(r_lp$ivb_formula, 4)`, or about `r
 
 ## Application 2: Postal Infrastructure and Economic Growth \label{sec:app_rogowski_pa}
 
-\citet{rogowski_etal2022} provide the complementary case. Their panel is organized in five-year steps, the outcome is led one panel period, and the postal-stock and GDP measures enter the same regression row. Letting $s$ index the baseline five-year row, the estimated exposure contrast relates the cumulative postal stock $D_s$ to forward growth $Y_{s+1}$, where $s+1$ is the next five-year panel step. This application is therefore an audit of a forward exposure contrast, not a direct demonstration of the manuscript's core contemporaneous $D_t\rightarrow Y_t$ CET. It remains useful for timing and sensitivity because a cumulative stock makes prior exposure explicit and because the coefficient shift reveals how strongly the forward contrast depends on conditioning on baseline GDP. Baseline GDP is a plausible state variable for subsequent growth, but it is not demonstrably prior to the treatment represented by an accumulated stock of post offices; it may already embody responses to earlier postal investment. Its timing is ambiguous for the treatment contrast even though it precedes the measured outcome window. Here the IVB formula reveals a large arithmetic shift but cannot decide, by itself, whether dropping GDP improves identification.
+\citet{rogowski_etal2022} provide the complementary case. Their panel is organized in five-year steps, the outcome is led one panel period, and the postal-stock and GDP measures enter the same regression row. Letting $s$ index the baseline five-year row, the estimated exposure contrast relates the cumulative postal stock $D_s$ to forward growth $Y_{s+1}$, where $s+1$ is the next five-year panel step. This application is therefore an audit of a forward exposure contrast, not a direct demonstration of the manuscript's core contemporaneous $D_t\rightarrow Y_t$ CET. It remains useful for timing and sensitivity because a cumulative stock makes prior exposure explicit and because the coefficient shift reveals how strongly the forward contrast depends on conditioning on baseline GDP. Baseline GDP is a plausible state variable for subsequent growth, but it is not demonstrably prior to the treatment represented by an accumulated stock of post offices; it may already embody responses to earlier postal investment. Its timing is ambiguous for the treatment contrast even though it precedes the measured outcome window. Here the specification-shift decomposition reveals a large arithmetic shift but cannot decide, by itself, whether dropping GDP improves identification.
 
 ```{r rogowski-data, cache=TRUE}
 dat_rg <- read.delim(
@@ -777,16 +787,16 @@ kable(
     "$\\hat\\beta_{\\text{long}}$",
     "$\\hat\\theta^{\\star}$",
     "$\\hat\\pi$",
-    "IVB",
-    "$|\\mathrm{IVB}/\\mathrm{SE}|$",
-    "IVB/$\\hat\\beta$ (\\%)"
+    "$\\widehat{\\Delta}_Z$",
+    "$|\\widehat{\\Delta}_Z|/\\mathrm{SE}$",
+    "$\\widehat{\\Delta}_Z/\\hat\\beta$ (\\%)"
   ),
-  caption = "IVB decomposition for Rogowski et al. (2022)."
+  caption = "Specification-shift decomposition for Rogowski et al. (2022)."
 ) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"))
 ```
 
-For lagged GDP per capita, $|\mathrm{IVB}/\mathrm{SE}| = `r tab_rg$IVB_SE[1]`$, the largest value among the published applications. But this is precisely the case in which the formula must not be overread. GDP's causal role is unresolved: conditional convergence makes it a possible confounder; inherited postal infrastructure may make it a legacy treatment-responsive state or mediator; and both channels could give it a dual role. The large coefficient shift is therefore descriptive until a DAG and evidence on the relevant measurement and exposure windows establish more. The lesson is not ``drop GDP.'' The lesson is that a large specification shift demands explicit causal reasoning about timing and role. This is the use case for a diagnostic paired with a conditional baseline rather than an automatic decision rule.
+For lagged GDP per capita, $|\widehat{\Delta}_Z|/\mathrm{SE} = `r tab_rg$IVB_SE[1]`$, the largest value among the published applications. But this is precisely the case in which the formula must not be overread. GDP's causal role is unresolved: conditional convergence makes it a possible confounder; inherited postal infrastructure may make it a legacy treatment-responsive state or mediator; and both channels could give it a dual role. The large coefficient shift is therefore descriptive until a DAG and evidence on the relevant measurement and exposure windows establish more. The lesson is not ``drop GDP.'' The lesson is that a large specification shift demands explicit causal reasoning about timing and role. This is the use case for a diagnostic paired with a conditional baseline rather than an automatic decision rule.
 
 # Conclusion \label{sec:conclusion}
 
