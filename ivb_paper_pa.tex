@@ -124,11 +124,11 @@ the paper's main applied implication: in time-series cross-sectional
 settings focused on the contemporaneous treatment effect, ADL + FE with
 lagged state variables provides a practical benchmark. Simulations
 covering collider, dual-role, and mediator designs show that this
-benchmark sharply reduces bias, blocks inherited collider paths when
-outcomes are persistent, and preserves the contemporaneous total effect
-when lagged rather than contemporaneous controls are used. Applications
-illustrate how IVB quantifies specification shifts while the benchmark
-provides a defensible starting point for applied work.
+benchmark reduces bias in the reported designs and preserves the
+contemporaneous total effect when lagged rather than contemporaneous
+controls are used. Applications illustrate how IVB quantifies
+specification shifts while the benchmark provides a defensible starting
+point for applied work.
 \end{abstract}
 
 \section{Introduction}\label{introduction}
@@ -315,6 +315,15 @@ exposure window. This ordering is an empirical claim, not a consequence
 of notation. Table\textasciitilde{}\ref{tab:min_timestamp} states the
 minimum timestamp information needed to assess it.
 
+This displayed chain is the candidate clock when \(Z_t\) is a mediator.
+It is not imposed on every graph below. A contemporaneous-collider claim
+\(D_t\rightarrow Z_t\leftarrow Y_t\) instead requires the outcome
+process represented by \(Y_t\) to precede the measurement of \(Z_t\)
+within the causal period, while \(D_t\) can affect both. Thus the common
+subscript denotes a panel period, not simultaneity or a universal
+within-period order; each application must defend the mechanism-specific
+clock.
+
 \begin{table}[!h]
 \centering
 \caption{\label{tab:minimum-timestamp-table}Minimum timestamp record for defining the contemporaneous treatment effect. A lag label is not evidence that a covariate is pretreatment. \label{tab:min_timestamp}}
@@ -352,16 +361,20 @@ CET}\label{dynamic-causal-structures-for-the-cet}
 
 The elementary fork, chain, and collider remain the building blocks of
 causal graphs \citep{pearl2009causality, elwert2014endogenous}, but TSCS
-specifications combine those structures across periods.
-Figure\textasciitilde{}\ref{fig:dynamic_collider_pa} makes the inherited
-path explicit for a contemporaneous collider. The blue arrow is the
-causal path defining the CET. Conditioning on \(Z_t\) opens
+specifications combine those structures across periods. Figure
+\ref{fig:dynamic_collider_pa} makes the inherited path explicit for a
+contemporaneous collider. The blue arrows mark the treatment--outcome
+causal edges in successive periods. Conditioning on \(Z_t\) opens
 \(D_t\rightarrow Z_t\leftarrow Y_t\). Because \(Z_t\) is also a
 descendant of the lagged collider \(Z_{t-1}\), that conditioning can
 activate the inherited path
 \(D_t\leftarrow D_{t-1}\rightarrow Z_{t-1}\leftarrow Y_{t-1}\rightarrow Y_t\).
 Conditioning on \(Y_{t-1}\) blocks this inherited path at a noncollider,
-but it does not close the contemporaneous path opened at \(Z_t\).
+but it does not close the contemporaneous path opened at \(Z_t\). The
+graph also shows the ordinary dynamic path
+\(D_t\leftarrow D_{t-1}\rightarrow Y_{t-1}\rightarrow Y_t\); that path
+is distinct from collider activation and is likewise blocked at
+\(Y_{t-1}\).
 
 \begin{figure}[H]
 \centering
@@ -384,6 +397,7 @@ but it does not close the contemporaneous path opened at \(Z_t\).
 
 \draw[collider] (Dm1) -- (Zm1);
 \draw[collider] (Ym1) -- (Zm1);
+\draw[causal] (Dm1) to[bend left=22] (Ym1);
 \draw[arr] (Dm1) -- (Dt);
 \draw[arr] (Ym1) -- (Yt);
 \draw[arr] (Zm1) -- (Zt);
@@ -396,16 +410,19 @@ but it does not close the contemporaneous path opened at \(Z_t\).
 \label{fig:dynamic_collider_pa}
 \end{figure}
 
-Figure\textasciitilde{}\ref{fig:dynamic_mediator_pa} represents a
-different role for the same contemporaneous variable. Here \(Z_t\)
-transmits part of the effect of \(D_t\) to \(Y_t\), while \(Z_{t-1}\) is
-a lagged state that can affect current treatment and outcome. For the
-total CET, both blue paths belong to the estimand. Conditioning on a
+Figure \ref{fig:dynamic_mediator_pa} represents a different role for the
+same contemporaneous variable. Here \(Z_t\) transmits part of the effect
+of \(D_t\) to \(Y_t\), while \(Z_{t-1}\) is a lagged state that can
+affect current treatment and outcome. For the total CET, both
+current-period blue paths belong to the estimand. Conditioning on a
 substantively pretreatment \(Z_{t-1}\) blocks
 \(D_t\leftarrow Z_{t-1}\rightarrow Y_t\) without blocking the
-within-period mediated path. Conditioning on \(Z_t\) instead blocks
-\(D_t\rightarrow Z_t\rightarrow Y_t\) and changes the target to a
-direct-effect parameter under additional mediation assumptions.
+within-period mediated path. The remaining lag path
+\(D_t\leftarrow D_{t-1}\rightarrow Y_{t-1}\rightarrow Y_t\) requires
+\(D_{t-1}\), \(Y_{t-1}\), or other sufficient history. Conditioning on
+\(Z_t\) instead blocks \(D_t\rightarrow Z_t\rightarrow Y_t\) and changes
+the target to a direct-effect parameter under additional mediation
+assumptions.
 
 \begin{figure}[H]
 \centering
@@ -427,7 +444,9 @@ direct-effect parameter under additional mediation assumptions.
 \node[var] (Yt) at (6.4,0) {$Y_t$};
 
 \draw[arr] (Dm1) -- (Dt);
-\draw[arr] (Dm1) -- (Zm1);
+\draw[causal] (Dm1) -- (Zm1);
+\draw[causal] (Zm1) -- (Ym1);
+\draw[causal] (Dm1) to[bend left=22] (Ym1);
 \draw[arr] (Zm1) -- (Dt);
 \draw[arr] (Zm1) -- (Zt);
 \draw[arr] (Zm1) to[bend left=18] (Yt);
@@ -456,7 +475,7 @@ CET rather than to a generic slogan such as ``lag everything.'\,'
 \toprule
 Candidate.control & Possible.role.for.the.CET & Main.risk.or.benefit & Default.action\\
 \midrule
-$Z_t$ & Collider if post-treatment & Opens a backdoor path & Do not condition unless the DAG and causal clock rule out post-treatment status\\
+$Z_t$ & Collider if post-treatment & Opens a noncausal collider path & Do not condition unless the DAG and causal clock rule out post-treatment status\\
 $Z_t$ & Mediator if post-treatment & Blocks part of the total effect & Do not condition if the target is the total contemporaneous effect\\
 $Z_{t-1}$ & Predetermined state if timestamp passes & Captures state dependence & Candidate benchmark control only after the timestamp check\\
 $Z_{t-1}$ & Lagged confounder if timestamp passes & Removes OVB without blocking the contemporaneous path & Candidate benchmark control only after the timestamp check\\
@@ -465,14 +484,14 @@ $Z_{t-1}$ & Lagged confounder if timestamp passes & Removes OVB without blocking
 \end{table}
 
 Three cases are especially relevant for the remainder of the paper.
-First, a contemporaneous collider \(Z_t\) opens a backdoor path and
-creates IVB. Second, a contemporaneous mediator \(Z_t\) creates
-over-control if the target is the total contemporaneous effect. Third, a
-dual-role variable can be both a lagged confounder and a contemporaneous
-collider. In that case, the empirical question is not whether the
-variable should ever appear in the specification, but whether its
-documented measurement window places it before or after the relevant
-treatment begins.
+First, conditioning on a contemporaneous collider \(Z_t\) opens a
+noncausal collider path and can create IVB. Second, a contemporaneous
+mediator \(Z_t\) creates over-control if the target is the total
+contemporaneous effect. Third, a dual-role variable can be both a lagged
+confounder and a contemporaneous collider. In that case, the empirical
+question is not whether the variable should ever appear in the
+specification, but whether its documented measurement window places it
+before or after the relevant treatment begins.
 
 \section{\texorpdfstring{The Included Variable Bias Diagnostic
 \label{sec:ivb}}{The Included Variable Bias Diagnostic }}\label{the-included-variable-bias-diagnostic}
@@ -655,18 +674,19 @@ treatment and outcome. In this structure, a variable such as GDP can
 serve as a lagged state variable while its contemporaneous value has a
 different causal role.
 
-The dual role is visible in
-Figure\textasciitilde{}\ref{fig:dynamic_dual_role_pa}. Without
-conditioning, \(D_t\leftarrow Z_{t-1}\rightarrow Y_t\) is an open
-backdoor path. Conditioning on \(Z_{t-1}\) closes that fork but opens
-the inherited path
+The dual role is visible in Figure \ref{fig:dynamic_dual_role_pa}.
+Without conditioning, \(D_t\leftarrow Z_{t-1}\rightarrow Y_t\) is an
+open backdoor path. Conditioning on \(Z_{t-1}\) closes that fork but
+opens the inherited path
 \(D_t\leftarrow D_{t-1}\rightarrow Z_{t-1}\leftarrow Y_{t-1}\rightarrow Y_t\),
-because \(Z_{t-1}\) is a collider on that path. Adding \(Y_{t-1}\) to
-the conditioning set blocks this particular path at the noncollider
-\(Y_{t-1}\). This d-separation statement is conditional on the displayed
-graph: it does not close \(D_t\rightarrow Z_t\leftarrow Y_t\) if \(Z_t\)
-is conditioned on, and it does not rule out other omitted paths or
-finite-\(T\) estimation bias.
+because \(Z_{t-1}\) is a collider on that path. Adding \(Y_{t-1}\)
+blocks this inherited path at the noncollider \(Y_{t-1}\) and also
+blocks the distinct omitted-dynamics path
+\(D_t\leftarrow D_{t-1}\rightarrow Y_{t-1}\rightarrow Y_t\). This
+d-separation statement is conditional on the displayed graph: it does
+not close \(D_t\rightarrow Z_t\leftarrow Y_t\) if \(Z_t\) is conditioned
+on, and it does not rule out other omitted paths or finite-\(T\)
+estimation bias.
 
 \begin{figure}[H]
 \centering
@@ -691,6 +711,7 @@ finite-\(T\) estimation bias.
 
 \draw[inherited] (Dm1) -- (Zm1);
 \draw[inherited] (Ym1) -- (Zm1);
+\draw[causal] (Dm1) to[bend left=22] (Ym1);
 \draw[inherited] (Dm1) -- (Dt);
 \draw[inherited] (Ym1) -- (Yt);
 \draw[confounding] (Zm1) -- (Dt);
@@ -722,17 +743,18 @@ relevant comparison is therefore between specifications that represent
 \(Z\) as a lagged state inside the dynamic outcome model and
 specifications that omit part of that state.
 
-In the displayed DGP, outcome persistence transmits the inherited
-collider path from \(Y_{t-1}\) to \(Y_t\).
-Table\textasciitilde{}\ref{tab:firewall_pa} shows that when this edge is
+In the displayed DGP, outcome persistence transmits both the inherited
+collider path and the ordinary lagged treatment--outcome path through
+\(Y_{t-1}\). Table \ref{tab:firewall_pa} shows that when this edge is
 removed by setting \(\rho_Y=0\), the TWFE bias in the reported design is
-approximately zero. Conditioning on \(Y_{t-1}\) blocks the cited
-inherited path when \(\rho_Y>0\), subject to the graph and scope
-conditions stated above.
+approximately zero. Conditioning on \(Y_{t-1}\) blocks both displayed
+paths when \(\rho_Y>0\), subject to the graph and scope conditions
+stated above; the simulation contrast does not identify how much of the
+improvement comes from each path.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:firewall-table}Outcome persistence and the inherited collider path in the dual-role DGP. When $\rho_Y = 0$, the reported bias from conditioning on $Z_{t-1}$ is approximately zero even without $Y_{t-1}$. When $\rho_Y > 0$, the specification including $Y_{t-1}$ blocks the displayed inherited path. \label{tab:firewall_pa}}
+\caption{\label{tab:firewall-table}Bias by outcome persistence in the dual-role DGP. When $\rho_Y = 0$, the reported bias from conditioning on $Z_{t-1}$ is approximately zero even without $Y_{t-1}$. When $\rho_Y > 0$, including $Y_{t-1}$ conditions on the displayed persistent outcome state. This comparison does not decompose the ordinary dynamic and inherited-collider paths. \label{tab:firewall_pa}}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{rrr}
@@ -747,11 +769,11 @@ Outcome persistence ($\rho_Y$) & TWFE + $Z_{t-1}$ & ADL + FE + $Z_{t-1}$\\
 \end{table}
 
 This finding disciplines the paper's recommendation. The lagged outcome
-is not a magical fix. It matters because it blocks the transmission of
-spurious dependence when the outcome process is persistent. In the
-dual-role design, the practical benchmark is therefore ADL + FE with
-lagged state variables, including \(Y_{t-1}\) and substantively
-justified lags of candidate controls.
+is not a general fix. In the displayed DGP, it conditions on the
+persistent outcome state through which both cited lag paths reach
+\(Y_t\). The practical benchmark for this dual-role design is therefore
+ADL + FE with \(Y_{t-1}\) and substantively justified lags of candidate
+controls, subject to the identification and estimation conditions above.
 
 \subsection{Over-Control with Contemporaneous
 Mediators}\label{over-control-with-contemporaneous-mediators}
