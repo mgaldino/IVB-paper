@@ -1,0 +1,408 @@
+---
+title: "Specification Shifts and Included Variable Bias"
+subtitle: "A formal note separating projection algebra from causal interpretation"
+author: "Manoel Galdino, Davi Moreira, and Carolina Dolleans"
+date: "11 July 2026"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    toc: true
+    keep_tex: false
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{booktabs}
+  - \usepackage{tabularx}
+  - \usepackage{array}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+  - \newtheorem{proposition}{Proposition}
+  - \newtheorem{remark}{Remark}
+---
+
+# Purpose and scope
+
+This note separates three objects that must not be conflated:
+
+1. a population shift between two nested linear projections;
+2. its exact finite-sample analogue; and
+3. bias relative to a causal target, here denoted by the contemporaneous treatment effect (CET).
+
+The first two objects are defined by projection algebra. They do not require a causal model. The third requires a target estimand, a time ordering, a causal graph, and identification assumptions. Accordingly, this note uses *specification shift* as the general term and reserves *included variable bias* for cases in which those additional causal conditions establish that including $Z$ moves an estimator away from the CET.
+
+The derivation is scalar: $D$ is the focal regressor and $Z$ is one candidate control. The vector case, uncertainty quantification, and identification of the CET are separate tasks.
+
+# Setup: two nested linear projections
+
+Let $Y$, $D$, and $Z$ be scalar random variables with finite second moments. Let $W$ be a column vector of common regressors that includes an intercept. In a TSCS application, $W$ may also include unit and time effects, lagged outcomes, lagged treatments, and other predetermined state variables. Nothing in the algebra below establishes that the variables in $W$ are causally admissible.
+
+Define the short population linear projection by
+
+\begin{equation}
+(\beta_S,\gamma_S)
+=
+\arg\min_{b,g}
+\mathbb{E}\!\left[(Y-bD-W'g)^2\right],
+\label{eq:short-pop}
+\end{equation}
+
+and the long population linear projection by
+
+\begin{equation}
+(\beta_L,\theta_L,\gamma_L)
+=
+\arg\min_{b,t,g}
+\mathbb{E}\!\left[(Y-bD-tZ-W'g)^2\right].
+\label{eq:long-pop}
+\end{equation}
+
+The labels short and long describe regressor sets only. Neither label means true, correct, unbiased, or causal.
+
+Let $P_W A$ denote the population linear projection of a scalar random variable $A$ on $W$, and write
+
+\[
+\widetilde A_W=A-P_WA.
+\]
+
+Assume
+
+\[
+0<\mathbb{E}[\widetilde D_W^2]<\infty
+\]
+
+and that the relevant population second-moment matrices have full rank. Define the auxiliary population projection
+
+\begin{equation}
+Z=\pi D+W'\kappa+r,
+\qquad
+\mathbb{E}[Dr]=0,
+\qquad
+\mathbb{E}[Wr]=0.
+\label{eq:aux-pop}
+\end{equation}
+
+By partial regression,
+
+\begin{equation}
+\pi
+=
+\frac{\mathbb{E}[\widetilde D_W\widetilde Z_W]}
+{\mathbb{E}[\widetilde D_W^2]}.
+\label{eq:pi-pop}
+\end{equation}
+
+# Three distinct objects
+
+## Population specification shift
+
+The population specification shift associated with adding $Z$, holding $W$ and the population distribution fixed, is
+
+\begin{equation}
+\Delta_Z
+:=
+\beta_L-\beta_S.
+\label{eq:delta-pop}
+\end{equation}
+
+This is a contrast between two coefficients of linear projection. It exists without potential outcomes, a DAG, or an identification claim. Its value depends on the distribution of the variables and on the common regressor set $W$.
+
+## Sample specification shift
+
+For a fixed sample, let $\widehat\beta_S$ and $\widehat\beta_L$ be the OLS coefficients on $D$ in the short and long regressions, estimated using exactly the same observations and the same $W$. Define
+
+\begin{equation}
+\widehat\Delta_Z
+:=
+\widehat\beta_L-\widehat\beta_S.
+\label{eq:delta-sample}
+\end{equation}
+
+This is an observed coefficient movement. It is not, by definition, an estimate of causal bias.
+
+## Bias relative to the CET
+
+Let $\beta_{\mathrm{CET}}$ be a scalar causal estimand fixed before comparing the two regressions. This note does not define the substantive timing or assumptions that identify it. For a population projection coefficient $\beta_m$, where $m\in\{S,L\}$, define its discrepancy from the causal target as
+
+\begin{equation}
+B_m^{P}
+:=
+\beta_m-\beta_{\mathrm{CET}}.
+\label{eq:projection-discrepancy}
+\end{equation}
+
+For a finite-sample estimator, the conventional bias is
+
+\begin{equation}
+\operatorname{Bias}(\widehat\beta_m;\beta_{\mathrm{CET}})
+:=
+\mathbb{E}[\widehat\beta_m]-\beta_{\mathrm{CET}},
+\label{eq:estimator-bias}
+\end{equation}
+
+provided the expectation exists and the sampling scheme is specified. These quantities are meaningful as *causal* discrepancies only after the CET and the identifying assumptions have been stated.
+
+Because the same target is subtracted from both population coefficients,
+
+\begin{equation}
+\Delta_Z=B_L^P-B_S^P.
+\label{eq:delta-bias-difference}
+\end{equation}
+
+Thus, a specification shift is the difference between two target discrepancies. It does not reveal either discrepancy separately. Likewise, when both estimators use the same sampling scheme,
+
+\begin{equation}
+\mathbb{E}[\widehat\Delta_Z]
+=
+\operatorname{Bias}(\widehat\beta_L;\beta_{\mathrm{CET}})
+-
+\operatorname{Bias}(\widehat\beta_S;\beta_{\mathrm{CET}}).
+\label{eq:expected-shift}
+\end{equation}
+
+Equation \eqref{eq:expected-shift} still does not establish that either estimator identifies the CET.
+
+# Population FWL identity
+
+\begin{proposition}[Scalar population specification-shift identity]
+Under the moment and rank conditions above,
+
+\begin{equation}
+\boxed{
+\Delta_Z
+=
+\beta_L-\beta_S
+=
+-\theta_L\pi
+}.
+\label{eq:population-identity}
+\end{equation}
+
+This is an identity between coefficients of nested population linear projections.
+\end{proposition}
+
+\begin{proof}
+Residualize $Y$, $D$, and $Z$ with respect to $W$. The normal equation for $D$ in the residualized long projection is
+
+\[
+\mathbb{E}[\widetilde D_W\widetilde Y_W]
+=
+\beta_L\mathbb{E}[\widetilde D_W^2]
++
+\theta_L\mathbb{E}[\widetilde D_W\widetilde Z_W].
+\]
+
+Therefore,
+
+\[
+\beta_L
+=
+\frac{\mathbb{E}[\widetilde D_W\widetilde Y_W]}
+{\mathbb{E}[\widetilde D_W^2]}
+-
+\theta_L
+\frac{\mathbb{E}[\widetilde D_W\widetilde Z_W]}
+{\mathbb{E}[\widetilde D_W^2]}.
+\]
+
+FWL applied to the short projection gives
+
+\[
+\beta_S
+=
+\frac{\mathbb{E}[\widetilde D_W\widetilde Y_W]}
+{\mathbb{E}[\widetilde D_W^2]},
+\]
+
+and Equation \eqref{eq:pi-pop} gives the second ratio as $\pi$. Subtraction yields
+
+\[
+\beta_L-\beta_S=-\theta_L\pi.
+\]
+\end{proof}
+
+## Equivalent projection-substitution check
+
+The same result follows without using the coefficient formula directly. Write the long projection as
+
+\[
+Y=\beta_LD+\theta_LZ+W'\gamma_L+u_L,
+\]
+
+where $u_L$ is orthogonal to $D$, $Z$, and $W$. Substituting Equation \eqref{eq:aux-pop} gives
+
+\[
+Y
+=
+(\beta_L+\theta_L\pi)D
++
+W'(\gamma_L+\theta_L\kappa)
++
+(u_L+\theta_Lr).
+\]
+
+The final composite residual is orthogonal to $D$ and $W$. Uniqueness of the short projection therefore implies
+
+\[
+\beta_S=\beta_L+\theta_L\pi,
+\]
+
+which is equivalent to Equation \eqref{eq:population-identity}. This second derivation independently verifies the sign.
+
+# Exact sample identity
+
+Let $y$, $d$, and $z$ be $n\times1$ sample vectors and let $W$ be the common $n\times k$ design matrix. Define the residual-maker
+
+\[
+M_W
+=
+I-W(W'W)^{-1}W'.
+\]
+
+Assume $W$ has full column rank, $d'M_Wd>0$, and the augmented design matrix has full column rank. Then
+
+\[
+\widehat\beta_S
+=
+\frac{d'M_Wy}{d'M_Wd}
+\]
+
+and the normal equation for $D$ in the long regression gives
+
+\[
+d'M_Wy
+=
+\widehat\beta_L d'M_Wd
++
+\widehat\theta_L d'M_Wz.
+\]
+
+The coefficient on $D$ in the sample auxiliary regression of $Z$ on $D$ and $W$ is
+
+\[
+\widehat\pi
+=
+\frac{d'M_Wz}{d'M_Wd}.
+\]
+
+Combining the three expressions yields the finite-sample identity
+
+\begin{equation}
+\boxed{
+\widehat\Delta_Z
+=
+\widehat\beta_L-\widehat\beta_S
+=
+-\widehat\theta_L\widehat\pi
+}.
+\label{eq:sample-identity}
+\end{equation}
+
+No probability limit, exogeneity condition, homoskedasticity assumption, or causal claim is needed for Equation \eqref{eq:sample-identity}. Clustered standard errors also do not affect this point-estimate identity. However, exact equality requires the short, long, and auxiliary regressions to use the same observations, the same $W$, and the same estimation weights. If $Z$ has missing values, the short model must be re-estimated on the long-model sample before applying the identity.
+
+In a fixed-effects or ADL regression, fixed effects and the common dynamic regressors are components of $W$. The identity survives their residualization. This fact does not remove dynamic-panel bias, invalid controls in $W$, misspecified dynamics, or any other source of discrepancy from the CET.
+
+# Causal classification of the same algebra
+
+The identity does not classify $Z$. A time-indexed DAG and substantive ordering must do that work. Table \ref{tab:causal-interpretations} states the strongest warranted interpretation in four leading cases. Each statement is conditional, not automatic.
+
+\begin{table}[htbp]
+\centering
+\caption{Causal interpretations of the scalar specification shift, conditional on additional assumptions}
+\label{tab:causal-interpretations}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.13\textwidth} >{\raggedright\arraybackslash}p{0.25\textwidth} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{0.25\textwidth}}
+\toprule
+Role of $Z$ & Conditions needed for a causal comparison & Interpretation of $\Delta_Z=\beta_L-\beta_S$ under those conditions & What the identity alone cannot show \\
+\midrule
+Collider & $W$ suffices to identify the CET in the short specification; $Z$ is a conditioned common effect or descendant that opens an otherwise blocked noncausal path; functional-form conditions map the short coefficient to the CET. & Then $B_S^P=0$, so $\Delta_Z=B_L^P$. In this restricted case, the population shift is the discrepancy introduced by conditioning on $Z$. & That $Z$ is a collider; that the short model identifies the CET; or that all of the shift is collider bias when other misspecification remains. \\
+\addlinespace
+Mediator, total-effect target & The CET is explicitly the total contemporaneous effect; the short specification identifies that target. Interpreting the long coefficient as a direct effect additionally requires a suitable mediation model, including assumptions about mediator-outcome confounding and interactions. & If the short coefficient identifies the total CET, then $B_S^P=0$ and $\Delta_Z=B_L^P$ relative to that total-effect target. Under stronger linear mediation conditions, the shift may equal the negative of an indirect component. & That the long coefficient generally identifies a controlled or natural direct effect, or that the product is a mediated effect without the additional mediation assumptions. \\
+\addlinespace
+Confounder & $Z$ is measured before treatment for the chosen CET; $W$ and $Z$ jointly satisfy the needed exchangeability and functional-form conditions; the long specification identifies the CET. & Then $B_L^P=0$, so $\Delta_Z=-B_S^P$. The movement is a correction of the short projection's discrepancy under these assumptions. & That including $Z$ is sufficient for identification; that measurement, overlap, timing, or model-form problems are absent; or that any nonzero shift is deconfounding. \\
+\addlinespace
+Ambiguous or dual role & $Z$ plausibly blocks one open path but opens or blocks another, or its within-period ordering is not known. No single identifying model is yet established. & $\Delta_Z=B_L^P-B_S^P$ is only the net difference between two possibly nonzero discrepancies. It may combine deconfounding, collider selection, over-control, and model-form changes. & Which component dominates; which coefficient is closer to the CET; or whether either coefficient has a causal interpretation. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+## Collider interpretation
+
+A collider label is not enough by itself. To call the shift *included variable bias*, one must also establish that the short adjustment set identifies the CET and that adding $Z$ opens a path that invalidates the long adjustment set. Under those conditions,
+
+\[
+\beta_S=\beta_{\mathrm{CET}}
+\quad\Longrightarrow\quad
+\Delta_Z=\beta_L-\beta_{\mathrm{CET}}.
+\]
+
+If the short model is already confounded or misspecified, the same $\Delta_Z$ is not the total bias of the long model.
+
+## Mediator interpretation with a total-effect target
+
+If $D\to Z\to Y$ and the target is the total CET, conditioning on $Z$ can remove part of the causal pathway. But the regression coefficient on $D$ in the long model is not automatically a direct causal effect. That interpretation requires stronger mediation conditions than the FWL identity: well-defined interventions, appropriate control of mediator-outcome confounding, no treatment-induced mediator-outcome confounding for standard identification strategies, and functional-form restrictions when using a single linear coefficient.
+
+If the short model identifies the total CET, the shift is the long projection's discrepancy from that target. Only in a compatible linear additive mediation model, without relevant interactions, can the shift be interpreted as the negative of an indirect component.
+
+## Confounder interpretation
+
+If $Z$ is a genuine pre-treatment common cause and the long adjustment set identifies the CET, then
+
+\[
+\beta_L=\beta_{\mathrm{CET}}
+\quad\Longrightarrow\quad
+\Delta_Z=-(\beta_S-\beta_{\mathrm{CET}}).
+\]
+
+The same algebra that records harmful movement in the collider case records corrective movement here. The sign of $-\theta_L\pi$ cannot distinguish these cases.
+
+## Ambiguous and dual-role interpretation
+
+A variable may be a confounder through one path and a collider or mediator through another. Alternatively, a substantive variable may be a confounder at $t-1$ but a collider or mediator at $t$. In either situation, neither the short nor the long coefficient is guaranteed to identify the CET.
+
+For a same-index dual-role $Z$, the scalar shift is a net projection contrast. It does not separately recover the correction from closing a confounding path and the distortion from opening a collider path or blocking a mediating path. For a role that changes across time, $Z_{t-1}$ and $Z_t$ are distinct candidate regressors. The scalar identity applies to adding one candidate while holding the rest of $W$ fixed; it does not by itself justify replacing $Z_t$ with $Z_{t-1}$.
+
+Therefore, ambiguity is a substantive finding, not a defect in the diagnostic. In that case the defensible report is the specification shift plus the competing causal interpretations, not a claim that the shift is bias.
+
+# Mathematical checks
+
+The following checks validate the derivation without simulated data.
+
+1. **Normal-equation check.** The FWL proof derives the identity directly from the long and short normal equations after residualizing by the same $W$.
+
+2. **Independent substitution check.** Substituting the auxiliary projection of $Z$ into the long projection gives $\beta_S=\beta_L+\theta_L\pi$, confirming both the product and its negative sign in $\Delta_Z$.
+
+3. **Finite-sample matrix check.** Equation \eqref{eq:sample-identity} follows from exact OLS normal equations using the residual-maker $M_W$. No asymptotic approximation is used.
+
+4. **Units check.** $\theta_L$ has units $Y/Z$ and $\pi$ has units $Z/D$. Their product has units $Y/D$, matching $\beta_L-\beta_S$.
+
+5. **Rescaling check.** Replacing $Z$ by $cZ$, with $c\neq0$, changes $\theta_L$ to $\theta_L/c$ and $\pi$ to $c\pi$. The product and the specification shift are invariant.
+
+6. **Zero-component check.** If $\theta_L=0$ or $\pi=0$, then $\Delta_Z=0$. This says only that the treatment coefficient does not move in the chosen linear projections; it does not establish causal validity or the absence of other bias.
+
+7. **Target-cancellation check.** Subtracting the same $\beta_{\mathrm{CET}}$ from both population coefficients yields Equation \eqref{eq:delta-bias-difference}. Hence the specification shift is a difference in discrepancies, not a discrepancy level.
+
+# Terminology rule
+
+The following terminology keeps the algebra and the causal claim separate:
+
+- **Population specification shift:** $\Delta_Z=\beta_L-\beta_S=-\theta_L\pi$.
+- **Sample specification shift:** $\widehat\Delta_Z=\widehat\beta_L-\widehat\beta_S=-\widehat\theta_L\widehat\pi$, computed on a common sample.
+- **Included variable bias:** use only when a stated causal graph, timing, target, and identification assumptions establish that the long specification is farther from $\beta_{\mathrm{CET}}$ because it conditions on $Z$.
+- **Ambiguous shift:** use when the causal role is dual, contested, or unidentified.
+
+A large absolute shift is evidence of specification sensitivity. It is not evidence, by itself, that $Z$ should be included or excluded.
+
+# Unresolved issues and boundaries
+
+This note intentionally leaves the following issues unresolved:
+
+1. The formal definition and identification conditions for $\beta_{\mathrm{CET}}$, including within-period timing, treatment histories, anticipation, and interference.
+2. Finite-$T$ bias in dynamic fixed-effects estimators. This is a distinct estimator problem and is not absorbed by the FWL identity.
+3. Sampling uncertainty for $\Delta_Z$, including covariance between nested estimators and cluster dependence.
+4. Multiple correlated candidate controls, order dependence, and joint versus leave-one-out shifts.
+5. Nonlinear links, non-nested specifications, regularized estimation, and comparisons that use different samples or different weights.
+6. Identification of separate confounding, collider, and mediation components for a dual-role variable.
+
+These boundaries are substantive. None can be resolved by the scalar product identity alone.
