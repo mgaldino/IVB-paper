@@ -1,0 +1,186 @@
+---
+title: "Finite-T Dynamic-Panel Bias and Estimator Choice"
+author: "IVB-paper replication package"
+date: "2026-07-11"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+params:
+  input_dir: "results"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  out.width = "95%"
+)
+options(scipen = 999)
+required <- c("data.table", "dplyr", "ggplot2", "knitr")
+available <- vapply(required, requireNamespace, logical(1), quietly = TRUE)
+if (any(!available)) {
+  stop("Missing report packages: ", paste(names(available)[!available], collapse = ", "))
+}
+input_dir <- normalizePath(params$input_dir, mustWork = TRUE)
+required_files <- c(
+  "design_grid.csv",
+  "scenario_estimator_summary.csv",
+  "stability_checks.csv",
+  "failures.csv",
+  "run_manifest.csv"
+)
+paths <- file.path(input_dir, required_files)
+if (any(!file.exists(paths))) {
+  stop("Missing full-grid outputs: ", paste(required_files[!file.exists(paths)], collapse = ", "))
+}
+summary_results <- data.table::fread(file.path(input_dir, "scenario_estimator_summary.csv"))
+stability <- data.table::fread(file.path(input_dir, "stability_checks.csv"))
+failures <- data.table::fread(file.path(input_dir, "failures.csv"))
+run_manifest <- data.table::fread(file.path(input_dir, "run_manifest.csv"))
+```
+
+# Pre-specified design
+
+The report reads versioned outputs and does not run simulations. The principal grid contains $N\in\{50,100,250\}$, $T\in\{8,10,15,20,30,50\}$, and $\rho_Y\in\{0.2,0.5,0.8\}$. The stress grid fixes $N=100$ and $\rho_Y=0.5$, varies $T\in\{10,20,30\}$ and $\rho_D\in\{0.2,0.5,0.8\}$, and uses the inherited dual-role unit-effect scales $\sigma_{\alpha Z}\in\{0.5,2.0\}$.
+
+```{r table-design}
+design_table <- summary_results |>
+  dplyr::distinct(design_family, N, T, rho_Y, rho_D, sigma_alpha_Z) |>
+  dplyr::group_by(design_family) |>
+  dplyr::summarise(
+    scenarios = dplyr::n(),
+    N_values = paste(sort(unique(N)), collapse = ", "),
+    T_values = paste(sort(unique(T)), collapse = ", "),
+    rho_Y_values = paste(sort(unique(rho_Y)), collapse = ", "),
+    rho_D_values = paste(sort(unique(rho_D)), collapse = ", "),
+    sigma_alpha_Z_values = paste(sort(unique(sigma_alpha_Z)), collapse = ", "),
+    .groups = "drop"
+  )
+knitr::kable(
+  design_table,
+  col.names = c("Design", "Scenarios", "N", "T", "rho_Y", "rho_D", "sigma_alpha_Z"),
+  caption = "Pre-specified principal and stress grids."
+)
+```
+
+# Phase map
+
+```{r figure-phase-map, fig.cap="Phase map for whether the absolute Monte Carlo estimation bias is at least as large as the absolute mean specification shift caused by adding lagged Z. Arellano-Bond is excluded from this main comparison and retained as a sensitivity benchmark."}
+phase_data <- summary_results |>
+  dplyr::filter(
+    design_family == "principal",
+    estimator_id %in% c("fe_adl", "hpj_fe_adl")
+  ) |>
+  dplyr::mutate(
+    phase = ifelse(bias_ge_abs_delta_z, "Bias >= |Delta_Z|", "Bias < |Delta_Z|"),
+    rho_Y_label = paste0("rho_Y = ", rho_Y),
+    N_label = paste0("N = ", N)
+  )
+
+phase_plot <- ggplot2::ggplot(
+  phase_data,
+  ggplot2::aes(x = factor(T), y = rho_Y_label, fill = phase)
+) +
+  ggplot2::geom_tile(color = "white", linewidth = 0.4) +
+  ggplot2::facet_grid(estimator ~ N_label) +
+  ggplot2::scale_fill_manual(values = c(
+    "Bias >= |Delta_Z|" = "#C44E52",
+    "Bias < |Delta_Z|" = "#4C78A8"
+  )) +
+  ggplot2::labs(
+    x = "Number of observed periods (T)",
+    y = "Outcome persistence",
+    fill = "Finite-T comparison"
+  ) +
+  ggplot2::theme_minimal(base_size = 10) +
+  ggplot2::theme(
+    panel.grid = ggplot2::element_blank(),
+    legend.position = "bottom"
+  )
+
+ggplot2::ggsave(
+  filename = file.path(input_dir, "phase_map.pdf"),
+  plot = phase_plot,
+  width = 10,
+  height = 5.5,
+  units = "in"
+)
+ggplot2::ggsave(
+  filename = file.path(input_dir, "phase_map.png"),
+  plot = phase_plot,
+  width = 10,
+  height = 5.5,
+  units = "in",
+  dpi = 300
+)
+phase_plot
+```
+
+# Bias, RMSE, and coverage
+
+```{r table-principal-results}
+principal_table <- summary_results |>
+  dplyr::filter(design_family == "principal") |>
+  dplyr::group_by(estimator, N, T) |>
+  dplyr::summarise(
+    max_abs_bias = max(abs(bias), na.rm = TRUE),
+    max_rmse = max(rmse, na.rm = TRUE),
+    min_coverage = min(coverage, na.rm = TRUE),
+    max_mcse_bias = max(mcse_bias, na.rm = TRUE),
+    .groups = "drop"
+  )
+knitr::kable(
+  principal_table,
+  digits = 3,
+  col.names = c("Estimator", "N", "T", "Max |bias|", "Max RMSE", "Min coverage", "Max bias MCSE"),
+  caption = "Principal-grid bias, RMSE, coverage, and Monte Carlo precision summaries across outcome-persistence values."
+)
+```
+
+# Arellano-Bond sensitivity diagnostics
+
+Arellano-Bond is a sensitivity benchmark under its own moment conditions. It is not labeled as bias-corrected fixed effects. Instruments are collapsed and limited to lags 2--3; the DGP contains no common time shocks, so this benchmark uses individual effects in differences and does not add a growing set of time-dummy instruments.
+
+```{r table-ab-diagnostics}
+ab_table <- summary_results |>
+  dplyr::filter(estimator_id == "arellano_bond") |>
+  dplyr::group_by(design_family, N, T) |>
+  dplyr::summarise(
+    failure_rate = max(failure_rate, na.rm = TRUE),
+    mean_instruments = max(mean_instrument_count, na.rm = TRUE),
+    ar2_rejection_rate_05 = max(ar2_rejection_rate_05, na.rm = TRUE),
+    hansen_rejection_rate_05 = max(hansen_rejection_rate_05, na.rm = TRUE),
+    .groups = "drop"
+  )
+knitr::kable(
+  ab_table,
+  digits = 3,
+  col.names = c("Design", "N", "T", "Failure", "Instruments", "AR(2) < .05", "Hansen < .05"),
+  caption = "Arellano-Bond sensitivity-benchmark failure and diagnostic rejection rates."
+)
+```
+
+# Monte Carlo stability and failures
+
+```{r table-stability}
+stability_table <- stability |>
+  dplyr::group_by(estimator) |>
+  dplyr::summarise(
+    scenario_estimator_cells = dplyr::n(),
+    cells_passing_all_stability_checks = sum(stability_pass, na.rm = TRUE),
+    maximum_failure_rate = max(failure_rate, na.rm = TRUE),
+    maximum_bias_mcse = max(mcse_bias, na.rm = TRUE),
+    .groups = "drop"
+  )
+knitr::kable(
+  stability_table,
+  digits = 3,
+  col.names = c("Estimator", "Cells", "Stable cells", "Max failure", "Max bias MCSE"),
+  caption = "Monte Carlo precision, batch-stability, and estimator-failure checks."
+)
+```
+
+The raw replication file retains every requested estimator attempt, including failures. No scenario or estimator is filtered according to performance. The exact raw-row and failure counts are recorded in the run manifest and failure table.
