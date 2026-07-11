@@ -208,7 +208,7 @@ then the sample normal equation for $d$ gives
 \label{eq:sample-vector-identity}
 \end{equation}
 
-This equality is exact for OLS point estimates. It requires the same observations, weights, and common regressors in the short, joint long, and auxiliary regressions. Standard-error choices do not change it. With missing candidate controls, the short model must be re-estimated on the complete sample used by the joint model.
+This section and the accompanying deterministic tests use unweighted OLS throughout. The identity requires the same observations and common regressors in the short, joint long, and auxiliary regressions. Standard-error choices do not change it. With missing candidate controls, the short model must be re-estimated on the complete sample used by the joint model. A WLS extension would require the corresponding weighted residualizer and is not proved here.
 
 # Sequential inclusion
 

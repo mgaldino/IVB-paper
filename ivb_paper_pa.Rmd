@@ -420,7 +420,7 @@ where $W$ collects admissible controls. By the Frisch--Waugh--Lovell theorem,
 where $\widehat{\pi}$ is the coefficient on $D$ in the auxiliary regression of $Z$ on $D$ and $W$.
 
 \begin{proposition}[Multiple candidate controls]
-Under the usual full-rank conditions and using the same sample, weights, and common regressors, let $Z=(Z_1,\ldots,Z_q)'$, let $\widehat\theta$ be its coefficient vector in the joint long regression, and let $\widehat\pi$ collect the coefficients on $D$ from the auxiliary regressions of each $Z_j$ on $D$ and $W$. Then
+Under the usual full-rank conditions for unweighted OLS and using the same observations and common regressors, let $Z=(Z_1,\ldots,Z_q)'$, let $\widehat\theta$ be its coefficient vector in the joint long regression, and let $\widehat\pi$ collect the coefficients on $D$ from the auxiliary regressions of each $Z_j$ on $D$ and $W$. Then
 \[
 \widehat\Delta_{\mathcal Z}
 =
