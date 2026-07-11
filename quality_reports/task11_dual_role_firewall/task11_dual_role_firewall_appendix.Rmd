@@ -1,0 +1,64 @@
+---
+title: "Appendix Note: Dual-Role Figure and Firewall Mechanism"
+date: "2026-07-11"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: true
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{float}
+  - \usepackage{graphicx}
+geometry: margin=1in
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(readr)
+library(knitr)
+
+artifact_dir <- "."
+validation <- readr::read_csv(file.path(artifact_dir, "validation.csv"), show_col_types = FALSE)
+manifest <- readr::read_csv(file.path(artifact_dir, "source_manifest.csv"), show_col_types = FALSE)
+```
+
+# Scope and inputs
+
+This note documents the reconstruction of the dual-role Figure 2 and the firewall table without running, sourcing, or modifying a simulation. The generation script reads only these existing result artifacts:
+
+```{r source-files}
+knitr::kable(manifest, format = "latex", booktabs = TRUE, caption = "Source result artifacts used to generate the Task 11 figure and table.")
+```
+
+The central DGP has $Z_{t-1}$ as a confounder of $D_t$ and $Y_t$, while contemporaneous $Z_t$ is a collider of $D_t$ and $Y_t$. The estimand is the contemporaneous treatment effect $\beta=1$. The eight-model result artifact uses $N=100$, $T=30$, a burn-in of 100 periods, and 500 replications in each of its 10 scenarios. Its displayed models are pooled short/long, TWFE short/long, ADL short/long without fixed effects, and ADL short/long with unit and time fixed effects. The Figure 2 subset fixes $\sigma_{\alpha_Z}=0.5$ and displays TWFE short, TWFE plus $Z_{t-1}$, ADL+FE, and ADL+FE plus $Z_{t-1}$.
+
+The firewall artifact varies $(\rho_Z,\rho_Y)$ over 12 scenarios and reports 500 replications per scenario. It compares the long TWFE specification with the long ADL+FE specification. The existing dual-role report identifies this as the same $N=100$, $T=30$ family; the Task 10 inventory records 500 replications but leaves the firewall row's $N$ and $T$ as source metadata. No claim here uses a new draw or an unrecorded simulation run.
+
+# Monte Carlo construction and fidelity check
+
+Bias is the simulated mean of $\widehat\beta-1$; RMSE is $\sqrt{\operatorname{mean}[(\widehat\beta-1)^2]}$. For the eight-model raw file, the Monte Carlo standard error (MCSE) is the sample standard deviation of $\widehat\beta$ across replications divided by $\sqrt{500}$. The plotted 95% Monte Carlo uncertainty interval is mean bias plus or minus $1.96\times\mathrm{MCSE}$. These quantify simulation noise in the estimated mean bias; they are not confidence intervals for an estimator in a single dataset. The firewall CSV supplies its published MCSEs, so the table applies the same formula to those reported quantities.
+
+```{r validation-table}
+knitr::kable(validation, format = "latex", booktabs = TRUE, caption = "Reconstruction checks. The figure/table generator stops if recalculated means or MCSEs fail the stated tolerance.")
+```
+
+The raw recalculation reproduces the published eight-model bias means and MCSEs to numerical precision before any presentational change. The maximum discrepancy is recorded in the validation artifact rather than silently replaced.
+
+# Reconstructed Figure 2
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\linewidth]{figure_2_dual_role_bias_rmse.pdf}
+\caption{Dual-role DGP: bias relative to the true contemporaneous treatment effect and RMSE across collider persistence. The DGP has $Z_{t-1}$ as a confounder and $Z_t$ as a contemporaneous collider; the estimand is $\beta=1$. The displayed subset sets $\sigma_{\alpha_Z}=0.5$, with $N=100$, $T=30$, a burn-in of 100 periods, and 500 Monte Carlo replications per scenario. Models are TWFE short, TWFE plus $Z_{t-1}$, ADL+FE, and ADL+FE plus $Z_{t-1}$; FE models include unit and time effects. Error bars are 95\% Monte Carlo uncertainty intervals for simulated mean bias, not estimator confidence intervals.}
+\end{figure}
+
+# Firewall mechanism table
+
+\input{table_firewall_mc.tex}
+
+# Interpretation and limitations
+
+For this DGP, conditioning on the lagged outcome and lagged control is associated with a markedly smaller simulated bias than the long TWFE specification when outcome persistence is positive. When $\rho_Y=0$, the long TWFE bias is itself approximately zero, so the contrast is not evidence that the lagged outcome universally improves a specification. It is consistent with the displayed mechanism in which outcome persistence transmits the inherited path; it does not apportion the contrast between d-separation, dynamic conditional-mean specification, or finite-$T$ estimator behavior.
+
+The evidence is conditional on this linear, homogeneous DGP and its stated grid. The firewall result is a published summary CSV rather than a raw-replication artifact, so its MC intervals are reconstructed from reported MCSEs rather than recalculated from individual draws. Neither the intervals nor the figure establish estimator-level sampling coverage.

@@ -1,0 +1,6 @@
+check,value,threshold_or_expected,pass
+raw replication count per model-scenario,500,500,TRUE
+published replication count per scenario,500,500,TRUE
+recalculated bias means reproduce published summary,4.440892e-15,<= 1e-10,TRUE
+recalculated MCSEs reproduce published summary,1.420305e-17,<= 1e-10,TRUE
+firewall grid has 12 scenarios,12,12,TRUE

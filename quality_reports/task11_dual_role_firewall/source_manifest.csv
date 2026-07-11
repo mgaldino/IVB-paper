@@ -1,0 +1,4 @@
+source_artifact,md5
+simulations/dual_role_z/results/sim_dual_role_z_8models_raw.csv,25cca514b6ec2c33b409f0c94b648742
+simulations/dual_role_z/results/sim_dual_role_z_8models_results.csv,eb5ac53a9dd902b35764d40de1b28629
+simulations/dual_role_z/results/sim_dual_role_z_firewall_results.csv,3a5a2bc3ac6d9abeff4197f9ceb19cbb

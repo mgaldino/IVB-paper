@@ -59,43 +59,18 @@ theme_set(theme_minimal(base_size = 12))
 ```
 
 ```{r load-results, include=FALSE}
-dual_role_results <- fread("simulations/dual_role_z/results/sim_dual_role_z_8models_results.csv") %>%
+task11_figure_data <- fread(
+  "quality_reports/task11_dual_role_firewall/figure_2_plot_data.csv"
+) %>%
   as_tibble()
 
-dual_role_plot_data <- dual_role_results %>%
-  filter(sigma_aZ == 0.5) %>%
-  transmute(
-    rho_Z = rho_Z,
-    `TWFE short` = twfe_s_bias,
-    `TWFE + lagged Z` = twfe_l_bias,
-    `ADL + FE` = adl_s_fe_bias,
-    `ADL + FE + lagged Z` = adl_l_fe_bias
-  ) %>%
-  pivot_longer(
-    cols = -rho_Z,
-    names_to = "model",
-    values_to = "bias"
-  )
-
-dual_role_summary <- dual_role_results %>%
-  filter(sigma_aZ == 0.5) %>%
+task11_bias_summary <- task11_figure_data %>%
+  filter(panel == "Bias relative to true beta") %>%
+  group_by(model) %>%
   summarise(
-    adl_min = min(adl_l_fe_bias),
-    adl_max = max(adl_l_fe_bias),
-    twfe_long_min = min(twfe_l_bias),
-    twfe_long_max = max(twfe_l_bias),
-    twfe_short_max = max(twfe_s_bias)
-  )
-
-firewall_results <- fread("simulations/dual_role_z/results/sim_dual_role_z_firewall_results.csv") %>%
-  as_tibble()
-
-firewall_main <- firewall_results %>%
-  filter(rho_Z == 0.5) %>%
-  transmute(
-    `Outcome persistence ($\\rho_Y$)` = rho_Y,
-    `TWFE + $Z_{t-1}$` = round(twfe_l_bias, 3),
-    `ADL + FE + $Z_{t-1}$` = round(adl_l_bias, 3)
+    min_bias = min(bias),
+    max_bias = max(bias),
+    .groups = "drop"
   )
 
 oc_clean <- fread("simulations/nonlinearity/results/sim_overcontrol_contemporaneous_results.csv") %>%
@@ -563,46 +538,17 @@ The dual role is visible in Figure \ref{fig:dynamic_dual_role_pa}. Without condi
 \label{fig:dynamic_dual_role_pa}
 \end{figure}
 
-```{r dual-role-bias-figure, fig.cap="Dual-role simulation comparing static and dynamic specifications. In the main design, ADL + FE + $Z_{t-1}$ keeps bias near zero across the reported range of collider persistence, while the static TWFE specifications retain appreciable bias.", out.width="85%"}
-ggplot(dual_role_plot_data, aes(x = rho_Z, y = bias, color = model)) +
-  geom_line(linewidth = 0.8) +
-  geom_point(size = 2) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey50") +
-  scale_x_continuous(breaks = c(0.1, 0.3, 0.5, 0.7, 0.85)) +
-  scale_color_manual(
-    values = c(
-      "TWFE short" = "#b22222",
-      "TWFE + lagged Z" = "#1f78b4",
-      "ADL + FE" = "#33a02c",
-      "ADL + FE + lagged Z" = "#000000"
-    )
-  ) +
-  labs(x = expression(rho[Z]), y = "Bias", color = "Specification") +
-  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
-  theme(legend.position = "bottom")
+```{r dual-role-bias-figure, fig.cap="Dual-role DGP: bias relative to the true contemporaneous treatment effect and RMSE across collider persistence. The DGP has $Z_{t-1}$ as a confounder and $Z_t$ as a contemporaneous collider; the estimand is $\\beta=1$. The displayed subset sets $\\sigma_{\\alpha_Z}=0.5$, with $N=100$, $T=30$, a burn-in of 100 periods, and 500 Monte Carlo replications per scenario. Models are TWFE short, TWFE plus $Z_{t-1}$, ADL+FE, and ADL+FE plus $Z_{t-1}$; FE models include unit and time effects. Error bars are 95\\% Monte Carlo uncertainty intervals for simulated mean bias, not estimator confidence intervals.", out.width="95%"}
+knitr::include_graphics(
+  "quality_reports/task11_dual_role_firewall/figure_2_dual_role_bias_rmse.pdf"
+)
 ```
 
-In the main dual-role design, the bias of ADL + FE + $Z_{t-1}$ stays between `r sprintf('%.3f', dual_role_summary$adl_min)` and `r sprintf('%.3f', dual_role_summary$adl_max)`, while the bias of TWFE + $Z_{t-1}$ remains between `r sprintf('%.3f', dual_role_summary$twfe_long_min)` and `r sprintf('%.3f', dual_role_summary$twfe_long_max)`. The static short model has the largest reported bias, reaching `r sprintf('%.3f', dual_role_summary$twfe_short_max)` in the most persistent scenarios. For this DGP, the relevant comparison is therefore between specifications that represent $Z$ as a lagged state inside the dynamic outcome model and specifications that omit part of that state.
+In the main dual-role design, the bias of ADL + FE + $Z_{t-1}$ stays between `r sprintf('%.3f', filter(task11_bias_summary, model == "ADL + FE + lagged Z")$min_bias)` and `r sprintf('%.3f', filter(task11_bias_summary, model == "ADL + FE + lagged Z")$max_bias)`, while the bias of TWFE + $Z_{t-1}$ remains between `r sprintf('%.3f', filter(task11_bias_summary, model == "TWFE + lagged Z")$min_bias)` and `r sprintf('%.3f', filter(task11_bias_summary, model == "TWFE + lagged Z")$max_bias)`. The static short model has the largest reported bias, reaching `r sprintf('%.3f', filter(task11_bias_summary, model == "TWFE short")$max_bias)` in the most persistent scenarios. For this DGP, the relevant comparison is therefore between specifications that represent $Z$ as a lagged state inside the dynamic outcome model and specifications that omit part of that state.
 
-In the displayed DGP, outcome persistence transmits both the inherited collider path and the ordinary lagged treatment--outcome path through $Y_{t-1}$. Table \ref{tab:firewall_pa} shows that when this edge is removed by setting $\rho_Y=0$, the TWFE bias in the reported design is approximately zero. Conditioning on $Y_{t-1}$ blocks both displayed paths when $\rho_Y>0$, subject to the graph and scope conditions stated above; the simulation contrast does not identify how much of the improvement comes from each path.
+In the displayed DGP, outcome persistence transmits both the inherited collider path and the ordinary lagged treatment--outcome path through $Y_{t-1}$. Table \ref{tab:firewall_pa} shows that when this edge is removed by setting $\rho_Y=0$, the TWFE bias is approximately zero across the reported values of $\rho_Z$. Conditioning on $Y_{t-1}$ blocks both displayed paths when $\rho_Y>0$, subject to the graph and scope conditions stated above; the simulation contrast does not identify how much of the improvement comes from each path.
 
-```{r firewall-table}
-kable(
-  firewall_main,
-  format = "latex",
-  row.names = FALSE,
-  booktabs = TRUE,
-  escape = FALSE,
-  caption = paste0(
-    "Bias by outcome persistence in the dual-role DGP. When $\\rho_Y = 0$, ",
-    "the reported bias from conditioning on $Z_{t-1}$ is approximately zero even without $Y_{t-1}$. ",
-    "When $\\rho_Y > 0$, including $Y_{t-1}$ conditions on the displayed persistent outcome state. ",
-    "This comparison does not decompose the ordinary dynamic and inherited-collider paths. ",
-    "\\label{tab:firewall_pa}"
-  )
-) %>%
-  kable_styling(latex_options = c("hold_position", "scale_down"))
-```
+\input{quality_reports/task11_dual_role_firewall/table_firewall_mc.tex}
 
 This finding disciplines the paper's recommendation. The lagged outcome is not generally sufficient. In the displayed DGP, it conditions on the persistent outcome state through which both cited lag paths reach $Y_t$. ADL + FE with $Y_{t-1}$ and substantively justified lags of candidate controls is therefore the comparison baseline for this dual-role design, conditional on the identification and estimation conditions above.
 
