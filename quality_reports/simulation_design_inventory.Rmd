@@ -7,13 +7,45 @@ output:
     toc: true
     number_sections: true
 geometry: margin=0.8in
-fontsize: 9pt
+fontsize: 10pt
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 inv <- data.table::fread("simulation_design_inventory.csv")
 man <- data.table::fread("simulation_design_inventory_manifest.csv")
+
+coverage_labels <- c(
+  dual_role = "Dual-role dynamics",
+  firewall = "Firewall comparison",
+  mediator_overcontrol = "Mediator over-control",
+  nonlinearity = "Nonlinearity",
+  feedback = "Feedback",
+  carryover = "Carryover",
+  staggered_binary_treatment = "Staggered binary treatment",
+  measurement_error = "Measurement error",
+  callaway_style_trends = "Level-dependent trends",
+  contemporaneous_unobserved_confounding = "Contemporaneous confounding"
+)
+
+design_brief <- function(x) {
+  paste0("N=", x$N, "; T=", x$T, "; burn-in=", x$burn_in,
+         "; reps=", x$repetitions)
+}
+
+path_for_table <- function(x) gsub("/", "/ ", x, fixed = TRUE)
+tags_for_table <- function(x) {
+  x <- gsub("_", " ", x, fixed = TRUE)
+  gsub(";", "; ", x, fixed = TRUE)
+}
+
+make_longtable <- function(data, caption, widths, font_size = 7) {
+  out <- knitr::kable(data, format = "latex", caption = caption,
+                      longtable = TRUE, booktabs = TRUE, escape = TRUE)
+  out <- kableExtra::column_spec(out, column = seq_along(widths), width = widths)
+  kableExtra::kable_styling(out, latex_options = "repeat_header",
+                            font_size = font_size)
+}
 ```
 
 # Scope and reproducibility
@@ -29,25 +61,59 @@ tags <- c("dual_role", "firewall", "mediator_overcontrol", "nonlinearity", "feed
           "carryover", "staggered_binary_treatment", "measurement_error",
           "callaway_style_trends", "contemporaneous_unobserved_confounding")
 mat <- data.table::data.table(
-  required_coverage = tags,
-  inventory_rows = vapply(tags, function(tag) paste(inv[grepl(tag, coverage_tags, fixed = TRUE), inventory_id], collapse = "; "), character(1))
+  `Coverage requirement` = unname(coverage_labels[tags]),
+  `Mapped inventory IDs` = vapply(tags, function(tag) paste(inv[grepl(tag, coverage_tags, fixed = TRUE), inventory_id], collapse = "; "), character(1)),
+  `Count` = vapply(tags, function(tag) sum(grepl(tag, inv$coverage_tags, fixed = TRUE)), integer(1))
 )
-knitr::kable(mat, caption = "Table 1. Required coverage and the directly mapped inventory rows.", longtable = TRUE)
+make_longtable(mat, "Required coverage and the directly mapped inventory rows.",
+               c("0.31\\\\textwidth", "0.52\\\\textwidth", "0.07\\\\textwidth"), font_size = 8)
 ```
 
 # Design inventory
 
 ```{r table, results='asis'}
-cols <- c("inventory_id", "simulation_family", "equations", "causal_dag_description", "estimand",
-          "parameter_values_or_grid", "N", "T", "burn_in", "repetitions", "error_process",
-          "fixed_effects", "estimated_models", "metrics", "source_script", "result_file_paths", "status", "notes")
-knitr::kable(inv[, ..cols], caption = "Table 2. Existing simulation DGPs/families and result artifacts.", longtable = TRUE, escape = TRUE)
+design_overview <- inv[, .(
+  `Inventory ID` = gsub("_", "-", inventory_id, fixed = TRUE),
+  `Simulation family` = simulation_family,
+  `Estimand` = estimand,
+  `Design` = vapply(seq_len(.N), function(i) design_brief(.SD[i]), character(1)),
+  `Coverage tags` = tags_for_table(coverage_tags),
+  `Status` = gsub("_", " ", status, fixed = TRUE)
+)]
+make_longtable(design_overview,
+               "Reader-facing overview of existing simulation DGPs and families.",
+               c("0.12\\\\textwidth", "0.19\\\\textwidth", "0.20\\\\textwidth", "0.15\\\\textwidth",
+                 "0.19\\\\textwidth", "0.10\\\\textwidth"), font_size = 6)
 ```
+
+The canonical inventory CSV retains equations, parameter grids, fixed effects, estimator details, source scripts, result paths, and notes for each row. Table 2 selects the fields needed to identify the design, target, scale, coverage, and audit status without reducing the CSV record.
 
 # Artifact provenance
 
 ```{r manifest, results='asis'}
-knitr::kable(man, caption = "Table 3. Static provenance manifest for declared existing artifacts.", longtable = TRUE)
+manifest_summary <- man[, .(
+  `Path` = path_for_table(path),
+  `MD5` = md5,
+  `Bytes` = format(bytes, big.mark = ",", scientific = FALSE, trim = TRUE),
+  `Static validation` = static_validation
+)]
+make_longtable(manifest_summary,
+               "Static provenance summary for declared existing artifacts.",
+               c("0.39\\\\textwidth", "0.29\\\\textwidth", "0.13\\\\textwidth", "0.13\\\\textwidth"), font_size = 7)
+```
+
+# Full CSV headers
+
+Table 4 preserves the complete header record from the manifest. Headers are shown in a separate two-column longtable so that individual field names wrap rather than competing with the provenance fields in Table 3.
+
+```{r manifest_headers, results='asis'}
+manifest_headers <- man[, .(
+  `Artifact path` = path_for_table(path),
+  `Full CSV header` = gsub("|", ", ", csv_header, fixed = TRUE)
+)]
+make_longtable(manifest_headers,
+               "Complete CSV headers recorded in the provenance manifest.",
+               c("0.28\\\\textwidth", "0.62\\\\textwidth"), font_size = 6)
 ```
 
 # Static validation record
