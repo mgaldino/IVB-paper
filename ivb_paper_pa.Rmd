@@ -384,6 +384,73 @@ then the corresponding IVB decomposition asks how much the treatment coefficient
 
 The formula also clarifies a point that is easy to miss in practice: lagging the treatment is not a mechanical cure. If $D_t$ is autocorrelated, a collider that is contemporaneous with $D_t$ can remain associated with $D_{t-1}$. What matters is not whether the treatment index moved backward by one period, but whether the specification blocks the transmission of the bad-control path for the estimand of interest.
 
+## When ADL + FE Identifies the CET
+
+The ADL + FE benchmark identifies the CET only under explicit scope conditions. Let $H_{i,t-1}$ contain the observed outcome, treatment, and covariate history needed for current assignment and the outcome process. A sufficient constant-coefficient restriction is
+
+\[
+\mathbb{E}[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t]
+=
+\alpha_i+\tau_t+r(H_{i,t-1})'\gamma+\beta_{\mathrm{CET}}d,
+\]
+
+together with consistency, no interference, no anticipation, conditional mean exchangeability of $D_{it}$ given that history, and support for treatment after the history and fixed effects have been partialled out. The causal clock must also be recursive: $D_{it}$ precedes the contemporaneous outcome innovation, so simultaneous $Y_{it}\rightarrow D_{it}$ feedback is excluded. By contrast, $Y_{i,t-1}\rightarrow D_{it}$ feedback is compatible with identification when $Y_{i,t-1}$ and any other relevant past state are correctly included in $H_{i,t-1}$.
+
+Under those conditions, if $\widetilde D_{it}$ is the population residual from projecting $D_{it}$ on the included history and the unit and time effects, then
+
+\[
+\beta_D^P
+=
+\frac{\mathbb{E}[\widetilde D_{it}Y_{it}]}{\mathbb{E}[\widetilde D_{it}^2]}
+=
+\beta_{\mathrm{CET}}.
+\]
+
+The online appendix states this result as a proposition and gives the full proof. This equality is a population identification result. Unit effects absorb additive time-invariant unit factors and time effects absorb additive common shocks; neither removes omitted time-varying confounding or heterogeneous responses to common shocks. A misspecified lag order or nonlinear history also breaks the stated conditional mean. If treatment effects or dynamics vary over units, periods, or histories, the single coefficient is generally a projection-weighted summary rather than a common CET.
+
+```{r adl-identification-estimation-table}
+adl_scope_table <- data.frame(
+  Layer = c(
+    "Population identification",
+    "History and timing",
+    "Fixed effects and functional form",
+    "Finite-$T$ estimation",
+    "Inference"
+  ),
+  `Scope condition` = c(
+    "Consistency; no interference or a valid exposure mapping; conditional exchangeability; no unobserved contemporaneous confounding; residual treatment support",
+    "No anticipation; a correctly specified observed history $H_{i,t-1}$; no simultaneous $Y_{it}\\rightarrow D_{it}$ feedback",
+    "Additive unit effects and common time shocks; correct lag structure; a linear, homogeneous CET if one coefficient is to have that interpretation",
+    "A time dimension or correction adequate for bias from within-transforming lagged outcomes and other predetermined regressors",
+    "An uncertainty procedure appropriate for residual serial and cross-sectional dependence"
+  ),
+  `Interpretation when the condition fails` = c(
+    "The ADL coefficient need not equal the CET",
+    "A nominal lag may be post-treatment, or omitted history and simultaneity may invalidate the comparison",
+    "Fixed effects need not remove the omitted process; the coefficient may be only a best linear approximation",
+    "The population CET may be identified while the conventional within estimator has Nickell-type finite-$T$ bias",
+    "The population target can remain unchanged while standard errors and confidence intervals are invalid"
+  ),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+
+kable(
+  adl_scope_table,
+  format = "latex",
+  row.names = FALSE,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = paste0(
+    "Scope conditions for the ADL + FE benchmark: identification versus estimation and inference. ",
+    "\\label{tab:adl_identification_estimation_pa}"
+  )
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+The distinction between population identification and estimation matters in dynamic panels. With lagged outcomes, demeaning generally correlates the transformed lag with the transformed innovation, producing Nickell-type bias at finite $T$ even when the level conditional mean identifies $\beta_{\mathrm{CET}}$ \citep{nickell1981biases}. Serial and cross-sectional dependence are separately inference problems when the remaining innovations are conditionally mean zero; an omitted common factor correlated with treatment is instead an identification problem. For short panels, bias corrections or Arellano--Bond may be useful alternatives under their own moment and instrument conditions, but GMM is not uniformly superior and does not repair a failed causal clock \citep{arellano_bond1991}. These qualifications align the benchmark with the sequential-identification logic in the dynamic-panel literature \citep{blackwell2018make,imai_kim2021}.
+
 # Benchmarking Dynamic Specifications for the CET \label{sec:benchmark}
 
 This section develops the paper's main applied implication of the IVB framework. For the CET, the default applied comparison should be between dynamic specifications that differ in whether they condition on contemporaneous $Z_t$, not between a dynamic model and a static TWFE short regression treated as a causal gold standard. The benchmark is therefore not a substitute for IVB. It is the most important operational payoff of IVB in the TSCS setting studied here.

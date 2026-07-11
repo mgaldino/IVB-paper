@@ -1,0 +1,238 @@
+---
+title: "Identification Conditions for the CET in an ADL with Unit and Time Fixed Effects"
+author: "Technical derivation for the IVB paper"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: true
+    fig_caption: true
+    citation_package: natbib
+bibliography: ../references.bib
+biblio-style: apalike
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+  - \usepackage{amsthm}
+  - \usepackage{booktabs}
+  - \usepackage{array}
+  - \usepackage{float}
+  - \newtheorem{proposition}{Proposition}
+  - \newtheorem{remark}{Remark}
+geometry: margin=1in
+fontsize: 11pt
+---
+
+# Purpose and target
+
+This note gives conditions under which the population coefficient on current treatment in an autoregressive distributed-lag model with unit and time fixed effects equals the contemporaneous treatment effect (CET). It then separates that population identification result from finite-$T$ bias of the within estimator and from inference under dependent errors. The target follows the within-period clock in the paper: the observed history is fixed, current treatment begins, within-period responses may occur, and the outcome is measured after the relevant exposure window.
+
+For unit $i$ in period $t$, let
+
+\[
+H_{i,t-1}
+=
+\left(
+Y_{i,t-1},\ldots,Y_{i,t-p},
+D_{i,t-1},\ldots,D_{i,t-q},
+X_{i,t-1},\ldots,X_{i,t-r}
+\right)
+\]
+
+denote the observed history required by the data-generating process. The notation allows more than one lag; writing an ADL(1) is a substantive restriction, not part of the definition. Let $R_{it}=r(H_{i,t-1})$ collect the transformations of that history included in the regression. For treatment levels $d$ and $d'$ in the relevant support, define
+
+\[
+\tau_{\mathrm{CET}}(d,d';h,a,t)
+=
+\mathbb{E}\!\left[
+Y_{it}(d)-Y_{it}(d')
+\mid H_{i,t-1}=h,\alpha_i=a,t
+\right].
+\]
+
+Here $Y_{it}(d)$ sets current treatment to $d$ while holding the realized pretreatment history fixed. Unless a controlled direct effect is explicitly targeted, $Y_{it}(d)$ includes causal paths through variables that respond after $D_{it}$ within period $t$.
+
+# Assumptions
+
+The following conditions are sufficient for the constant-coefficient result below. They are scope conditions, not consequences of estimating an ADL.
+
+1. **Consistency and no interference.** If $D_{it}=d$, then $Y_{it}=Y_{it}(d)$. Unit $i$'s contemporaneous potential outcome does not depend on other units' current treatments, except through an exposure mapping explicitly included in the model. Treatment versions are well defined.
+
+2. **Observed history and no anticipation.** $H_{i,t-1}$ is fixed before the first exposure relevant to $D_{it}$ and contains the observed state needed to render current treatment conditionally as-if assigned. Anticipatory responses to $D_{it}$ are absent or are explicitly included in the treatment intervention and history. A lag label alone does not establish this condition.
+
+3. **Sequential mean exchangeability.** For every supported $d$,
+
+   \[
+   \mathbb{E}\!\left[Y_{it}(d)\mid D_{it},H_{i,t-1},\alpha_i,\tau_t\right]
+   =
+   \mathbb{E}\!\left[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t\right].
+   \]
+
+   Equivalently for the linear model below, the contemporaneous innovation satisfies $\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0$. Thus there is no unobserved contemporaneous cause of both $D_{it}$ and $Y_{it}$ after conditioning on the history, unit effect, and common time shock.
+
+4. **Recursive within-period timing.** $D_{it}$ is determined before the contemporaneous outcome innovation. There is no simultaneous feedback $Y_{it}\rightarrow D_{it}$ within the period represented by the model. Feedback $Y_{i,t-1}\rightarrow D_{it}$ is compatible with identification when $Y_{i,t-1}$ is correctly included in $H_{i,t-1}$; it is not a violation of sequential exchangeability. The problems are contemporaneous feedback or omission of the relevant past state.
+
+5. **Correct dynamic conditional mean.** The included lag structure and transformations span the relevant conditional mean, and the response is additive and linear:
+
+   \[
+   \mathbb{E}\!\left[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t\right]
+   =
+   \alpha_i+\tau_t+R_{it}'\gamma+\beta_{\mathrm{CET}}d.
+   \tag{1}
+   \]
+
+   In particular, omitted lags, nonlinear history terms, unit-specific trends, or latent time-varying states cannot be absorbed merely by labeling the model ``ADL + FE.''
+
+6. **Homogeneity for a single coefficient.** The slope $\beta_{\mathrm{CET}}$ in (1) is constant over units, periods, histories, and the treatment contrasts being summarized. If effects or dynamics are heterogeneous, the regression coefficient generally becomes a projection-weighted summary rather than a common CET.
+
+7. **Positivity and identifying variation.** Each treatment contrast has positive conditional support where it is interpreted. In linear-projection notation, if $C_{it}$ collects $R_{it}$ and the unit and time indicators and $\widetilde D_{it}=D_{it}-P_C D_{it}$, then
+
+   \[
+   0<\mathbb{E}[\widetilde D_{it}^2]<\infty.
+   \tag{2}
+   \]
+
+   Hence treatment varies within units and periods after the observed history and fixed effects have been partialled out.
+
+8. **Role of fixed effects and time shocks.** $\alpha_i$ absorbs additive time-invariant unit causes, and $\tau_t$ absorbs additive shocks common to all units in period $t$. These terms do not absorb unobserved time-varying unit-level confounding, unit-specific responses to common shocks, differential trends, or spillovers.
+
+# Population identification
+
+\begin{proposition}[Population CET and finite-$T$ within estimation]
+Suppose Conditions 1--8 hold and all variables have finite second moments. Define the population ADL + FE coefficient on $D_{it}$ as the coefficient $\beta_D^P$ in the linear projection of $Y_{it}$ on $D_{it}$, $R_{it}$, unit indicators, and time indicators. Then
+\[
+\beta_D^P=\beta_{\mathrm{CET}},
+\]
+and, for every supported $d,d'$, $\tau_{\mathrm{CET}}(d,d';h,a,t)=\beta_{\mathrm{CET}}(d-d')$.
+
+This population equality does not imply that the conventional within estimator is unbiased at finite $T$. When $R_{it}$ contains lagged outcomes, or when treatment is predetermined through observed past outcomes, the within transformation generally correlates transformed regressors with transformed innovations. The resulting Nickell-type estimation bias is a finite-$T$ property of the estimator, not a failure of the population identification result. Serial or cross-sectional dependence in mean-zero innovations is a third issue: it changes valid uncertainty calculations but, by itself, does not redefine $\beta_D^P$.
+\end{proposition}
+
+## Proof
+
+**Step 1: From the causal assumptions to an observed conditional mean.** By consistency, observed outcomes equal the potential outcome under the realized current treatment. By sequential mean exchangeability,
+
+\[
+\begin{aligned}
+\mathbb{E}[Y_{it}\mid D_{it}=d,H_{i,t-1},\alpha_i,\tau_t]
+&=
+\mathbb{E}[Y_{it}(d)\mid D_{it}=d,H_{i,t-1},\alpha_i,\tau_t]\\
+&=
+\mathbb{E}[Y_{it}(d)\mid H_{i,t-1},\alpha_i,\tau_t].
+\end{aligned}
+\tag{3}
+\]
+
+No anticipation makes the conditioning history a pretreatment state for the current intervention. Recursive timing ensures that the conditional comparison is not generated by a simultaneous outcome-to-treatment system. Substituting (1) into (3) gives
+
+\[
+Y_{it}
+=
+\alpha_i+\tau_t+R_{it}'\gamma
++\beta_{\mathrm{CET}}D_{it}+u_{it},
+\qquad
+\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0.
+\tag{4}
+\]
+
+Taking the difference between (1) evaluated at $d$ and $d'$ proves
+
+\[
+\tau_{\mathrm{CET}}(d,d';h,a,t)
+=
+\beta_{\mathrm{CET}}(d-d').
+\tag{5}
+\]
+
+**Step 2: The population projection coefficient.** Let $C_{it}$ contain $R_{it}$ and the unit and time indicators, and let $\widetilde D_{it}=D_{it}-P_CD_{it}$ be the population residual from projecting treatment on $C_{it}$. The population Frisch--Waugh--Lovell coefficient is
+
+\[
+\beta_D^P
+=
+\frac{\mathbb{E}[\widetilde D_{it}Y_{it}]}
+{\mathbb{E}[\widetilde D_{it}^2]}.
+\tag{6}
+\]
+
+Substitution of (4), orthogonality of $\widetilde D_{it}$ to $C_{it}$, and conditional mean zero yield
+
+\[
+\mathbb{E}[\widetilde D_{it}Y_{it}]
+=
+\beta_{\mathrm{CET}}\mathbb{E}[\widetilde D_{it}^2]
++\mathbb{E}[\widetilde D_{it}u_{it}]
+=
+\beta_{\mathrm{CET}}\mathbb{E}[\widetilde D_{it}^2].
+\tag{7}
+\]
+
+Condition (2) therefore implies $\beta_D^P=\beta_{\mathrm{CET}}$. Unit and time fixed effects contribute to this result only by spanning the additive unit factors and common time shocks specified in (1); they do not make (7) true when the conditional mean omits relevant time-varying causes.
+
+**Step 3: What the coefficient means without linearity or homogeneity.** If the conditional response is instead $\beta_{it}(H_{i,t-1})D_{it}$, while the remaining conditional mean is correctly spanned, then
+
+\[
+\beta_D^P
+=
+\frac{
+\mathbb{E}[\widetilde D_{it}\,\beta_{it}(H_{i,t-1})D_{it}]
+}{
+\mathbb{E}[\widetilde D_{it}^2]
+}.
+\tag{8}
+\]
+
+This expression need not equal an unweighted average CET and need not have convex weights. Nonlinear dose responses likewise make (6) a best linear approximation over the observed support. Heterogeneous treatment effects, heterogeneous lag coefficients, and misspecified lag order are therefore scope limitations, not nuisances removed automatically by fixed effects.
+
+**Step 4: Why the within estimator can be biased at finite $T$.** Stack the regressors whose slopes are to be estimated in $X=[D,R]$, let $F$ contain unit and time indicators, and let $M_F$ be the residual-maker for those indicators. If $\vartheta=(\beta_{\mathrm{CET}},\gamma')'$, the conventional within estimator obeys the exact sample identity
+
+\[
+\widehat\vartheta_W-\vartheta
+=
+(X'M_FX)^{-1}X'M_Fu.
+\tag{9}
+\]
+
+The level restriction $\mathbb{E}[u_{it}\mid D_{it},H_{i,t-1},\alpha_i,\tau_t]=0$ does not generally imply $\mathbb{E}[X'M_Fu]=0$ at fixed $T$. To see the source, suppress time effects for notation and write
+
+\[
+\ddot u_{it}=u_{it}-\bar u_i,
+\qquad
+\ddot Y_{i,t-1}=Y_{i,t-1}-\bar Y_{i,-1}.
+\tag{10}
+\]
+
+The lagged outcome contains earlier innovations such as $u_{i,t-1}$, while $\bar u_i$ also contains those innovations. Consequently $\mathbb{E}[\ddot Y_{i,t-1}\ddot u_{it}]\neq0$ in general, even when the level innovation is sequentially mean independent. If $D_{it}$ responds to $Y_{i,t-1}$ or other past shocks, the transformed treatment can inherit the same finite-$T$ correlation. Thus lagged feedback $Y_{i,t-1}\rightarrow D_{it}$ is compatible with the population argument in Steps 1--2 when the lagged outcome is in the observed history, yet it can still matter for the finite-$T$ behavior of the within estimator.
+
+In the standard dynamic fixed-effects setting, this is the source of Nickell-type bias \citep{nickell1981biases}. Its leading order is commonly $1/T$ under the usual stationary large-$N$, large-$T$ regularity conditions, so increasing $N$ with fixed $T$ does not remove it. The exact magnitude and the induced bias in the treatment coefficient depend on persistence, treatment assignment, the regressor covariance matrix, initial conditions, and the panel design. Equation (9) therefore separates the identified population coefficient from the estimator used to approximate it. This completes the proof. $\square$
+
+# Identification, estimation, and inference are different questions
+
+\begin{table}[H]
+\centering
+\caption{Identification, estimation, and inference for the ADL + FE benchmark}
+\label{tab:id-estimation-inference-note}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.17\linewidth} >{\raggedright\arraybackslash}p{0.25\linewidth} >{\raggedright\arraybackslash}p{0.25\linewidth} >{\raggedright\arraybackslash}p{0.24\linewidth}}
+\toprule
+Layer & Question & Required conditions & What failure means \\
+\midrule
+Population identification & Does the coefficient equal the CET? & Defended causal clock, consistency, no interference or a valid exposure mapping, sequential exchangeability given complete history and fixed effects, correct lagged conditional mean, support, linearity, and homogeneity & The coefficient may reflect confounding, simultaneity, misspecified dynamics, or only a best linear approximation \\
+Finite-$T$ estimation & Does the within estimator recover the identified coefficient in the available panel? & Sufficient time dimension or an estimator/correction whose moments and asymptotics fit the design & Lagged outcomes and predetermined regressors can produce Nickell-type bias even when the population CET is identified \\
+Inference & Are standard errors and confidence intervals valid? & An uncertainty procedure appropriate for serial dependence, cross-sectional dependence, clustering structure, and the relevant asymptotic sequence & Point identification need not change, but reported uncertainty can be wrong; a residual common factor correlated with treatment is instead an identification failure \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Serial correlation in $u_{it}$ and residual dependence across units affect the covariance of the estimator and the validity of standard errors. If dependence is mean zero conditional on the regressors, it is an inference problem rather than a change in the target defined by (6). Appropriate procedures depend on the sampling and dependence structure; unit clustering, two-way clustering, spatial or network corrections, and common-correlated-effects approaches impose different conditions. If an omitted common or unit-specific shock is correlated with $D_{it}$ after conditioning, however, the issue returns to identification rather than inference.
+
+# Short panels and the GMM boundary
+
+When $T$ is short enough that Nickell-type bias is substantively important, bias-corrected fixed-effects estimators, split-panel or half-panel jackknife methods, or moment-based estimators may be considered. Arellano--Bond difference GMM removes the unit effect by differencing and uses lagged levels as instruments under additional moment restrictions \citep{arellano_bond1991}. It is an alternative estimator for a particular short-$T$, large-$N$ design, not a universally superior version of FE and not evidence that the population assumptions above hold. Instrument validity, serial-correlation restrictions, persistence and weak instruments, instrument proliferation, finite-sample behavior, and the treatment's own predetermined or endogenous status must all be defended.
+
+The distinction mirrors the broader dynamic-panel literature: causal identification depends on the treatment history, timing, and counterfactual assumptions \citep{blackwell2018make,imai_kim2021}; finite-panel corrections and GMM address properties of estimators under their own additional assumptions. Neither solves unobserved contemporaneous confounding, simultaneous treatment--outcome determination, interference, or misspecified causal timing.
+
+# Empirical scope conditions left to defend
+
+The proposition is conditional. An application must still establish that the recorded treatment precedes the outcome innovation; that the chosen lag vector is a sufficient observed history; that anticipation and spillovers are absent or modeled; that remaining unit and time heterogeneity is additive; that treatment has residual support; and that a constant linear CET is substantively meaningful. It must separately assess whether $T$ is long enough for within-estimator bias to be negligible or corrected and whether the uncertainty procedure matches the serial and cross-sectional dependence in the data.
+
+# References
