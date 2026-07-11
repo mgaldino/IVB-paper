@@ -546,6 +546,16 @@ dependent and leave-one-out comparisons answer a different sensitivity
 question. The online appendix gives the FWL proof, formal definitions,
 and a deterministic correlated-control example.
 
+For reporting, we recommend the endpoint shift together with
+leave-one-control-out comparisons, each defined as the full-model
+coefficient minus the coefficient from a model omitting one candidate
+control while retaining the others. These are conditional sensitivity
+checks, not additive shares of the joint shift. A symmetric Shapley
+allocation can summarize the average contribution across all inclusion
+orders when the candidate set is small, but it remains an allocation of
+a linear projection movement; we therefore place it in the online
+appendix rather than treat it as a causal decomposition.
+
 In cross-sections, \(W\) may contain baseline covariates. In TSCS
 settings, \(W\) can include fixed effects, lagged dependent variables,
 lagged treatment, and other lagged state variables. The formula is

@@ -1,0 +1,220 @@
+---
+title: "Allocating Specification Shifts with Correlated Controls"
+subtitle: "One-at-a-time, conditional leave-one-out, and Shapley diagnostics"
+author: "Online appendix for the IVB paper"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: true
+    toc: true
+    keep_tex: false
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{float}
+  - \usepackage{geometry}
+  - \geometry{margin=1in}
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+source("scripts/shift_allocation_correlated_controls.R")
+```
+
+# Purpose and scope
+
+When candidate controls are correlated, the joint specification shift is unique but its control-level allocation is not. Let $\beta(S)$ denote the coefficient on the focal treatment in the linear model containing the common regressors $W$ and the subset $S$ of candidate controls, all estimated on the same observations. Define
+
+\[
+\Delta(S)=\beta(S)-\beta(\varnothing),
+\qquad
+\Delta_{\mathcal Z}=\beta(\mathcal Z)-\beta(\varnothing).
+\]
+
+This appendix compares three descriptive diagnostics. Each is a contrast between nested linear projections; none establishes causal bias relative to the contemporaneous treatment effect (CET). In a linear TSCS application, $W$ can include unit and time fixed effects, lagged outcomes, lagged treatments, and other defended lagged state variables.
+
+# Three diagnostics
+
+For $j\in\mathcal Z$, the **one-at-a-time** increment is
+
+\[
+a_j=\beta(\{j\})-\beta(\varnothing).
+\]
+
+It answers how much the coefficient moves when $Z_j$ alone is added to the short model. It holds every other candidate control out, so with correlated controls the values $a_j$ need not add to the joint shift.
+
+The **leave-one-control-out** (LOO) conditional increment is
+
+\[
+\ell_j=\beta(\mathcal Z)-\beta(\mathcal Z\setminus\{j\}).
+\]
+
+It answers how much the coefficient moves when $Z_j$ is deleted from the full model while all other candidates remain. Thus it is a last-in conditional sensitivity, not a share of $\Delta_{\mathcal Z}$; across $j$, these increments need not add to the joint shift.
+
+For an inclusion order $\sigma$, write $P_j^\sigma$ for the controls preceding $j$. The path-specific sequential increment is
+
+\[
+c_j^\sigma=\beta(P_j^\sigma\cup\{j\})-\beta(P_j^\sigma).
+\]
+
+It telescopes along each path: $\sum_j c_j^\sigma=\Delta_{\mathcal Z}$. The **Shapley value** averages this increment over all $q!$ inclusion orders,
+
+\[
+\phi_j=\frac{1}{q!}\sum_{\sigma}c_j^\sigma.
+\]
+
+Consequently, $\sum_j\phi_j=\Delta_{\mathcal Z}$. This symmetric allocation averages shared variation across possible orders. It is an accounting convention rather than a causal decomposition, and its factorial enumeration becomes costly as the number of candidate controls grows.
+
+# Deterministic correlated-control example
+
+The following example is identical in construction to the deterministic fixture used for the multivariate joint-shift derivation. It uses no random-number generation and no paper simulation. All models use the same 240 observations and unweighted OLS.
+
+```{r deterministic-design, include=FALSE}
+n <- 240L
+index <- seq_len(n)
+w1 <- as.numeric(scale(index))
+w2 <- as.numeric(scale((index - mean(index))^2))
+d <- 0.55 * w1 - 0.20 * w2 + sin(index / 7) + 0.35 * cos(index / 13)
+
+u1 <- sin(index / 3) + 0.20 * cos(index / 17)
+u2 <- cos(index / 5) - 0.15 * sin(index / 19)
+u3 <- sin(index / 11) + 0.25 * cos(index / 23)
+z1 <- 0.90 * d + 0.55 * w1 + 0.45 * u1
+z2 <- -0.45 * d + 0.35 * w2 + 0.70 * z1 + 0.35 * u2
+z3 <- 0.55 * d - 0.30 * w1 + 0.40 * z1 - 0.35 * z2 + 0.30 * u3
+y <- 1.25 * d + 0.80 * z1 - 0.55 * z2 + 0.65 * z3 +
+  0.40 * w1 - 0.25 * w2 + 0.20 * sin(index / 2) - 0.10 * cos(index / 29)
+
+W <- cbind(W1 = w1, W2 = w2)
+Z <- cbind(Z1 = z1, Z2 = z2, Z3 = z3)
+joint_shift <- shift_set(y, d, W, Z, colnames(Z))
+one_results <- one_at_a_time(y, d, W, Z)
+loo_results <- leave_one_out(y, d, W, Z)
+shapley_results <- shapley_allocation(y, d, W, Z)
+diagnostic_table <- Reduce(
+  function(left, right) merge(left, right, by = "control", sort = FALSE),
+  list(one_results, loo_results, shapley_results)
+)
+diagnostic_table <- diagnostic_table[match(colnames(Z), diagnostic_table$control), ]
+```
+
+```{r diagnostics-table}
+diagnostic_display <- diagnostic_table
+names(diagnostic_display) <- c("Control", "One-at-a-time", "Leave-one-out", "Shapley")
+kableExtra::kable_styling(
+  knitr::kable(
+    diagnostic_display,
+    format = "latex",
+    booktabs = TRUE,
+    digits = 8,
+    caption = "Three control-level diagnostics in the deterministic correlated-control example."
+  ),
+  latex_options = "HOLD_position"
+)
+```
+
+The one-at-a-time and LOO columns answer different sensitivity questions, so neither is an additive allocation. The Shapley column is the only one constructed to allocate the joint shift across controls.
+
+## Order dependence
+
+```{r order-dependence, include=FALSE}
+order_123 <- sequential_contributions(y, d, W, Z, c("Z1", "Z2", "Z3"))
+order_321 <- sequential_contributions(y, d, W, Z, c("Z3", "Z2", "Z1"))
+order_comparison <- merge(
+  order_123[, c("control", "contribution")],
+  order_321[, c("control", "contribution")],
+  by = "control",
+  suffixes = c(" (Z1 -> Z2 -> Z3)", " (Z3 -> Z2 -> Z1)"),
+  sort = FALSE
+)
+order_comparison <- order_comparison[match(colnames(Z), order_comparison$control), ]
+order_sums <- c(sum(order_123$contribution), sum(order_321$contribution))
+```
+
+```{r order-dependence-table}
+kableExtra::kable_styling(
+  knitr::kable(
+    order_comparison,
+    format = "latex",
+    booktabs = TRUE,
+    digits = 8,
+    caption = "Sequential contributions under two valid inclusion orders."
+  ),
+  latex_options = "HOLD_position"
+)
+```
+
+The two paths both sum to the same joint shift (`r format(joint_shift, digits = 12)`), but the entries assigned to individual controls differ. This is order dependence, not a numerical error.
+
+# Reproducibility checks
+
+```{r validation, include=FALSE}
+tolerance <- 1e-10
+shapley_error <- abs(sum(shapley_results$shapley) - joint_shift)
+sequential_error <- max(abs(order_sums - joint_shift))
+order_difference <- max(abs(order_comparison[[2L]] - order_comparison[[3L]]))
+
+permuted_Z <- Z[, c("Z3", "Z1", "Z2"), drop = FALSE]
+permuted_shapley <- shapley_allocation(y, d, W, permuted_Z)
+permutation_error <- max(abs(
+  shapley_results$shapley[match(colnames(Z), shapley_results$control)] -
+    permuted_shapley$shapley[match(colnames(Z), permuted_shapley$control)]
+))
+
+validation_table <- data.frame(
+  check = c(
+    "Shapley contributions sum to the joint shift",
+    "Sequential paths telescope to the joint shift",
+    "Shapley allocation is invariant to a permutation of control names",
+    "Sequential control contributions differ across displayed orders",
+    "One-at-a-time and LOO diagnostics differ for at least one control"
+  ),
+  metric = c(
+    shapley_error,
+    sequential_error,
+    permutation_error,
+    order_difference,
+    max(abs(diagnostic_table$one_at_a_time - diagnostic_table$leave_one_out))
+  ),
+  criterion = c(
+    "error < 1e-10", "error < 1e-10", "error < 1e-10",
+    "difference > 1e-4", "difference > 1e-4"
+  ),
+  stringsAsFactors = FALSE
+)
+validation_table$result <- ifelse(
+  c(
+    shapley_error < tolerance,
+    sequential_error < tolerance,
+    permutation_error < tolerance,
+    order_difference > 1e-4,
+    validation_table$metric[5L] > 1e-4
+  ),
+  "PASS",
+  "FAIL"
+)
+stopifnot(all(validation_table$result == "PASS"))
+```
+
+```{r validation-table}
+validation_display <- validation_table
+validation_display$metric <- format(validation_display$metric, scientific = TRUE, digits = 4)
+kableExtra::kable_styling(
+  knitr::kable(
+    validation_display,
+    format = "latex",
+    booktabs = TRUE,
+    caption = "Reproducibility checks for the allocation diagnostics."
+  ),
+  latex_options = c("HOLD_position", "scale_down")
+)
+```
+
+The name-permutation check permutes the columns and their names together, then realigns estimates by control name. It checks that the Shapley allocation is independent of an arbitrary input-column order.
+
+# Reporting guidance and limitations
+
+For the paper's linear TSCS/CET use case, report the endpoint shift and LOO increments as transparent conditional sensitivity checks. Report one-at-a-time increments only when the short-model comparison is substantively useful. Reserve Shapley values for an online appendix or replication package: they are a coherent symmetric allocation of a projection shift, but they do not determine a unique causal contribution of correlated controls.
+
+The functions in `scripts/shift_allocation_correlated_controls.R` require a common complete sample and full rank for every requested nested model. They enumerate all $q!$ orders, which is appropriate for a small, prespecified set of candidate controls but not automatically for high-dimensional specifications. They do not cover weighted least squares, non-nested models, regularized estimators, missing-data-induced sample changes, or causal identification of the CET.
