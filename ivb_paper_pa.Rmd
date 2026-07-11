@@ -282,43 +282,77 @@ kable(
 
 Three complications are common in annual and other aggregated panels. First, anticipation can make a recorded $Z_{t-1}$ treatment-responsive before the formal onset of $D_t$. Second, when treatment varies continuously within the period, a scalar annual value may summarize a treatment path with repeated $D\leftrightarrow Z\leftrightarrow Y$ feedback; the relevant intervention is then a contrast between exposure trajectories, not automatically a one-unit change in the annual average. Third, annual measures may overlap: a late-year treatment can occur after much of $Z_t$ or $Y_t$ has already been realized, while a beginning-of-year outcome may precede the nominally contemporaneous treatment. When documentation establishes nonoverlapping windows, timing is known; when institutional knowledge supports but does not timestamp the sequence, it is plausible; and when windows overlap or remain undocumented, it is ambiguous. The lagged-control benchmark below applies only after this clock has been defended.
 
-## Preliminaries
+## Dynamic Causal Structures for the CET
+
+The elementary fork, chain, and collider remain the building blocks of causal graphs \citep{pearl2009causality, elwert2014endogenous}, but TSCS specifications combine those structures across periods. Figure~\ref{fig:dynamic_collider_pa} makes the inherited path explicit for a contemporaneous collider. The blue arrow is the causal path defining the CET. Conditioning on $Z_t$ opens $D_t\rightarrow Z_t\leftarrow Y_t$. Because $Z_t$ is also a descendant of the lagged collider $Z_{t-1}$, that conditioning can activate the inherited path $D_t\leftarrow D_{t-1}\rightarrow Z_{t-1}\leftarrow Y_{t-1}\rightarrow Y_t$. Conditioning on $Y_{t-1}$ blocks this inherited path at a noncollider, but it does not close the contemporaneous path opened at $Z_t$.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    node distance=1.8cm,
-    every node/.style={draw, circle, minimum size=1cm, font=\small},
-    arr/.style={-{Stealth[length=2.5mm]}, thick}
+    x=1cm, y=1cm,
+    var/.style={draw, circle, minimum size=1.05cm, inner sep=1pt, font=\small},
+    timelabel/.style={draw=none, font=\small\bfseries, anchor=east},
+    arr/.style={-{Stealth[length=2.5mm]}, thick},
+    causal/.style={arr, blue!70!black},
+    collider/.style={arr, red!70!black}
 ]
+\node[timelabel] at (-0.8,2.4) {Lagged state};
+\node[timelabel] at (-0.8,0) {Period $t$};
+\node[var] (Dm1) at (0,2.4) {$D_{t-1}$};
+\node[var] (Zm1) at (3.2,2.4) {$Z_{t-1}$};
+\node[var] (Ym1) at (6.4,2.4) {$Y_{t-1}$};
+\node[var] (Dt) at (0,0) {$D_t$};
+\node[var] (Zt) at (3.2,0) {$Z_t$};
+\node[var] (Yt) at (6.4,0) {$Y_t$};
 
-\node (X0) at (0,4) {$X_0$};
-\node (Y1) at (2,4) {$Y_1$};
-\node (W) at (0,2.5) {$W$};
-\draw[arr] (X0) -- (Y1);
-\draw[arr] (W) -- (Y1);
-\node[draw=none, font=\normalsize\bfseries] at (1, 1.5) {(a) Collider};
-
-\node (V3) at (5.5,4) {$V_3$};
-\node (V1) at (4,2.5) {$V_1$};
-\node (V2) at (7,2.5) {$V_2$};
-\draw[arr] (V3) -- (V1);
-\draw[arr] (V3) -- (V2);
-\node[draw=none, font=\normalsize\bfseries] at (5.5, 1.5) {(b) Fork};
-
-\node (Z) at (10,4) {$Z$};
-\node (X1) at (11.5,2.5) {$X_1$};
-\node (Y2) at (13,4) {$Y_2$};
-\draw[arr] (Z) -- (X1);
-\draw[arr] (X1) -- (Y2);
-\node[draw=none, font=\normalsize\bfseries] at (11.5, 1.5) {(c) Chain};
-
+\draw[collider] (Dm1) -- (Zm1);
+\draw[collider] (Ym1) -- (Zm1);
+\draw[arr] (Dm1) -- (Dt);
+\draw[arr] (Ym1) -- (Yt);
+\draw[arr] (Zm1) -- (Zt);
+\draw[causal] (Dt) to[bend right=22] (Yt);
+\draw[collider] (Dt) -- (Zt);
+\draw[collider] (Yt) -- (Zt);
 \end{tikzpicture}
-\caption{The three elementary DAG structures. For the CET, the practical question is whether the documented causal clock makes a candidate control a fork, collider, or mediator.}
+\caption{Dynamic contemporaneous-collider DAG for the CET. Red arrows meet at $Z_t$ and $Z_{t-1}$; blue marks the causal $D_t\rightarrow Y_t$ path. Conditioning on $Z_t$ opens the contemporaneous collider and, as conditioning on a descendant of $Z_{t-1}$, can also activate the inherited lag path.}
 \label{fig:three_structures_pa}
+\label{fig:dynamic_collider_pa}
 \end{figure}
 
-Forks, chains, and colliders remain the fundamental building blocks \citep{pearl2009causality, elwert2014endogenous}. What changes in TSCS work is that the same substantive variable can move across these roles as its causal timing changes. An income measure recorded before treatment begins may be a fork that blocks omitted variable bias; income measured after exposure begins may instead be a mediator or collider if treatment or the outcome process affects it.
+Figure~\ref{fig:dynamic_mediator_pa} represents a different role for the same contemporaneous variable. Here $Z_t$ transmits part of the effect of $D_t$ to $Y_t$, while $Z_{t-1}$ is a lagged state that can affect current treatment and outcome. For the total CET, both blue paths belong to the estimand. Conditioning on a substantively pretreatment $Z_{t-1}$ blocks $D_t\leftarrow Z_{t-1}\rightarrow Y_t$ without blocking the within-period mediated path. Conditioning on $Z_t$ instead blocks $D_t\rightarrow Z_t\rightarrow Y_t$ and changes the target to a direct-effect parameter under additional mediation assumptions.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    var/.style={draw, circle, minimum size=1.05cm, inner sep=1pt, font=\small},
+    state/.style={var, fill=blue!8},
+    timelabel/.style={draw=none, font=\small\bfseries, anchor=east},
+    arr/.style={-{Stealth[length=2.5mm]}, thick},
+    causal/.style={arr, blue!70!black}
+]
+\node[timelabel] at (-0.8,2.4) {Lagged state};
+\node[timelabel] at (-0.8,0) {Period $t$};
+\node[var] (Dm1) at (0,2.4) {$D_{t-1}$};
+\node[state] (Zm1) at (3.2,2.4) {$Z_{t-1}$};
+\node[var] (Ym1) at (6.4,2.4) {$Y_{t-1}$};
+\node[var] (Dt) at (0,0) {$D_t$};
+\node[var] (Zt) at (3.2,0) {$Z_t$};
+\node[var] (Yt) at (6.4,0) {$Y_t$};
+
+\draw[arr] (Dm1) -- (Dt);
+\draw[arr] (Dm1) -- (Zm1);
+\draw[arr] (Zm1) -- (Dt);
+\draw[arr] (Zm1) -- (Zt);
+\draw[arr] (Zm1) to[bend left=18] (Yt);
+\draw[arr] (Ym1) -- (Yt);
+\draw[causal] (Dt) -- (Zt);
+\draw[causal] (Zt) -- (Yt);
+\draw[causal] (Dt) to[bend right=22] (Yt);
+\end{tikzpicture}
+\caption{Dynamic contemporaneous-mediator DAG with lagged confounding and state dependence. For the total CET, the direct path and the path through $Z_t$ remain open. Conditioning on a genuinely pretreatment $Z_{t-1}$ can block lagged confounding; conditioning on $Z_t$ blocks the displayed mediated path.}
+\label{fig:dynamic_mediator_pa}
+\end{figure}
 
 ## Timing Logic for Candidate Controls
 
@@ -463,9 +497,48 @@ This section develops the paper's main applied implication of the IVB framework.
 
 ## Collider and Dual-Role Controls in TSCS
 
-We begin with the dual-role setting in which $Z_{t-1}$ is a confounder for $(D_t, Y_t)$, but $Z_t$ is contemporaneously affected by both treatment and outcome. This is the empirically common case in which a variable such as GDP is useful as a lagged state variable but dangerous as a contemporaneous control.
+We begin with the dual-role setting in which $Z_{t-1}$ is a confounder for $(D_t, Y_t)$, but $Z_t$ is contemporaneously affected by both treatment and outcome. In this structure, a variable such as GDP can serve as a lagged state variable while its contemporaneous value has a different causal role.
 
-```{r dual-role-bias-figure, fig.cap="Dual-role simulation: ADL + FE with lagged state variables dominates static alternatives. In the main design, ADL + FE + $Z_{t-1}$ keeps bias near zero across the full range of collider persistence, while TWFE remains biased even when it includes $Z_{t-1}$.", out.width="85%"}
+The dual role is visible in Figure~\ref{fig:dynamic_dual_role_pa}. Without conditioning, $D_t\leftarrow Z_{t-1}\rightarrow Y_t$ is an open backdoor path. Conditioning on $Z_{t-1}$ closes that fork but opens the inherited path $D_t\leftarrow D_{t-1}\rightarrow Z_{t-1}\leftarrow Y_{t-1}\rightarrow Y_t$, because $Z_{t-1}$ is a collider on that path. Adding $Y_{t-1}$ to the conditioning set blocks this particular path at the noncollider $Y_{t-1}$. This d-separation statement is conditional on the displayed graph: it does not close $D_t\rightarrow Z_t\leftarrow Y_t$ if $Z_t$ is conditioned on, and it does not rule out other omitted paths or finite-$T$ estimation bias.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    var/.style={draw, circle, minimum size=1.05cm, inner sep=1pt, font=\small},
+    conditioned/.style={var, fill=blue!10, double, double distance=0.7pt},
+    timelabel/.style={draw=none, font=\small\bfseries, anchor=east},
+    arr/.style={-{Stealth[length=2.5mm]}, thick},
+    causal/.style={arr, blue!70!black},
+    inherited/.style={arr, red!70!black},
+    confounding/.style={arr, orange!80!black}
+]
+\node[timelabel] at (-0.8,2.4) {Lagged state};
+\node[timelabel] at (-0.8,0) {Period $t$};
+\node[var] (Dm1) at (0,2.4) {$D_{t-1}$};
+\node[conditioned] (Zm1) at (3.2,2.4) {$Z_{t-1}$};
+\node[conditioned] (Ym1) at (6.4,2.4) {$Y_{t-1}$};
+\node[var] (Dt) at (0,0) {$D_t$};
+\node[var] (Zt) at (3.2,0) {$Z_t$};
+\node[var] (Yt) at (6.4,0) {$Y_t$};
+
+\draw[inherited] (Dm1) -- (Zm1);
+\draw[inherited] (Ym1) -- (Zm1);
+\draw[inherited] (Dm1) -- (Dt);
+\draw[inherited] (Ym1) -- (Yt);
+\draw[confounding] (Zm1) -- (Dt);
+\draw[confounding] (Zm1) to[bend left=18] (Yt);
+\draw[arr] (Zm1) -- (Zt);
+\draw[causal] (Dt) to[bend right=22] (Yt);
+\draw[arr] (Dt) -- (Zt);
+\draw[arr] (Yt) -- (Zt);
+\node[draw=none, align=left, font=\scriptsize, anchor=west] at (7.5,1.8) {Double border: conditioning set\\$\{Z_{t-1},Y_{t-1}\}$ for the\\displayed inherited path};
+\end{tikzpicture}
+\caption{Dynamic dual-role DAG. Orange arrows form the lagged-confounding fork; red arrows trace the inherited collider path. Conditioning on $Z_{t-1}$ blocks the former but opens the latter. Conditioning additionally on $Y_{t-1}$ blocks that inherited path, subject to the displayed DAG and the paper's timing and identification conditions.}
+\label{fig:dynamic_dual_role_pa}
+\end{figure}
+
+```{r dual-role-bias-figure, fig.cap="Dual-role simulation comparing static and dynamic specifications. In the main design, ADL + FE + $Z_{t-1}$ keeps bias near zero across the reported range of collider persistence, while the static TWFE specifications retain appreciable bias.", out.width="85%"}
 ggplot(dual_role_plot_data, aes(x = rho_Z, y = bias, color = model)) +
   geom_line(linewidth = 0.8) +
   geom_point(size = 2) +
@@ -483,9 +556,9 @@ ggplot(dual_role_plot_data, aes(x = rho_Z, y = bias, color = model)) +
   theme(legend.position = "bottom")
 ```
 
-The message is sharp. In the main dual-role design, the bias of ADL + FE + $Z_{t-1}$ stays between `r sprintf('%.3f', dual_role_summary$adl_min)` and `r sprintf('%.3f', dual_role_summary$adl_max)`, while the bias of TWFE + $Z_{t-1}$ remains between `r sprintf('%.3f', dual_role_summary$twfe_long_min)` and `r sprintf('%.3f', dual_role_summary$twfe_long_max)`. The static short model performs worst, reaching `r sprintf('%.3f', dual_role_summary$twfe_short_max)` in the most persistent scenarios. The substantive implication is that the right comparison is not ``control versus no control'' in the abstract. It is whether the researcher treats $Z$ as a lagged state variable inside a dynamic model or as a contemporaneous regressor in a model that omits the dynamic state.
+In the main dual-role design, the bias of ADL + FE + $Z_{t-1}$ stays between `r sprintf('%.3f', dual_role_summary$adl_min)` and `r sprintf('%.3f', dual_role_summary$adl_max)`, while the bias of TWFE + $Z_{t-1}$ remains between `r sprintf('%.3f', dual_role_summary$twfe_long_min)` and `r sprintf('%.3f', dual_role_summary$twfe_long_max)`. The static short model has the largest reported bias, reaching `r sprintf('%.3f', dual_role_summary$twfe_short_max)` in the most persistent scenarios. For this DGP, the relevant comparison is therefore between specifications that represent $Z$ as a lagged state inside the dynamic outcome model and specifications that omit part of that state.
 
-The crucial mechanism is outcome persistence. The inherited collider path created by conditioning on $Z_{t-1}$ only becomes bias in the CET equation when the spurious association can propagate from $Y_{t-1}$ to $Y_t$. Table~\ref{tab:firewall_pa} shows that once outcome persistence is shut down, the TWFE bias essentially disappears.
+In the displayed DGP, outcome persistence transmits the inherited collider path from $Y_{t-1}$ to $Y_t$. Table~\ref{tab:firewall_pa} shows that when this edge is removed by setting $\rho_Y=0$, the TWFE bias in the reported design is approximately zero. Conditioning on $Y_{t-1}$ blocks the cited inherited path when $\rho_Y>0$, subject to the graph and scope conditions stated above.
 
 ```{r firewall-table}
 kable(
@@ -495,9 +568,10 @@ kable(
   booktabs = TRUE,
   escape = FALSE,
   caption = paste0(
-    "Outcome persistence is what makes the inherited collider path bite. When $\\rho_Y = 0$, ",
-    "the bias from conditioning on $Z_{t-1}$ is essentially zero even without $Y_{t-1}$. ",
-    "When $\\rho_Y > 0$, adding $Y_{t-1}$ restores the benchmark. \\label{tab:firewall_pa}"
+    "Outcome persistence and the inherited collider path in the dual-role DGP. When $\\rho_Y = 0$, ",
+    "the reported bias from conditioning on $Z_{t-1}$ is approximately zero even without $Y_{t-1}$. ",
+    "When $\\rho_Y > 0$, the specification including $Y_{t-1}$ blocks the displayed inherited path. ",
+    "\\label{tab:firewall_pa}"
   )
 ) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"))
