@@ -217,11 +217,70 @@ Recent DID work sharpens the problem further: if $Z_t$ may itself respond to tre
 
 Our answer has two parts. The general contribution is IVB: a named diagnostic problem and an exact decomposition for linear nested models. The more specific contribution is the paper's payoff in TSCS settings with the CET: a dynamic benchmark based on ADL + FE with lagged state variables. In other words, the paper is not only about a safer specification rule and not only about a formula. It is about how the formula makes the safer rule operational.
 
-The scope qualification matters. A lagged control is pre-treatment only relative to the effect of $D_t$ on $Y_t$. That does not make it universally innocuous for cumulative, delayed, or long-run effects. The paper's positive recommendation is therefore explicitly local to the CET. Difference-in-differences and related panel designs remain part of the motivation for why time-varying controls are hard, but the paper's formal and applied results are developed in the linear TSCS setting.
+The scope qualification matters. A lagged control can be called pre-treatment only relative to the effect of $D_t$ on $Y_t$, and only when its substantive timestamp supports that ordering. Even then, it need not be innocuous for cumulative, delayed, or long-run effects. The paper's positive recommendation is therefore explicitly local to the CET. Difference-in-differences and related panel designs remain part of the motivation for why time-varying controls are hard, but the paper's formal and applied results are developed in the linear TSCS setting.
 
 # DAGs, Timing, and Why $Z_t$ Is Not $Z_{t-1}$ \label{sec:timing}
 
-The causal role of a time-varying covariate is inseparable from its time index. For the CET, $Z_t$ is contemporaneous with both treatment and outcome. That is exactly where post-treatment bad controls live. By contrast, $Z_{t-1}$ precedes $D_t$ and $Y_t$, so it can operate as a lagged state variable even when $Z_t$ is a collider or mediator.
+The causal role of a time-varying covariate depends on its substantive timing, not its subscript alone. Before classifying a control, we therefore need to map the variables recorded in a panel row onto a causal sequence within the period.
+
+## The CET and the Within-Period Causal Clock
+
+Let $H_{it}^{-}$ denote the information and state variables fixed immediately before the period-$t$ treatment begins. For two well-defined treatment levels $d$ and $d'$, we define the contemporaneous treatment effect as
+
+\[
+\tau_{\mathrm{CET}}(d,d';h)
+=
+\mathbb{E}\!\left[Y_{it}(d)-Y_{it}(d')\mid H_{it}^{-}=h\right],
+\]
+
+where $Y_{it}(d)$ is measured after the period-$t$ intervention and any within-period responses it induces. Thus, unless a controlled direct effect is explicitly targeted, the CET includes paths such as $D_{it}\rightarrow Z_{it}\rightarrow Y_{it}$. In a constant linear model with a scalar treatment, $\beta_{\mathrm{CET}}$ is the corresponding unit contrast, or marginal effect for a continuous dose.
+
+The substantive clock underlying this definition is
+
+\[
+H_{it}^{-}
+\;\longrightarrow\;
+D_{it}
+\;\longrightarrow\;
+Z_{it}
+\;\longrightarrow\;
+Y_{it}^{+},
+\]
+
+where $H_{it}^{-}$ is the state at the opening of the causal period, $D_{it}$ records the onset and intensity of treatment, $Z_{it}$ is allowed to respond, and $Y_{it}^{+}$ is measured after the relevant exposure window. This ordering is an empirical claim, not a consequence of notation. Table~\ref{tab:min_timestamp} states the minimum timestamp information needed to assess it.
+
+```{r minimum-timestamp-table}
+minimum_timestamp <- data.frame(
+  Variable = c("$D$", "$Z$", "$Y$"),
+  `Minimum timestamp record` = c(
+    "Onset, end, and intensity window; whether the measure is a stock, flow, event, or period average",
+    "Reference and measurement window; whether it can respond to anticipated, prior, or current treatment",
+    "Reference window and measurement time; whether any part is recorded before treatment begins"
+  ),
+  `Requirement for the CET clock` = c(
+    "Defines the intervention or exposure contrast within period $t$",
+    "Must close before the first relevant exposure to be called pretreatment; otherwise classify its timing as plausible or ambiguous",
+    "Must follow the relevant exposure window for the stated CET; overlapping aggregates require a finer estimand"
+  ),
+  stringsAsFactors = FALSE
+)
+
+kable(
+  minimum_timestamp,
+  format = "latex",
+  row.names = FALSE,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = paste0(
+    "Minimum timestamp record for defining the contemporaneous treatment effect. ",
+    "A lag label is not evidence that a covariate is pretreatment. ",
+    "\\label{tab:min_timestamp}"
+  )
+) %>%
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+```
+
+Three complications are common in annual and other aggregated panels. First, anticipation can make a recorded $Z_{t-1}$ treatment-responsive before the formal onset of $D_t$. Second, when treatment varies continuously within the period, a scalar annual value may summarize a treatment path with repeated $D\leftrightarrow Z\leftrightarrow Y$ feedback; the relevant intervention is then a contrast between exposure trajectories, not automatically a one-unit change in the annual average. Third, annual measures may overlap: a late-year treatment can occur after much of $Z_t$ or $Y_t$ has already been realized, while a beginning-of-year outcome may precede the nominally contemporaneous treatment. When documentation establishes nonoverlapping windows, timing is known; when institutional knowledge supports but does not timestamp the sequence, it is plausible; and when windows overlap or remain undocumented, it is ambiguous. The lagged-control benchmark below applies only after this clock has been defended.
 
 ## Preliminaries
 
@@ -255,11 +314,11 @@ The causal role of a time-varying covariate is inseparable from its time index. 
 \node[draw=none, font=\normalsize\bfseries] at (11.5, 1.5) {(c) Chain};
 
 \end{tikzpicture}
-\caption{The three elementary DAG structures. For the CET, the practical question is whether a candidate control behaves like a fork at $t-1$ or like a collider or mediator at $t$.}
+\caption{The three elementary DAG structures. For the CET, the practical question is whether the documented causal clock makes a candidate control a fork, collider, or mediator.}
 \label{fig:three_structures_pa}
 \end{figure}
 
-Forks, chains, and colliders remain the fundamental building blocks \citep{pearl2009causality, elwert2014endogenous}. What changes in TSCS work is that the same substantive variable can move across these roles as we shift its time index. A lagged income measure may be a fork that blocks omitted variable bias; contemporaneous income may instead be a mediator or collider if both treatment and outcome affect it within period $t$.
+Forks, chains, and colliders remain the fundamental building blocks \citep{pearl2009causality, elwert2014endogenous}. What changes in TSCS work is that the same substantive variable can move across these roles as its causal timing changes. An income measure recorded before treatment begins may be a fork that blocks omitted variable bias; income measured after exposure begins may instead be a mediator or collider if treatment or the outcome process affects it.
 
 ## Timing Logic for Candidate Controls
 
@@ -268,9 +327,9 @@ Table~\ref{tab:timing_logic} summarizes the main timing logic. The key point is 
 ```{r timing-logic-table}
 timing_logic <- data.frame(
   `Candidate control` = c("$Z_t$", "$Z_t$", "$Z_{t-1}$", "$Z_{t-1}$"),
-  `Likely role for the CET` = c("Collider", "Mediator", "Predetermined state", "Lagged confounder"),
+  `Possible role for the CET` = c("Collider if post-treatment", "Mediator if post-treatment", "Predetermined state if timestamp passes", "Lagged confounder if timestamp passes"),
   `Main risk or benefit` = c("Opens a backdoor path", "Blocks part of the total effect", "Captures state dependence", "Removes OVB without blocking the contemporaneous path"),
-  `Default action` = c("Do not condition unless the DAG rules out post-treatment status", "Do not condition if the target is the total contemporaneous effect", "Candidate benchmark control", "Candidate benchmark control"),
+  `Default action` = c("Do not condition unless the DAG and causal clock rule out post-treatment status", "Do not condition if the target is the total contemporaneous effect", "Candidate benchmark control only after the timestamp check", "Candidate benchmark control only after the timestamp check"),
   stringsAsFactors = FALSE
 )
 
@@ -282,14 +341,14 @@ kable(
   escape = FALSE,
   caption = paste0(
     "Timing logic for observed controls when the estimand is the contemporaneous treatment effect. ",
-    "The same substantive variable can move from bad control at $t$ to useful state variable at $t-1$. ",
+    "Subscripts identify candidate roles; the substantive clock determines the causal classification. ",
     "\\label{tab:timing_logic}"
   )
 ) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"))
 ```
 
-Three cases are especially relevant for the remainder of the paper. First, a contemporaneous collider $Z_t$ opens a backdoor path and creates IVB. Second, a contemporaneous mediator $Z_t$ creates over-control if the target is the total contemporaneous effect. Third, a dual-role variable can be both a lagged confounder and a contemporaneous collider. In that case, the empirical question is not whether the variable should ever appear in the specification, but whether it should enter as $Z_t$ or as $Z_{t-1}$.
+Three cases are especially relevant for the remainder of the paper. First, a contemporaneous collider $Z_t$ opens a backdoor path and creates IVB. Second, a contemporaneous mediator $Z_t$ creates over-control if the target is the total contemporaneous effect. Third, a dual-role variable can be both a lagged confounder and a contemporaneous collider. In that case, the empirical question is not whether the variable should ever appear in the specification, but whether its documented measurement window places it before or after the relevant treatment begins.
 
 # The Included Variable Bias Diagnostic \label{sec:ivb}
 
@@ -424,7 +483,7 @@ The applications serve two purposes. First, they show that IVB yields interpreta
 
 ## Application 1: Democracy and Ethnic Inequality \label{sec:app_leipziger_pa}
 
-\citet{leipziger2024} estimates the effect of democratization on ethnic inequality with a two-way fixed-effects design that includes lagged GDP per capita. In the reframed paper, the practical question is whether GDP should be treated as a lagged confounder, a lagged bad control, or a dual-role variable.
+\citet{leipziger2024} estimates the effect of democratization on ethnic inequality with a two-way fixed-effects design in which democracy and GDP per capita are both lagged one calendar year relative to the outcome. This makes GDP pre-outcome, but not demonstrably pretreatment relative to democracy: the two predictors share the same annual index, and the replication documentation does not provide within-year transition and measurement dates. We therefore classify the timing of GDP as ambiguous for the treatment contrast, rather than treating its lag label as dispositive. The practical question is whether GDP should be treated as a confounder, a treatment-responsive variable, or a dual-role variable.
 
 ```{r leipziger-data, cache=TRUE}
 dat_lp <- read.delim(
@@ -510,7 +569,7 @@ The estimated IVB is `r round(r_lp$ivb_formula, 4)`, or about `r round(abs(r_lp$
 
 ## Application 2: Postal Infrastructure and Economic Growth \label{sec:app_rogowski_pa}
 
-\citet{rogowski_etal2022} provide the complementary case. Their country-panel growth regression includes lagged GDP per capita, which is both a plausible collider and a textbook growth confounder. Here the IVB formula reveals a large arithmetic shift but cannot decide, by itself, whether dropping GDP improves identification.
+\citet{rogowski_etal2022} provide the complementary case. Their panel is organized in five-year steps, the outcome is led one panel period, and the postal-stock and GDP measures enter the same regression row. Baseline GDP is therefore a plausible state variable for subsequent growth, but it is not demonstrably prior to the treatment represented by an accumulated stock of post offices; it may already embody responses to earlier postal investment. Its timing is ambiguous for the treatment contrast even though it precedes the measured outcome window. Here the IVB formula reveals a large arithmetic shift but cannot decide, by itself, whether dropping GDP improves identification.
 
 ```{r rogowski-data, cache=TRUE}
 dat_rg <- read.delim(
