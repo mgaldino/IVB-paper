@@ -436,6 +436,22 @@ The vector identity remains a diagnostic for nested linear TSCS specifications, 
 
 For reporting, we recommend the endpoint shift together with leave-one-control-out comparisons, each defined as the full-model coefficient minus the coefficient from a model omitting one candidate control while retaining the others. These are conditional sensitivity checks, not additive shares of the joint shift. A symmetric Shapley allocation can summarize the average contribution across all inclusion orders when the candidate set is small, but it remains an allocation of a linear projection movement; we therefore place it in the online appendix rather than treat it as a causal decomposition.
 
+## Quantifying Uncertainty in the Shift
+
+Because the short and long coefficients are estimated from the same observations, uncertainty for $\widehat\Delta_Z=\widehat\beta_L-\widehat\beta_S$ must preserve their dependence. Our primary procedure resamples whole units and, on every paired resample, re-estimates the short, long, and auxiliary equations on exactly the same rows. A complementary delta calculation uses
+\[
+\widehat{\operatorname{Var}}(\widehat\Delta_Z)
+=
+\widehat{\operatorname{Var}}(\widehat\beta_L)
++
+\widehat{\operatorname{Var}}(\widehat\beta_S)
+-
+2\widehat{\operatorname{Cov}}(\widehat\beta_L,\widehat\beta_S),
+\]
+with the cross-estimator covariance obtained from a stacked cluster sandwich. Treating the nested estimates as independent is not justified. Applying the delta method to $-\widehat\theta\widehat\pi$ requires the covariance between $\widehat\theta$ and $\widehat\pi$ and serves as a verification of the paired calculation, not an automatic substitute for it.
+
+When this inference is executed and validated for an application, the diagnostic should report the signed $\widehat\Delta_Z$, an interval for $\Delta_Z$, and the prespecified relative magnitude $|\widehat\Delta_Z|/|\widehat\beta_{\mathrm{benchmark}}|$. The benchmark denominator must be identified in advance and the ratio is unstable when it is near zero. The current applications report only point shifts and relative magnitudes already supported by the replication outputs; they do not yet report confidence intervals for $\Delta_Z$. The online appendix gives the derivation, implementation, deterministic checks, and the limits of the proposed procedures.
+
 In cross-sections, $W$ may contain baseline covariates. In TSCS settings, $W$ can include fixed effects, lagged dependent variables, lagged treatment, and other lagged state variables. The formula is therefore an exact linear-model identity, not a separate estimator. That exactness makes the specification-shift diagnostic directly readable from nested linear regressions already familiar to applied researchers.
 
 Two interpretive points matter. First, the formula is diagnostic rather than self-justifying. If $Z$ is a confounder, the same arithmetic difference reflects deconfounding rather than harm. If $Z$ is a mediator, the difference reflects movement from the total to the direct effect \citep{acharya_etal2016}. Only the DAG tells the researcher which interpretation applies. Second, the formula remains useful precisely because it converts a vague modeling dispute into two estimable components: how strongly $Z$ predicts the outcome in the long model, and how strongly $D$ predicts $Z$ once admissible controls have been partialled out.
@@ -639,7 +655,7 @@ This baseline is intentionally narrower than a recommendation for panel estimato
 
 # Applications \label{sec:applications}
 
-The applications serve two purposes. First, they show that the decomposition yields empirical specification-shift diagnostics rather than only theoretical algebra. Second, they show why those shifts require separate timing and causal judgments. Across the `r cc_summary$n_candidates` theory-selected candidate controls in these six studies, the median $|\widehat{\Delta}_Z|/\mathrm{SE}$ is `r sprintf('%.2f', cc_summary$median_ivb_se)`, and `r cc_summary$n_over_one` case exceeds one standard error. These are descriptive results from a purposive set of applications, not estimates of the prevalence or magnitude of causal bias in TSCS research.
+The applications serve two purposes. First, they show that the decomposition yields empirical specification-shift diagnostics rather than only theoretical algebra. Second, they show why those shifts require separate timing and causal judgments. The existing replication outputs provide point shifts for `r cc_summary$n_candidates` theory-selected candidate controls in six studies, together with endpoint coefficients and previously calculated scale comparisons. They do not contain paired confidence intervals for $\Delta_Z$, so none is imputed here. These are descriptive results from a purposive set of applications, not estimates of the prevalence or magnitude of causal bias in TSCS research.
 
 ## Application 1: Democracy and Ethnic Inequality \label{sec:app_leipziger_pa}
 
@@ -699,7 +715,7 @@ tab_lp <- data.frame(
     "$\\hat\\theta^{\\star}$",
     "$\\hat\\pi$",
     "$\\widehat{\\Delta}_Z = -\\hat\\theta^{\\star}\\hat\\pi$",
-    "$|\\widehat{\\Delta}_Z|/\\mathrm{SE}$",
+    "$|\\widehat{\\Delta}_Z|/\\widehat{\\mathrm{SE}}(\\hat\\beta_{\\text{long}})$ (scale only)",
     "$|\\widehat{\\Delta}_Z|/|\\hat\\beta_{\\text{long}}|$"
   ),
   Estimate = c(
@@ -725,7 +741,7 @@ kable(
   kable_styling(latex_options = c("hold_position", "scale_down"))
 ```
 
-The estimated specification shift is `r round(r_lp$ivb_formula, 4)`, or about `r round(abs(r_lp$ivb_formula) / se_lp, 2)` standard errors. The coefficient in the specification with GDP is roughly `r round(abs(r_lp$ivb_formula / r_lp$beta_long) * 100, 0)` percent smaller in absolute shift terms, but the difference remains below one reported standard error. Because GDP's causal role and within-year timing are ambiguous, this comparison does not establish attenuation bias or deconfounding.
+The estimated specification shift is `r round(r_lp$ivb_formula, 4)`, with a magnitude equal to about `r round(abs(r_lp$ivb_formula / r_lp$beta_long) * 100, 0)` percent of the long-model coefficient. The previously calculated ratio `r round(abs(r_lp$ivb_formula) / se_lp, 2)` divides the shift by the standard error of one endpoint; it is retained only as a scale comparison and is neither a test statistic nor an interval for $\Delta_Z$. A paired confidence interval has not yet been computed. Because GDP's causal role and within-year timing are ambiguous, the point shift does not establish attenuation bias or deconfounding.
 
 ## Application 2: Postal Infrastructure and Economic Growth \label{sec:app_rogowski_pa}
 
@@ -789,7 +805,7 @@ tab_rg <- do.call(rbind, lapply(seq_along(rg_controls), function(j) {
 
 se_rg <- se(mod_rg)["upu_totalpo_ipo_ln_stock_1_5yr"]
 tab_rg$IVB_SE <- round(abs(tab_rg$IVB) / se_rg, 2)
-tab_rg$pct <- round(100 * tab_rg$IVB / tab_rg$beta_long, 1)
+tab_rg$pct <- round(100 * abs(tab_rg$IVB) / abs(tab_rg$beta_long), 1)
 ```
 
 ```{r rogowski-ivb-table}
@@ -807,15 +823,15 @@ kable(
     "$\\hat\\theta^{\\star}$",
     "$\\hat\\pi$",
     "$\\widehat{\\Delta}_Z$",
-    "$|\\widehat{\\Delta}_Z|/\\mathrm{SE}$",
-    "$\\widehat{\\Delta}_Z/\\hat\\beta$ (\\%)"
+    "$|\\widehat{\\Delta}_Z|/\\widehat{\\mathrm{SE}}(\\hat\\beta_{\\text{long}})$ (scale only)",
+    "$|\\widehat{\\Delta}_Z|/|\\hat\\beta_{\\text{long}}|$ (\\%)"
   ),
   caption = "Specification-shift decomposition for Rogowski et al. (2022)."
 ) %>%
   kable_styling(latex_options = c("hold_position", "scale_down"))
 ```
 
-For lagged GDP per capita, $|\widehat{\Delta}_Z|/\mathrm{SE} = `r tab_rg$IVB_SE[1]`$, the largest value among the published applications. But this is precisely the case in which the formula must not be overread. GDP's causal role is unresolved: conditional convergence makes it a possible confounder; inherited postal infrastructure may make it a legacy treatment-responsive state or mediator; and both channels could give it a dual role. The large coefficient shift is therefore descriptive until a DAG and evidence on the relevant measurement and exposure windows establish more. The lesson is not ``drop GDP.'' The lesson is that a large specification shift demands explicit causal reasoning about timing and role. This is the use case for a diagnostic paired with a conditional baseline rather than an automatic decision rule.
+For lagged GDP per capita, the point shift is `r round(tab_rg$IVB[1], 4)`, with a magnitude equal to `r tab_rg$pct[1]` percent of the long-model coefficient. The previously calculated endpoint-SE ratio is `r tab_rg$IVB_SE[1]`, the largest such scale comparison among the published applications, but it is not uncertainty for the paired shift and no confidence interval for $\Delta_Z$ is claimed. GDP's causal role is unresolved: conditional convergence makes it a possible confounder; inherited postal infrastructure may make it a legacy treatment-responsive state or mediator; and both channels could give it a dual role. The large point shift is therefore descriptive until a DAG and evidence on the relevant measurement and exposure windows establish more. The lesson is not ``drop GDP.'' The lesson is that a large specification shift demands explicit causal reasoning about timing and role. This is the use case for a diagnostic paired with a conditional baseline rather than an automatic decision rule.
 
 # Conclusion \label{sec:conclusion}
 

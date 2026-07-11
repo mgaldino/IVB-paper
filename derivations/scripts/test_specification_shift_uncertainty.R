@@ -3,6 +3,10 @@
 # paper simulation. The fixture is a fixed algebraic panel.
 
 options(scipen = 999)
+rng_existed_before <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+if (rng_existed_before) {
+  rng_state_before <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+}
 if (!exists("fit_specification_shift", mode = "function")) {
   source("specification_shift_uncertainty.R")
 }
@@ -104,6 +108,16 @@ malformed_index_rejected <- inherits(
 )
 stopifnot(malformed_index_rejected)
 
+rng_untouched <- if (rng_existed_before) {
+  identical(
+    get(".Random.seed", envir = .GlobalEnv, inherits = FALSE),
+    rng_state_before
+  )
+} else {
+  !exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+}
+stopifnot(rng_untouched)
+
 test_summary <- data.frame(
   check = c(
     "Fixed-sample difference-product identity",
@@ -112,7 +126,8 @@ test_summary <- data.frame(
     "Simple paired-variance algebra",
     "Whole-unit index structure",
     "Repeated source units receive distinct bootstrap identifiers",
-    "Malformed unit index is rejected"
+    "Malformed unit index is rejected",
+    "Deterministic test leaves RNG state untouched"
   ),
   diagnostic = c(
     identity_error,
@@ -121,13 +136,15 @@ test_summary <- data.frame(
     simple_comparison_error,
     as.numeric(index_structure_passed),
     as.numeric(repeated_source_has_distinct_ids),
-    as.numeric(malformed_index_rejected)
+    as.numeric(malformed_index_rejected),
+    as.numeric(rng_untouched)
   ),
   criterion = c(
     "error < 1e-10",
     "error < 1e-10",
     "error < 1e-10",
     "error < 1e-10",
+    "equals 1",
     "equals 1",
     "equals 1",
     "equals 1"

@@ -105,7 +105,7 @@ Contemporaneous Treatment Effect}
 Moreira\footnote{Professor of Quantitative Methods, Mitch Daniels School
   of Business, Purdue University.} \and Carolina Dolleans\footnote{Graduate
   Student of Political Science, Universidade Federal de Pernambuco.}}
-\date{July 2026}
+\date{Julho 2026}
 
 \begin{document}
 \maketitle
@@ -557,6 +557,40 @@ orders when the candidate set is small, but it remains an allocation of
 a linear projection movement; we therefore place it in the online
 appendix rather than treat it as a causal decomposition.
 
+\subsection{Quantifying Uncertainty in the
+Shift}\label{quantifying-uncertainty-in-the-shift}
+
+Because the short and long coefficients are estimated from the same
+observations, uncertainty for
+\(\widehat\Delta_Z=\widehat\beta_L-\widehat\beta_S\) must preserve their
+dependence. Our primary procedure resamples whole units and, on every
+paired resample, re-estimates the short, long, and auxiliary equations
+on exactly the same rows. A complementary delta calculation uses \[
+\widehat{\operatorname{Var}}(\widehat\Delta_Z)
+=
+\widehat{\operatorname{Var}}(\widehat\beta_L)
++
+\widehat{\operatorname{Var}}(\widehat\beta_S)
+-
+2\widehat{\operatorname{Cov}}(\widehat\beta_L,\widehat\beta_S),
+\] with the cross-estimator covariance obtained from a stacked cluster
+sandwich. Treating the nested estimates as independent is not justified.
+Applying the delta method to \(-\widehat\theta\widehat\pi\) requires the
+covariance between \(\widehat\theta\) and \(\widehat\pi\) and serves as
+a verification of the paired calculation, not an automatic substitute
+for it.
+
+When this inference is executed and validated for an application, the
+diagnostic should report the signed \(\widehat\Delta_Z\), an interval
+for \(\Delta_Z\), and the prespecified relative magnitude
+\(|\widehat\Delta_Z|/|\widehat\beta_{\mathrm{benchmark}}|\). The
+benchmark denominator must be identified in advance and the ratio is
+unstable when it is near zero. The current applications report only
+point shifts and relative magnitudes already supported by the
+replication outputs; they do not yet report confidence intervals for
+\(\Delta_Z\). The online appendix gives the derivation, implementation,
+deterministic checks, and the limits of the proposed procedures.
+
 In cross-sections, \(W\) may contain baseline covariates. In TSCS
 settings, \(W\) can include fixed effects, lagged dependent variables,
 lagged treatment, and other lagged state variables. The formula is
@@ -926,12 +960,13 @@ defended.
 The applications serve two purposes. First, they show that the
 decomposition yields empirical specification-shift diagnostics rather
 than only theoretical algebra. Second, they show why those shifts
-require separate timing and causal judgments. Across the 14
-theory-selected candidate controls in these six studies, the median
-\(|\widehat{\Delta}_Z|/\mathrm{SE}\) is 0.13, and 1 case exceeds one
-standard error. These are descriptive results from a purposive set of
-applications, not estimates of the prevalence or magnitude of causal
-bias in TSCS research.
+require separate timing and causal judgments. The existing replication
+outputs provide point shifts for 14 theory-selected candidate controls
+in six studies, together with endpoint coefficients and previously
+calculated scale comparisons. They do not contain paired confidence
+intervals for \(\Delta_Z\), so none is imputed here. These are
+descriptive results from a purposive set of applications, not estimates
+of the prevalence or magnitude of causal bias in TSCS research.
 
 \subsection{\texorpdfstring{Application 1: Democracy and Ethnic
 Inequality
@@ -982,17 +1017,19 @@ $\hat\theta^{\star}$ & -0.0497\\
 $\hat\pi$ & 0.1123\\
 $\widehat{\Delta}_Z = -\hat\theta^{\star}\hat\pi$ & 0.0056\\
 \addlinespace
-$|\widehat{\Delta}_Z|/\mathrm{SE}$ & 0.48\\
+$|\widehat{\Delta}_Z|/\widehat{\mathrm{SE}}(\hat\beta_{\text{long}})$ (scale only) & 0.48\\
 $|\widehat{\Delta}_Z|/|\hat\beta_{\text{long}}|$ & 15.9\%\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-The estimated specification shift is 0.0056, or about 0.48 standard
-errors. The coefficient in the specification with GDP is roughly 16
-percent smaller in absolute shift terms, but the difference remains
-below one reported standard error. Because GDP's causal role and
-within-year timing are ambiguous, this comparison does not establish
+The estimated specification shift is 0.0056, with a magnitude equal to
+about 16 percent of the long-model coefficient. The previously
+calculated ratio 0.48 divides the shift by the standard error of one
+endpoint; it is retained only as a scale comparison and is neither a
+test statistic nor an interval for \(\Delta_Z\). A paired confidence
+interval has not yet been computed. Because GDP's causal role and
+within-year timing are ambiguous, the point shift does not establish
 attenuation bias or deconfounding.
 
 \subsection{\texorpdfstring{Application 2: Postal Infrastructure and
@@ -1026,27 +1063,29 @@ improves identification.
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{lrrrrrrr}
 \toprule
-Control as $z$ & $\hat\beta_{\text{short}}$ & $\hat\beta_{\text{long}}$ & $\hat\theta^{\star}$ & $\hat\pi$ & $\widehat{\Delta}_Z$ & $|\widehat{\Delta}_Z|/\mathrm{SE}$ & $\widehat{\Delta}_Z/\hat\beta$ (\%)\\
+Control as $z$ & $\hat\beta_{\text{short}}$ & $\hat\beta_{\text{long}}$ & $\hat\theta^{\star}$ & $\hat\pi$ & $\widehat{\Delta}_Z$ & $|\widehat{\Delta}_Z|/\widehat{\mathrm{SE}}(\hat\beta_{\text{long}})$ (scale only) & $|\widehat{\Delta}_Z|/|\hat\beta_{\text{long}}|$ (\%)\\
 \midrule
 Log GDP p.c. & 0.0083 & 0.0198 & -4.0130 & 0.0029 & 0.0115 & 2.11 & 58.0\\
-Log population & 0.0206 & 0.0198 & -1.9465 & -0.0004 & -0.0008 & 0.15 & -4.0\\
+Log population & 0.0206 & 0.0198 & -1.9465 & -0.0004 & -0.0008 & 0.15 & 4.0\\
 Urbanization & 0.0192 & 0.0198 & -3.1421 & 0.0002 & 0.0006 & 0.11 & 3.0\\
 Polity2 & 0.0191 & 0.0198 & 0.0341 & -0.0221 & 0.0008 & 0.14 & 3.8\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-For lagged GDP per capita, \(|\widehat{\Delta}_Z|/\mathrm{SE} = 2.11\),
-the largest value among the published applications. But this is
-precisely the case in which the formula must not be overread. GDP's
-causal role is unresolved: conditional convergence makes it a possible
-confounder; inherited postal infrastructure may make it a legacy
-treatment-responsive state or mediator; and both channels could give it
-a dual role. The large coefficient shift is therefore descriptive until
-a DAG and evidence on the relevant measurement and exposure windows
-establish more. The lesson is not ``drop GDP.'\,' The lesson is that a
-large specification shift demands explicit causal reasoning about timing
-and role. This is the use case for a diagnostic paired with a
+For lagged GDP per capita, the point shift is 0.0115, with a magnitude
+equal to 58 percent of the long-model coefficient. The previously
+calculated endpoint-SE ratio is 2.11, the largest such scale comparison
+among the published applications, but it is not uncertainty for the
+paired shift and no confidence interval for \(\Delta_Z\) is claimed.
+GDP's causal role is unresolved: conditional convergence makes it a
+possible confounder; inherited postal infrastructure may make it a
+legacy treatment-responsive state or mediator; and both channels could
+give it a dual role. The large point shift is therefore descriptive
+until a DAG and evidence on the relevant measurement and exposure
+windows establish more. The lesson is not ``drop GDP.'\,' The lesson is
+that a large specification shift demands explicit causal reasoning about
+timing and role. This is the use case for a diagnostic paired with a
 conditional baseline rather than an automatic decision rule.
 
 \section{\texorpdfstring{Conclusion
