@@ -1,0 +1,995 @@
+Referee-Style Feedback
+Manuscript
+Galdino, Manoel, Davi Moreira, and Carolina Dolleans. “Included Variable Bias in Dynamic Panels:
+A Diagnostic for Time-Varying Controls and a Benchmark for the Contemporaneous Treatment
+Effect.” July 2026.
+
+
+
+
+Overall Assessment
+This is a promising and potentially useful methods paper, especially for applied political scientists
+working with time-series cross-sectional data. Its central intuition is important, its practical
+recommendation is memorable, and the manuscript is unusually clear about the limits of that
+recommendation.
+
+
+My referee-style recommendation would be major revision. The paper has a publishable core, but it
+currently moves too quickly from an algebraic identity to the language of “bias,” and from a set of
+simulation designs to a fairly general ADL plus fixed-effects benchmark. The revision should more
+sharply separate three analytical tasks:
+
+
+     1. Causal classification: What role does the covariate play in the causal DAG?
+     2. Descriptive diagnosis: How much does adding the covariate move the treatment coefficient?
+     3. Identification: Under what assumptions does either coefficient recover the contemporaneous
+        causal effect?
+
+This distinction is already implicit in the manuscript, but it should become the paper’s formal organizing
+principle.
+
+
+
+
+1. Summary of the Paper
+The manuscript studies the problem of conditioning on time-varying covariates that may themselves
+respond to treatment. Its target setting is a panel or time-series cross-sectional design in which the
+researcher wants the contemporaneous effect of Dt on Yt , but must decide whether to control for Zt
+or Zt−1 .
+
+
+The paper makes two connected claims.
+
+
+First, it introduces included variable bias, or IVB, as a diagnostic for the coefficient shift produced by
+adding a candidate control. For nested linear models, the manuscript uses the Frisch–Waugh–Lovell
+identity
+
+
+                                             β^∗ − β^ = −θ^∗ π
+                                                             ^,
+
+
+
+
+                                                     1
+where:
+
+
+      • θ^∗ is the coefficient on the candidate control in the long outcome regression;
+       ^ is the coefficient on treatment in an auxiliary regression for that control.
+      •π
+
+The authors correctly emphasize that the formula does not, by itself, establish whether the coefficient
+change is harmful. The causal DAG determines whether the change represents collider bias, over-
+control, or deconfounding.
+
+
+Second, the paper recommends autoregressive distributed-lag models with unit and time fixed
+effects and lagged state variables—ADL plus FE—as a practical starting point when the estimand is
+the contemporaneous treatment effect. Contemporaneous controls are treated as suspect when they
+may be mediators or colliders, while substantively justified lagged controls can enter as predetermined
+state variables.
+
+
+The simulations cover three principal situations:
+
+
+      • a contemporaneous collider;
+      • a dual-role covariate that is useful when lagged but problematic contemporaneously;
+      • a contemporaneous mediator, sometimes combined with lagged confounding.
+
+The applications calculate IVB quantities for controls used in published political-science studies,
+including GDP per capita in research on democracy and ethnic inequality and in research on postal
+infrastructure and economic development.
+
+
+
+
+2. Contribution to Political Methodology
+2.1 Why the Literature Should Care
+The practical problem addressed by the paper is real and consequential. Political scientists regularly
+include variables such as GDP, repression, conflict, turnout, aid, inflation, or institutional quality without
+making the within-period causal ordering explicit.
+
+
+A variable can be a legitimate pretreatment confounder at one time index and a mediator or collider at
+another. The manuscript gives researchers a simple language for discussing this issue and a workflow
+that can be implemented using familiar regression models.
+
+
+The paper is especially valuable as a bridge between three conversations that applied researchers often
+encounter separately:
+
+
+     1. causal-DAG discussions of good and bad controls;
+     2. panel-data discussions of state dependence and dynamic specifications;
+     3. recent work on treatment-responsive, time-varying covariates.
+
+The manuscript’s strongest conceptual statement can be summarized as follows:
+
+
+         DAGs determine the causal meaning of a specification change; IVB measures the size of
+         that change; and the dynamic benchmark provides an applied comparison.
+
+
+
+
+                                                      2
+This is clear, teachable, and potentially influential.
+
+
+2.2 What Is Genuinely Distinctive
+The strongest contribution is not the algebraic identity by itself. The decomposition is a standard
+nested-regression result. A skeptical reviewer may therefore argue that “included variable bias” merely
+renames the difference between short- and long-regression coefficients.
+
+
+The more defensible contribution is the complete diagnostic framework:
+
+
+     1. use timing and a dynamic DAG to classify the candidate control;
+     2. decompose the coefficient shift into the treatment–control and control–outcome relationships;
+     3. compare contemporaneous and lagged versions of the control inside an explicitly dynamic
+        specification;
+     4. connect the recommendation to a clearly defined estimand—the contemporaneous treatment
+        effect.
+
+The paper will be stronger if it claims this diagnostic workflow as its principal innovation, rather than
+implying that the product formula itself is a major new statistical result.
+
+
+2.3 Placement in the Literature
+Relative to the literature cited in the manuscript, the paper occupies a useful middle position.
+
+
+It is less general than work on sequential identification, time-varying confounding, or treatment-
+responsive covariates, but it is more operational for conventional linear TSCS research. It does not solve
+the problem of recovering an untreated potential covariate, and it does not replace causal identification
+assumptions.
+
+
+Instead, it offers:
+
+
+      • a specification-sensitivity diagnostic;
+      • a way to interpret that diagnostic using causal graphs;
+      • a baseline specification for researchers who remain within linear fixed-effects models.
+
+That is a legitimate contribution. The paper should, however, frame itself primarily as an applied
+diagnostic and specification-auditing framework, rather than as a general solution to time-varying
+confounding.
+
+
+
+
+3. The Key Figure
+Figure 2 as the Empirical Centerpiece
+Figure 2 is the manuscript’s most important empirical representation.
+
+
+It presents the dual-role simulation in which ADL plus fixed effects with Zt−1 maintains bias around
+0.008 to 0.010 across values of covariate persistence. By contrast, TWFE with Zt−1 remains substantially
+biased, and the static short specification performs worst.
+
+
+
+
+                                                         3
+The associated analysis argues that outcome persistence transmits an inherited collider association
+from Yt−1 to Yt , while conditioning on the lagged outcome blocks that transmission.
+
+
+The figure therefore does more than demonstrate that “lagging the control helps.” It supports the more
+theoretically interesting proposition that:
+
+
+       A lagged bad-control path may continue to affect the contemporaneous treatment
+       equation when the outcome is persistent, so the lagged outcome is performing
+       substantive causal work in the proposed benchmark.
+
+
+Table 2 reinforces this interpretation. When outcome persistence is zero, TWFE with Zt−1 produces
+almost no bias. When persistence is positive, TWFE bias becomes large, while the ADL specification
+remains close to zero.
+
+
+Recommended Improvements to Figure 2
+The figure should include:
+
+
+      • a more prominent zero-bias reference line;
+      • Monte Carlo uncertainty intervals;
+      • the number of simulations;
+      • the panel dimensions N and T ;
+      • either relative bias or RMSE in addition to raw bias;
+      • clearer visual differentiation among the specifications.
+
+Most importantly, the manuscript should place the relevant dynamic DAG immediately before the
+figure. The generic collider–fork–chain diagram does not show the inherited path that Figure 2 is
+intended to illuminate.
+
+
+
+
+4. Why the Research Is Challenging and Novel
+The research problem is difficult because the causal role of Z cannot be determined from the
+substantive name of the variable alone.
+
+
+“GDP,” “conflict,” “repression,” or “institutional quality” is not inherently a confounder, mediator, or
+collider. Its role depends on:
+
+
+      • the treatment and outcome being studied;
+      • the time index;
+      • the within-period causal ordering;
+      • persistence and feedback across periods;
+      • the causal estimand.
+
+The same covariate may therefore be useful at t − 1 and harmful at t. It may also play more than one
+role. Lagged GDP, for example, can capture baseline developmental conditions, while contemporaneous
+or future GDP may partly result from treatment and accumulated outcomes.
+
+
+
+
+                                                       4
+The manuscript is novel insofar as it seeks to make this ambiguity operational rather than simply
+warning researchers about “bad controls.”
+
+
+The simulations also highlight a less obvious point: lagging a collider does not necessarily eliminate its
+consequences when the outcome process carries the induced association forward.
+
+
+
+
+5. Major Limitations and Revision Priorities
+5.1 A Specification Shift Is Not Automatically Bias
+This is the most important conceptual issue.
+
+
+The identity
+
+
+                                               β^∗ − β^ = −θ^∗ π
+                                                               ^
+
+shows how much two nested regression coefficients differ. It does not establish:
+
+
+        • which coefficient is biased;
+        • whether both coefficients are biased;
+        • whether either coefficient identifies a causal effect;
+        • whether the two coefficients target the same estimand.
+
+The manuscript acknowledges this issue verbally, but the terminology continues to invite a causal
+interpretation.
+
+
+For example:
+
+
+        • when Z is a confounder, the shift may represent bias reduction;
+        • when Z is a mediator, the regressions may target total and direct effects;
+        • when Z is a collider, the long coefficient may be biased;
+        • under unobserved confounding or model misspecification, neither coefficient may identify the
+          contemporaneous treatment effect.
+
+Recommendation
+
+Formally define IVB first as a population and sample specification-shift diagnostic. Reserve the word
+“bias” for settings in which a causal DAG and explicit identification assumptions establish a target
+parameter and demonstrate that conditioning on Z causes deviation from that parameter.
+
+
+The notation should distinguish:
+
+
+                                             ΔZ = βlong − βshort
+
+from:
+
+
+                                          Bias(β^) = E[β^] − βCET .
+
+
+
+
+                                                       5
+The first quantity is defined for nested linear projections. The second requires a causal estimand and
+identification assumptions.
+
+
+One possible solution is to use included-variable specification shift as the general term and reserve
+included variable bias for causally classified cases.
+
+
+
+
+5.2 The ADL Benchmark Needs Explicit Identification Conditions
+The manuscript presents ADL plus fixed effects as a “defensible baseline.” That is reasonable, but
+readers need a precise statement of the assumptions under which its contemporaneous treatment
+coefficient has a causal interpretation.
+
+
+At minimum, the paper should discuss:
+
+
+     • sequential or conditional exogeneity of Dt ;
+     • whether treatment can respond to past outcomes;
+     • the role of Dt−1 and longer treatment histories;
+     • restrictions on contemporaneous feedback between Dt and Yt ;
+     • correct specification of the lag structure;
+     • unit-specific trends;
+     • heterogeneous dynamics;
+     • the required relationship between N and T ;
+     • serial correlation in the error process;
+     • appropriate inference under cross-sectional dependence.
+
+The paper’s own simulations show that the benchmark does not solve contemporaneous unobserved
+confounding. In those designs, bias reaches between 8 and 53 percent of the treatment effect.
+
+
+This limitation should appear earlier and more prominently. Ideally, it should be incorporated into the
+formal statement introducing the benchmark.
+
+
+The benchmark should be framed as:
+
+
+       a specification baseline that addresses particular included-variable and timing problems
+       under stated sequential-identification assumptions,
+
+
+rather than as a generally causal panel estimator.
+
+
+
+
+5.3 Dynamic Panel Bias Is Largely Missing
+An ADL model with fixed effects and a lagged dependent variable can suffer from finite-T dynamic
+panel bias. Whether this problem is negligible depends on the time dimension, persistence, and
+estimator.
+
+
+This matters because the paper is explicitly aimed at TSCS researchers, whose panels sometimes have
+short or moderately sized time dimensions.
+
+
+
+
+                                                      6
+Recommendation
+
+Add simulations varying:
+
+
+      • N;
+      • T;
+      • outcome persistence ρY ;
+      • treatment persistence;
+      • the magnitude of unit effects.
+
+The simulations should compare, where appropriate:
+
+
+      • the conventional fixed-effects within estimator;
+      • bias-corrected fixed effects;
+      • a suitable GMM estimator;
+      • alternative dynamic estimators.
+
+The paper does not need to endorse one estimator universally. It should, however, distinguish two
+questions:
+
+
+    1. Which variables should enter the conditioning set?
+    2. How should a dynamic model containing Yt−1 be estimated?
+
+The current manuscript addresses the first question but risks obscuring the second.
+
+
+
+
+5.4 “Contemporaneous” Timing Requires a Stronger Substantive
+Definition
+In annual political data, Dt , Zt , and Yt are often aggregates over the same interval. Calling Zt post-
+treatment or Zt−1 pretreatment can therefore be too mechanical.
+
+
+For example:
+
+
+      • if treatment occurs near the end of year t, much of Zt may precede treatment;
+      • if treatment is anticipated, Zt−1 may already respond to future treatment;
+      • if treatment is continuous during the year, the causal sequence may include repeated feedback;
+      • if the outcome is measured at the beginning rather than the end of the period, the assumed
+        ordering may reverse.
+
+Recommendation
+
+Define a within-period temporal model explicitly, for example:
+
+
+                               state at beginning of t → Dt → Zt → Yt .
+
+Then explain how annual, quarterly, or otherwise aggregated observations map onto these causal
+moments.
+
+
+The benchmark should be conditional on this substantive temporal interpretation, not merely on
+variable subscripts.
+
+
+
+                                                     7
+5.5 The Simulations Are Insufficiently Documented
+The reported simulation results are striking, but the manuscript does not provide enough information
+in the main text to assess or reproduce them.
+
+
+Readers need:
+
+
+     • complete data-generating equations;
+     • all parameter values;
+     • values of N and T ;
+     • burn-in procedures;
+     • number of replications;
+     • treatment distributions;
+     • error distributions;
+     • fixed-effect generation;
+     • initial conditions;
+     • exact estimator implementation;
+     • bias definitions;
+     • variance and RMSE measures;
+     • inferential procedures;
+     • replication code.
+
+Without these details, the simulations may appear designed to validate the preferred benchmark.
+
+
+Recommendation
+
+Provide a complete simulation appendix and a summary table connecting each simulation design to:
+
+
+     • the corresponding DAG;
+     • the causal estimand;
+     • the identifying assumptions;
+     • the estimators being compared;
+     • the expected source of bias.
+
+The paper should also vary the strength of each causal arrow independently, rather than concentrating
+mainly on persistence parameters. This would reveal the parameter regions in which the proposed
+benchmark performs well or fails.
+
+
+
+
+5.6 The DAG Presentation Is Too Generic
+Figure 1 presents elementary collider, fork, and chain structures. The paper’s substantive results,
+however, concern dynamic DAGs involving:
+
+
+     • temporal feedback;
+     • persistence;
+     • inherited collider paths;
+     • lagged conditioning;
+     • multiple causal roles for the same substantive variable.
+
+
+
+
+                                                    8
+The generic diagrams are not sufficient to establish the more complex claims.
+
+
+Recommendation
+
+Add at least three fully time-indexed DAGs:
+
+
+       1. a contemporaneous collider design;
+       2. a dual-role design in which Zt−1 is a confounder and Zt is a collider;
+       3. a design in which Zt is a mediator and Zt−1 is a lagged confounder.
+
+For the dual-role design, explicitly trace the inherited path and show why conditioning on Yt−1 blocks its
+transmission to Yt .
+
+
+This mechanism is one of the paper’s most interesting theoretical insights. Readers should not have to
+reconstruct it independently.
+
+
+
+
+5.7 Multiple Controls Require a Multivariate Treatment
+The scalar decomposition is clear, but applied regressions normally contain several correlated controls.
+
+
+For a vector of candidate controls Z, the corresponding decomposition is:
+
+
+                                                 Δβ = −θ ′ π.
+
+One-at-a-time IVB quantities can be misleading when controls are correlated. A variable may appear
+unimportant because another control has already absorbed the relevant variation. The value assigned
+to a control may also depend on which other controls are included.
+
+
+Recommendation
+
+Add:
+
+
+        • the vector decomposition;
+        • a joint IVB measure;
+        • leave-one-control-out diagnostics;
+        • discussion of order dependence;
+        • diagnostics for correlated controls.
+
+A Shapley-style decomposition could be considered if the authors want to allocate a joint specification
+shift among multiple controls. This is not essential, but the manuscript must at least explain why one-at-
+a-time quantities may not sum to the total shift.
+
+
+This issue is directly relevant to the empirical applications, which consider several controls drawn from
+the same original specification.
+
+
+
+
+5.8 Statistical Uncertainty for IVB Needs Development
+The use of ∣IV B/SE∣ is intuitive but underdefined.
+
+
+
+
+                                                       9
+The paper should clarify:
+
+
+     • which standard error appears in the denominator;
+     • whether it is the short-model treatment SE;
+     • whether it is the long-model treatment SE;
+     • whether it is the SE of the difference between coefficients;
+     • how covariance between the nested estimators is handled;
+     • whether uncertainty in θ^ and π ^ is propagated.
+
+Because the sample decomposition is algebraically exact, the relevant uncertainty concerns the
+underlying population specification shift.
+
+
+Recommendation
+
+Develop a principled uncertainty measure using:
+
+
+     • a delta-method variance;
+     • a joint sandwich estimator;
+     • or a cluster bootstrap appropriate to the panel structure.
+
+A diagnostic table could report:
+
+
+                                                               ∣ΔZ ∣
+                                   ΔZ ,    CI(ΔZ ),                          ,
+                                                            ∣β^benchmark ∣
+
+along with a substantively meaningful threshold.
+
+
+The paper should avoid relying exclusively on a comparison with a single regression standard error.
+
+
+
+
+5.9 The Applications Need a Clearer Sampling and Coding
+Protocol
+The manuscript reports 14 candidate controls across six studies, with a median ∣IV B/SE∣ of 0.13 and
+only one case above one standard error. However, only two applications receive detailed treatment.
+
+
+The authors should explain:
+
+
+     • how the six studies were selected;
+     • whether they represent a systematic sample;
+     • how candidate colliders were identified;
+     • who performed the causal classification;
+     • whether classifications were made before examining coefficient changes;
+     • whether multiple coders were used;
+     • whether original samples were reproduced exactly;
+     • whether original standard errors and clustering procedures were replicated;
+     • why each variable was classified as a collider, mediator, confounder, or dual-role variable;
+     • what happened in all 14 cases.
+
+
+
+
+                                                    10
+The relatively small median shift is not a weakness. It changes the practical interpretation of the
+contribution.
+
+
+The evidence suggests that IVB may be most valuable as a screening, transparency, and
+specification-auditing device, rather than because bad controls routinely reverse published findings.
+
+
+That is still an important contribution, but the paper should state it directly.
+
+
+
+
+5.10 The Substantive DAGs in the Applications Need Tightening
+The GDP applications are plausible, but the causal arguments remain somewhat verbal.
+
+
+In the postal-infrastructure application, for example, the reader needs a time-indexed explanation of
+how lagged GDP becomes a collider rather than merely a confounder affected by previous treatment.
+
+
+The Rogowski et al. application produces a large specification shift—approximately 58 percent of the
+long coefficient and 2.11 standard errors—but the causal meaning remains ambiguous.
+
+
+That ambiguity is not a failure of the diagnostic. It is an effective illustration of its proper use.
+
+
+Recommendation
+
+For each detailed application, present at least two competing causal DAGs:
+
+
+     1. a DAG in which the candidate control is a legitimate confounder;
+     2. a DAG in which it is treatment-responsive, a mediator, a collider, or a dual-role variable.
+
+Then show that the same arithmetic IVB value receives different causal interpretations under the
+competing structures.
+
+
+This would demonstrate that IVB is a diagnostic requiring substantive causal reasoning, rather than an
+automatic variable-selection criterion.
+
+
+
+
+6. Contexts in Which the Paper Is Less Applicable
+The proposed benchmark is least reliable when:
+
+
+      • the estimand is cumulative, delayed, distributed, or long-run rather than contemporaneous;
+      • treatment timing within the period is unclear;
+      • contemporaneous unobserved confounding is important;
+      • anticipation of treatment affects lagged covariates;
+      • prior treatment affects the supposedly pretreatment state variable;
+      • T is short enough for dynamic fixed-effects bias to be important;
+      • the treatment or outcome process contains heterogeneous dynamics;
+      • the lag structure is misspecified;
+      • variables are nonstationary or strongly trending;
+      • causal relationships are nonlinear or interactive;
+
+
+
+
+                                                       11
+     • treatment effects vary across units or treatment histories;
+     • measurement error is substantial;
+     • there is strong cross-sectional dependence;
+     • spillovers violate unit-level treatment assumptions;
+     • researchers are interested in treatment regimes rather than a coefficient on Dt ;
+     • marginal structural models or g-methods are required to handle treatment-confounder
+       feedback.
+
+The manuscript already recognizes that the recommendation is local to the contemporaneous
+treatment effect and does not resolve contemporaneous unobserved confounding. The additional
+limitations should be consolidated into a concise section on scope conditions.
+
+
+
+
+7. How Researchers Should Cite or Refer to the
+Work
+Because the manuscript is dated July 2026 and does not identify a journal or working-paper series, the
+cautious reference is:
+
+
+       Galdino, Manoel, Davi Moreira, and Carolina Dolleans. 2026. “Included Variable Bias in
+       Dynamic Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the
+       Contemporaneous Treatment Effect.” Unpublished manuscript.
+
+
+In prose, researchers should characterize the contribution carefully:
+
+
+       Galdino, Moreira, and Dolleans (2026) propose included variable bias as a linear-
+       regression diagnostic for decomposing the treatment-coefficient shift associated with
+       adding a potentially treatment-responsive control. For contemporaneous treatment
+       effects in TSCS data, they recommend ADL models with fixed effects and substantively
+       justified lagged state variables as a benchmark specification.
+
+
+Researchers should not cite the paper as establishing that:
+
+
+     • lagging controls always eliminates bad-control bias;
+     • ADL plus fixed effects generally identifies causal panel effects;
+     • a large IVB value proves that a control should be omitted;
+     • the proposed benchmark solves time-varying confounding in general;
+     • the IVB decomposition independently identifies whether a variable is a collider, mediator, or
+       confounder.
+
+
+
+
+8. Editorial and Organizational
+Recommendations
+The manuscript is generally readable, but its two-part contribution—IVB plus the ADL benchmark—is
+repeated in the abstract, introduction, Sections 2, 4, 5, and conclusion.
+
+
+
+
+                                                   12
+Some repetition is useful. In the current version, however, the manuscript sometimes appears to be
+repeatedly persuading the reader that the diagnostic and benchmark belong together rather than
+advancing the argument.
+
+
+A sharper structure would be:
+
+
+    1. motivating application and precise estimand;
+    2. time-indexed DAGs and formal definitions;
+    3. IVB as a descriptive decomposition;
+    4. conditions under which the shift has a causal-bias interpretation;
+    5. ADL benchmark and identification assumptions;
+    6. simulations;
+    7. systematic empirical applications;
+    8. scope conditions and extensions.
+
+The authors should also replace evaluative labels such as:
+
+
+     • “ADL bad”;
+     • “ADL safe”;
+
+with neutral labels such as:
+
+
+     • ADL plus contemporaneous Zt ;
+     • ADL plus lagged Zt−1 ;
+     • ADL without Z .
+
+“Safe” is too strong because the manuscript itself demonstrates that the specification can remain biased
+under unobserved confounding and other assumption violations.
+
+
+
+
+9. Suggested Formal Reframing
+The paper could benefit from defining three distinct objects.
+
+
+9.1 Specification Shift
+For nested linear projections:
+
+
+                                     ΔZ = βlong − βshort = −θZ πD .
+
+This is an algebraic or projection-based quantity. It does not require a causal interpretation.
+
+
+9.2 Causal Classification
+The researcher uses a time-indexed DAG and substantive temporal knowledge to classify Z as:
+
+
+     • a confounder;
+     • a collider;
+     • a mediator;
+     • a precision variable;
+
+
+
+                                                    13
+     • a dual-role variable;
+     • or a variable whose role is ambiguous.
+
+
+9.3 Causal Bias
+Only after defining a target estimand and imposing identification assumptions should the manuscript
+write:
+
+
+                                      Bias(βlong ) = βlong − βCET .
+
+This structure would eliminate much of the possible confusion between coefficient movement and
+causal bias.
+
+
+It would also strengthen the manuscript’s central argument:
+
+
+       IVB does not identify the causal role of a control. It measures the coefficient consequence
+       of conditioning on it, while causal theory determines what that consequence means.
+
+
+
+
+10. Suggested Additional Analyses
+The following additions would materially strengthen the paper.
+
+
+10.1 Sensitivity to Panel Dimensions
+Vary N and T to identify when finite-T dynamic panel bias becomes comparable to, or larger than, the
+bad-control problem being studied.
+
+
+10.2 Treatment Persistence
+Vary the persistence of Dt , not only the persistence of Yt and Zt . This matters because lagged
+treatment may retain associations created by contemporaneous structures.
+
+
+10.3 Misspecified Lag Length
+Compare:
+
+
+     • one-lag ADL;
+     • two-lag ADL;
+     • the true lag structure;
+     • lag structures selected using information criteria.
+
+This would show whether the benchmark is robust to realistic lag misspecification.
+
+
+10.4 Heterogeneous Dynamics
+Allow autoregressive parameters and treatment effects to differ across units. Standard fixed-effects ADL
+coefficients may be difficult to interpret when dynamics are heterogeneous.
+
+
+
+
+                                                    14
+10.5 Common Shocks and Cross-Sectional Dependence
+Introduce common factors or correlated errors across units. Many TSCS applications involve global
+shocks that are not fully captured by time fixed effects.
+
+
+10.6 Measurement Error
+Investigate measurement error in Zt and Zt−1 . Lagging a noisy variable may exacerbate attenuation
+and alter the treatment–control relationship.
+
+
+10.7 Nonlinear and Interactive Models
+The manuscript briefly discusses nonlinear effects. A stronger assessment would vary:
+
+
+     • nonlinear outcome functions;
+     • treatment–control interactions;
+     • heterogeneous treatment effects;
+     • limited dependent variables.
+
+The authors should clarify whether IVB is primarily a linear-projection diagnostic or whether they
+envision generalized versions.
+
+
+10.8 Multiple-Control Simulations
+Simulate correlated candidate controls with different causal roles. This would demonstrate how
+individual and joint IVB diagnostics behave when one variable is a confounder and another is a
+mediator or collider.
+
+
+10.9 Comparison with Alternative Causal Methods
+The paper could include a limited comparison with:
+
+
+     • marginal structural models;
+     • g-computation;
+     • sequential regression;
+     • structural nested models.
+
+The goal would not be to claim that ADL outperforms these methods generally. It would clarify the
+difference between a practical linear benchmark and methods designed to address treatment-
+confounder feedback under stronger identification assumptions.
+
+
+
+
+11. Strengths of the Manuscript
+Despite the concerns above, the paper has several important strengths.
+
+
+
+
+                                                   15
+11.1 Clear Applied Motivation
+The peacekeeping and conflict example effectively demonstrates why controlling for a variable such as
+conflict intensity may create a dilemma rather than solve one.
+
+
+11.2 Estimand Discipline
+The authors repeatedly limit the positive recommendation to the contemporaneous treatment effect.
+This is good practice and should be preserved.
+
+
+11.3 Recognition That the Diagnostic Is Not Automatic
+The paper correctly emphasizes that the IVB formula cannot determine whether a control should be
+included or excluded. This is essential.
+
+
+11.4 Useful Dual-Role Concept
+The idea that the same substantive variable can be a lagged confounder and a contemporaneous
+collider or mediator is highly relevant to applied research.
+
+
+11.5 Integration of Theory, Simulation, and Applications
+The manuscript does not stop at a formal identity. It uses simulations and published applications to
+show how the diagnostic might be used.
+
+
+11.6 Transparent Scope Limitations
+The conclusion explicitly acknowledges that the benchmark does not solve contemporaneous
+unobserved confounding and is not a universal recommendation for all panel estimators.
+
+
+These strengths provide a solid foundation for revision.
+
+
+
+
+12. Bottom Line
+The paper has a strong applied intuition and an effective core message.
+
+
+Its most compelling contribution is not the equation
+
+
+                                                   −θ^π
+                                                      ^
+
+in isolation. It is the integration of:
+
+
+      • time-indexed causal reasoning;
+      • a transparent decomposition of specification sensitivity;
+      • a dynamic benchmark tied to a specific estimand.
+
+
+
+
+                                                    16
+To reach its potential, the manuscript should:
+
+
+    1. be more conservative and precise about the word bias;
+    2. explicitly state the assumptions required for causal interpretation of the ADL coefficient;
+    3. address finite-T dynamic panel bias;
+    4. substantially expand the dynamic DAGs;
+    5. document the simulation designs completely;
+    6. develop uncertainty measures for IVB;
+    7. extend the decomposition to multiple correlated controls;
+    8. explain the application-selection and causal-coding procedures;
+    9. make the within-period temporal ordering explicit;
+   10. distinguish a practical benchmark from a general identification solution.
+
+With these revisions, the manuscript could become a useful political-methodology article and a widely
+taught guide for auditing time-varying controls in applied panel research.
+
+
+
+
+Recommendation
+Major revision
+
+
+The manuscript has a publishable and potentially influential core, but the conceptual distinction
+between specification change, causal classification, and causal bias must be formalized before the
+central claims are fully convincing.
+
+
+
+
+                                                   17
+
