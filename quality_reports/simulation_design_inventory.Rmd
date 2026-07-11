@@ -1,0 +1,59 @@
+---
+title: "Appendix: Inventory of Existing IVB Simulation Designs"
+author: "Task 10 static audit"
+date: "2026-07-11"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+geometry: margin=0.8in
+fontsize: 9pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+inv <- data.table::fread("simulation_design_inventory.csv")
+man <- data.table::fread("simulation_design_inventory_manifest.csv")
+```
+
+# Scope and reproducibility
+
+This appendix is a static audit of simulations already present in the repository. It does not run, source, or modify a Monte Carlo script. The companion builder, `build_simulation_design_inventory.R`, reads only source files and existing artifacts, verifies declared paths, records MD5 hashes, and writes the inventory and manifest. Equations and parameter statements labelled as verified are transcribed from the versioned scripts; parameter grids retained in timing/grid CSVs are referenced rather than re-created. Any unlinked legacy script or runtime-configurable repetition count is explicitly marked as a gap.
+
+The inventory uses a deliberately narrow evidentiary rule: a result is *directly verified* only when its source script and an existing result artifact both exist. It does not certify that a CSV was regenerated in this audit, nor does it infer a causal interpretation from a coefficient shift alone.
+
+# Coverage matrix
+
+```{r coverage, results='asis'}
+tags <- c("dual_role", "firewall", "mediator_overcontrol", "nonlinearity", "feedback",
+          "carryover", "staggered_binary_treatment", "measurement_error",
+          "callaway_style_trends", "contemporaneous_unobserved_confounding")
+mat <- data.table::data.table(
+  required_coverage = tags,
+  inventory_rows = vapply(tags, function(tag) paste(inv[grepl(tag, coverage_tags, fixed = TRUE), inventory_id], collapse = "; "), character(1))
+)
+knitr::kable(mat, caption = "Table 1. Required coverage and the directly mapped inventory rows.", longtable = TRUE)
+```
+
+# Design inventory
+
+```{r table, results='asis'}
+cols <- c("inventory_id", "simulation_family", "equations", "causal_dag_description", "estimand",
+          "parameter_values_or_grid", "N", "T", "burn_in", "repetitions", "error_process",
+          "fixed_effects", "estimated_models", "metrics", "source_script", "result_file_paths", "status", "notes")
+knitr::kable(inv[, ..cols], caption = "Table 2. Existing simulation DGPs/families and result artifacts.", longtable = TRUE, escape = TRUE)
+```
+
+# Artifact provenance
+
+```{r manifest, results='asis'}
+knitr::kable(man, caption = "Table 3. Static provenance manifest for declared existing artifacts.", longtable = TRUE)
+```
+
+# Static validation record
+
+The builder checks the required inventory fields, unique identifiers, existence of every source script and declared result artifact, and records artifact size, header, and MD5. For numeric parameter columns present in artifacts, it checks probabilities/persistence terms on [0,1] and positive count fields; for date-like columns it rejects unparsable dates and dates after the audit date. It does not execute simulation functions, therefore it makes no new Monte Carlo draws. The following gaps remain material:
+
+1. `sim_ivb_completa.R` contains legacy exploratory simulations without a versioned persisted result file, so it cannot support a numerical manuscript claim.
+2. Some scripts allow repetitions to be overridden by environment variables or command-line arguments. The source default is reported; actual execution settings should be recovered from the saved result/timing artifact before quoting a number.
+3. The inventory maps source scripts to artifacts by their explicit output paths. It does not establish Git commit ancestry for historical result files; MD5 values make the audited artifact state reproducible.
