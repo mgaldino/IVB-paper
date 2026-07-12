@@ -1,0 +1,202 @@
+---
+title: "Task 14 simulation report: lag misspecification and treatment persistence"
+date: "`r format(Sys.Date(), '%Y-%m-%d')`"
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+header-includes:
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{float}
+params:
+  input_dir: !r NULL
+---
+
+```{r setup, include=FALSE}
+options(scipen = 999)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.path = file.path(params$input_dir, "figures", "report-")
+)
+if (is.null(params$input_dir) || !dir.exists(params$input_dir)) {
+  stop("params$input_dir must identify a completed Task 14 results directory.")
+}
+library(data.table)
+library(ggplot2)
+library(knitr)
+
+input_file <- function(name) file.path(params$input_dir, name)
+grid <- fread(input_file("design_grid.csv"))
+summary <- fread(input_file("scenario_estimator_summary.csv"))
+selection <- fread(input_file("selection_recovery_summary.csv"))
+displacement <- fread(input_file("displacement_summary.csv"))
+residual_acf <- fread(input_file("residual_autocorrelation_summary.csv"))
+validation <- fread(input_file("validation.csv"))
+manifest <- fread(input_file("run_manifest.csv"))
+failures <- fread(input_file("failures.csv"))
+format_values <- function(values) paste(sort(unique(values)), collapse = ", ")
+
+control_labels <- c(
+  no_Z = "No Z control",
+  Z_lag = "Lagged Z (Z[t-1])",
+  Z_contemporaneous = "Contemporaneous Z (Z[t])"
+)
+summary[, control_label := unname(control_labels[control_spec])]
+residual_acf[, control_label := unname(control_labels[control_spec])]
+```
+
+# Design and execution record
+
+This execution contains `r nrow(grid)` scenarios: true ADL order `r format_values(grid$true_lag_order)`, treatment persistence `rho_D` equal to `r format_values(grid$rho_D)`, and first-lag direct carryover equal to `r format_values(grid$carryover)`. Every scenario uses $N = `r unique(grid$N)`$, $T = `r unique(grid$T)`$, and the inherited dual-role timing. The execution record reports `r manifest$repetitions[1]` replications per cell and `r manifest$actual_rows[1]` retained raw rows. There are `r nrow(failures)` retained failed fits; they are not removed from any file.
+
+```{r table-design, results='asis'}
+design_table <- unique(grid[, .(true_lag_order, rho_D, carryover, N, T)])[order(true_lag_order, rho_D, carryover)]
+kable(
+  design_table,
+  format = "latex",
+  booktabs = TRUE,
+  position = "H",
+  caption = "Pre-specified simulation cells."
+)
+```
+
+The numerical target is the contemporaneous CET. `Z[t-1]` is the pre-exposure control used by the primary models. `Z[t]` is post-treatment in this DGP and is displayed only to diagnose the specification shift; its numerical coverage is not evidence of causal validity.
+
+# Recovery of the true lag order
+
+AIC and BIC choose from orders one through three using the `Z[t-1]` specifications only. They are never selected ex post. The table averages cell-level recovery rates over the persistence and carryover grid; the individual-cell rates remain in `selection_recovery_summary.csv`.
+
+```{r table-recovery, results='asis'}
+recovery_table <- selection[, .(
+  mean_recovery_rate = mean(recovery_rate),
+  mean_selected_lag_1_rate = mean(selected_lag_1_rate),
+  mean_selected_lag_2_rate = mean(selected_lag_2_rate),
+  mean_selected_lag_3_rate = mean(selected_lag_3_rate),
+  mean_failure_count = mean(n_failed)
+), by = .(true_lag_order, selection_criterion)][order(true_lag_order, selection_criterion)]
+data.table::setnames(
+  recovery_table,
+  c(
+    "true_lag_order", "selection_criterion", "mean_recovery_rate",
+    "mean_selected_lag_1_rate", "mean_selected_lag_2_rate",
+    "mean_selected_lag_3_rate", "mean_failure_count"
+  ),
+  c("True order", "Criterion", "Recovery", "Pr(ADL 1)", "Pr(ADL 2)", "Pr(ADL 3)", "Mean failures")
+)
+kable(
+  recovery_table,
+  format = "latex",
+  digits = 3,
+  booktabs = TRUE,
+  position = "H",
+  caption = "Lag-selection recovery, reported separately for AIC and BIC."
+)
+```
+
+```{r fig-recovery, fig.width=8, fig.height=5, fig.pos='H', fig.cap='Correct-lag recovery by information criterion, true lag order, treatment persistence, and carryover.'}
+ggplot(selection, aes(x = factor(rho_D), y = factor(carryover), fill = recovery_rate)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = sprintf("%.2f", recovery_rate)), size = 3) +
+  facet_grid(selection_criterion ~ true_lag_order, labeller = label_both) +
+  scale_fill_viridis_c(limits = c(0, 1), name = "Recovery") +
+  labs(x = expression(rho[D]), y = "First-lag carryover") +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid = element_blank())
+```
+
+# CET recovery, residual dependence, and specification shifts
+
+Table 3 aggregates the primary `Z[t-1]` specification equally across the saved cells. It reports signed relative bias; a negative value therefore indicates downward rather than absolute bias. Complete scenario-by-scenario results, including no-`Z` and `Z[t]` fits, are retained in `scenario_estimator_summary.csv`.
+
+```{r table-metrics, results='asis'}
+metric_table <- summary[control_spec == "Z_lag", .(
+  mean_bias = mean(bias),
+  mean_relative_bias = mean(relative_bias),
+  mean_rmse = mean(rmse),
+  mean_coverage = mean(coverage_cet),
+  mean_residual_acf1 = mean(mean_residual_acf1)
+), by = .(estimator)][order(estimator)]
+data.table::setnames(
+  metric_table,
+  c(
+    "estimator", "mean_bias", "mean_relative_bias", "mean_rmse", "mean_coverage",
+    "mean_residual_acf1"
+  ),
+  c("Lag rule", "Bias", "Relative bias", "RMSE", "Coverage", "Residual ACF(1)")
+)
+kable(
+  metric_table,
+  format = "latex",
+  digits = 3,
+  booktabs = TRUE,
+  position = "H",
+  caption = "CET recovery and residual autocorrelation for the primary Z[t-1] specification."
+)
+```
+
+```{r fig-bias, fig.width=8, fig.height=8.4, fig.pos='H', fig.cap='Bias of selected primary Z[t-1] specifications across persistence and carryover conditions.'}
+primary_bias <- summary[
+  control_spec == "Z_lag" & estimator_id %in% c("adl_1", "adl_oracle", "adl_aic", "adl_bic")
+]
+ggplot(primary_bias, aes(x = factor(rho_D), y = factor(carryover), fill = bias)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = sprintf("%.3f", bias)), size = 2.5) +
+  facet_grid(estimator ~ true_lag_order, scales = "free_y", labeller = label_both) +
+  scale_fill_gradient2(low = "#b2182b", mid = "white", high = "#2166ac", midpoint = 0, name = "Bias") +
+  labs(x = expression(rho[D]), y = "First-lag carryover") +
+  theme_minimal(base_size = 9) +
+  theme(panel.grid = element_blank(), strip.text.y = element_text(size = 8))
+```
+
+```{r table-shifts, results='asis'}
+shift_table <- displacement[, .(
+  mean_delta_lagged_Z = mean(mean_delta_z_lag_minus_none),
+  mean_delta_contemporaneous_Z = mean(mean_delta_z_contemporaneous_minus_none)
+), by = .(estimator, selection_criterion)][order(estimator)]
+data.table::setnames(
+  shift_table,
+  c("estimator", "selection_criterion", "mean_delta_lagged_Z", "mean_delta_contemporaneous_Z"),
+  c("Lag rule", "Selection rule", "Delta: Z[t-1] minus no Z", "Delta: Z[t] minus no Z")
+)
+kable(
+  shift_table,
+  format = "latex",
+  digits = 3,
+  booktabs = TRUE,
+  position = "H",
+  caption = "Mean specification shifts associated with Z[t-1] and Z[t], relative to no Z control."
+)
+```
+
+```{r fig-acf, fig.width=8, fig.height=4.5, fig.pos='H', fig.cap='Mean residual lag-one autocorrelation by dynamic and control specification.'}
+acf_plot_data <- residual_acf[, .(
+  mean_residual_acf1 = mean(mean_residual_acf1)
+), by = .(estimator, control_label)]
+ggplot(acf_plot_data, aes(x = estimator, y = mean_residual_acf1, fill = control_label)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  geom_hline(yintercept = 0, linewidth = 0.35) +
+  labs(x = NULL, y = "Mean residual ACF(1)", fill = "Control specification") +
+  theme_minimal(base_size = 9) +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1))
+```
+
+# Validation and interpretation
+
+```{r table-validation, results='asis'}
+validation_display <- copy(validation)
+data.table::setnames(validation_display, c("check", "passed", "detail"), c("Validation check", "Passed", "Detail"))
+kable(
+  validation_display,
+  format = "latex",
+  booktabs = TRUE,
+  position = "H",
+  caption = "Mechanical validation of the completed simulation outputs."
+)
+```
+
+The results delimit a scope condition, not a mechanical universal rule. An ADL(1) specification is a defensible baseline only when substantive timing supports a one-period history and residual diagnostics do not indicate material omitted dynamics. AIC and BIC are useful, separately reported sensitivity diagnostics for conditional-mean lag order; they cannot determine whether a candidate control is pre-exposure or whether the CET is identified. The `Z[t]` shifts illustrate exactly why contemporaneous controls must not be justified by information criteria alone.
+
+The suggested one-sentence main-text insertion and compact scope-table row are saved in `editorial_recommendation.md`. Full results belong in the appendix; no manuscript file is changed by this package.
