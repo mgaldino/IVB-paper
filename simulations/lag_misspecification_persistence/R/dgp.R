@@ -15,13 +15,28 @@ lmp_simulate_panel <- function(scenario, parameters, seed) {
   alpha_D <- stats::rnorm(N, 0, parameters$sigma_alpha_D)
   alpha_Y <- stats::rnorm(N, 0, parameters$sigma_alpha_Y)
   alpha_Z <- stats::rnorm(N, 0, parameters$sigma_alpha_Z)
+  stationary_covariance <- lmp_stationary_covariance(scenario, parameters)
+  if (stationary_covariance$residual > parameters$stationarity_tolerance) {
+    stop("Stationary covariance invariant failed before data generation.", call. = FALSE)
+  }
   rows <- vector("list", N)
 
   for (unit in seq_len(N)) {
     D <- Y <- Z <- numeric(total_periods)
-    D[seq_len(p)] <- alpha_D[unit] + stats::rnorm(p, 0, parameters$sigma_u)
-    Y[seq_len(p)] <- alpha_Y[unit] + stats::rnorm(p, 0, parameters$sigma_e)
-    Z[seq_len(p)] <- alpha_Z[unit] + stats::rnorm(p, 0, parameters$sigma_nu)
+    initial_state <- lmp_stationary_state_distribution(
+      scenario, parameters, alpha_D[unit], alpha_Y[unit], alpha_Z[unit],
+      stationary = stationary_covariance
+    )$draw
+    D[p] <- initial_state[1L]
+    Y[p] <- initial_state[2L]
+    Z[p] <- initial_state[3L]
+    if (p > 1L) {
+      for (lag in seq_len(p - 1L)) {
+        state_index <- 3L + 2L * (lag - 1L) + 1L
+        D[p - lag] <- initial_state[state_index]
+        Y[p - lag] <- initial_state[state_index + 1L]
+      }
+    }
 
     for (period in seq.int(p + 1L, total_periods)) {
       D_lags <- D[period - seq_len(p)]

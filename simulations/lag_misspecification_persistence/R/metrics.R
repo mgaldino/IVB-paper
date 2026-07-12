@@ -128,7 +128,7 @@ lmp_stability_checks <- function(summary, requested_repetitions) {
   )]
 }
 
-lmp_output_validation <- function(raw, grid, repetitions) {
+lmp_output_validation <- function(raw, grid, repetitions, parameters = lmp_parameters()) {
   expected_rows <- nrow(grid) * repetitions * 5L * 3L
   seed_map <- unique(raw[, .(scenario_id, replication, seed)])
   successful <- raw[status == "ok"]
@@ -136,6 +136,7 @@ lmp_output_validation <- function(raw, grid, repetitions) {
   selection_rows <- raw[
     estimator_id %in% c("adl_aic", "adl_bic") & control_spec == "Z_lag" & status == "ok"
   ]
+  initialization <- lmp_initialization_manifest(grid, parameters)
   key_count <- data.table::uniqueN(raw, by = c("scenario_id", "replication", "estimator_id", "control_spec"))
   checks <- c(
     exact_raw_schema = identical(names(raw), lmp_expected_raw_columns()),
@@ -149,6 +150,10 @@ lmp_output_validation <- function(raw, grid, repetitions) {
     coverage_is_binary = all(is.na(coverage_values) | coverage_values %in% c(TRUE, FALSE)),
     selected_lags_in_candidate_set = all(
       selection_rows$selected_lag %in% 1:3
+    ),
+    stationary_initialization = all(
+      initialization$pass_stationarity &
+        initialization$initialization_method == parameters$initialization_method
     ),
     values_match_grid = all(raw$rho_D %in% c(0.2, 0.5, 0.8)) &&
       all(raw$carryover %in% c(0, 0.25, 0.5)) &&
@@ -168,6 +173,7 @@ lmp_output_validation <- function(raw, grid, repetitions) {
       "all successful cluster-robust standard errors are positive",
       "coverage entries are logical indicators",
       "AIC/BIC selected lags are in {1,2,3}",
+      "stationary initialization and Lyapunov residual pass",
       "true lag order, rho_D, and carryover equal pre-specified values"
     )
   )

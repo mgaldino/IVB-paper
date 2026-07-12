@@ -25,6 +25,35 @@ grid <- lmp_full_grid(parameters)
 validation <- lmp_validate_grid(grid, parameters)
 assert_true(all(validation$passed), "the exact 27-scenario grid and transition invariants pass")
 
+transition_radii <- vapply(
+  seq_len(nrow(grid)),
+  function(index) lmp_transition_radius(grid[index], parameters),
+  numeric(1)
+)
+slow_scenario <- grid[which.max(transition_radii)]
+slow_stationary <- lmp_stationary_state_distribution(
+  slow_scenario,
+  parameters,
+  alpha_D = 0.3,
+  alpha_Y = -0.2,
+  alpha_Z = 0.1
+)
+slow_components <- lmp_transition_components(slow_scenario, parameters)
+slow_intercept <- numeric(nrow(slow_components$transition))
+slow_intercept[1L] <- 0.3
+slow_intercept[2L] <- parameters$beta_cet * 0.3 - 0.2
+slow_intercept[3L] <- parameters$delta_D * 0.3 +
+  parameters$delta_Y * (parameters$beta_cet * 0.3 - 0.2) + 0.1
+assert_true(
+  max(abs(slow_stationary$mean - (slow_components$transition %*% slow_stationary$mean + slow_intercept))) <
+    parameters$stationarity_tolerance,
+  "the slowest-decaying scenario starts at its stationary conditional mean"
+)
+assert_true(
+  slow_stationary$covariance_residual <= parameters$stationarity_tolerance,
+  "the slowest-decaying scenario satisfies the stationary covariance identity"
+)
+
 scenario_indices <- vapply(1:3, function(p) {
   which(
     grid$true_lag_order == p & grid$rho_D == 0.5 & grid$carryover == 0.25
@@ -96,7 +125,7 @@ for (position in seq_along(scenario_indices)) {
 
 combined_raw <- data.table::rbindlist(smoke_raw, use.names = TRUE)
 combined_grid <- grid[scenario_indices]
-combined_validation <- lmp_output_validation(combined_raw, combined_grid, repetitions = 1L)
+combined_validation <- lmp_output_validation(combined_raw, combined_grid, repetitions = 1L, parameters)
 assert_true(all(combined_validation$passed), "bounded raw output satisfies schema, key, seed, and value invariants")
 
 temporary_csv <- tempfile(fileext = ".csv")

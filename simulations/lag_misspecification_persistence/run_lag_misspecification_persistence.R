@@ -154,7 +154,7 @@ lmp_write_outputs <- function(raw, grid, repetitions, parameters, output_dir, mo
   residual_acf <- lmp_residual_acf_summary(summary)
   failures <- lmp_failures(raw)
   stability <- lmp_stability_checks(summary, repetitions)
-  validation <- lmp_output_validation(raw, grid, repetitions)
+  validation <- lmp_output_validation(raw, grid, repetitions, parameters)
   hashes_after <- lmp_hash_preexisting_simulations()
   hash_validation <- merge(
     hashes_before,
@@ -169,6 +169,10 @@ lmp_write_outputs <- function(raw, grid, repetitions, parameters, output_dir, mo
   }
 
   lmp_atomic_fwrite(grid, file.path(output_dir, "design_grid.csv"))
+  lmp_atomic_fwrite(
+    lmp_initialization_manifest(grid, parameters),
+    file.path(output_dir, "initialization_manifest.csv")
+  )
   lmp_atomic_fwrite(raw, file.path(output_dir, "raw_replications.csv"))
   lmp_atomic_fwrite(summary, file.path(output_dir, "scenario_estimator_summary.csv"))
   lmp_atomic_fwrite(selection, file.path(output_dir, "selection_recovery_summary.csv"))

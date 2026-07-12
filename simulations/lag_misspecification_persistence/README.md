@@ -26,7 +26,7 @@ The full grid has 27 cells:
 - treatment persistence `rho_D`: `0.2`, `0.5`, `0.8`;
 - carryover `psi_1`: `0`, `0.25`, `0.50`.
 
-Each cell uses `N = 100`, `T = 30`, burn-in `100`, and 500 replications. Task 13 separately maps finite-`T` estimator bias; this package holds `N` and `T` fixed so its contrasts isolate lag misspecification, treatment persistence, and carryover.
+Each cell uses `N = 100`, `T = 30`, and 500 replications. The full state vector is drawn from its stationary distribution conditional on each unit's fixed effects, and then receives a further 100-period burn-in. The saved initialization manifest records the transition radius and Lyapunov-equation residual for every cell. Task 13 separately maps finite-`T` estimator bias; this package holds `N` and `T` fixed so its contrasts isolate lag misspecification, treatment persistence, and carryover.
 
 For each replication the package estimates five pre-specified lag rules: fixed ADL(1), fixed ADL(2), oracle true order, AIC-selected order, and BIC-selected order. AIC and BIC compare candidate orders one through three using the `Z_{t-1}` specification only. They are reported separately and neither is selected ex post.
 

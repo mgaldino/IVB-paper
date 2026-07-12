@@ -44,6 +44,8 @@ lmp_parameters <- function() {
     sigma_e = 1,
     sigma_nu = 1,
     nominal_coverage = 0.95,
+    initialization_method = "stationary_conditional_on_unit_effects",
+    stationarity_tolerance = 1e-10,
     base_seed = 14072026L,
     default_repetitions = 500L,
     N = 100L,
@@ -92,7 +94,7 @@ lmp_full_grid <- function(parameters = lmp_parameters()) {
   grid
 }
 
-lmp_transition_radius <- function(scenario, parameters = lmp_parameters()) {
+lmp_transition_components <- function(scenario, parameters = lmp_parameters()) {
   p <- as.integer(scenario$true_lag_order)
   phi <- lmp_true_outcome_lags(p, parameters)
   psi <- lmp_carryover_coefficients(p, scenario$carryover, parameters)
@@ -130,13 +132,80 @@ lmp_transition_radius <- function(scenario, parameters = lmp_parameters()) {
     }
   }
 
-  max(Mod(eigen(transition, only.values = TRUE)$values))
+  innovation <- matrix(0, nrow = state_size, ncol = 3L)
+  innovation[1L, ] <- c(1, 0, 0)
+  innovation[2L, ] <- c(parameters$beta_cet, 1, 0)
+  innovation[3L, ] <- c(
+    parameters$delta_D + parameters$delta_Y * parameters$beta_cet,
+    parameters$delta_Y,
+    1
+  )
+  list(transition = transition, innovation = innovation)
+}
+
+lmp_transition_radius <- function(scenario, parameters = lmp_parameters()) {
+  components <- lmp_transition_components(scenario, parameters)
+  max(Mod(eigen(components$transition, only.values = TRUE)$values))
+}
+
+lmp_stationary_covariance <- function(scenario, parameters = lmp_parameters()) {
+  components <- lmp_transition_components(scenario, parameters)
+  transition <- components$transition
+  innovation_covariance <- components$innovation %*% t(components$innovation)
+  state_size <- nrow(transition)
+  covariance <- matrix(
+    solve(
+      diag(state_size ^ 2L) - kronecker(transition, transition),
+      as.vector(innovation_covariance)
+    ),
+    nrow = state_size,
+    ncol = state_size
+  )
+  covariance <- (covariance + t(covariance)) / 2
+  list(
+    transition = transition,
+    innovation_covariance = innovation_covariance,
+    covariance = covariance,
+    cholesky = chol(covariance),
+    residual = max(abs(covariance - transition %*% covariance %*% t(transition) - innovation_covariance))
+  )
+}
+
+lmp_stationary_state_distribution <- function(
+  scenario,
+  parameters,
+  alpha_D,
+  alpha_Y,
+  alpha_Z,
+  stationary = NULL
+) {
+  components <- lmp_transition_components(scenario, parameters)
+  if (is.null(stationary)) stationary <- lmp_stationary_covariance(scenario, parameters)
+  state_size <- nrow(components$transition)
+  intercept <- numeric(state_size)
+  intercept[1L] <- alpha_D
+  intercept[2L] <- parameters$beta_cet * alpha_D + alpha_Y
+  intercept[3L] <- parameters$delta_D * alpha_D +
+    parameters$delta_Y * (parameters$beta_cet * alpha_D + alpha_Y) +
+    alpha_Z
+  mean_state <- solve(diag(state_size) - components$transition, intercept)
+  list(
+    mean = mean_state,
+    covariance = stationary$covariance,
+    draw = as.vector(mean_state + t(stationary$cholesky) %*% stats::rnorm(state_size)),
+    covariance_residual = stationary$residual
+  )
 }
 
 lmp_validate_grid <- function(grid, parameters = lmp_parameters()) {
   radii <- vapply(
     seq_len(nrow(grid)),
     function(index) lmp_transition_radius(grid[index], parameters),
+    numeric(1)
+  )
+  covariance_residuals <- vapply(
+    seq_len(nrow(grid)),
+    function(index) lmp_stationary_covariance(grid[index], parameters)$residual,
     numeric(1)
   )
   checks <- c(
@@ -149,7 +218,10 @@ lmp_validate_grid <- function(grid, parameters = lmp_parameters()) {
     unique_scenario_ids = !anyDuplicated(grid$scenario_id),
     valid_dimensions = all(grid$N > 1L & grid$T >= 8L),
     valid_persistence = all(abs(grid$rho_D) < 1 & abs(parameters$rho_Z) < 1),
-    stable_transition = all(is.finite(radii) & radii < 1)
+    stable_transition = all(is.finite(radii) & radii < 1),
+    stationary_covariance = all(
+      is.finite(covariance_residuals) & covariance_residuals <= parameters$stationarity_tolerance
+    )
   )
   if (any(!checks)) {
     stop(
@@ -171,8 +243,36 @@ lmp_validate_grid <- function(grid, parameters = lmp_parameters()) {
       "scenario_id is unique",
       "N > 1 and T >= 8",
       "all persistence parameters are inside (-1,1)",
-      sprintf("maximum transition spectral radius = %.6f", max(radii))
+      sprintf("maximum transition spectral radius = %.6f", max(radii)),
+      sprintf(
+        "stationary conditional initialization; maximum Lyapunov residual = %.2e",
+        max(covariance_residuals)
+      )
     )
+  )
+}
+
+lmp_initialization_manifest <- function(grid, parameters = lmp_parameters()) {
+  radii <- vapply(
+    seq_len(nrow(grid)),
+    function(index) lmp_transition_radius(grid[index], parameters),
+    numeric(1)
+  )
+  covariance_residuals <- vapply(
+    seq_len(nrow(grid)),
+    function(index) lmp_stationary_covariance(grid[index], parameters)$residual,
+    numeric(1)
+  )
+  data.table::data.table(
+    scenario_id = grid$scenario_id,
+    true_lag_order = grid$true_lag_order,
+    rho_D = grid$rho_D,
+    carryover = grid$carryover,
+    transition_radius = radii,
+    burn_in_after_stationary_draw = parameters$burn_in,
+    initialization_method = parameters$initialization_method,
+    stationary_covariance_residual = covariance_residuals,
+    pass_stationarity = covariance_residuals <= parameters$stationarity_tolerance
   )
 }
 
