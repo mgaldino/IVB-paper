@@ -78,6 +78,11 @@ boundary_conditions_compact <- fread(
 ) %>%
   as_tibble()
 
+task13_main_text_summary <- fread(
+  "quality_reports/task13_finite_T_dynamic_panel/task13_main_text_summary.csv"
+) %>%
+  as_tibble()
+
 oc_clean <- fread("simulations/nonlinearity/results/sim_overcontrol_contemporaneous_results.csv") %>%
   as_tibble() %>%
   filter(nl_type == "linear") %>%
@@ -573,6 +578,14 @@ kable(
   column_spec(2, width = "6.1cm") %>%
   column_spec(3, width = "5.4cm") %>%
   kable_styling(latex_options = c("hold_position", "scale_down"), font_size = 7)
+```
+
+Figure \ref{fig:finite-T-phase-map} isolates finite-$T$ estimation from the specification shift in the pre-specified principal grid. In this dual-role design, absolute Monte Carlo bias is at least as large as the absolute mean $\Delta_Z$ in `r task13_main_text_summary$fe_adl_phase_cells` of `r task13_main_text_summary$principal_cells_per_estimator` FE-ADL cells and `r task13_main_text_summary$hpj_fe_adl_phase_cells` of `r task13_main_text_summary$principal_cells_per_estimator` split-panel jackknife cells. Across the `r 2 * task13_main_text_summary$principal_cells_per_estimator` displayed cells, the maximum absolute bias is `r sprintf("%.4f", task13_main_text_summary$max_abs_bias)`, the maximum absolute mean shift is `r sprintf("%.4f", task13_main_text_summary$max_abs_mean_shift)`, and the minimum empirical 95\% coverage is `r sprintf("%.3f", task13_main_text_summary$min_coverage)`. These finite-grid comparisons neither establish a universal acceptable-$T$ cutoff nor demonstrate causal robustness. The full estimator comparison, Arellano--Bond diagnostics, stress grid, and exact provenance are reported in the Task 13 report/online appendix.
+
+```{r finite-T-phase-map, fig.cap="Finite-$T$ phase map for the principal dual-role grid. Each tile reports the design-specific comparison $|\\mathrm{Monte\\ Carlo\\ bias}| \\geq |\\mathrm{mean}(\\Delta_Z)|$ for the long FE-ADL within estimator or its split-panel jackknife correction. Columns vary $N$, the horizontal axis varies $T$, and the vertical axis varies outcome persistence $\\rho_Y$; each cell contains 500 Monte Carlo replications with $\\beta_{\\mathrm{CET}}=1$. Symbols redundantly encode the color categories. This diagnostic comparison does not define an acceptable-$T$ threshold. Arellano--Bond, the stress grid, and full provenance are reported in the Task 13 report/online appendix.", out.width="100%"}
+knitr::include_graphics(
+  "quality_reports/task13_finite_T_dynamic_panel/task13_finite_T_phase_map.pdf"
+)
 ```
 
 In the displayed DGP, outcome persistence transmits both the inherited collider path and the ordinary lagged treatment--outcome path through $Y_{t-1}$. Table \ref{tab:firewall_pa} shows that when this edge is removed by setting $\rho_Y=0$, the TWFE bias is approximately zero across the reported values of $\rho_Z$. Conditioning on $Y_{t-1}$ blocks both displayed paths when $\rho_Y>0$, subject to the graph and scope conditions stated above; the simulation contrast does not identify how much of the improvement comes from each path.

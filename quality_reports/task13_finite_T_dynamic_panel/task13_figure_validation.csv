@@ -1,0 +1,7 @@
+check,status
+required_columns_present,PASS
+principal_grid_exact,PASS
+metrics_finite_and_coverage_valid,PASS
+all_500_replications_successful,PASS
+stored_phase_indicator_matches_recalculation,PASS
+output_files_exist_and_are_nonempty,PASS

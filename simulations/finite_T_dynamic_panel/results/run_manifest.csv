@@ -1,0 +1,2 @@
+mode,repetitions,base_seed,scenario_count,estimator_count,expected_rows,actual_rows,completed_utc
+"full",500,13072026,72,3,108000,108000,"2026-07-12 15:04:01 UTC"

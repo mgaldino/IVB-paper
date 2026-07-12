@@ -182,5 +182,3 @@ knitr::kable(
   caption = "Monte Carlo precision, batch-stability, and estimator-failure checks."
 )
 ```
-
-The raw replication file retains every requested estimator attempt, including failures. No scenario or estimator is filtered according to performance. The exact raw-row and failure counts are recorded in the run manifest and failure table.

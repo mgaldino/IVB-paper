@@ -1,0 +1,53 @@
+[
+  {
+    "claim_id": "task13_fe_phase_cells",
+    "location": "ivb_paper_pa.Rmd:583",
+    "kind": "count",
+    "reported_value": 0,
+    "denominator": 54,
+    "raw_context": "absolute Monte Carlo bias is at least as large as the absolute mean Delta_Z in 0 of 54 FE-ADL cells"
+  },
+  {
+    "claim_id": "task13_hpj_phase_cells",
+    "location": "ivb_paper_pa.Rmd:583",
+    "kind": "count",
+    "reported_value": 6,
+    "denominator": 54,
+    "raw_context": "6 of 54 split-panel jackknife cells"
+  },
+  {
+    "claim_id": "task13_displayed_cells",
+    "location": "ivb_paper_pa.Rmd:583",
+    "kind": "count",
+    "reported_value": 108,
+    "raw_context": "Across the 108 displayed cells"
+  },
+  {
+    "claim_id": "task13_max_abs_bias",
+    "location": "ivb_paper_pa.Rmd:583",
+    "kind": "point_estimate",
+    "reported_value": 0.0454,
+    "raw_context": "the maximum absolute bias is 0.0454"
+  },
+  {
+    "claim_id": "task13_max_abs_mean_shift",
+    "location": "ivb_paper_pa.Rmd:583",
+    "kind": "point_estimate",
+    "reported_value": 0.0381,
+    "raw_context": "the maximum absolute mean shift is 0.0381"
+  },
+  {
+    "claim_id": "task13_min_coverage",
+    "location": "ivb_paper_pa.Rmd:583",
+    "kind": "point_estimate",
+    "reported_value": 0.7,
+    "raw_context": "the minimum empirical 95 percent coverage is 0.700"
+  },
+  {
+    "claim_id": "task13_replications_per_cell",
+    "location": "ivb_paper_pa.Rmd:585",
+    "kind": "count",
+    "reported_value": 500,
+    "raw_context": "each cell contains 500 Monte Carlo replications"
+  }
+]
