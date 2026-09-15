@@ -1,0 +1,2215 @@
+International Organization Foundation
+
+Coming to Terms
+Author(s): Cameron Ballard-Rosa, Layna Mosley and Rachel L. Wellhausen
+Source: International Organization, WINTER 2022, Vol. 76, No. 1 (WINTER 2022), pp. 32-69
+Published by: Cambridge University Press on behalf of the International Organization
+Foundation
+Stable URL: https://www.jstor.org/stable/10.2307/27282788
+
+
+JSTOR is a not-for-profit service that helps scholars, researchers, and students discover, use, and build upon a wide
+range of content in a trusted digital archive. We use information technology and tools to increase productivity and
+facilitate new forms of scholarship. For more information about JSTOR, please contact support@jstor.org.
+
+Your use of the JSTOR archive indicates your acceptance of the Terms & Conditions of Use, available at
+https://about.jstor.org/terms
+
+
+
+
+            Cambridge University Press and International Organization Foundation are collaborating with JSTOR to
+            digitize, preserve and extend access to International Organization
+
+
+
+
+                                                      This content downloaded from
+                                    191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                              All use subject to https://about.jstor.org/terms
+Coming to Terms: The Politics of Sovereign
+Bond Denomination
+Cameron Ballard-Rosa , Layna Mosley , and
+Rachel L. Wellhausen
+
+
+   Abstract       Governments interact strategically with sovereign bond market creditors:
+   they make choices not only about how often and how much to borrow, but also under
+   what terms. The denomination of debt, in domestic or foreign currency, is a critical part
+   of these terms. The “original sin” logic has long predicted that creditors have little appe-
+   tite for developing-country government debt issued in domestic currency. Our novel
+   data, including bond issues by 131 countries in 240,000 primary market transactions
+   between 1990 and 2016, suggest otherwise. Domestic-denominated bonds have come
+   to dominate the market, although domestic-currency issuance often is accompanied
+   by shorter bond maturities. We argue that ideologically rooted policy preferences
+   play an important role in this unexpected trend in denomination. All else equal, right
+   governments choose foreign denomination as a means of mitigating currency risk and
+   thus minimizing borrowing costs. In contrast, left governments opt for the flexibility
+   of domestic denomination, and they are better able to act on their preferences in the pres-
+   ence of risk-mitigating monetary institutions and macroeconomic stability. We find
+   support for our argument that partisanship has a robust and enduring relationship with
+   denomination outcomes, even in a marketplace in which domestic-denominated de-
+   veloping-country sovereign bonds have become the norm.
+
+
+
+
+In the contemporary era of financial globalization, many countries have an unprece-
+dented ability to issue sovereign bonds on international capital markets. In 1990,
+twenty-one non-OECD countries issued bonds in international markets; this
+number grew to forty-four by 1995. And in 2010, ninety-six non-OECD governments
+issued international bonds. In our issue-level data on sovereign debt, we document
+over 240,000 bond issues by 131 countries between 1990 and 2016. What is more,
+developing-country sovereign issuers are not simply passive takers of supply-side
+capital offerings. Developing-country governments make strategic choices over the
+timing and amount of their sovereign bond issues.1 Here, we argue that their strategic
+choices also concern the terms of the bond issued. These bond terms are important:
+they influence countries’ future exposure to local and global crises, as well as to
+financial market pressures.
+   Bond terms provide governments an opportunity to trade off between borrowing
+costs and refinancing risks. We focus on whether governments denominate debt in
+
+
+  1. Ballard-Rosa, Mosley, and Wellhausen 2021.
+
+International Organization 76, Winter 2022, pp. 32–69
+© The IO Foundation 2021                                              doi:10.1017/S0020818321000357
+
+
+
+                                     This content downloaded from
+                   191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                             All use subject to https://about.jstor.org/terms
+              Coming to Terms: The Politics of Sovereign Bond Denomination         33
+
+
+their own (domestic) currency or in foreign currency. Domestic debt denomination, in
+particular, requires trade-offs that encapsulate classic ideological differences over
+economic policy. In brief, right governments prefer foreign denomination as a
+means of mitigating currency risk and thus minimizing borrowing costs, while left
+governments prefer domestic denomination to maximize flexibility while transferring
+currency risk to investors. Therefore, all else equal, we argue that left governments
+are more likely to issue domestic-denominated debt, even as doing so may necessitate
+trade-offs across other terms.
+   Our theoretical logic and empirical evidence highlight the agency of developing-
+country governments to bargain over the terms of their sovereign borrowing.
+While it is clear that financial globalization gives these countries access to private
+capital markets,2 the long-standing expectation has been that creditors largely set
+the terms of their borrowing. Specifically, developing countries suffer, by virtue
+simply of their status, from “original sin.”3 Thus developing-country sovereigns
+must issue debt in foreign currencies to placate investors’ concerns. At the
+extreme, “original sin” implies that demand for domestic-denominated debt from
+developing countries is effectively zero. In a milder form, it suggests that creditors
+and debtors will not agree on bond terms with domestic denomination because the
+creditors’ demands for other bond terms to compensate for domestic-currency risk
+would be so onerous.
+   Strikingly, the empirical record upends these “original sin” expectations. Our
+issue-level data make the trend clear: 56 percent of non-OECD sovereign debt
+issued in 1990 was domestic-currency-denominated, 82 percent in 1995, and 92
+percent in 2010. In recent years, countries including Brazil, Colombia, Venezuela,
+and Bolivia have refinanced outstanding foreign-currency debt to denominate in
+their own currencies. In the contemporary marketplace, domestic-denominated de-
+veloping-country sovereign bond issues have become the norm. As we note later,
+structural aspects of contemporary international capital markets shed some light on
+why “original sin” expectations have been sidelined. The global investor base has
+grown dramatically; many governments have worked to create or deepen markets
+for local currency debt; and international financial institutions have worked with
+developing-country governments to professionalize the debt management offices
+(DMOs) responsible for issuing sovereign bonds. Liquid global capital markets
+offer opportunities, therefore, for many sovereign borrowers. Regardless, fully
+explaining this empirical pattern requires theoretical work to understand how cred-
+itors and debtors are frequently able to reach terms that reflect creditors’ appetite
+for, or at least acceptance of, domestic-currency-denominated debt.
+   Yet it would be a mistake to interpret the surge of domestic denomination as evi-
+dence that government desires to denominate in domestic currency are now costless,
+uncontested, or foregone. For example, a fierce debate raged in India in mid-2019,
+
+
+  2. Bunte 2019; Mosley 2003; Tomz 2007.
+  3. Eichengreen and Hausmann 1999; Eichengreen, Hausmann, and Panizza 2005.
+
+
+
+
+                                This content downloaded from
+              191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                        All use subject to https://about.jstor.org/terms
+34    International Organization
+
+
+after the Indian government proposed issuing the country’s first-ever non-rupee-
+denominated sovereign bonds; current and past policymakers clashed over the pro-
+posal in a plethora of prominent opinion pieces in India’s major newspapers.4 This
+contestation over debt denomination reveals the real and perceived trade-offs in
+play when governments bargain with creditors over the terms of their borrowing.
+While domestic-currency denomination is far more available to developing-country
+governments than it was decades ago, it nonetheless entails trade-offs on other
+terms of debt, as well as on other elements of economic policy. Distributional conflict
+related to these trade-offs is at the heart of governments’ currency-denomination
+choices.
+   Therefore, we approach the dramatic shift in debt denomination by focusing on the
+role of debtor governments in bargaining over the terms of their bond issues. Many
+analyses of sovereign debt focus on the supply (creditor) side of the market: inves-
+tors’ assessments of default risk—and their resulting offers of bond terms—vary as
+a function of various political institutions, macroeconomic outcomes, and other
+past outcomes.5 Implicit in these analyses is the assumption that developing-
+country sovereigns have little bargaining power vis-à-vis investors; while these
+governments may have domestically driven preferences over how they borrow,
+these preferences have scant influence over the bargains made with investors.
+   However, despite their apparent lack of bargaining power vis-à-vis official cred-
+itors,6 developing-country governments often interact with multilateral financial
+institutions and individual donor governments in ways that reflect domestic consid-
+erations.7 Developing-country governments may use conditional lending to tie their
+political rivals’ hands, avoid external financing conditions that threaten their own pol-
+itical survival, and use foreign aid revenues as a means of domestic credit-claiming.8
+   We claim that the same pattern holds in the realm of private market sovereign
+bonds. Governments’ preferences over economic policy, rooted in domestic politics,
+shape not only their demands around sovereign borrowing but also the outcomes of
+their bargaining interactions with creditors. Governments’ preferences regarding
+sovereign debt denomination fall along traditional partisan lines. Left governments
+especially prefer domestic denomination, which transfers currency risk to investors.
+This frees the government from worry about the implications of currency depreciation
+or exchange rate volatility for the government’s capacity to repay its obligations.
+Investors, however, require compensation for taking on currency risk, even in the
+context of liquid financial markets. Indeed, using our issue-level data on currency,
+
+
+
+   4. We thank Vashishtha Doshi for discussions and for sharing a collection of such pieces, from sources
+including the Times of India, Telegraph India, Hindu Business Line, Business Standard, Economic Times,
+Mumbai Mirror, Business Today, and LiveMint.
+   5. Barta and Johnston 2018; Gray 2013; Mosley 2003; Mosley, Paniagua, and Wibbels 2020; Tomz
+2007.
+   6. Stone 2011.
+   7. Bunte 2019; Copelovitch 2010.
+   8. Cruz and Schneider 2017; Vreeland 2003.
+
+
+
+
+                                      This content downloaded from
+                    191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                              All use subject to https://about.jstor.org/terms
+              Coming to Terms: The Politics of Sovereign Bond Denomination            35
+
+
+maturity, and yield, we find descriptive evidence consistent with costs to domestic
+denomination. Moreover, we find that left governments are more likely to denomin-
+ate in domestic currency in the presence of domestic institutions that blunt investors’
+concerns over currency risk, specifically politically independent central banks or
+credibly fixed exchange rates. At the same time, left governments are less likely to
+issue in domestic currency in the context of a crisis, when investors are more sensitive
+to risks of holding foreign-currency-denominated assets.
+   On the other side of the partisan divide, we find that right governments are, all else
+equal, less likely to denominate their bonds in domestic currency. While right govern-
+ments may sometimes employ domestic-currency denomination, especially when the
+market-based costs of doing so are low, their ideological preferences for monetary
+restraint and fiscal discipline result in a favorable view of foreign-currency denomin-
+ation. That is, the constraints generated by foreign-currency borrowing are attractive:
+they limit the appeal of expansionary monetary and fiscal policies, both to right gov-
+ernments and to their successors. These systematic, partisan-based differences in how
+sovereigns issue bonds highlight the importance of demand-side preferences to deter-
+mining outcomes in debt markets. Our logic also reinforces the notion that, despite
+the competitive pressures generated by economic globalization, political ideology
+remains an important factor in shaping governments’ policy decisions,9 even in
+developing countries.
+   We use our issue-level data to illustrate the striking trend in domestic-currency
+denomination and situate it within broader global trends. We then develop our
+argument that domestic partisanship is a key, and enduring, determinant of debt
+denomination, even as creditors are generally more accepting of domestic-currency-
+denominated bonds. We present descriptive statistics, regression results, and robustness
+tests consistent with the importance of government ideology to debt denomination,
+across developing countries and throughout the time period. Moreover, we find
+that the relationship between left governments and domestic-currency debt is stron-
+gest in the presence of currency-risk-mitigating politically independent central
+banks or credibly fixed exchange rates. In contrast, left governments are less likely
+to denominate in domestic currency in the context of inflation or currency crises.
+We conclude by considering priorities for future research on the domestic politics
+of sovereign borrowing, as well as the persistence of developing-country currencies
+in global credit markets.
+
+
+Trends in Developing-Country Sovereign Debt
+
+While bond-based financing is not the only source of credit on which governments
+rely,10 bond issuance on international markets is a very common form of financing
+
+
+   9. Garrett 1998.
+  10. Blommestein and Horman 2007; Gelpern 2018; Kaplan and Thomsson 2017.
+
+
+
+
+                                This content downloaded from
+              191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                        All use subject to https://about.jstor.org/terms
+36    International Organization
+
+
+for many developing countries, including many that previously were able to borrow
+only from official sources such as bilateral creditors or regional development banks.11
+This increased access has occurred in the context of significant increases in global
+capital market liquidity as well as the financialization of much economic activity.12
+Today the investor base for developing-country sovereign debt spans institutional
+investors, hedge funds, commercial banks, foreign central banks, sovereign wealth
+funds, and retail investors.13 This growth in the number and type of creditors dove-
+tails with contemporary demand for a wide and diversified range of investment instru-
+ments.14 Moreover, many developing-country governments have increased domestic
+demand for their debt instruments through the privatization of their social security
+systems. Private or semi-private pension funds often prefer (and may be required)
+to hold their sovereign’s debt.15
+   Governments also have taken actions to increase the perceived quality of their sover-
+eign debt offerings. In particular, the IMF, the World Bank, and various regional
+development banks have encouraged the professionalization of the national DMOs
+responsible for issuing and managing government portfolios. Though DMO policies
+have not fully converged, many developing countries now grant DMOs autonomy
+from elected officials and prioritize hiring staff with private-sector experience.16
+More professionalized DMOs are better able to liaise with private market actors, to
+analyze and time the supply-side dynamics of global markets, and to learn from
+the issuance choices of peer countries.17 The correlation between these risk-mitigat-
+ing actions and the growth of sovereign-bond-based financing suggests that develop-
+ing-country governments have had success in addressing concerns over default risk;
+while these sovereigns often borrow at higher interest rates than their OECD counter-
+parts, they nonetheless have access to bond issuance in private capital markets.
+   Still, the expansion of sovereign bond markets does not in itself suggest that investors
+have ceased to worry about currency risk. Governments face the temptation to erode the
+real value of debts denominated in their currency, over which they have sovereign
+control.18 Domestic currencies often suffer volatility as well as depreciation, especially
+in developing-country contexts. Developing-country governments that want to borrow
+must therefore address investors’ concerns with currency risk, labeled “original sin.”19
+
+
+   11. Bunte 2019; Zeitz 2019.
+   12. Brooks, Cunha, and Mosley 2015; Presbitero et al. 2016.
+   13. Chwieroth 2009; Datz 2008. On the implications of variation in the investor base for fiscal consoli-
+dation, see Rommerskirchen 2020.
+   14. Mosley 2003.
+   15. Betz and Pond 2019. Note that, just like foreign investors, domestic investors may hold domestic- or
+foreign-currency-denominated debt. Countries sometimes collect information on the nationality and type of
+the initial purchasers of debt, but these need not reflect the ultimate bondholders after secondary market
+transactions.
+   16. Melecky 2007, 2012; Sadeh and Porath 2020; Sadeh and Rubinson 2018.
+   17. Brooks, Cunha, and Mosley 2015.
+   18. Ottonello and Perez 2019.
+   19. Eichengreen and Hausmann 1999; Eichengreen, Hausmann, and Panizza 2005. See Aizenman et al.
+2020 and Engel and Park 2018 for more on the “original sin” literature in economics.
+
+
+
+
+                                      This content downloaded from
+                    191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                              All use subject to https://about.jstor.org/terms
+               Coming to Terms: The Politics of Sovereign Bond Denomination                         37
+
+
+   A direct way for a government to overcome this constraint is to tie its own hands at
+the point of issue, by denominating its offerings in a foreign currency, over which it
+has no control. The borrowing government assumes currency risk; it must generate
+foreign exchange to pay back or refinance debt obligations. At its starkest, “original
+sin” predicts no possibility for developing-country sovereigns to issue domestic-
+denominated debt. By virtue of their status, these sovereigns cannot assuage inves-
+tors’ concerns regarding currency risk. A more modest version of the “original sin”
+logic implies that it would be extraordinarily costly (in interest rate and/or maturity
+terms) for a developing-country government to place a domestic-denominated bond.
+   In fact, our data show that these long-standing assumptions are flawed. “Original sin”
+anticipates that developing countries rarely borrow in their own currencies. But as the
+global market for developing-country sovereign debt has grown, the proportion of
+domestic-denominated offerings has expanded dramatically. Figure 1 shows the explo-
+sion in the percentage of sovereign debt issued in domestic currencies, in both OECD
+and non-OECD countries.20 Many governments have refinanced outstanding foreign-
+denominated debt into domestic-currency debt, including Brazil, Colombia, and
+Venezuela.21 For instance, in 2010, Bolivian officials proudly reported that Bolivia
+had cut dollar-denominated debt to 78 percent, from 95 percent, in just four years.22
+   The boom in domestic-denominated debt and the easing of the “original sin” con-
+straint partly reflect the overall growth of sovereign bond markets. Recent scholarship
+speaks more precisely to the determinants of this boom. For instance, in economics,
+scholarship ties demand to global liquidity;23 considers denomination and domestic
+economic conditions in a model of optimal monetary policy;24 and argues that eco-
+nomic expansion and inflation stabilization in emerging markets help account for
+this shift.25 In international political economy, scholarship identifies how govern-
+ments can use their regulatory power to increase domestic investors’ holdings of
+their sovereign debt,26 and how African countries like Ghana have attracted
+foreign investors to domestic bond markets.27
+   Within this general trend, however, variation remains. Although domestic-cur-
+rency issuance is not only possible but quite popular, some sovereigns persist in
+
+
+
+   20. This pattern extends even to the subset of non-investment-grade, non-OECD sovereigns.
+“Investment grade” is defined as a rating of BBB– or higher from Standard and Poor’s or Fitch, or
+Baa3 or higher from Moody’s.
+   21. World Bank 2006.
+   22. Walter Brandimarte, “Update 2: Bolivia Plans International Bond Issue by 2012,” Reuters, 22 April
+2010.
+   23. Borri and Shakhnov 2018.
+   24. Engel and Park 2018.
+   25. Ottonello and Perez 2019.
+   26. Betz and Pond 2019; Pond and Betz 2019.
+   27. Zeitz 2019. Others note that, for many sub-Saharan African countries, much debt remains foreign-
+currency-denominated, creating higher risk for debtor governments. See Brahima S. Coulibaly, Dhruv
+Gandhi, and Lemma W. Senbet, “Is Sub-Saharan Africa Facing Another Systemic Sovereign Debt
+Crisis?” Africa Growth Initiative policy brief, <https://www.brookings.edu/wp-content/uploads/2019/04/
+africa_sovereign_debt_sustainability.pdf>.
+
+
+
+
+                                  This content downloaded from
+                191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                          All use subject to https://about.jstor.org/terms
+38                    International Organization
+
+
+tying their hands via foreign denomination. For example, in 2012, the relatively
+creditworthy government of Costa Rica chose to issue eurobonds.28 The government
+touted the historically low interest rate, achieved in part by denominating in foreign
+currency.29 In 2019, Costa Rica explored refinancing some debt on more favorable
+terms; it again did so with foreign-denominated issues.30 Also in 2019, Indian policy-
+makers traded barbs in the press over the government’s proposal to issue foreign-
+denominated bonds.31
+
+
+                                1
+
+
+
+
+ Proportion domestic currency
+                                .8
+
+
+                                .6
+
+
+
+
+     issuance (by value)
+                                .4
+
+
+                                .2
+
+                                                                                                     OECD countries
+                                0                                                                    Non-OECD countries
+
+                                 1990     1995        2000        2005        2010        2015
+
+FIGURE 1. Trends in denomination of non-OECD sovereign bond issues (1990–2016)
+
+
+   We focus on the enduring role of politics in denomination choices: governments
+assign different weightings in the trade-off between flexibility (facilitated by domes-
+tic-currency issuance) and costs on other terms (specifically, maturity structures and
+interest rates). Because government preferences over these elements vary as a func-
+tion of ideology, currency denomination choices remain contested and politically
+relevant, despite broad trends in the sovereign debt market.
+
+
+   28. Note that “eurobond” refers to a bond that is denominated in a currency other than that used by the
+issuing entity. The vast majority of eurobonds are denominated in US dollars; others are denominated in
+yen or euros.
+   29. The rate was 4.25 percent (L. Arias, “Eurobond Sales to Help Costa Rica Pay Down Debt,” Tico
+Times, 23 November 2012).
+   30. IMF, “Costa Rica: Staff Concluding Statement of the 2019 Article IV Mission,” 25 February 2019.
+   31. See again note 4. According to our data, since the mid-2000s developing-country debt in foreign cur-
+rencies has averaged around 10 percent of all issuance (Figure 1).
+
+
+
+
+                                                          This content downloaded from
+                                        191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                                  All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                             39
+
+
+Theory and Hypotheses: Denomination and Partisanship
+
+We contend that developing-country governments can have significant agency in
+structuring credit market transactions. Empirically, we document that investors (the
+supply side of credit markets) are willing to accept domestic denomination
+(Figure 1); our theoretical expectation is that creditors use other bond terms to com-
+pensate for that choice, consistent with a weaker version of the “original sin” logic.
+We therefore focus our theoretical logic on the demand-side preferences of govern-
+ments. Specifically, we argue that government ideology has an important influence
+on how developing-country governments structure their interactions with sovereign
+credit markets. We theorize that consistent ideological preferences over denomination
+play a role above and beyond broader trends in international debt markets. This aligns
+with the empirical pattern in which investors have been willing to accept partisan
+differences in debt denomination.
+   We expect left governments to take advantage disproportionately of the market-
+based opportunity to borrow in their own currencies. Left governments have a
+well-earned reputation for distinct preferences over economic and social policy
+compared to their centrist/other and right counterparts. A long literature in compara-
+tive politics roots left governments’ distinct ideological preferences in the fact that
+their constituents hold more of their assets in human capital (labor) than in financial
+capital (business).32 Risks to left parties’ core constituents stem largely from the com-
+modification of labor and the resulting exposure to labor market disruptions.33
+Broadly, this results in left parties focusing on unemployment at the expense of infla-
+tion,34 and on limiting market-generated inequality.35 Left parties typically prioritize
+providing social protection, redistributing income, and regulating industries.36 And
+because left parties’ core constituents are less likely to be connected to globally
+oriented financial institutions or to themselves invest in sovereign bonds, left govern-
+ments will worry less about the potential erosion, via inflation and currency depreci-
+ation, of the real value of domestic-denominated assets.
+   Moreover, left governments tend to worry about the exposure to risk—for instance,
+to exchange rate volatility—generated by international markets. Thus left parties have
+been less likely to embrace financial liberalization.37 Domestic-currency denomin-
+ation therefore reduces left governments’ worries about the potential tension
+between enacting their preferred macroeconomic and microeconomic policies, on
+the one hand, and servicing and repaying foreign-currency-denominated debts, on
+
+
+
+   32. Alesina and Rosenthal 1995; Hibbs 1987, 1994.
+   33. Esping-Andersen 1990.
+   34. Carlsen 2000.
+   35. Huber and Stephens 2012.
+   36. Adams, Haupt, and Stoll 2008 attribute left parties’ consistent ideology and policy agenda in the face
+of changing global economic conditions to their “long-term policy orientations” and particularities of their
+organizational structures.
+   37. Li and Smith 2002; Quinn and Inclan 1997.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+40    International Organization
+
+
+the other. Instead, domestic denomination keeps inflation in the government’s toolkit,
+as a potential response to high debt burdens as well as to a sluggish economy. Thus
+domestic denomination offers a pathway for left governments to privilege domestic
+rather than foreign objectives.38
+    Central to our theory is that left governments’ focus is on autonomy vis-à-vis
+market forces, as they prefer to have more options for meeting the demands of
+their core constituents. Much of the time, left governments do not break currency
+pegs or run the printing presses, eroding their money’s value. Yet they do value
+the possibility to do so, should domestic political or economic conditions demand
+it. A key observable implication of our argument, therefore, is that left governments
+consistently accept the costly trade-offs (on other features of sovereign bonds) neces-
+sary to issue in domestic currency.
+    Put differently, supply-side creditors insist on compensation for currency-related
+risk.39 We expect governments issuing in domestic currency to consistently settle
+on other, less favorable financial terms, the most important of which are shorter
+maturities or higher yields.40 Evidence of less favorable maturity and/or yield in
+the presence of domestic denomination matches our expectation that left governments
+are consistently willing to compensate investors for autonomy, whether or not they
+ultimately use that autonomy.
+    Right governments, by contrast, prefer to issue debt in foreign currency. Right
+parties traditionally privilege market-friendly policies, including monetary restraint,
+fiscal discipline, trade and financial liberalization, and respect for private property
+rights.41 Right parties’ constituents typically are capital owners, including financial
+elites.42 Business interests tend to welcome the opportunities for diversification
+and investment that come with capital account liberalization;43 in contrast to left
+parties, they worry less about pressures on policies emanating from international
+markets. Furthermore, right governments are likely to have constituents who invest
+in government debt, and who appreciate assurances that the real value of their
+assets is secure.44 Right governments also may view foreign-currency debt denomin-
+ation as a means of tying the hands of their potential successors.45 When debt stock is
+more foreign-denominated, subsequent governments will need to remain focused on
+generating foreign exchange and on preserving the value of the domestic currency.
+
+
+
+   38. Ballard-Rosa 2020; Simmons 1997.
+   39. Supply-side currency-risk concerns also lead us to expect left governments to be more successful at
+achieving domestic denomination in the presence of risk-mitigating institutions, such as an independent
+central bank or a fixed exchange rate, and in the absence of financial crises; see Hypotheses 2, 3, and 4.
+   40. For empirical support, see Table 1. We do not offer a theory quantifying trade-offs across denom-
+ination, maturity, and yield in any given transaction; rather, our prediction is that evidence of trade-offs
+should be recoverable from observed data.
+   41. Garrett 1998; Leblang 2002.
+   42. Przeworski and Wallerstein 1988.
+   43. Li and Smith 2002; Quinn and Inclan 1997.
+   44. Stasavage 2011.
+   45. Bernard 2002.
+
+
+
+
+                                       This content downloaded from
+                     191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                               All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                              41
+
+
+Thus right governments are relatively more willing to issue foreign-denominated debt
+that curtails their own access to policy instruments like inflation.
+   To be clear, when investors are willing to purchase domestic-denominated debt,
+and the costs of doing so in terms of maturity and/or yield are sufficiently low, we
+expect right governments to take advantage of issuing in domestic debt. In permissive
+market environments, right governments will not always avoid domestic denomin-
+ation. This is consistent with our argument that right governments’ preferences are
+motivated in part by the costs of domestic versus foreign denomination.
+Nevertheless, we contend that right governments’ ideological preference for
+foreign denomination, all else equal, is enduring. Therefore, an observable implica-
+tion of our argument is that there should exist significant differences between right
+and left governments’ propensity for domestic denomination, controlling for global
+market conditions. Given the empirical trend in domestic issuance, this implies that
+we should recover significant left–right partisan differences in issuance throughout
+the time period we analyze.46
+   The subset of right governments which are motivated by economic nationalism
+may also prefer domestic-denominated debt for different reasons. Economic nation-
+alists broadly object to the notion of limiting domestic policy options vis-à-vis foreign
+actors, including investors and intergovernmental institutions. Economic-nationalist
+audiences may view domestic denomination as a sign of prestige or progress, consist-
+ent with the country having greater autonomy from global pressures.47 Traditionally,
+such nationalist claims emanate from the left, consistent with our theoretical predic-
+tion regarding left preferences. However, in recent years especially, such claims have
+emerged from the far-right end of the political spectrum. For example, in the 2019
+debates in India over the (right) Modi government’s proposal to issue foreign-
+denominated sovereign bonds, actors from the far right joined leftists in decrying
+the proposal in economic-nationalist terms.48 Empirically, because our data end in
+2016, we are able to exclude the most recent far-right phenomenon. Theoretically,
+we contend that economic nationalism does not systematically characterize right
+governments worldwide—our actors of interest—or right parties in general.49
+   Our arguments that ideological preferences over debt denomination are meaningful
+and enduring for parties on the left and the right also assume that, at the level of mass
+politics, voters broadly recognize partisan ownership or “clarity of responsibility”
+over different economic issues,50 and that party leaders craft their economic policy
+
+
+   46. For evidence, see Figure 6.
+   47. Harmes 2012.
+   48. The far-right Rashtriya Swayamsevak Sangh (National Volunteer Organization) “said it was anti-pat-
+riotic as it could create long-term risks for the economy, potentially allowing rich foreign nations and their
+financial institutions to dictate the country’s policies” (“RSS Wing Calls on Govt Not to Issue Foreign
+Currency Bonds,” Reuters, 16 July 2019).
+   49. Should it come to do so, our theoretical expectations regarding rightist preferences would be com-
+plicated. Even bigger would be the challenge to political science as a whole regarding the key drivers of
+rightist economic policy.
+   50. Parker-Stephen 2013.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+42    International Organization
+
+
+choices with an eye to winning the support of certain constituencies, such as labor or
+capital.51 We acknowledge that not all developing countries that issue bonds in global
+markets have strong political competition. In less competitive systems, elite-level
+competition is most important;52 different swaths of the selectorate are likely to
+align with left versus right political parties. Persistent elite-level ideological differ-
+ences mean that, even without mass-level partisan contestation, our partisan-based
+theory of preference over denomination should generate distinct market outcomes.
+   Our theory carries implicit expectations about centrist parties and parties that do
+not fall neatly on the traditional left–right spectrum with reference to economic
+policy. In emphasizing the enduring preferences of left and right governments, we
+imply simultaneously that denomination preferences are not ex ante clear, meaning-
+ful, or enduring for governments of centrist or other orientations. Thus our expecta-
+tions of left and right governments should hold with regard to centrist and/or other
+parties as the excluded category.
+
+H1: All else equal, a right government is least likely to denominate sovereign debt in
+domestic currency, while a left government is most likely to do so.
+
+   Our expectations regarding left and right governments assume that governments
+vary, and continue to vary, in their ideological predispositions and their resulting
+policy choices. This assumption is consistent with scholarship that argues for the
+continued relevance of partisanship, despite economic globalization. It is in
+tension, however, with other scholarship which posits that market pressures forestall
+left governments’ ability to enact their preferred economic policy outcomes. In fact,
+both strands of scholarship inspire our next set of hypotheses concerning the condi-
+tional effects of supply-side creditors’ preferences on the likelihood that left govern-
+ments issue in domestic currency.
+   On the one hand, a large body of scholarship finds significant evidence that parti-
+san positions on economic policy are important.53 In general, left governments are
+less inclined to engage in financial liberalization.54 Left governments are also asso-
+ciated with higher sustained increases in public investment,55 as well as with
+higher levels of spending in response to crises.56 And even when countries have
+signed preferential trade agreements, newly elected left governments often impose
+new barriers to trade.57 These distinctive policies appear in both developed and
+
+
+
+  51. Bisgaard 2015.
+  52. Bueno de Mesquita et al. 2005.
+  53. Campello 2015; Kurzer 1993; Mosley 2003; Pinto 2013.
+  54. Brooks and Kurtz 2007; Chwieroth 2007; Li and Smith 2002. Historically, left governments have
+been less inclined to privilege external commitments, such as the commitment to a fixed exchange rate,
+over the capacity to intervene in the domestic economy. Simmons 1997.
+  55. Gupta, Liu, and Mulas-Granados 2015.
+  56. Muller, Storesletten, and Zilibotti 2016.
+  57. Gray and Kucik 2017.
+
+
+
+
+                                     This content downloaded from
+                   191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                             All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                          43
+
+
+developing countries. In Latin America, for instance, left governments are more
+likely to pursue policies that seek to blunt rising inequality.58
+   On the other hand, another body of scholarship argues that financial liberalization
+and the attendant possibility of capital flight greatly constrain the capacity of left
+parties to “act left” once in office.59 This research contends that private markets
+are averse to the arrival in office of left-leaning political parties.60 They may worry
+that left candidates would change investment policies, tax rates, public spending,
+or existing contractual commitments.61 Left governments could face additional pres-
+sure from international financial institutions to maintain or implement neoliberal,
+Washington Consensus–style policies.62 Left governments therefore could run on
+leftist economic policy platforms, but once in office find compelling incentives to
+adopt more centrist or right-leaning policies.63 Left governments without access to
+alternative financing sources, such as rents from natural resources,64 may be espe-
+cially exposed to market pressures. This debate over whether left governments are
+able to “act left” plays out in analyses of the politics of sovereign debt. Some
+work identifies a significant role for partisanship in credit ratings and secondary
+markets, for example, that credit ratings agencies award lower sovereign ratings to
+left-governed countries, all else equal.65 Others argue that investors use partisan
+cues as a shortcut when assessing political risk; increased bond spreads and capital
+flight occur when the government swings significantly away from conservative incum-
+bents.66 And in analyses including a range of developing countries, others find that
+bond markets react to left governments via greater volatility in sovereign spreads.67
+   In contrast, in other work we find no effect of partisanship on a crucial set of
+outcomes in primary capital markets: the amount of sovereign debt issued by devel-
+oping countries, and the timing of those issues.68 That research identifies changes in
+supply-side market appetites for sovereign risk as key to the allocation of available
+credit. Specifically, the long-discussed “democratic advantage” in sovereign debt
+markets is contingent on the salience of sovereign risk to creditors. Secondary-
+market scholarship suggests, among other things, that sovereign risk is shaped
+by global market conditions,69 peer-group heuristics,70 central bank independence
+
+
+
+  58. Huber and Stephens 2012.
+  59. Garrett 1998.
+  60. Cho 2014; Kaplan 2013.
+  61. Jensen and Schmith 2005; Pinto 2013.
+  62. Nelson 2014.
+  63. Campello 2015; Stokes 2001.
+  64. Campello 2015; Wibbels 2006.
+  65. Barta and Johnston 2018.
+  66. Vaaler, Schrage, and Block 2006. While this research sees stock market reactions to partisan shifts,
+Frot and Santiso 2013 do not.
+  67. Brooks, Cuhna, and Mosley 2021.
+  68. Ballard-Rosa, Mosley, and Wellhausen 2021.
+  69. Bauerle Danzman, Winecoff, and Oatley 2017; Rey 2013; Spanakos and Renno 2009; Wellhausen
+2015.
+  70. Brooks, Cunha, and Mosley 2015; Gray 2013.
+
+
+
+
+                                  This content downloaded from
+                191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                          All use subject to https://about.jstor.org/terms
+44    International Organization
+
+
+(CBI),71 regime type,72 and elections.73 When investors are motivated to seek out
+safer assets, developing-country democracies gain an advantage over nondemocra-
+cies in issuing more sovereign debt, more often. However, holding the level of
+democracy constant, there is no significant difference in the amount or timing of
+debt issued by governments of different partisan orientations. This nonresult regard-
+ing partisanship is consistent with the strand of literature finding that macro-policy
+pressures from investors can constrain left parties from “acting left” once in office.
+Although left governments have an underlying, demand-side preference for fiscal
+flexibility and expansion, they nevertheless have difficulty achieving it by issuing
+more debt more often. In contrast, our theory posits that left governments will find
+it much easier to achieve their preferences for fiscal flexibility by choosing domestic
+denomination, so much so that we expect to recover systematic, partisan empirical
+patterns regardless of market conditions. Indeed, sovereign borrowers with similar
+overall debt burdens and similar macroeconomic fundamentals often exhibit
+marked variation in the currency denomination, maturity structure, and yield
+profile of their debt.74
+   At the point of issue in primary capital markets, creditors and sovereign debtors
+agree on the terms (denomination as well as yield and maturity) of a specific sover-
+eign debt instrument. This outcome represents the intersection of government
+demand for and investor supply of debt. On the demand side, it reflects the govern-
+ment’s willingness to agree to a set of terms, in exchange for the extension of credit.
+On the supply side, it reflects investors’ assessment of country-specific and global
+risk factors, again in the context of a specific set of bond terms. Our overall conten-
+tion is that creditors are often willing to accept a set of terms that reflects distinctively
+partisan preferences, specifically over debt denomination.
+   However, investors’ willingness to accept domestic denomination is not unlimited.
+Supply-side concerns about sovereign risk—including the worry that governments
+will erode the value of domestic-currency instruments via inflation—remain.
+Hence, investors require compensation for the added risk associated with partisan-
+based demands for domestic-currency issuance. The need to offer compensation sug-
+gests that a weak form of the “original sin” logic persists, even in a marketplace in
+which investors have an appetite for domestic-denominated sovereign debt instru-
+ments. Indeed, our arguments regarding partisan differences assume that issuing
+domestic debt is not costless, and that investors require compensation for its added
+risk. While we have emphasized that compensation to investors can occur via
+other financial terms of a bond issue, specifically its maturity and/or yield, bonds
+
+
+
+   71. Bodea and Hicks 2015, 2018; Johnson 2016.
+   72. Beaulieu, Cox, and Saiegh 2012; North and Weingast 1989; Saiegh 2005; Schultz and Weingast
+2003.
+   73. Bernhard and Leblang 2006; Campello 2014; Mosley 2003.
+   74. For example, Cox and Saiegh 2018 find that otherwise identical bonds issued by Argentina in
+advance of the Baring crisis had markedly different price trajectories as a function of the funded status
+of the instrument.
+
+
+
+
+                                      This content downloaded from
+                    191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                              All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                           45
+
+
+also vary in their nonfinancial terms. For instance, some bonds have collective-action
+clauses, intended to simplify restructuring in the case of a default.75 Bonds also vary
+with regard to their governing law (which could be domestic or that of a major
+market, such as London or New York) and their exchange listing. Although our
+issue-level empirical data do not cover nonfinancial terms, our argument implies
+that sovereign risk can further be addressed via trade-offs across such nonfinancial
+terms at the point of issue.76
+   Moreover, governments may compensate investors for currency risk via mechan-
+isms beyond bond terms (financial or otherwise). For example, governments might
+aim their offerings at different segments of their potential investor base, varying
+the denomination of their offerings as investors’ time horizons or currency exposure
+vary. Governments also might use regulatory requirements or tax incentives to con-
+vince investors to hold their bonds.77 Alternatively, governments might seek some
+credit outside private bond markets, from private commercial banks, bilateral official
+creditors, or international financial institutions;78 these creditors may demand
+compensation that is political or diplomatic, rather than explicitly economic.79
+   We focus on the risk-mitigating effects of politically independent monetary insti-
+tutions as well as fixed exchange rates. Such institutions enhance governments’ mon-
+etary policy credibility, reducing demand-side risk concerns. Their presence can
+therefore facilitate domestic-currency issuance. Thus sovereign borrowers that
+prefer domestic denomination—that is, left governments—should be better able to
+find willing creditors in the presence of such institutions.
+   First, politically independent central banks are one mechanism that constrains poli-
+ticians’ ability to act in ways contrary to market preferences. We follow a long litera-
+ture suggesting that CBI may limit political leaders’ ability to intervene in the
+macroeconomy in politically expeditious but economically damaging ways.80 With
+an independent central bank, typically mandated to attend to inflation (sometimes
+in balance with other goals like employment or economic growth), investors
+should have more certainty that a left government will not inflate away the value
+of domestic-denominated bonds. Thus, CBI should make it easier for left govern-
+ments to issue such bonds.
+
+
+
+  75. Weidemaier and Gulati 2016.
+  76. Chamon, Schumacher, and Trebesch 2018 find evidence that, in secondary markets, foreign-law
+bonds carry lower yields, especially in times of crisis. See also Bradley, De Lira Salvatierra, and Gulati
+2016.
+  77. Betz and Pond 2019.
+  78. Bunte 2019; Mosley and Rosendorff n.d.; Zeitz 2019.
+  79. The capacity of non-OECD governments to choose among a portfolio of potential creditors exists
+more generally during recent decades, and it is especially pronounced when global liquidity is high, under-
+scoring the importance of our empirical attentiveness to time-related and global market dynamics. Ballard-
+Rosa, Mosley, and Wellhausen 2021; Brooks, Cunha, and Mosley 2015; Miranda-Agrippino and Rey
+2015.
+  80. Barro and Gordon 1983; Bodea and Hicks 2018; Clark and Hallerberg 2000; Franzese 1999; Garriga
+and Rodriguez 2020; Maxfield 1997.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+46    International Organization
+
+
+H2: Left governments are more likely to denominate sovereign debt in domestic cur-
+rency when the central bank is more independent, as opposed to less independent.
+
+   A fixed exchange rate is another mechanism that can address investors’ concerns
+that the real value of a domestic-currency bond at maturity will be significantly less
+than its nominal value at issue. A country with a commitment to a fixed exchange
+rate, generally tied to a major trading partner or source of capital, can generate
+greater confidence among bondholders regarding the future value of the asset.81
+Such an institution also should make it easier for left governments to place domes-
+tic-denominated debt. That is, fixed exchange rates facilitate the supply-side dynam-
+ics which allow left governments to achieve their partisan-based preferences.
+
+H3: Left governments are more likely to denominate sovereign debt in domestic cur-
+rency when the exchange rate is fixed rather than flexible.
+
+  Finally, investors become more averse to risk—and therefore less willing to pur-
+chase riskier assets like domestic-denominated bonds—in the face of inflation or cur-
+rency crises. Left governments in particular will find it difficult to convince investors
+of their commitment to preserving the value of domestically denominated assets,
+given their well-known policy preferences that do not prioritize investors’ interests.
+We therefore anticipate that, in periods marked by the current or recent occurrence
+of currency and inflation crises, left governments will be less likely to engage in
+domestic-currency debt denomination.82 This is not because crises change left gov-
+ernments’ underlying preferences, but because supply-side concerns are severe
+enough to swamp demand-side effects.
+
+H4: Left governments are less likely to denominate sovereign debt in domestic
+currency when the country experiences a monetary crisis, as opposed to noncrisis
+conditions.
+
+   Our first hypothesis focuses on the agency of governments to influence how they
+access sovereign credit. We expect, unconditionally, that left and right governments
+will act in significantly different ways. The remaining hypotheses highlight the role
+of investors’ risk perceptions. These expectations are conditional, and they apply only
+to left governments. Since we expect that right governments are already inclined to
+market-friendly policies and the use of foreign-currency issuance, we do not have
+
+
+
+
+   81. Mitchener and Weidemaier 2015 find that before World War I, adherence to the gold standard was
+associated with significantly lower risk premiums for core countries. In peripheral countries, however, gold
+standard adherence did not necessarily lower risk premiums, even many years after gold standard adoption.
+   82. Cox and Saiegh 2018 also emphasize the importance of considering differential market facilitation of
+bond issuance in crisis episodes.
+
+
+
+
+                                       This content downloaded from
+                     191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                               All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                           47
+
+
+strict expectations regarding a further conditional effect of supply-side considerations
+on right governments’ denomination outcomes.
+
+
+Empirical Strategy
+
+To test these hypotheses, we analyze a new data set of the terms of approximately
+240,000 initial sovereign issues in primary capital markets by 131 countries from
+1990 to 2016.83 Our data set covers the effective population of (non-US) sovereign
+bonds issued on international markets. Given that currency risk in wealthy countries
+is of limited concern to bond investors,84 and that the claim regarding “original sin”
+refers to the developing world,85 we analyze the set of non-OECD countries that have
+issued bonds in the period.
+   The primary market—the point at which sovereign borrowers and creditors come
+to agreement on the terms of bond issues—is the setting in which we can observe
+governments’ current preferences over debt denomination. Each bond issue repre-
+sents a transaction in which sellers (borrowing governments, often with assistance
+from financial-sector underwriters) and buyers (investors) agree on issuance, regard-
+ing both amount and terms. Our issue-level data include information on bond denom-
+ination, maturity, and yield (interest rate). Note that our observational data do not
+allow us to observe a government’s ideal point or requests with respect to terms;
+instead, we observe where government preferences intersect sufficiently with
+market demands to enable an issuance to occur.86 Following our hypotheses, our stat-
+istical analyses assess not only what relationship, if any, partisanship has with out-
+comes in primary bond markets, but also the extent to which outcomes are
+conditioned by market expectations over future behavior as a function of political
+institutions and financial crises. Our statistical models further account for supply-
+side dynamics by including as control variables a set of features typically associated
+with bond market outcomes.
+   A common distinction in categorizing sovereign instruments separates “bills,” gen-
+erally issued with a maturity of less than one year, and “bonds,” with maturities of one
+year or more. Governments typically issue bills to facilitate short-term debt rollovers,
+and it is less obvious whether these types of liquidity operations should be subject to
+political considerations over currency denomination since investors are likely less
+worried about wild fluctuations in exchange rates over short periods. In the longer
+term, flexibility-versus-cost trade-offs are more consequential as governments face
+
+
+
+   83. Data were gathered from Bloomberg terminals. We assume that any missing data are as-if randomly
+distributed. We exclude countries with populations less than 100,000, as well as the United States because
+the role of the dollar and the depth of the US market makes the US a significant outlier in many dimensions
+of issuance.
+   84. Mosley 2003.
+   85. Eichengreen, Hausmann, and Panizza 2005.
+   86. All issues in the data are successful, in that they are fully placed with investors.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+48    International Organization
+
+
+higher likelihoods of inflationary pressure and investors are more concerned with cur-
+rency fluctuation and depreciation. Therefore, we estimate our main models using the
+subsample of all bonds issued with a maturity of at least one year but all main results
+are robust to using the full sample of all issues, regardless of maturity.87
+   We conduct our analyses at the country-month level.88 Our main dependent vari-
+able is the percentage of the value (amount) of a sovereign’s bonds issued in the coun-
+try’s domestic currency, collapsed by country-month. This measure captures all
+bonds issued in the currency within the control of the sovereign issuer. For instance,
+issuance by the Ugandan government in Ugandan shillings is categorized as domestic
+denomination, whereas issuance in any other currency is classified as foreign-
+denominated.89 Our main political covariate of interest is government partisanship,
+both unconditionally and as affected by economic institutions and crisis environ-
+ments (Hypotheses 1–4). We rely on standard, widely available measures of govern-
+ment partisanship, which allow us to test our hypotheses for a broad set of non-OECD
+countries. Our main measure of executive partisanship comes from the Database of
+Political Institutions (DPI). According to the DPI codebook, party orientation is
+coded relative to economic policy, which is the appropriate focus for our setting.
+Following standard practice, we characterize governments as “right,” “left,” or “cen-
+trist/other.”90 This trichotomous division allows us to evaluate empirically whether
+partisanship on the left or the right correlates with systematically different outcomes,
+relative to the excluded category of centrist/other governments. To complement our
+monthly data on bond denomination, we update these annual data on government par-
+tisanship to the monthly level, using data on precise dates of electoral turnover.91 To
+maximize data coverage, we first estimate models with the full sample of countries for
+which the DPI codes government partisanship. We subsequently re-estimate our
+primary models on democratic and nondemocratic subsamples, under the expectation
+that government partisanship may be more informative in more democratic countries,
+and given the extensive literature on the advantages democracies enjoy in accessing
+international credit markets.92
+
+
+
+   87. As reported in Appendix Tables A17 and A19.
+   88. This is consistent with the unit of analysis in our recent work (Ballard-Rosa, Mosley, and Wellhausen
+2021) that demonstrate a strong empirical correlation between overall amount issued and the number of
+months with issuances in a given country-year.
+   89. Our argument turns on whether or not the sovereign has control over the currency; thus, the identity
+of the foreign currency is irrelevant. US dollars are the dominant foreign currency choice throughout the
+period.
+   90. Left parties are those identified as communist, socialist, social democratic, or otherwise left. Right
+parties are conservative, Christian democratic, or otherwise right. We place parties whose platform does
+not focus on economic issues (coded 0) in the centrist/other category (Cruz, Keefer, and Scartascini
+2018), although our main results are robust to instead dropping these observations entirely.
+   91. The date on which the new government comes to power marks the beginning of the government’s
+ability to issue debt; the (previous) election date is not relevant in our setting.
+   92. Beaulieu, Cox, and Saiegh 2012; Biglaiser and Staats 2012; Schultz and Weingast 2003. We also
+demonstrate the robustness of our results to alternative codings of partisanship and democracy from the
+Varieties of Democracy (V-Dem) project.
+
+
+
+
+                                       This content downloaded from
+                     191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                               All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                          49
+
+
+   Our other covariates of interest include CBI, which we dichotomize into those
+above or below the sample median level (H2).93 We also code whether the exchange
+rate is pegged (H3). To identify countries facing crisis environments, we include a
+dummy that equals 1 if the country is facing an ongoing inflation crisis, and a
+dummy that equals 1 if the country is facing an exchange rate crisis (H4).
+   Given the observational nature of our data, it is important to account for additional
+factors that might plausibly be correlated both with the currency composition of debt
+issued in a country-month and with the partisan orientation of government.94 We
+begin by including a set of baseline macroeconomic controls commonly associated
+with borrowing capacity, including GDP per capita and GDP growth, to capture
+the possibility that economic trajectories might vary with government partisanship.
+In addition, if left governments prefer to engage in more expansionary spending,
+there could be consequences for the market’s tolerance for government bond
+terms. This leads us to control for the amount of existing external debt (% of
+GDP) and the current account balance (% of GDP). To account for the possibility
+that access to alternative sources of international capital could vary with government
+partisanship, we control for trade (% of GDP), oil rents (% of GDP), and foreign
+direct investment inflows (% of GDP).
+   Beyond this baseline set of covariates, we subsequently introduce a fuller set of
+controls that also might plausibly be jointly related to government partisanship and
+bond terms. The inclusion of these additional variables, however, leads to nontrivial
+reduction in our sample size. First, beyond the monetary crisis variables we prioritize
+in hypothesis testing, it may also be that countries experiencing a sovereign debt
+crisis find it harder to choose domestic denomination if the prospect of default
+makes investors shy away from any other risky term; if government partisanship
+also affects the likelihood that a country is in a crisis, lack of controls for these
+factors might result in omitted-variable bias. We therefore include dummies for
+current sovereign debt crises, as well as a dummy for the presence of an IMF
+program, the terms of which could be biased in favor of right governments.95 We
+also include a measure of capital account openness, addressing the possibility that
+left governments are more likely to engage in restrictions on the capital account.96
+We furthermore control for democracy with a continuous measure (V-Dem’s “poly-
+archy” score), and we probe potential heterogeneity by regime type in the robustness
+tests. All specifications include country fixed effects to capture country-specific, non-
+time-varying determinants of our outcomes of interest.
+   Perhaps the most important tasks in our empirical strategy are to account for the
+dramatic secular increase in the number of developing-country bond issuers and in
+
+
+
+  93. Calculated from the weighted measure in Garriga 2016. Data sources for all variables are provided in
+Appendix Table A1.
+  94. Consistent with standard practice, all controls are measured annually unless otherwise specified.
+  95. Nelson 2014.
+  96. Chinn and Ito 2006; Quinn and Inclan 1997.
+
+
+
+
+                                  This content downloaded from
+                191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                          All use subject to https://about.jstor.org/terms
+50    International Organization
+
+
+the proportion of domestic-currency issuance over our period. We must address
+changes in the sovereign debt marketplace generally, before isolating the persistent
+role of partisan factors. Indeed, recent work on the tolerance of bond investors for
+country-level politics emphasizes that the international yield environment plays an
+important role.97 To account for the possible effect of global capital cycles on our
+results, we also include in our baseline controls a monthly varying measure of the
+interest rate on ten-year US Treasury bonds, which are generally taken as the
+world’s least risky asset.
+   To capture possible secular movements in our data, we introduce to all specifications
+a cubic polynominal in time.98 To address simultaneity bias, we lag all right-hand-side
+measures by one year (as these data vary at the annual level), save our monthly mea-
+sures of partisanship and the US ten-year Treasury interest rate, which are lagged by
+one month. Finally, note that our outcome of interest (percent domestic issuance) is
+observed in only country-months in which issuance actually occurs; when no issuance
+takes place, we cannot measure the proportion of debt in a given currency, and so treat
+these as missing. Therefore, while we use OLS with standard errors clustered by
+country as our baseline estimation method, as discussed in the appendix our results
+are robust when we employ a Heckman selection model to account for the possibility
+of selection bias in months in which issuance occurs (Table A23).99
+
+
+Results
+
+Here, we present descriptive evidence consistent with our argument and its implica-
+tions; report results supportive of Hypotheses 1–4; and report robustness analyses and
+extensions.
+
+Descriptive Preliminaries
+We begin by verifying that patterns in our data are consistent with the logic of our
+arguments. First, our claims regarding partisanship rest on the notion that, while “ori-
+ginal sin” no longer precludes the issuance of domestic-denominated bonds, these
+instruments nonetheless carry significant currency risk for investors. Thus develop-
+ing-country governments should compensate investors, in some way or another,
+for taking on these risks. The clearest and most direct means of doing so is via the
+other terms of the bond. Our issue-level data allow us to examine maturity and
+
+
+   97. Ballard-Rosa, Mosley, and Wellhausen 2021; Borri and Shakhnov 2018.
+   98. Carter and Signorino 2010. In alternative specifications, to remove the effect of any shared common-
+ality in currency issuance across all countries within a given year, we have replaced this time trend with
+year fixed effects; our primary results are not sensitive to the exclusion of either the temporal cubic poly-
+nomial or the inclusion of year fixed effects.
+   99. Note that, as we found elsewhere (Ballard-Rosa, Mosley, and Wellhausen 2021), there is no evidence
+of systematic partisan differences in timing or amount of issuance, so we expect these problems to be of
+limited concern.
+
+
+
+
+                                       This content downloaded from
+                     191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                               All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                              51
+
+
+interest rate (often called the “coupon” for bonds), two key financial terms of any
+bond, sovereign or otherwise. We expect that domestic denomination requires
+issuers to trade off by offering shorter maturities and higher yields.100
+   Table 1 explores this expectation via OLS regressions of the percent of domestic-
+currency issuance (by month) on the average maturity and interest rate of sovereign
+bonds issued (by month), including our full set of controls.101 Note that choices of
+denomination, maturity, and interest rates are made at the same time; these regres-
+sions explore only associations and cannot be interpreted with reference to causality.
+We do indeed find domestic denomination to be significantly correlated with shorter
+average maturities (columns 1 and 3), as should be expected if investors tend to prefer
+to hold debt with shorter maturities in exchange for allowing governments to issue
+bonds in their own currency. And while when entered by itself the interest rate
+does not appear to be systematically associated with currency denomination
+(column 2), when entered jointly with maturity we recover a positive and statistically
+significant association between the average coupon (interest rate) charged on bonds a
+country issues and the proportion of this debt issued in domestic currency. This posi-
+tive association between interest rates and domestic-currency issuance is consistent
+with a view that investors are likely (once maturity is taken into account) to charge
+governments an interest rate premium for the implied risk of holding domestic-cur-
+rency debt. These associations between denomination, maturity, and interest rates
+provide prima facie evidence that domestic denomination carries costs with regard
+to other financial terms, which increases the plausibility of our argument that choos-
+ing it is a strategic decision.102 We leave the development of a theory of how DMOs
+optimize across denomination, maturity, and yield for future research.103
+   Before moving on to test our primary hypotheses, we also re-emphasize that while
+interest rates, denomination, and maturity are key bond terms, bonds also vary in their
+nonfinancial terms. Unfortunately, because the Bloomberg information on which our
+data set is based often does not report these nonfinancial terms—reporting governing
+law for only 20 percent of our observations, for instance—we are unable to
+
+
+
+   100. Debt instruments with shorter maturities typically present less risk to investors because they need to
+worry about only government ability and willingness to repay over the term of the issue. Shorter maturities,
+however, heighten risks for borrowing governments as governments must more frequently return to capital
+markets to roll over their debt. Longer time to maturity insulates governments from the need to refinance
+debt earlier and more frequently.
+   101. Monthly averages are a more appropriate unit of analysis than issue-level terms because DMOs can
+package a set of near-simultaneous individual issues that, taken together, provide compensation. One cred-
+itor can therefore receive compensation by buying the whole package. Because our data do not record the
+initial buyer, the monthly average allows us to best account for this phenomenon.
+   102. In their recent analysis of eight emerging-market countries, Aizenman et al. 2020 similarly find that
+domestic-currency bonds tend to have shorter maturities, as well as to be smaller in size and have a lower
+coupon rate than foreign currency bonds. See also Arellano and Ramanarayanan 2012.
+   103. As a preliminary exercise, we report in the appendix that we do not find that these trade-offs across
+maturity, interest rates, and currency denomination vary by decade, as could arise if DMO professionaliza-
+tion systematically altered the market tolerance of these trade-offs over time (Tables A7 and A13). We do
+not expect nor find evidence that the magnitude of the trade-off varies with ideology (Table A25).
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+52     International Organization
+
+
+systematically assess their relationship with denomination. Nonetheless, our argu-
+ment implies that, in addition to the relationships between financial terms shown
+in Table 1, sovereign risk could be addressed via trade-offs across nonfinancial
+terms.104 Moreover, governments may compensate investors for currency risk via
+mechanisms beyond bond terms (financial or otherwise). Our conditional
+Hypotheses 2 and 3 postulate that domestic economic institutions—specifically,
+CBI and a fixed exchange rate—can have such compensatory effects.
+
+
+TABLE 1. Domestic currency issuance and other bond terms
+
+
+                                              (1)                               (2)                               (3)
+Variables                                  % domestic                        % domestic                        % domestic
+
+
+AVERAGE MATURITY                           −0.019***                                                            −0.020***
+                                            (0.003)                                                              (0.003)
+AVERAGE COUPON                                                                   0.000                            0.005**
+                                                                                (0.003)                          (0.002)
+Baseline controls                               ✓                                  ✓                                 ✓
+Full controls                                   ✓                                  ✓                                 ✓
+
+Observations                                 8,187                              8,187                            8,187
+R-squared                                    0.146                              0.087                            0.149
+Number of countries                            79                                 79                               79
+
+Notes: This table reports results of OLS regressions of domestic currency issuance (by month) on alternative terms of
+bonds (by month), as well as a set of control variables defined earlier. Country fixed effects are suppressed, as is a cubic
+polynomial in time. *p < 10; **p < .05; ***p < .01.
+Robust standard errors clustered by country in parentheses.
+
+
+   Next, for partisanship to be consequential for the choice of domestic denomination as
+we predict, it would be problematic if left governments in developing countries simply
+issued more sovereign bonds altogether. Figure 2 shows that, if anything, right govern-
+ments issue more debt through sovereign bonds, while center governments issue roughly
+the same amount as left governments. However, partisanship does not remain a signifi-
+cant determinant of the amount of debt issued (as a percent of GDP, by country-month)
+in a multivariate regression framework.105 Thus, while left governments might generally
+be associated with expectations of higher debt levels, they are not systematically acquir-
+ing more debt via sovereign bond issues on international markets.
+   Our argument about partisanship would also be less credible if the proportion of left,
+right, or center parties in non-OECD countries changed radically over the period. But
+Figure 3 shows that this is not the case. Even with phenomena like the mid-2000s Pink
+Tide in Latin America, the proportion of left and right governments has remained rela-
+tively stable, and relatively balanced, over this period, with both slightly declining in
+
+
+
+  104. Bradley, De Lira Salvatierra, and Gulati 2016; Chamon, Schumacher, and Trebesch 2018.
+  105. See Appendix Table A5. See also Ballard-Rosa, Mosley, and Wellhausen 2021.
+
+
+
+
+                                          This content downloaded from
+                        191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                  All use subject to https://about.jstor.org/terms
+                                                      Coming to Terms: The Politics of Sovereign Bond Denomination        53
+
+
+                                                .01
+
+
+
+
+     Proportion of issues, average 1990−2016
+                                               .008
+
+
+                                               .006
+
+
+                                               .004
+
+
+                                               .002
+
+
+                                                 0
+                                                               Right                   Center/Other                Left
+
+FIGURE 2. Average amount of sovereign bond issuance (per GDP, monthly) by non-
+OECD countries
+
+recent years. If anything, these data suggest the growth of centrist/other governments in
+recent years. These trends also increase our confidence that our measure of partisanship
+is not obviously biased toward attaching our specific, economic partisan preferences of
+interest to too many rather than too few governments.106
+
+
+Hypothesis Testing
+Table 2 reports results evaluating Hypothesis 1, that left (right) governments uncon-
+ditionally issue a greater percentage of domestic- (foreign-) denominated sovereign
+bonds. First, column 1 reports results from a simple bivariate regression, in which
+we find that left governments are associated with a significantly greater share, and
+right governments a significantly smaller share, of bonds issued in domestic currency
+relative to the excluded category of center/other governments. Column 2 confirms
+that this relationship holds when we include our baseline controls, and column 3
+reports support when including other covariates of interest.107 The partisan differ-
+ences we detect in domestic debt denomination appear to be a function of both left
+
+
+   106. Figures are based on our main DPI partisanship measure. We use the V-Dem measure of partisan-
+ship as a robustness check. We similarly do not find evidence of an overwhelming shift toward one end of
+the ideological spectrum over our time period.
+   107. Note that, in moving from column 2 to 3, we lose eight countries and nearly 3,000 observations;
+also, annual data end in 2012 due to lack of more recent data for several covariates. Interestingly, very
+few of the other included covariates appear systematically related to currency of issuance.
+
+
+
+
+                                                                        This content downloaded from
+                                                      191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                                                All use subject to https://about.jstor.org/terms
+54                            International Organization
+
+
+                                1
+
+
+
+
+  Proportion of governments
+                              .75
+
+
+
+                               .5
+
+
+
+                              .25
+
+                                                                                                          Left
+                                                                                                          Right
+                                                                                                          Center/Other
+                                0
+                                    1990      1995         2000          2005         2010         2015
+
+                              FIGURE 3. Trends in partisanship, non-OECD governments, 1990 to 2016
+
+
+and right ideologies (Hypothesis 1). That is, right governments also appear to be
+acting on their distinct preferences over denomination (relative to centrist/other gov-
+ernments) even in a permissive marketplace.
+   Next, we evaluate the effects of partisanship conditional on other covariates that
+can affect investors’ evaluations of governments’ propensity to maintain the value
+of domestic-denominated debt and, therefore, investors’ exposure to currency risk.
+Figure 4 reports differences in currency of issuance across government partisanship
+when interacted with a dummy for high CBI (Hypothesis 2).108 We do indeed find
+that left governments in developing countries with high CBI are significantly more
+likely to issue debt in domestic currency. Results conditional on a pegged exchange
+rate are similar: left governments issue a greater proportion of domestic-denominated
+bonds under a pegged exchange rate (Hypothesis 3). These findings are consistent
+with our argument that left governments take advantage of credibility-enhancing
+institutions that improve their ability to make choices in line with their ideological
+preferences.
+   We have argued that, as right governments’ preferences for foreign-currency
+denomination largely square with the preferences of investors, it is not clear theor-
+etically whether we should expect similar partisan differences from right governments
+
+
+
+
+  108. Full regression results for this and subsequent figures are reported in Appendix Table A3.
+
+
+
+
+                                                             This content downloaded from
+                                           191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                                     All use subject to https://about.jstor.org/terms
+                   Coming to Terms: The Politics of Sovereign Bond Denomination                                    55
+
+
+TABLE 2. OLS regressions, domestic currency issuance
+
+
+                                                                  (1)                  (2)                    (3)
+Variables                                                     No controls            Baseline            Full controls
+
+
+RIGHT GOVERNMENT                                               −0.069*              −0.066*               −0.075**
+                                                                (0.036)              (0.034)               (0.033)
+LEFT GOVERNMENT                                                  0.087*               0.092**               0.109**
+                                                                (0.046)              (0.045)               (0.044)
+GDP PER CAPITA                                                                      −0.017                −0.047
+                                                                                     (0.049)               (0.052)
+GDP GROWTH (ANNUAL %)                                                                 0.003                 0.002
+                                                                                     (0.002)               (0.002)
+EXTERNAL DEBT (% OF GDP)                                                              0.001                 0.001
+                                                                                     (0.001)               (0.001)
+CURRENT ACCOUNT BALANCE (% OF GDP)                                                    0.001                 0.003
+                                                                                     (0.002)               (0.003)
+TRADE (% OF GDP)                                                                      0.001               −0.000
+                                                                                     (0.001)               (0.001)
+OIL RENTS (% OF GDP)                                                                −0.004                −0.002
+                                                                                     (0.004)               (0.006)
+FOREIGN DIRECT INVESTMENT, NET INFLOWS (% OF GDP)                                     0.000                 0.001
+                                                                                     (0.000)               (0.002)
+US TREASURY RATE                                                                      0.016**               0.022***
+                                                                                     (0.006)               (0.008)
+PEGGED EXCHANGE RATE                                                                                      −0.006
+                                                                                                           (0.032)
+HIGH CENTRAL BANK INDEPENDENCE                                                                              0.011
+                                                                                                           (0.031)
+CHINN-ITO INDEX                                                                                             0.005
+                                                                                                           (0.014)
+IMF PROGRAM IN PLACE                                                                                      −0.045
+                                                                                                           (0.028)
+CURRENCY CRISIS                                                                                           −0.010
+                                                                                                           (0.021)
+INFLATION CRISIS                                                                                          −0.223***
+                                                                                                           (0.056)
+SOVEREIGN DEBT CRISIS                                                                                       0.102
+                                                                                                           (0.074)
+DEMOCRACY (V-DEM)                                                                                         −0.012
+                                                                                                           (0.137)
+Observations                                                    12,179                11,023                 8,163
+R-squared                                                        0.070                 0.073                 0.113
+Number of countries                                               103                   87                     79
+
+Notes: This table reports results of OLS regressions of the proportion of domestic currency issuance (by month) on
+government partisanship (by month, lagged) and varying sets of controls. Country fixed effects are suppressed, as is a
+cubic polynomial in time. *p < 10; **p < .05; ***p < .01.
+Robust standard errors clustered by country in parentheses.
+
+
+
+
+with strong institutional protections for the value of the domestic currency. As
+reported in Figure 4, in the presence of strong CBI, right governments appear even
+more likely to choose foreign over domestic denomination; this suggests that the
+right’s ideological commitment to forego domestic denomination complements the
+ideological commitment to CBI. When the exchange rate is fixed, the point estimate
+suggests that right governments are even less likely to denominate in domestic
+
+
+
+
+                                     This content downloaded from
+                   191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                             All use subject to https://about.jstor.org/terms
+56                            International Organization
+
+
+
+
+                                    1.00
+
+
+
+
+     Proportion domestic currency
+                                    0.90
+
+                                    0.80
+
+                                    0.70
+
+                                    0.60
+
+                                    0.50                                                                Right
+                                                                                                        Center/Other
+                                                                                                        Left
+                                    0.40
+                                                 Low CBI                           High CBI
+
+
+
+
+                                    1.00
+
+
+
+
+     Proportion domestic currency
+                                    0.90
+
+                                    0.80
+
+                                    0.70
+
+                                    0.60
+
+                                    0.50                                                                Right
+                                                                                                        Center/Other
+                                                                                                        Left
+                                    0.40
+                                                 Not fixed                         Fixed XR
+
+  Note: The left panel conditions on a dichotomous measure of CBI, while the right panel
+  conditions on a dummy for fixed exchange rates (95% confidence intervals).
+
+FIGURE 4. Effect of government partisanship on proportion of domestic-currency
+debt issued
+
+
+
+
+                                                             This content downloaded from
+                                           191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                                     All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                            57
+
+
+currency, although this difference is not statistically significant at conventional levels.
+This would be consistent with the right’s ideological preference to “bind the hands”
+of successor governments, expressed via both denomination choice and a fixed
+exchange rate.
+   Yet, left governments’ credibility may be undermined by ongoing macroeconomic
+instability; crises affecting the value of the currency can therefore undermine a left gov-
+ernment’s ability to come to terms that include domestic denomination (Hypothesis 4).
+First, we expect that cases of rampant inflation, as a particularly relevant kind of eco-
+nomic mismanagement likely to drive subsequent devaluation, will suggest to investors
+increased currency risk. Figure 5 reports the results of an interaction of government par-
+tisanship with ongoing inflation crisis. We find that left governments not currently
+facing crisis remain capable of issuing a significantly greater percentage (compared
+to centrist/other or right governments) of domestic-denominated bonds; interestingly,
+in countries facing runaway inflation, left governments’ denomination outcomes
+appear indistinguishable from their centrist/other counterparts.
+   Second, we expect that a crashing exchange rate during a currency crisis makes
+investors especially reluctant to buy or hold domestic-denominated bonds, and that
+this reluctance particularly affects left governments given their denomination prefer-
+ences. Figure 5 reports results from an interaction of currency crisis and government
+partisanship. Consistent with the view that left governments will be unable to issue in
+domestic currency when the market perceives the risks from such issuance as too
+high, we find that the positive and significant association between left government
+and domestic issuance present during “normal” economic times (relative to cen-
+trist/other governments) disappears during periods of wild oscillation in exchange
+rates. Interestingly, as reported in Figure 5, periods of macroeconomic disequilibrium
+appear to affect right governments’ decisions on currency issuance as well. In particu-
+lar, it appears that right governments’ preference for foreign-currency issuance is pro-
+nounced when facing monetary crises; in “normal” times, however, right
+governments are indistinguishable from centrists in their currency issuance.109
+While we leave further refinement of this finding to future research, we note that
+this behavior is consistent with efforts by right governments to enforce monetary dis-
+cipline through the taking on of additional foreign-currency debts.
+
+
+Robustness and Extensions
+Here, we focus on four key robustness and extension analyses: confirming effects over
+time; investigating effects across regime type; employing an alternative coding for par-
+tisanship; and incorporating institutional correlates of left government.110
+
+
+  109. Note that, whatever the crisis conditions, right governments issue lower percentages of domestic-
+denominated bonds than left governments, as predicted by Hypothesis 1.
+  110. In the appendix, we provide more evidence of the robustness of our results by aggregating all data to
+country-year; including short-term (<1 year) issues; and addressing selection considerations.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+58                 International Organization
+
+
+                                    1.00
+
+                                    0.90
+
+
+
+
+     Proportion domestic currency
+                                    0.80
+
+                                    0.70
+
+                                    0.60
+
+                                    0.50
+
+                                    0.40
+
+                                    0.30                                                                Right
+                                                                                                        Center/Other
+                                                                                                        Left
+                                    0.20
+                                                  No crisis                      Inflation crisis
+
+                                    1.00
+
+                                    0.90
+
+
+
+
+     Proportion domestic currency
+                                    0.80
+
+                                    0.70
+
+                                    0.60
+
+                                    0.50
+
+                                    0.40
+
+                                    0.30                                                                Right
+                                                                                                        Center/Other
+                                                                                                        Left
+                                    0.20
+                                                  No crisis                     Currency crisis
+
+ Note: The left panel conditions on a measure of whether the country is facing an inflation crisis,
+ while the right panel conditions on a contemporaneous currency crisis (95% confidence intervals).
+
+FIGURE 5. Effect of government partisanship on proportion of domestic-currency
+debt issued, depending on crisis environment
+
+
+
+
+                                                             This content downloaded from
+                                           191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                                                     All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                             59
+
+
+Effects over Time
+First, we directly confront the question of whether denomination decisions were once pol-
+itically relevant but are not anymore, given the boom in domestic issuance (see again
+Figure 1). Recall that our specifications include cubic polynomials in time to account
+for common secular evolution of dynamics across the entire sample. Still, is the effect
+of government ideology that we recover simply an artifact of a particular time period?
+    We re-estimate our core specification with dummies for the 1990s and 2000s (with
+the 2010s as the excluded category), and interact each decade dummy with our gov-
+ernment partisanship measures. The results support our contention that the systematic
+relationship between left governments and domestic denomination is consistent and
+not an artifact of time,111 with Figure 6 summarizing the key findings. First, both
+right and left governments issue greater proportions of domestic-denominated debt
+as time goes on. This is consistent with the reality that, given that the boom in domes-
+tic denomination is indicative of lower costs of bond terms that include that choice,
+right ideology does not force right governments to “look a gift horse in the mouth.”112
+Nonetheless, variation in partisan outcomes remains apparent: right governments
+issue lower proportions of domestic-denominated debt than left governments in the
+1990s, 2000s, and 2010s (data through 2016). This is consistent with our theoretical
+argument and implies that partisan preferences are enduring and thus should be rele-
+vant whatever the overall market conditions. Also, center/other governments do not
+exhibit as clear a trend in issuance, consistent with our theory that these governments
+as a category do not have enduring, clear preferences over denomination.
+Empirically, their issuance in domestic currency increases from the 1990s to the
+2000s; by the 2010s their outcomes are indistinguishable from those of right govern-
+ments, and point estimates are consistently lower than left governments.
+
+
+Subset on Regime Type
+Thus far, we have controlled for the possibility of a direct effect of democracy on cur-
+rency composition in a sample of all non-OECD countries for which the DPI provides
+data on partisanship.113 However, our arguments are premised on the existence of pol-
+itical contestation: we expect governments’ domestic incentives to reflect their ideo-
+logical leanings, which are ultimately linked to electoral concerns. While all
+sovereigns that maintain their own currencies confront the issue of how to denominate
+
+
+
+   111. That is, the interaction terms are not significant or substantively meaningful. See Appendix
+Table A7 for full regression results.
+   112. While our primary measure of partisanship does vary monthly, one might worry that—as our other
+primary conditioning variables exhibit only annual variation—the use of country-month as our unit of an-
+alysis is inappropriate. We therefore replicate all our core findings at the country-year level (Appendix A5–
+A9). While clearly we experience a substantial loss in statistical power when reduced to country-year, our
+quantitative findings are reconfirmed using this coarser unit of analysis.
+   113. Cruz, Keefer, and Scartascini 2018.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+60   International Organization
+
+
+
+
+ 1.00
+
+ 0.90
+
+ 0.80
+
+ 0.70
+
+ 0.60
+
+ 0.50                                                                             Right
+                                                                                  Center/Other
+                                                                                  Left
+ 0.40
+               1990s                    2000s                    2010s
+
+  Note: Estimated proportion of domestic-currency-denominated sovereign bonds (in non-OECD
+  countries), averaged by government partisanship and decade (95% confidence intervals).
+
+FIGURE 6. Estimated proportion of domestic-currency-denominated sovereign bonds
+(in non-OECD countries)
+
+
+their bond issues, face-value partisanship may thus be a less meaningful predictor of a
+nondemocratic regime’s choice over terms. To explore this potential heterogeneity, we
+split our data based on a binary measure of democracy.114 Among the subsample of
+democracies, the effects of left and right governments are robust (column 1 of
+Appendix Table A9). In contrast, in the subset of nondemocracies, left and right parti-
+sanship are signed as expected but both lose statistical significance. These results
+underscore the importance of research questioning how the politics of sovereign debt
+in nondemocracies does or does not reflect that in democracies.115
+
+
+Alternative Coding for Government Partisanship
+While we have so far used a standard source of information on government partisan-
+ship by relying on data from the DPI, it is possible that in seeking to fit government
+economic ideology into discrete categories the DPI coding may suffer from some
+mischaracterizations. Of course, so long as these miscodings of government
+
+
+  114. Magaloni, Chu, and Min 2013.
+  115. Ballard-Rosa 2016, 2020.
+
+
+
+
+                                    This content downloaded from
+                  191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                            All use subject to https://about.jstor.org/terms
+                 Coming to Terms: The Politics of Sovereign Bond Denomination                              61
+
+
+partisanship are not systematically associated with the currency composition of gov-
+ernment bonds, this measurement error will primarily serve to attenuate any true
+effect. Indeed, it is difficult to come up with a reason that such partisan codings
+would be likely to lead to directional bias in our primary estimates regarding propor-
+tions of domestic-currency denomination.
+   However, to further probe the robustness of our main results, we employed new data
+from the V-Dem project provided in the V-Party Dataset. These data rely on aggregated
+measures of expert codings to identify party characteristics for most political parties in the
+world from 1970 to 2019.116 In particular, to match our theoretical interest in partisan pre-
+ferences over monetary policy, we draw on V-Party’s coding of parties along an “eco-
+nomic left-right scale.” As described in the codebook, left parties “want government to
+play an active role in the economy. This includes higher taxes, more regulation and gov-
+ernment spending and a more generous welfare state.” Right parties “emphasize a reduced
+economic role for government: privatization, lower taxes, less regulation, less government
+spending, and a leaner welfare state.” A group of country experts are asked to place parties
+on a seven-point scale from “far left” to “far right,” and these estimates are then averaged
+according to a Bayesian updating process and centered on zero.
+   As we demonstrate in the appendix, when we replace our primary categorical
+measure of government partisanship from the DPI with this continuous measure of
+government right–left ideology from V-Party, we continue to find that left-leaning
+governments are significantly more likely to issue debt in domestic currency.117
+We also continue to find evidence for the role of institutional constraints in
+shaping the market’s tolerance for issuance of domestic-currency bonds by left gov-
+ernments: the effect of a marginal increase toward the left side of the political spec-
+trum is significantly associated with expanded domestic issuance only in the presence
+of CBI and fixed exchange rates. Similarly, we find that while left governments
+outside of crisis environments are significantly more likely to issue in their own cur-
+rency, this effect disappears in the presence of ongoing inflation or currency crises
+likely to scare investors away from these domestic currencies. Thus, even using a
+conceptually distinct measure of government ideology from a completely different
+data source, we continue to find strong evidence that partisan preferences shape
+bond terms, particularly when markets are willing to tolerate them.
+
+
+
+Institutional Correlates of Left Government
+An alternative source of concern with our results might arise if there are additional
+institutional correlates of partisan governments that might also affect preferences
+
+
+   116. Luhrmann et al. 2020; Pemstein et al. 2020.
+   117. See Appendix Figures A1–A9. To be precise, we regress the proportion of bonds issued in domestic
+currency on the left–right ideology of the party that won the largest vote share in the prior election, as well
+as our full set of controls described earlier. As in all our results, we code government partisanship in the
+month-year that the new government takes office as opposed to the month-year of the election.
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+62    International Organization
+
+
+over the currency denomination of sovereign debt. One potential institutional factor is
+the type of electoral institution in place in a given country; that is, the impact of gov-
+ernment partisanship could differ in majoritarian versus proportional-representation
+systems.118 As reported in Appendix Table A11, while governments in propor-
+tional-representation systems do appear somewhat less likely to issue domestic-
+denominated debt, the inclusion of a control for electoral institution type does not
+change the substantive size or statistical significance of our core findings of interest
+on government partisanship.
+   Alternatively, considering the conditioning effects of institutions to constrain mon-
+etary policy, while we have accounted for current institutional conditions, one might
+worry that left and right governments might have underlying preferences for differing
+monetary regimes, and that the length of time since such institutions have been in
+place might matter for investor expectations about their durability. We address this
+concern in Appendix Table A11 by including measures of the time (in years) a
+given country had high levels of CBI (in column 2) or a fixed exchange rate (in
+column 4). Note that these direct controls for the length of time under a given insti-
+tution do not attenuate our main partisan effects of interest. We also probe this effect
+by interacting our measure of government partisanship with the time with high CBI
+(in column 3) or with a fixed exchange rate (in column 5). As reported in column 3,
+we do recover (weakly) statistically significant results suggesting that the capacity of
+left governments to issue more debt in domestic currency is strengthened the longer
+that CBI has been in place; this finding is consistent with the left’s ability to issue in
+domestic currency being constrained by market expectations over potential monetary
+“malfeasance.” However, in column 5 we fail to find any evidence that the length of
+time since a fixed exchange rate has been in place has any conditioning influence on
+our main findings that left governments issue significantly more, and right govern-
+ments significantly less, domestic-denominated debt.119
+
+
+Conclusion
+
+For developing countries, the expansion of international capital markets in general,
+and sovereign bond markets specifically, offers opportunities as well as threats.
+Governments have been increasingly able to borrow to fund their activities, but in
+doing so they may expose themselves to pressures to enact or avoid certain policies.
+Thus financial openness could reduce the ability of governments to achieve their trad-
+itional ideological goals and, in turn, to serve their core constituents. The “original
+sin” logic offers one version of market-based constraints, in that developing countries
+
+
+   118. We thank an anonymous reviewer for this suggestion, as well as for the two suggestions reported
+later.
+   119. In unreported additional specifications, we have also attempted to evaluate whether the “stability”
+of the exchange rate mattered (as a function of annual variance in the real dollar exchange rate), but did not
+recover any significant results.
+
+
+
+
+                                       This content downloaded from
+                     191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                               All use subject to https://about.jstor.org/terms
+              Coming to Terms: The Politics of Sovereign Bond Denomination              63
+
+
+were assumed to be unable to find an international market for domestic-denominated
+bonds.120 This logic implies that, in seeking credit, developing-country governments
+have little or no power over the terms at which they borrow. Instead, supply-side con-
+siderations—investors’ preferences—loom very large.
+   The boom in the proportion of sovereign bonds issued in domestic currency,
+revealed by our data, undermines this expectation. Nonetheless, the new market appe-
+tite for domestic-denominated sovereign debt does not erase the importance of
+domestic politics to borrowing outcomes. Left governments prefer domestic denom-
+ination, preserving future monetary policy flexibility and insulation from depreci-
+ation-induced increases in debt repayment costs. Right governments, by contrast,
+have an ideological predisposition toward foreign-currency denomination, welcom-
+ing the lower costs and macroeconomic constraints it brings. Our analyses offer evi-
+dence that left governments in developing countries often are able to achieve their
+demand-side preferences: they are significantly more likely to issue debt denomi-
+nated in their own currencies. Right governments, on the other hand, have followed
+the more general market shift toward domestic-currency borrowing, despite their
+underlying ideological predispositions.
+   Still, vestiges of the “original sin” dynamic remain: issuing domestic-denominated
+sovereign bonds on international markets requires compensation. In our data, we
+uncover a systematic correlation between domestic denomination and compensation
+in the form of shorter maturities. Future scholarship would do well to pay more atten-
+tion to how DMOs conceive of the trade-offs across bond terms, as well as how they
+attempt to market their debt to varying groups of investors. Indeed, variation in the
+investor base is likely to generate variation in the constraints faced by debtor govern-
+ments.121 And, more broadly, political economists have paid much less attention to
+the origins and role of DMOs, especially relative to central banks.122
+   Also, while left governments find it more difficult to choose domestic denomin-
+ation when crisis heightens currency risks, they are better able to come to terms
+that include domestic denomination when constrained by an independent central
+bank or pegged exchange rate. Hence, supply-side concerns with currency risk are
+ameliorated as a result of governments’ other institutional features and choices.
+This conditioning effect of national economic institutions points to a need for
+greater attention to governments’ choices, not only across financing terms and debt
+instruments,123 but also across national economic institutions. Governments reform-
+ing their institutions often are making trade-offs across types of constraints. In the
+area of sovereign debt, this is especially relevant as international financial institutions
+encourage developing-country governments to make their DMOs not only more pro-
+fessionalized but also more insulated from political authority.124
+
+
+  120. Eichengreen, Hausmann, and Panizza 2005.
+  121. Schlegl, Trebesch, and Wright 2019; Tomz and Wright 2013.
+  122. But see Missale 2000; Sadeh and Porath 2020.
+  123. Mosley and Rosendorff n.d.; Bunte 2019.
+  124. Blommestein and Horman 2007; Missale 2000; Sadeh and Rubinson 2018.
+
+
+
+
+                                This content downloaded from
+              191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                        All use subject to https://about.jstor.org/terms
+64    International Organization
+
+
+   Finally, our data reveal massive changes in the marketplace for assets involving
+domestic currencies, which speak to the debate over whether economic globalization
+leads toward convergence on a small number of global reserve currencies. Such con-
+vergence would privilege countries whose currencies sit atop the global pyramid
+while reducing the power of others,125 and it would weaken other countries’ access
+to the state-building benefits that come with national currencies.126 Consistent with
+the “currency as power” narrative, the dollar and the euro are key currencies for
+many international transactions; issuers of global reserve currencies experience a
+variety of benefits; and governments such as China seek to increase the international
+use of their currencies.127 Nonetheless, it is clear from our data that many currencies
+now feature in global sovereign debt markets. Private investors in these markets seem
+to have appetites for portfolios including developing-country currencies—and to
+have been able to come to terms that include sufficient compensation to whet
+those appetites. For the 131 sovereign issuers covered in our data (1990 to 2016),
+national currencies remain very much alive.
+
+
+Data Availability Statement
+
+Replication files for this article may be found at <https://doi.org/10.7910/DVN/
+RREGA1>.
+
+
+
+Supplementary Material
+
+Supplementary material for this article is available at <https://doi.org/10.1017/
+S0020818321000357>.
+
+
+
+References
+
+Adams, James, Andrea B. Haupt, and Heather Stoll. 2008. What Moves Parties? The Role of Public
+  Opinion and Global Economic Conditions in Western Europe. Comparative Political Studies 42 (5):
+  611–39.
+Aizenman, Joshua, Yothin Jinjarak, Donghyun Park, and Huanhuan Zheng. 2020. Good-Bye Original Sin,
+  Hello Risk On-Off, Financial Fragility, and Crises? Working Paper 27030, National Bureau of Economic
+  Research.
+Alesina, A., and H. Rosenthal. 1995. Partisan Politics, Divided Government and the Economy. Cambridge
+  University Press.
+
+
+
+  125. Cohen 2015.
+  126. Helleiner 2003; McDowell 2021.
+  127. Broz, Zhang, and Wang 2018; Liao and McDowell 2016.
+
+
+
+
+                                     This content downloaded from
+                   191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                             All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                         65
+
+
+Arellano, Cristina, and Ananth Ramanarayanan. 2012. Default and the Maturity Structure in Sovereign
+  Bonds. Journal of Political Economy 120 (2):187–32.
+Ballard-Rosa, Cameron. 2016. Hungry for Change: Urban Bias and Autocratic Sovereign Default.
+  International Organization 70 (2):313–46.
+Ballard-Rosa, Cameron. 2020. Democracy, Dictatorship, and Default. Cambridge University Press.
+Ballard-Rosa, Cameron, Layna Mosley, and Rachel L. Wellhausen. 2021. Contingent Advantage?
+  Sovereign Borrowing, Democratic Institutions, and Global Capital Cycles. British Journal of Political
+  Science 51 (1):353–73.
+Barro, Robert J., and David B. Gordon. 1983. Rules, Discretion and Reputation in a Model of Monetary
+  Policy. Journal of Monetary Economics 12 (1):101–21.
+Barta, Zsófia, and Alison Johnston. 2018. Rating Politics? Partisan Discrimination in Credit Ratings in
+  Developed Economies. Comparative Political Studies 51 (5):587–620.
+Bauerle Danzman, Sarah, W. Kindred Winecoff, and Thomas Oatley. 2017. All Crises Are Global: Capital
+  Cycles in an Imbalanced International Political Economy. International Studies Quarterly 61 (4):907–23.
+Beaulieu, Emily, Gary W. Cox, and Sebastian Saiegh. 2012. Sovereign Debt and Regime Type:
+  Reconsidering the Democratic Advantage. International Organization 66 (4):709–38.
+Bernard, William. 2002. Banking on Reform: Political Parties and Central Bank Independence in the
+  Industrial Democracies. University of Michigan Press.
+Bernhard, William, and David Leblang. 2006. Democratic Processes and Financial Markets. Cambridge
+  University Press.
+Betz, Timm, and Amy Pond. 2019. How Governments Privilege Their Own Debt. Presented at the
+  American Political Science Association annual meeting, Washington, DC, 29 August–1 September.
+Biglaiser, Glen, and Joseph L. Staats. 2012. Finding the “Democratic Advantage” in Sovereign Bond
+  Ratings: The Importance of Strong Courts, Property Rights Protection, and the Rule of Law.
+  International Organization 66 (3):515–35.
+Bisgaard, Martin. 2015. Bias Will Find a Way: Economic Perceptions, Attributions of Blame, and Partisan-
+  Motivated Reasoning During Crisis. Journal of Politics 77 (3):849–60.
+Blommestein, Hans J., and Greg Horman. 2007. Government Debt Management and Bond Markets in
+  Africa. Financial Market Trends 2007 (1):217–44.
+Bodea, Cristina, and Raymond Hicks. 2015. International Finance and Central Bank Independence:
+  Institutional Diffusion and the Flow and Cost of Capital. Journal of Politics 77 (1):268–84.
+Bodea, Cristina, and Raymond Hicks. 2018. Sovereign Credit Ratings and Central Banks: Why Do
+  Analysts Pay Attention to Institutions? Economics and Politics 30 (3):340–65.
+Borri, Nicola, and Kirill Shakhnov. 2018. Limited Participation and Local Currency Sovereign Debt.
+  Available at <https://ssrn.com/abstract=2978127>.
+Bradley, Michael, Irving De Lira Salvatierra, and G. Mitu Gulati. 2016. A Sovereign’s Cost of Capital: Go
+  Foreign or Stay Local. Duke Law School Public Law and Legal Theory Series, 2015–50.
+Brooks, Sarah, Raphael Cunha, and Layna Mosley. 2015. Categories, Creditworthiness, and Contagion:
+  How Investors’ Shortcuts Affect Sovereign Debt Markets. International Studies Quarterly 59 (3):
+  587–601.
+Brooks, Sarah M., Rafael Cuhna, and Layna Mosley. 2021. Elections, Ideology, and Experience?
+  Sovereign Bond Investors and Government Change. Working paper, Ohio State University.
+Brooks, Sarah M., and Marcus J. Kurtz. 2007. Capital, Trade, and the Political Economies of Reform.
+  American Journal of Political Science 51 (4):703–20.
+Broz, J. Lawrence, Zhiwen Zhang, and Gaoyang Wang. 2018. Explaining Foreign Interest in China’s
+  Global Leadership. Available at <https://ssrn.com/abstract=3138278>.
+Bueno de Mesquita, Bruce, Alastair Smith, Randolph M. Siverson, and James D. Morrow. 2005. The Logic
+  of Political Survival. MIT Press.
+Bunte, Jonas B. 2019. Raise the Debt: How Developing Countries Choose Their Creditors. Oxford
+  University Press.
+Campello, Daniela. 2014. The Politics of Financial Booms and Crises: Evidence from Latin America.
+  Comparative Political Studies 47 (2):260–86.
+
+
+
+
+                                  This content downloaded from
+                191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                          All use subject to https://about.jstor.org/terms
+66    International Organization
+
+
+Campello, Daniela. 2015. The Politics of Market Discipline in Latin America: Globalization and
+  Democracy. Cambridge University Press.
+Carlsen, Fredrik. 2000. Unemployment, Inflation and Government Popularity: Are There Partisan Effects?
+  Electoral Studies 19:141–50.
+Carter, David B., and Curtis S. Signorino. 2010. Back to the Future: Modeling Time Dependence in Binary
+  Data. Political Analysis 18 (3):271–92.
+Chamon, Marcos, Julian Schumacher, and Christoph Trebesch. 2018. Foreign-Law Bonds: Can They
+  Reduce Sovereign Borrowing Costs? Journal of International Economics 114:164–79.
+Chinn, Menzie D., and Hiro Ito. 2006. What Matters for Financial Development? Capital Controls,
+  Institutions, and Interactions. Journal of Development Economics 81 (1):163–92.
+Cho, Hye Jee. 2014. The Impact of IMF Programs on Perceived Creditworthiness of Emerging Market
+  Countries: Is There a “Nixon-Goes-to-China” Effect? International Studies Quarterly 58 (2):302–21.
+Chwieroth, Jeffrey. 2007. Neoliberal Economists and Capital Account Liberalization in Emerging Markets.
+  International Organization 61 (2):443–63.
+Chwieroth, Jeffrey. 2009. Capital Ideas: The IMF and the Rise of Financial Liberalization. Princeton
+  University Press.
+Clark, William Robert, and Mark Hallerberg. 2000. Mobile Capital, Domestic Institutions, and Electorally
+  Induced Monetary and Fiscal Policy. American Political Science Review 94 (2):323–46.
+Cohen, Benjamin J. 2015. Currency Power: Understanding Monetary Rivalry. Princeton University Press.
+Copelovitch, Mark. 2010. The IMF in the Global Economy. Cambridge University Press.
+Cox, Gary, and Sebastian Saiegh. 2018. Executive Constraint and Sovereign Debt: Quasi-Experimental
+  Evidence from Argentina During the Baring Crisis. Comparative Political Studies 51 (11):1504–25.
+Cruz, Cesi, Philip Keefer, and Carlos Scartascini. 2018. Database of Political Institutions 2017 (DPI2017).
+  Data set.
+Cruz, Cesi, and Christina J. Schneider. 2017. Foreign Aid and Undeserved Credit Claiming. American
+  Journal of Political Science 61 (2):396–408.
+Datz, Giselle. 2008. Governments as Market Players: State Innovation in the Global Economy. Journal of
+  International Affairs 64 (1):35–49.
+Eichengreen, Barry, and Ricardo Hausmann. 1999. Exchange Rates and Financial Fragility. Working Paper
+  w7418, National Bureau of Economic Research.
+Eichengreen, Barry, Ricardo Hausmann, and Ugo Panizza. 2005. The Mystery of Original Sin. In Other
+  People’s Money: Debt Denomination and Financial Instability in Emerging Market Economies,
+  edited by Barry Eichengreen and Ricardo Hausmann, 233–65. University of Chicago Press.
+Engel, Charles, and Jungjae Park. 2018. Debauchery and Original Sin: The Currency Composition of
+  Sovereign Debt. Working Paper 24671, National Bureau of Economic Research.
+Esping-Andersen, Gosta. 1990. The Three Worlds of Welfare Capitalism. Princeton University Press.
+Franzese, Robert J. 1999. Partially Independent Central Banks, Politically Responsive Governments, and
+  Inflation. American Journal of Political Science 43 (3):681–706.
+Frot, Emmanuel, and Javier Santiso. 2013. Political Uncertainty and Portfolio Managers in Emerging
+  Economies. Review of International Political Economy 20 (1):26–51.
+Garrett, Geoffrey. 1998. Shrinking States? Globalization and National Autonomy in the OECD. Oxford
+  Development Studies 26 (1):71–97.
+Garriga, Ana Carolina. 2016. Central Bank Reforms in the World: A New Dataset. International
+  Interactions 42 (5):849–68.
+Garriga, Ana Carolina, and Cesar M. Rodriguez. 2020. More Effective than We Thought: Central Bank
+  Independence and Inflation in Developing Countries. Economic Modelling 85(C):87–105.
+Gelpern, Anna. 2018. About Government Debt … Who Knows? Capital Markets Law Journal 13:321–55.
+Gray, Julia. 2013. The Company States Keep: International Economic Organizations and Investor
+  Perceptions. Cambridge University Press.
+Gray, Julia, and Jeffrey Kucik. 2017. Leadership Turnover and the Durability of International Trade
+  Commitments. Comparative Political Studies 50 (14):1941–72.
+
+
+
+
+                                      This content downloaded from
+                    191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                              All use subject to https://about.jstor.org/terms
+               Coming to Terms: The Politics of Sovereign Bond Denomination                        67
+
+
+Gupta, Sanjeev, Estelle X. Liu, and Carlos Mulas-Granados. 2015. Now or Later? The Political Economy
+   of Public Investment in Democracies. IMF Working Paper 15 (175).
+Harmes, Adam. 2012. The Rise of Neoliberal Nationalism. Review of International Political Economy
+   19 (1):59–86.
+Helleiner, Eric. 2003. The Making of National Money: Territorial Currencies in Historical Perspective.
+   Cornell University Press.
+Hibbs, D. 1987. The American Political Economy. Harvard University Press.
+Hibbs, D. 1994. The Partisan Model of Macroeconomic Cycles: More Theory and Evidence for the United
+   States. Economics and Politics 6:1–23.
+Huber, Evelyne, and John D. Stephens. 2012. Democracy and the Left: Social Policy and Inequality in
+  Latin America. University of Chicago Press.
+Jensen, Nathan, and Scott Schmith. 2005. Market Responses to Politics: The Rise of Lula and the Decline
+  of the Brazilian Stock Market. Comparative Political Studies 38 (10):1245–70.
+Johnson, Juliet. 2016. Priests of Prosperity: How Central Bankers Transformed the Postcommunist World.
+   Cornell University Press.
+Kaplan, Stephen. 2013. Globalization and Austerity Politics in Latin America. Cambridge University
+   Press.
+Kaplan, Stephen, and Kaj Thomsson. 2017. The Political Economy of Sovereign Debt: Global Finance and
+   Electoral Cycles. Journal of Politics 79 (2):605–23.
+Kurzer, Paulette. 1993. Business and Banking: Political Change and Economic Integration in Western
+   Europe. Cornell University Press.
+Leblang, David A. 2002. The Political Economy of Speculative Attacks in the Developing World.
+   International Studies Quarterly 46 (1):69–91.
+Li, Quan, and Dale L. Smith. 2002. The Dilemma of Financial Liberalization: State Autonomy and Societal
+   Demands. Journal of Politics 64 (3):764–90.
+Liao, Steven, and Daniel McDowell. 2016. No Reservations: International Order and Demand for the
+  Renminbi as a Reserve Currency. International Studies Quarterly 60 (2):272–93.
+Luhrmann, Anna, N. Düpont, M. Higashijima, Y.B. Kavasogly, K.L. Marquardt, et al. 2020. Varieties of
+  Party Identity and Organization (V-Party) Dataset V1. Varieties of Democracy Project.
+Magaloni, Beatriz, Johnathan Chu, and Eric Min. 2013. Autocracies of the World, 1950-2012 (Version
+  1.0). Data set, Stanford University.
+Maxfield, Sylvia. 1997. Gatekeepers of Growth: The International Political Economy of Central Banking
+  in Developing Countries. Princeton University Press.
+McDowell, Daniel. 2021. Financial Sanctions and Political Risk in the International Currency System.
+  Review of International Political Economy 28 (3):635–61.
+Melecky, Martin. 2007. A Cross-Country Analysis of Public Debt Management Strategies. Policy Research
+  Working Paper 4287, World Bank.
+Melecky, Martin. 2012. Choosing the Currency Structure of Foreign-Currency Debt: A Review of Policy
+  Approaches. Journal of International Development 24:133–51.
+Miranda-Agrippino, Silvia, and Hélene Rey. 2015. World Asset Markets and the Global Financial Cycle.
+  Working paper, National Bureau of Economic Research.
+Missale, Alessandro. 2000. Public Debt Management. Oxford University Press.
+Mitchener, Kris James, and Marc C. Weidemaier. 2015. Was the Classical Gold Standard Credible on the
+  Periphery? Evidence from Currency Risk. Journal of Economic History 75 (2):479–511.
+Mosley, Layna. 2003. Global Capital and National Governments. Cambridge University Press.
+Mosley, Layna, Victoria Paniagua, and Erik Wibbels. 2020. Moving Markets? Government Bond Investors
+   and Microeconomic Policy Changes. Economics and Politics 5 (2):197–249.
+Mosley, Layna, and B. Peter Rosendorff. n.d. Government Choices Across Borrowing Strategies.
+  Unpublished manuscript, New York University.
+Muller, Andreas, Kjetil Storesletten, and Fabrizio Zilibotti. 2016. The Political Color of Fiscal
+  Responsibility. Journal of the European Economic Association 14 (1):252–302.
+Nelson, Stephen C. 2014. Playing Favorites: How Shared Beliefs Shape the IMF’s Lending Decisions.
+  International Organization 68 (2):297–328.
+
+
+
+
+                                  This content downloaded from
+                191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                          All use subject to https://about.jstor.org/terms
+68    International Organization
+
+
+North, Douglass C., and Barry R. Weingast. 1989. Constitutions and Commitment: The Evolution of
+  Institutions Governing Public Choice in Seventeenth-Century England. Journal of Economic History
+  49 (4):803–32.
+Ottonello, Pablo, and Diego J. Perez. 2019. The Currency Composition of Sovereign Debt. American
+  Economic Journal: Macroeconomics 11 (3):174–208.
+Parker-Stephen, Evan. 2013. Clarity of Responsibility and Economic Evaluations. Electoral Studies 32 (3):
+  506–11.
+Pemstein, Daniel, Kyle M. Marquardt, Eitan Tzelgov, Yi-ting Wang, Juraj Medzihorsky, et al. 2020. The
+  V-Dem Measurement Model: Latent Variable Analysis for Cross-National and Cross-Temporal Expert-
+  Coded Data. Working Paper 21, 5th ed., Varieties of Democracy Institute, University of Gothenburg.
+Pinto, Pablo M. 2013. Partisan Investment in the Global Economy: Why the Left Loves Foreign Direct
+  Investment and FDI Loves the Left. Cambridge University Press.
+Pond, Amy, and Timm Betz. 2019. Governments as Borrowers and Regulators. Presented at the American
+  Political Science Association annual meeting, Washington, DC, 29 August–1 September.
+Presbitero, Andrea F., Dhaneshwar Ghura, Olumuyiwa S. Adedeji, and Lamin Njie. 2016. Sovereign
+  Bonds in Developing Countries: Drivers of Issuance and Spreads. Review of Development Finance 6
+  (1):1–15.
+Przeworski, Adam, and Michael Wallerstein. 1988. Structural Dependence of the State on Capital.
+  American Political Science Review 82 (1):11–29.
+Quinn, Dennis P., and Carla Inclan. 1997. The Origins of Financial Openness: A Study of Current and
+  Capital Account Liberalization. American Journal of Political Science 41 (3):771–813.
+Rey, Hélène. 2013. Dilemma not Trilemma: The Global Cycle and Monetary Policy Independence.
+  Proceedings, Economic Policy Symposium, Jackson Hole, Available at <http://ideas.repec.org/a/fip/
+  fedkpr/y2013x9.html>.
+Rommerskirchen, Charlotte. 2020. Foreign Bond Investors and Market Discipline. Competition and
+  Change 24 (1):3–25.
+Sadeh, Tal, and Yehuda Porath. 2020. Autonomous Agencies and Relational Contracts in Government
+  Bond Issues. Regulation and Governance 14 (4):741–763.
+Sadeh, Tal, and Eyal Rubinson. 2018. Do the IMF and World Bank Promote Autonomous Sovereign Debt
+  Management? Presented at Political Economy of International Organization conference, University of
+  Wisconsin–Madison, 8–10 February.
+Saiegh, Sebastian. 2005. Do Countries Have a “Democratic Advantage”? Political Institutions, Multilateral
+  Agencies, and Sovereign Borrowing. Comparative Political Studies 38 (4):366–87.
+Schlegl, Matthias, Christoph Trebesch, and Mark Wright. 2019. The Seniority Structure of Sovereign Debt.
+  Working Paper 25793, National Bureau of Economic Research.
+Schultz, Kenneth A., and Barry R. Weingast. 2003. The Democratic Advantage: Institutional Foundations
+  of Financial Power in International Competition. International Organization 57 (1):3–42.
+Simmons, Beth A. 1997. Who Adjusts? Domestic Sources of Foreign Economic Policy During the Interwar
+  Years. Princeton University Press.
+Spanakos, Anthony Peter, and Lucio R. Renno. 2009. Speak Clearly and Carry a Big Stock of Dollar
+  Reserves: Sovereign Risk, Ideology, and Presidential Elections in Argentina, Brazil, Mexico and
+  Venezuela. Comparative Political Studies 42 (1):1292–316.
+Stasavage, David. 2011. States of Credit: Size, Power and the Development of European Polities. Princeton
+  University Press.
+Stokes, Susan C. 2001. Mandates and Democracy: Neoliberalism by Surprise in Latin America.
+  Cambridge University Press.
+Stone, Randall. 2011. Controlling Institutions: International Organizations and the Global Economy.
+  Cambridge University Press.
+Tomz, Michael. 2007. Reputation and International Cooperation: Sovereign Debt Across Three Centuries.
+  Princeton University Press.
+Tomz, Michael, and Mark L.J. Wright. 2013. Empirical Research on Sovereign Debt and Default. Annual
+  Review of Economics 5:247–72.
+
+
+
+
+                                      This content downloaded from
+                    191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                              All use subject to https://about.jstor.org/terms
+                Coming to Terms: The Politics of Sovereign Bond Denomination                           69
+
+
+Vaaler, Paul M., Burkhard N. Schrage, and Steven A. Block. 2006. Elections, Opportunism, Partisanship
+  and Sovereign Ratings in Developing Countries. Review of Development Economics 10 (1):154–70.
+Vreeland, James Raymond. 2003. The IMF and Economic Growth. Cambridge University Press.
+Weidemaier, Mark, and Mitu Gulati. 2016. International Finance and Sovereign Debt. In Oxford Handbook
+  of Law and Economics, chapter 23. Oxford University Press.
+Wellhausen, Rachel. 2015. Bondholders v. Direct Investors? Competing Responses to Expropriation.
+  International Studies Quarterly 59 (4):750–64.
+Wibbels, Erik. 2006. Dependency Revisited: International Markets, Business Cycles, and Social Spending
+  in the Developing World. International Organization 60:433–68.
+World Bank. 2006. Global Development Finance 2006: The Development Potential of Surging Capital
+  Flows (Vol. 2): Summary and Country Tables.
+Zeitz, Alexandra. 2019. The Financial Statecraft of Debtors: The Political Economy of External Finance in
+  Africa. PhD dissertation, St. Antony’s College, Oxford University.
+
+
+
+Authors
+Cameron Ballard-Rosa is Associate Professor of Political Science at the University of North Carolina,
+Chapel Hill. He can be reached at cambr@email.unc.edu.
+Layna Mosley is Professor of Politics and International Affairs at Princeton University. She can be reached
+at layna.mosley@princeton.edu.
+Rachel L. Wellhausen is Associate Professor of Government at the University of Texas in Austin. She can
+be reached at rwellhausen@utexas.edu.
+
+
+
+Acknowledgments
+Previous versions of this paper were presented at the 2018 International Political Economy Society
+meeting, the 2019 DebtCon meeting, the 2019 American Political Science Association meeting,
+New York University, Princeton University, and UC San Diego. We thank participants in those events,
+as well as B. Peter Rosendorff, Thomas Sattler, and two anonymous reviewers, for comments. Robert
+Galantucci and Mitch Watkins helped compile bond issue data; Devin Case-Ruchala and Bailee
+Donahue researched debt management practices; Kelly Kennedy and Benjamin Roberts helped compile
+credit rating and election data; and students at Innovations for Peace and Development at UT Austin
+researched case illustrations.
+
+
+
+Key Words
+Sovereign debt; bond terms; denomination; currency; emerging markets; partisanship
+
+Date received: February 10, 2020; Date accepted: March 13, 2021
+
+
+
+
+                                   This content downloaded from
+                 191.181.59.113 on Fri, 27 Feb 2026 21:22:10 UTC
+                           All use subject to https://about.jstor.org/terms
+

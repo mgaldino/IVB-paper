@@ -1,0 +1,1322 @@
+       Does Public Support Help Democracy Survive?
+                                  Christopher Claassen*
+                        School of Social and Political Sciences,
+                                University of Glasgow,
+                               Glasgow G12 8QQ, UK
+                        christopher.claassen@glasgow.ac.uk
+
+
+                                         May 2019
+
+
+
+
+        Accepted for publication in American Journal of Political Science
+
+
+
+
+   * Thanks to Patrick Bayer, Brian Fogarty, Sergiu Gherghina, Kelly Kollman, Robert Mattes,
+
+Lauren McLaren, William Mishler, Anja Neundorf, Vikki Turbine, Bernhard Reinsberg, Christian
+Welzel, and Karen Wright for helpful comments, and Jose Ricardo Villanueva Lira and Bryony
+MacLeod for excellent research assistance. I acknowledge the financial support of the Carnegie
+Trust for the Universities of Scotland.
+               Does Public Support Help Democracy Survive?
+
+
+                                                 Abstract
+
+      It is widely believed that democracy requires public support to survive. The empirical evi-
+
+      dence for this hypothesis is weak, however, with existing tests resting on small cross-sectional
+
+      samples and producing contradictory results. The underlying problem is that survey measures
+
+      of support for democracy are fragmented across time, space, and different survey questions. In
+
+      response, this article uses a Bayesian latent variable model to estimate a smooth country-year
+
+      panel of democratic support for 135 countries and up to 29 years. The article then demonstrates
+
+      a positive effect of support on subsequent democratic change, while adjusting for the possible
+
+      confounding effects of prior levels of democracy and unobservable time-invariant factors. Sup-
+
+      port is, moreover, more robustly linked with the endurance of democracy than its emergence
+
+      in the first place. As Lipset and Easton hypothesized over 50 years ago, public support does
+
+      indeed help democracy survive.
+
+
+
+
+Keywords: democracy, democratization, support for democracy, public opinion
+
+Replication Materials: The data, code, and any additional materials required to replicate all analy-
+ses in this article are available on the American Journal of Political Science Dataverse within the
+Harvard Dataverse Network, at: https://doi.org/10.7910/DVN/HWLW0J.
+
+Words: 9,341
+Introduction
+
+Democracy, once hegemonic on the world stage, is increasingly beleaguered. Democratic norms
+and institutions have visibly eroded in major democracies such as the United States, India, and
+Brazil (V-Dem Institute 2018b). Authoritarian-populist political movements have entered govern-
+ment in 11 European countries.1 Ten democracies have failed since 2006 (Mechkova, Lührmann,
+and Lindberg 2017).
+         A prominent explanation for these ails is the “fading allure” of liberal democracy (Plattner
+2017; see also Foa and Mounk 2016; 2017; Wilke and Fetterolf 2018). Indeed, a long tradition of
+political thought, extending back to Plato, holds that the vitality of democratic systems rests upon
+the attitudes and beliefs of the citizenry. Contemporary political scientists have elaborated this
+theory somewhat but agree with its basic contours: with public support, democracy is legitimate
+and stable; without such support, democracy is insecure and likely to fail should a crisis of some
+sort arise (e.g., Booth and Seligson 2009; Diamond 1999; Easton 1965; Lipset 1959; Mattes and
+Bratton 2007; Norris 2011; Rose, Mishler, and Haerpfer 1998).
+         Although this theory has been widely accepted by political scientists, it has received lit-
+tle rigorous empirical confirmation. The few existing tests (Fails and Pierce 2010; Hadenius and
+Teorell 2005; Inglehart 2003; Inglehart and Welzel 2005; Qi and Shin 2011; Welzel 2007) come
+to contradictory conclusions. These studies, moreover, all utilize small datasets of a few dozen
+countries observed at only one point in time. Yet without temporal variation it is very difficult
+to model dynamic processes like the trajectories of public support and democratization. Cross-
+sectional designs additionally cannot account for unobservable country-specific confounds, such
+as the historical “critical junctures” which might co-determine paths of democratization and the
+development of a democratic political culture (Jamal and Kensicki 2016). The widespread accep-
+
+   1
+       The Guardian.    2018.   “Revealed: one in four Europeans vote populist.”          November
+
+20, https://www.theguardian.com/world/ng-interactive/2018/nov/20/revealed-one-in-four-
+
+europeans-vote-populist.
+
+
+                                                  1
+tance of the theory of democratic support thus rests on fairly flimsy evidence.
+       This article therefore returns to the question of whether public support helps democracy
+to survive, offering two major advances over existing research. First, while existing studies use
+a fraction of the available survey data on support for democracy, I use all the data that has been
+collected by cross-national public opinion projects: 3,765 national opinions about democracy, ob-
+tained from 1,390 nationally-representative public opinion surveys, gathered by 14 survey projects,
+in 150 countries, over a period of 30 years. Because these data are heavily fragmented across time,
+country, and disparate survey items, a dynamic Bayesian latent variable model (Claassen 2019) is
+used to combine the shards of public opinion into one smooth measure of support for democracy.
+This panel dataset of democratic support affords a second advance over existing tests: with varia-
+tion over time and country, it is possible to adjust both for the effects of unobserved country-specific
+confounds and for the influence of previous levels of democracy on current levels of support.
+       The analysis of this panel dataset shows that support for democracy is significantly and
+positively associated with subsequent change in democracy. Support is, moreover, more robustly
+linked with the endurance of democracy once it has been established, than with the emergence of
+democracy in the first place. In other words, as Lipset and Easton hypothesized over 50 years ago,
+public support does indeed help democracy survive.
+
+
+Public Support and Democracy
+
+The Theory of Democratic Support
+
+The notion that democracy is rooted in the attitudes and orientations of the public has had an
+enduring appeal. Plato, for example, worried that democracy was prone to failure because the
+citizenry was unlikely to have the foresight or the inclination to hold leaders accountable. Many
+centuries later, at the dawn of modern political science, Lipset (1959) returned to this topic in a
+seminal paper. He argued that “political legitimacy” – the “belief that existing political institutions
+are the most appropriate or proper ones for the society” – is one of the principal “requisites” of
+
+
+                                                   2
+stable democracy (Lipset 1959, 83).
+         This theory was extended and amplified by Easton (1965; 1975) in another classic contribu-
+tion. Easton distinguished between three “objects” that citizens might support. The most abstract
+of these objects is the nation or political community; the most concrete, the government and other
+political actors. Of interest here is Easton’s intermediate object of support: the regime, or the basic
+rules and principles by which authority is wielded in a state.
+         Public support for the regime – i.e., public support for democracy – may then be diffuse
+or specific.2 Specific support for democracy focuses on regime outputs and consequently has an
+instrumental quality, while diffuse support focuses on the principles of the regime and is therefore
+normative. Diffuse support is also more durable than specific support, helping to cushion regimes
+when political or economic crises strike. The concept of diffuse support for the regime thus closely
+resembles Lipset’s notion of political legitimacy, but embeds the concept within a broader frame-
+work of public support.
+         This Lipset-Easton theory of democratic support offers a clear and compelling account of
+the link between the mass public and the dynamics of the political regime.3 It argues that principled
+
+   2
+       There is some disagreement regarding the conceptualization of diffuse and specific support.
+
+Some authors argue that support for particular political actors is necessarily specific, with support
+
+for the regime or nation being diffuse (e.g., Norris 2011); others argue that any of the three objects
+
+may be supported in a specific or diffuse fashion (e.g., Dalton 2004). What matters for the present
+
+discussion is that there is general agreement that principled, diffuse support for democracy is more
+
+likely to sustain democracy than instrumental, specific support.
+   3
+       Inglehart and Welzel (Inglehart and Welzel 2005; Welzel 2013) offer an alternative concep-
+
+tualization of democratic political culture emphasizing citizens’ cultural values – such as liberty
+
+aspirations, toleration of difference, and trust in others – rather than their overt attitudes to demo-
+
+cratic versus nondemocratic regimes. As such, instead of requiring explicit support for democracy,
+
+Inglehart and Welzel argue that democracy requires implicit support. This implicit conceptual-
+
+
+                                                  3
+support for democracy helps ensure the survival of the regime. With such support, a democracy is
+legitimate and stable. Without it, democracy is unstable and liable to fail (Easton 1965; Mishler
+and Rose 1999).
+
+
+Existing Tests of the Theory
+
+Although the theory of democratic support has been widely accepted by political scientists (e.g.,
+Bratton, Mattes, and Gyimah-Boadi 2005; Booth and Seligson 2009; Diamond 1999; Gibson 1996;
+Mattes and Bratton 2007; Norris 2011; Rose, Mishler, and Haerpfer 1998), it has received very little
+empirical attention. Most likely this is because the data which are required are far harder to obtain
+than the demographic or economic indices used to measure other determinants of democracy. An
+empirical test requires national measures of support for democracy, which, in turn, requires a
+costly, nationally-representative public opinion survey for each data point. Indeed, it was not until
+the groundbreaking inclusion of items measuring support for democracy on the third wave of the
+World Values Survey (WVS) that the relationship between support and democracy could even be
+empirically described.
+         In the first analysis of this data, Inglehart (2003) finds support to be modestly and posi-
+tively correlated with democracy in a cross-sectional sample of 77 countries. Subsequent studies
+largely examine the same WVS data. Inglehart and Welzel (2005), for example, use a subsequent
+measure of democracy and control for years under democracy, but still find the same positive as-
+sociation between democratic support and democracy. In contrast, Hadenius and Teorell (2005)
+and Welzel (2007) show that support has little to no relationship with subsequent democracy once
+one adjusts for the the initial level of democracy, which they regard as necessary to counteract the
+possibility that democracy shapes political culture, rather than the reverse. Fails and Pierce (2010)
+add data from the Global Barometer projects and control for additional variables, but find no evi-
+dence that support is associated with either democratization or democratic survival. Finally, Qi and
+
+ization of support is sufficiently distinct from the explicit that I do not consider it further in this
+
+paper.
+
+                                                  4
+Shin (2011) show that the level of public support for democracy is not associated with subsequent
+democracy when controlling for prior democracy and other covariates, but the level of “critical
+support” – the proportion of the public who both support democracy but are dissatisfied with its
+performance – is.
+       These studies reach markedly different findings, despite largely being re-analyses of the
+same WVS dataset. They also all use cross-sectional designs, which face two major limitations for
+testing the effects of support on democratic change. First, democratic systems inculcate support
+in their publics (Mattes and Bratton 2007; Mishler and Rose 2007; Rose, Mishler, and Haerpfer
+1998), which implies that support is likely influenced by previous levels of democracy (Hadenius
+and Teorell 2005; Mattes and Bratton 2007; Pop-Eleches and Tucker 2017). However, cross-
+sectional designs do not allow analysts to identify the effect of an independent variable when this
+variable is in part determined by previous realizations of the dependent variable.
+       Second, both democracy and support are likely shaped by idiosyncratic country-specific
+factors. Indeed, studies of democratization recognize the importance of key historical moments, or
+“critical junctures,” which determined the paths by which both democracy and its purported deter-
+minants developed in particular countries (Acemoglu et al. 2008; Jamal and Kensicki 2016). For
+example, a country’s colonial experience may have influenced its trajectory of democratization and
+also shaped its political culture (e.g., Diamond, Lipset, and Linz 1987; Rueschemeyer, Stephens,
+and Stephens 1992). It is not possible to adjust for such unobserved country-specific confounds
+using a cross-sectional research design.
+       Existing tests of the theory of democratic support are further limited by their reliance on
+a small fraction of the available opinion data, with small cross-sectional datasets of between 41
+(Hadenius and Teorell 2005) and 86 countries (Fails and Pierce 2010). Yet with numerous cross-
+national survey projects now measuring support for democracy, there are are potentially thousands
+of observations to be gathered across countries and years. In addition, extant tests assume that sup-
+port for democracy items are comparable across countries although research has demonstrated that
+survey questions have different meanings in different countries (Stegmueller 2011). Finally, these
+
+
+                                                 5
+studies rely on the Freedom House index to measure democracy, which has received criticism for
+its measurement error, clustering of cases at the extremes of the scale, and methods of scoring and
+aggregating items (Alexander and Welzel 2011; Munck and Verkuilen 2002; Pemstein, Meserve,
+and Melton 2010). A more valid and reliable measure of liberal democracy is now available from
+the Varieties of Democracy project.
+       In sum, existing studies that test the theory of democratic support come to contradictory
+conclusions despite essentially analyzing the same dataset. These studies are moreover hampered
+by cross-sectional designs, small samples, and other limitations which undermine their ability to
+provide a dispositive test of the theory of democratic support. This is the task of this article.
+
+
+Hypotheses
+
+The theory of democratic support suggests a number of testable hypotheses, which are outlined
+and explicated in this section.
+       First, following existing studies (Hadenius and Teorell 2005; Inglehart 2003; Inglehart and
+Welzel 2005; Qi and Shin 2011; Welzel 2007), this article tests a general hypothesis that public
+support for democracy shapes subsequent changes in democracy, either by promoting democra-
+tization, or by preventing democratic backsliding. It assumes that the effect of support does not
+manifest immediately; an increase in support, in other words, is expected to produce pressure for
+future democratic change. The first hypothesis, H1, is as follows: Public support for democracy
+is positively associated with subsequent change in democracy.
+       Lipset’s (1959) classic expression of the theory of democratic legitimacy focused on demo-
+cratic systems, i.e., that support (or legitimacy) stabilizes and secures democracy when it already
+exists. Other analyses of democratization have similarly recognized that the factors which allow
+democracy to emerge may differ from those which help it to be sustained (e.g., Boix 2011; Fails
+and Pierce 2010; Gleditsch and Ward 2006; Przeworski and Limongi 1997; Teorell 2010). This
+article follows suit, with the second and third hypotheses focusing on the role played by support in
+either the survival or the emergence of democracy.
+
+
+                                                   6
+       The second hypothesis, H2, pertains to the effect of support contingent on the existing level
+of democracy: public support for democracy in already-existing democracies is positively as-
+sociated with subsequent change in democracy. In other words, support influences subsequent
+change in democracy only to the extent that some level of democracy already exists. When it does,
+change may then occur in either direction, with both increases and decreases in democracy possi-
+ble. According to this hypothesis, support helps democracy to survive. A similar hypothesis has
+been proposed and tested by Acemoglu et al. (2009) with respect to development and democracy.
+       The final hypothesis focuses instead on the effects of support in autocratic systems. Al-
+though it has received less attention that the “supportive” role of support, a few scholars have
+proposed that democratic support may also function as democratic “demand” (Qi and Shin 2011).
+In this view, public support for democracy helps democracy to emerge in addition to (or instead of)
+helping it to survive. H3 proposes that support helps propel democratization in autocratic regimes:
+public support for democracy in autocracies is positively associated with subsequent change
+in democracy.
+
+
+Data
+
+Measuring Democracy
+
+With at least ten different cross-national measures in existence (Pemstein, Meserve, and Melton
+2010), democracy is perhaps the most-measured concept in social science. The sheer number of
+measures indicates the fragmentation of the market, with no single measure of democracy hav-
+ing won universal acceptance in the discipline. Indeed, even the three most widely-used mea-
+sures – the democracy-autocracy index from Polity IV, the combined Freedom House (FH) index,
+and Przeworski and colleagues’ (e.g., Przeworski and Limongi 1997) dichotomous Democracy-
+Dictatorship (DD) indicator – have been subject to trenchant criticisms.
+       In particular, the minimalist Polity and DD measures have been criticized for neglecting the
+extent to which participation in the political process is widespread (Munck and Verkuilen 2002;
+
+
+                                                 7
+Teorell et al. 2018), an important feature of democracy. Although the dichotomous nature of
+the DD indicator affords a conceptual clarity, Elkins (2000) show that it leads to lower validity
+and reliability. Continuous measures suffer from their own problems. Pemstein et al’s (2010)
+latent variable model reveals that both the Polity and FH indices suffer from fairly high levels of
+measurement error. Both also cluster at extreme values, raising the concern that they are not finely-
+grained enough to pick up variation in highly democratic, or highly autocratic countries (Alexander
+and Welzel 2011; Teorell et al. 2018). Indeed, as Pemstein, Meserve, and Melton (2010) show, the
+Polity index exhibits a pronounced nonlinear relationship with a latent measure of democracy (see
+also Figure S1 in the supplementary materials). Criticism has furthermore been directed at the lack
+of clarity by which scores are assigned to indicators Munck and Verkuilen (2002), and also the
+use of generalists, rather than country specialists, to assign these scores (Pemstein, Meserve, and
+Melton 2010).
+       Without a clear solution to these issues, empirical scholars of democratization have stuck
+to using one or two of the big three measures. Fortunately, new measures of democracy provided
+by the Varieties of Democracy (V-Dem) project (Lindberg et al. 2014; Teorell et al. 2018; V-Dem
+Institute 2018b) allow us to progress beyond this impasse. The advantages of the V-Dem measures
+are fourfold.
+       First, V-Dem derive five conceptualizations of democracy from the extensive political the-
+ory literature on this topic: electoral, liberal, participatory, egalitarian, and deliberative democracy
+(Lindberg et al. 2014). Other, extant measures of democracy are based far more loosely, if at all,
+on extant theoretical conceptualizations.
+       Second, V-Dem then measures each of these conceptualizations in a more finely-grained
+fashion than existing democracy indices. They disaggregate each variety of democracy into its
+major sub-components, and measure these using multiple indicators. Ultimately V-Dem’s liberal
+democracy index is measured with 69 indicators, compared with the 22 used for the combined
+Freedom House index and 4 used for the Democracy-Dictatorship indicator.
+       Third, V-Dem use country experts to code their indicators, rather than the in-house coders
+
+
+                                                   8
+used by the Polity and Freedom House projects. Country specialists are well placed to rate various
+aspects of democracy in that country with which they are most familiar. Indeed, the Pemstein,
+Meserve, and Melton (2010) analysis of ten democracy measures suggests that those relying on
+specialists (e.g., the Bowman, Lehoucq, and Mahoney (2005) measures of democracy in Central
+America) have lower error variance than those relying on generalists (e.g., Polity and Freedom
+House) as well as those using objective data (Vanhanen’s index). In addition, V-Dem gathers inde-
+pendent ratings from an average of five different country experts, which reduces the measurement
+error considerably (Teorell et al. 2018).
+         Finally, V-Dem aggregates the indicators into subcomponents and democracy indices in
+a principled fashion. Items are combined into subcomponents using Bayesian factor analyses,
+which allows a test of whether they actually cohere as theory suggests (V-Dem Institute 2018c).
+The democracy indices are then assembled out of subcomponents using either a multiplicative or
+additive logic, as demanded by the particular conceptualization of democracy that is of interest.
+         Given these advantages in conceptualization and measurement, I use V-Dem data to mea-
+sure democracy in this article. In particular, I use the V-Dem “liberal democracy index.” This
+comprises a polyarchy, or “electoral democracy” index, which measures the political institutions
+“making rulers responsive to citizens ... through electoral competition for the electorate’s ap-
+proval,” and a liberalism index, which captures the factors “protecting individual and minority
+rights against the tyranny of the state and the tyranny of the majority” (V-Dem Institute 2018a,
+38).4
+
+
+Measuring Democratic Support
+
+Democratic support is measured using existing survey data. I collected nationally-aggregated re-
+sponses to all the questions gauging public support for democracy that were available at the time
+of research. In particular, I selected survey questions focusing on diffuse support for democracy,
+
+   4
+       The electoral democracy index is used as a robustness test, in results reported in the online
+
+supplementary materials.
+
+                                                  9
+and gathered by cross-national survey projects fielding representative national samples of citizens.
+Relevant questions include those asking respondents to evaluate the appropriateness or desirability
+of democracy, to compare democracy to some undemocratic alternative, or to evaluate one of these
+undemocratic forms of government.5
+         The following survey questions – all conceptually distinct from diffuse support for democ-
+racy – were excluded: (1) items calling for instrumental appraisals of democracy; (2) questions
+tapping respondents’ trust in national political institutions (e.g., parliament); (3) items gauging
+support for previous political regimes (e.g., Communism); and (4) questions regarding the extent
+to which a country was in fact democratic. I also do not include questions regarding respondents’
+satisfaction with the performance of democracy, which is better regarded as a measure of specific
+support for democracy (Booth and Seligson 2009; Canache, Mondak, and Seligson 2001). Instead,
+I use satisfaction with democracy to provide a further test of the theory of democratic support.6
+         Survey measures of support for democracy were available for 14 survey projects, 150 coun-
+tries, and as far back in time as 1988.7 The resulting dataset of survey marginals is large in com-
+
+   5
+       A list of included survey items is included in the online supplementary materials. Although
+
+these items are widely used to measure democratic support (e.g., Dalton 2004; Klingemann 1999;
+
+Mattes and Bratton 2007; Magalhães 2014; Norris 2011), they are not universally endorsed. Schol-
+
+ars such as Booth and Seligson (2009), Gibson (1996), Rose and Mishler (1996), and Svolik (2018)
+
+have proposed slightly different measures. These, however, have only been measured in a few
+
+countries at a few points in time.
+   6
+       Similar methods are used to measure panels of satisfaction and support. Details regarding the
+
+former are presented in the online supplementary materials.
+   7
+       Data are drawn from the following survey projects: the World and European Values Surveys,
+
+the Afrobarometer, Arab Barometer, Latinobarometer, Asiabarometer, Asian Barometer, South
+
+Asia Barometer, New Europe Barometer, Latin American Public Opinion Project, Eurobarometer,
+
+European Social Survey, Pew Global Attitudes Project, and the Comparative Study of Electoral
+
+
+                                                  10
+parison with existing studies of the theory of democratic support, with 3,765 nationally-aggregated
+responses obtained from 1,390 nationally-representative survey samples. It is, however, fractured
+across time and space, with gaps in coverage for almost all countries. For example, in South Africa,
+cross-national survey projects fielded questions on support for democracy in 11 national surveys:
+the World Values Survey in 1996, 2001, 2006 and 2013, the Afrobarometer project in 1999, 2003,
+2005, 2008, 2012, and 2015, and Pew Global Attitudes in 2002, 2013, and 2017. Despite this fairly
+regular polling, measures of South African democratic support are only available for 12 of the 22
+years between 1996 and 2017 – and this is a case with above average coverage.
+         To make matters worse, the data are further fragmented across numerous survey questions.
+Indeed, there were as many as 52 different questions in the dataset, depending on how strictly
+I distinguished between items.8 Such fractured and unruly data are not easily combined into a
+single set of latent measures. Indeed, analysts’ response to this fragmentation has generally been
+to discard most of the data and focus only on items collected by one survey project at one point
+in time, thus creating a small cross-national dataset (e.g., Inglehart and Welzel 2005; Qi and Shin
+2011; Welzel 2007). Unfortunately, not only does this result in the neglect of interesting and useful
+temporal variation, it removes the additional information that is provided by other survey projects
+and items.
+         Instead, I use the dynamic Bayesian latent trait model measurement model developed by
+Claassen (2019). This model permits the measurement of a “smooth” country-year panel of public
+opinion that uses all available survey data, even when these are fragmented across space, time, and
+question wording. A brief overview of the model is provided below, with a formal expression –
+and further discussion – in the online supplementary materials.
+         First, the model treats the observed number of respondents offering support for democracy
+
+Systems.
+   8
+       Two items fielded by different projects were always classed as distinct even if their wording
+
+appeared to be identical. This allows the model’s item bias parameters to capture variation induced
+
+both by question wording and by idiosyncrasies in the methodology of the various survey projects.
+
+                                                  11
+to each survey item as a binomially-distributed realization of a country- and time-varying latent
+variable of democratic support. The binomial probability parameter is further given a beta prior to
+allow for additional dispersion beyond that due only to sampling error.
+          Second, regardless of their actual commitment to democracy, respondents tend to agree
+more readily with some items than others. For example, the WVS question that asks respondents to
+evaluate whether “having a democratic political system” is a good way of governing their country
+is known to produce very high levels of agreement (Inglehart 2003; Klingemann 1999). Item bias
+parameters are included to adjust for these effects of survey item wording. These are comparable
+to intercepts in confirmatory factor analysis or item difficulty parameters in IRT models.
+          Third, the model also includes item by country bias parameters, which adjust for the varying
+effects of survey questions across countries. For example, some scholars have criticized survey
+questions that mention “democracy” because this word has slightly different meanings in different
+countries (Booth and Seligson 2009). Such items are therefore non-equivalent, which hampers the
+ability to make cross-national comparisons (Stegmueller 2011).9
+          Finally, each country’s latent estimates are allowed to evolve over time. In particular, latent
+support for democracy in a particular country and year is treated as a function of the support
+estimated in the previous year plus some random noise. This dynamic component smooths opinion
+over time and allows the estimation of a particular country’s democratic support even in years for
+which no survey data are available.
+          Bayesian Markov-Chain Monte Carlo (MCMC) simulation is used to fit the model.10 The
+result is a smooth country-by-year panel of democratic support estimates. Although data are avail-
+
+   9
+       Item by country parameters can be estimated along with item bias parameters and time-varying
+
+country latent estimates because the included survey items are generally fielded multiple times in
+
+any given country.
+  10
+       Further details on priors, software, tests of convergence, and model checks are provided in the
+
+online supplementary materials.
+
+
+
+                                                    12
+able for 150 countries and 30 years, the coverage of this panel is limited as follows. First, support
+is estimated only for the 137 countries in which at least two separate years of survey data were
+available. Second, estimates were removed for years prior to the year in which the first public
+opinion survey measuring support for democracy was fielded in each country. National time-series
+therefore commence the year support for democracy is first measured using a cross-national sur-
+vey. Finally, because V-Dem data are not available for countries with populations of less than a
+million, Belize and Malta were dropped from the dataset. The result is a panel dataset of 2,435
+support and democracy estimates, drawn from 135 countries, each with time-series ranging from
+four to 29 years. This dataset will be the focus of the remainder of the paper.
+          Claassen (2019) validates the latent variable model using held-out data. It proves to be
+more accurate than alternative methods, including country and item averages but also Caughey
+and Warshaw’s (2015) “Grouped IRT” model. To further bolster confidence in the estimates of
+support for democracy, I plot all available estimates for two years, 2005 and 2015 (Figure 1), and
+discuss the geographic and temporal variation.11 These choropleths support three conclusions.
+          First, support is higher where democracy has a long history – Western Europe, North Amer-
+ica, and Australasia – and is lower in Asia and North Africa, where the heritage is authoritarian.
+This geographic pattern of support is consistent with existing research (e.g., Klingemann 1999;
+Rose, Mishler, and Haerpfer 1998; Norris 2011), which demonstrates the validity of the estimates.
+The fact that support is related to previous levels of democracy also confirms the suspicions of
+Hadenius and Teorell (2005) and Welzel (2007) that the effect of prior democracy on support
+should be considered when one estimates the effect of support on subsequent democratic change.
+          Second, a comparison of the choropleths reveal that support softened between 2005 and
+2015 in some Western bastions of democracy, notably the USA and Canada. This trend is also
+consistent with other recent analyses (Foa and Mounk 2016; 2017). Since “signs of deconsolida-
+
+  11
+       In the supplementary materials, I provide further discussion of the validity and unidimension-
+
+ality of the latent estimates. I also provide similar plots showing national estimates of satisfaction
+
+with democracy.
+
+                                                  13
+                               Figure 1. Mapping Support for Democracy
+                                               2005
+
+
+
+
+    category
+   lower quartile
+   2nd quartile
+   3rd quartile
+   upper quartile
+
+
+                                               2015
+
+
+
+
+    category
+   lower quartile
+   2nd quartile
+   3rd quartile
+   upper quartile
+
+
+
+Estimates of democratic support in 2005 and 2015. Quartiles are calculated using data pooled across coun-
+tries and years. Darker shades indicate countries with higher levels of support. Countries for which no
+estimates are available in the given year are shaded white.
+
+
+tion” (Foa and Mounk 2017) do seem to be appearing in these countries, it is all the more urgent
+to test whether democracy does in fact require public support.
+         Third, quite the opposite trend is revealed in Africa, particularly in the South, East, and
+West: high – and indeed, rising – levels of democratic support in 2015. This pattern is yet another
+
+
+
+                                                   14
+that echoes the findings of previous research (e.g., Bratton and Houessou 2014). In addition, it
+raises the question of whether higher African levels of democratic support could be a sign of
+democratic consolidation. These questions, of the consequences of support for democracy, are
+where I turn my attention next.
+
+
+Empirical Strategy
+
+How might one estimate the effect of support on democracy when both variables are persistent over
+time, jointly determined by third variables, both observable and unobservable, and prior levels of
+democracy are as likely to affect support as support is to affect democracy? This section explains
+how the causal effect of support on subsequent democracy will be identified, the assumptions made
+in doing so, and the econometric methods that will be used. It then considers how hypotheses 2
+and 3, which focus on the effects of support contingent on the existing level of democracy, will be
+tested.
+          To crystallize the empirical strategy, I use causal graphs (e.g., Morgan and Winship 2015).12
+These are used to depict the relationship between democracy (dit ) and public support (sit ) in a panel
+set-up, where both variables vary across countries i and years t (Figure 2). The main hypothesis,
+that support exerts a causal effect on subsequent democracy, is indicated using a emboldened arrow.
+
+
+Identifying the Causal Effect of Support
+
+Graph (a), Figure 2, indicates a simple process by which support and democracy are interrelated
+over time and space. As can be seen, I assume that democracy and support are serially correlated,
+which is indicated by the arrows linking, e.g., di1 to di2 . I also allow democracy to exhibit second-
+order serial correlation (e.g., Teorell 2010), as indicated by the direct effect from di1 to di3 . I further
+assume that there is no contemporaneous effect of support on democracy. A higher level of support,
+
+  12
+       I closely follow the example of Imai and Kim (2019), who use graphs to describe the identifi-
+
+cation of causal effects in a panel data context.
+
+
+                                                    15
+                            Figure 2. Causal Graphs of Support and Democracy
+
+                                                                                        (c)
+
+                                                                                        ui
+                 (a)                               (b)
+
+
+  di1            di2         di3       di1          di2          di3       di1          di2          di3
+
+
+
+   si1           si2         si3       si1          si2          si3       si1          si2          si3
+
+
+
+   zi1                                 zi1          zi2          zi3       zi1          zi2          zi3
+
+Causal graphs depicting three hypothetical data-generating processes whereby support sit exerts a causal
+effect on subsequent democracy dt+1 , with zit being an observed, time- and country-varying confounder, and
+ui being an unobserved time-invariant confounder. Bold arrows indicate the hypothesized causal effect of
+support on democracy; arrows indicate assumed causal effects. Solid circles indicate observed variables;
+dashed circles, unobserved.
+
+
+in other words, takes some time to produce political change – if it ever does. Certainly it seems
+implausible that a higher level of support would exert an immediate effect on democracy.13
+          In addition, democracy likely influences the level of support, quite aside from any effect
+that latter might have on the former. I therefore include causal linkages from democracy to support
+in graph (a). Informed by the “thermostatic” model of policy opinion dynamics (Wlezien 1995),
+I assume that two particular effects are possible: support is influenced by immediate changes in
+democracy as much as prior levels of democracy. I indicate these two possible effects through
+the use of contemporaneous and lagged linkages between democracy and support. Under the
+assumptions of the data-generating process in graph (a), the causal effect of support on democracy
+
+  13
+       It is a standard assumption, in empirical studies of democracy, that independent variables exert
+
+effects on subsequent levels of democracy (e.g., Acemoglu et al. 2009; Boix 2011; Teorell 2010;
+
+Welzel 2013).
+
+
+
+                                                    16
+is given by the effect of sit−1 on dit , provided that one control for the first two lags of democracy
+dit−1 and dit−2 .
+          Graph (b) then presents a more complex data-generating process with a third variable z that
+confounds the observed relationship between democracy and support. For example, the level of
+economic development has been linked with the stabilization and emergence of democracy (Boix
+2011; Przeworski and Limongi 1997), as well as the emergence of a democratic political culture
+(Inglehart and Welzel 2005). For the reasons outlined earlier, I assume again that there is no
+contemporaneous effect of zit on dit , but, rather, this effect is lagged one year. I also assume that zit
+influences sit but not the reverse: this third variable is not affected by the level of support in other
+words. I furthermore assume no effect of dit on zit , but this could be relaxed without consequence.
+Given these assumptions, estimating the causal effect of support on democracy requires adjusting
+for the effects of dit−1 , dit−2 , and zit−1 .
+          The first tests of the effect of support on democracy in this article follow the assumptions
+of graph (b). These tests use the following linear model, which include two lags of democracy and
+a set of control variables Z:
+
+
+                                dit = α + φ1 dit−1 + φ2 dit−2 + βsit−1 + Z0it−1 γ + it               (1)
+
+
+          I include five control variables that plausibly determine both support and democracy. First,
+I use the log of GDP per capita to measure economic development, with data drawn from the
+World Bank World Development Indicators.14 Second, economic growth – and in particular, eco-
+nomic crises – may also raise the risks of regime failure (Haggard and Kaufman 1995; Teorell
+2010). I therefore calculate annual growth in GDP per capita using the GDP data. Third, de-
+pendence on natural resource revenues (Ross 2001) is measured using an indicator for whether a
+country received greater than $1,000 per person in revenue from oil, natural gas, and minerals in
+
+   14
+        The few missing values were imputed using linear models applied to GDP per capita data from
+
+the IMF and Penn World Tables.
+
+
+                                                          17
+a given year.15 Fourth, to capture the regional diffusion of democracy (Gleditsch and Ward 2006),
+I measure the average level of regional democracy for each year.16 Finally, some scholars have
+argued that democracy struggles to emerge in countries with an Islamic tradition, perhaps due to
+the political culture (e.g., Fish 2002). Although a time-invariant variable, I also include a measure
+of the proportion of a country identifying as Muslim in 1990.17
+         There is an additional threat to causal inference that remains to be considered: the con-
+founding effects of unobservable, country-specific and time-invariant factors, indicated by u in
+graph (c) (Figure 2). For example, as discussed earlier, “critical junctures” in national paths of po-
+litical development may have influenced the current presence of democracy and the contemporary
+nature of the political culture (e.g., Acemoglu et al. 2009). Estimating the causal effect of support
+on democracy under the assumptions of graph (c) requires adjusting not only for dit−1 , dit−2 , and
+zit−1 , but also for ui . When using panel data one can achieve the latter by including country fixed
+effects. This yields a dynamic fixed effects model, which is frequently used in empirical studies
+of democratization (e.g., Acemoglu et al. 2008; Boix 2011; Haber and Menaldo 2011). I similarly
+run additional tests of by adding country fixed effects µi to equation 1:
+
+
+                          dit = φ1 dit−1 + φ2 dit−2 + βsit−1 + Z0it−1 γ + µi + it                (2)
+
+
+         However, estimating such dynamic fixed effects models is problematic when time-series
+are short – as they are for many of the countries in my sample – because the lagged dependent
+
+  15
+       The original data were drawn primarily from the World Bank World Development Indicators,
+
+supplemented with data from Haber and Menaldo (2011). A dichotomous indicator is used to
+
+allow the imputation of missing values within each country’s time series. The revenue data are
+
+also zero-inflated and skewed, which contraindicates a continuous measure.
+  16
+       I again use V-Dem Liberal Democracy index data with regions defined as United Nations
+
+subregions.
+  17
+       Data sourced from the Pew Research Center.
+
+
+                                                    18
+variable coefficient estimates are correlated with the error term it . This produces a bias (“Nickell
+bias”), which grows as T shrinks. A solution is to use a General Methods of Moments (GMM)
+estimator. In particular, when the dependent variable is strongly persistent, as it is here, Blundell
+and Bond’s (1998) “system GMM” estimator is appropriate. This utilizes further lags of the de-
+pendent variable, in both levels and differences, as instruments for the independent variables (see,
+e.g., Freeman and Quinn 2012). I utilize the 3rd through 5th lags of democracy (in levels and
+differences) as instruments to estimate equation 2. I assume that these lags exert no direct effects
+on dit .18
+
+
+Identifying the Effects of Support on Democratic Survival and Democratic Emergence
+
+I have laid out a strategy for testing the causal effect of support on democracy and the assumptions
+made in doing so. However, the 2nd and 3rd hypotheses pertain to the effect of support in promot-
+ing the emergence versus survival of democracy, rather than general change in democracy. This
+section therefore describes the method with which I will test these differential effects of support on
+democracy.
+           When using a dichotomous measure of democracy, it is straightforward to model the dif-
+ferential effects of some determinant of democratization. A typical method is to implement a
+dynamic probit model with interactions between lagged democracy and the independent variables
+(e.g., Przeworski and Limongi 1997; Gleditsch and Ward 2006).19 The marginal effect of each
+interaction term yields the effect of that independent variable in sustaining democracy, while the
+main effect gives the effect of that variable in driving a transition from autocracy to democracy.
+           The situation is more complicated when democracy is conceived and measured continu-
+ously, because both the initial level of democracy and the direction of any subsequent change may
+vary. In other words, a country that is democratic at time t −1 may become even more so at t, or, in-
+
+   18
+        Since I have assumed that the second lag, i.e., dit−2 has a direct effect, it is unsuitable as an
+
+instrument and is therefore not included.
+   19
+        This is sometimes described as a Markov transition model (e.g., Gleditsch and Ward 2006).
+
+                                                    19
+stead, it may move toward autocracy. And vice versa for an autocracy. To estimate the differential
+effects of support in democratic versus autocratic systems, I use a method proposed by Acemoglu
+et al. (2009). This requires incorporating a regime type indicator rit , which takes a value of one
+if the country is democratic at time t and zero otherwise.20 Equation 1 is adjusted as follows (and
+similarly for equation 2, which also includes country fixed effects):
+
+
+              dit = α + φ1 dit−1 + φ2 dit−2 + βdem sit−1 (rit−1 ) + βaut sit−1 (1 − rit−1 ) + Z0it−1 γ + it   (3)
+
+
+          The regime-type indicator rit in effect produces two versions of the independent variable,
+democratic support. The first where support varies only if the regime is democratic at time t,
+otherwise taking a value of zero; the second where support varies only if the regime is autocratic
+at time t, otherwise taking a value of zero. There are consequently two parameters capturing the
+effects of level of support on democratic change. The first, βdem , gives the effect of support when
+the starting point is a democracy; this parameter allows us to test H2. The second, βaut , gives the
+effect of support when the starting point is an autocracy, which allows us to test H3.21
+
+
+Results
+
+Overall Effect of Support on Democracy
+
+I present first the tests of H1, in which the level of democratic support is expected to lead to
+democratic change, regardless of the initial level of democracy. Model 1.1 in Table 1 shows the
+results of a pooled OLS model corresponding to equation 1, which tests the overall effects of
+
+  20
+       I use the “Regimes in the World” indicator from V-Dem, which utilizes the same items as the
+
+liberal democracy index but combines them in a slightly different fashion.
+  21
+       An alternative method, used by Boix (2011) and Teorell (2010), is to create separate dependent
+
+variables of positive and negative changes in democracy (or upturns and downturns). I report the
+
+results of such models in the online supplementary materials.
+
+
+                                                           20
+                           Table 1. Models of Support and Democracy
+
+                                                Dependent variable: Level of democracy
+                                                 Pooled OLS                 System GMM
+                                              (1.1)         (1.2)         (1.3)          (1.4)
+    Democracyt−1                              1.141∗         1.142∗        1.091∗        1.095∗
+                                              (.080)         (.080)        (.079)        (.083)
+    Democracyt−2                              −.163∗         −.164∗        −.203∗        −.200∗
+                                              (.080)         (.079)        (.051)        (.050)
+    Supportt−1                                 .267∗                        .881∗
+                                              (.094)                       (.366)
+    Supportt−1 , democracies only                             .318∗                       .810∗
+                                                             (.108)                      (.344)
+    Supportt−1 , autocracies only                             .090                        .917
+                                                             (.210)                      (.672)
+    Log GDP per capitat−1                      .015          −.001          .388∗         .366∗
+                                              (.123)         (.130)        (.174)        (.186)
+    GDP per capita growtht−1                   .007           .007         −.016         −.014
+                                              (.017)         (.017)        (.020)        (.021)
+    Regional democracyt−1                      .008           .008          .055∗         .051
+                                              (.005)         (.004)        (.028)        (.030)
+    Percent Muslim                            −.002          −.002         −.014         −.013
+                                              (.003)         (.003)        (.009)        (.009)
+    Resource dependencet−1                    −.367          −.373        −1.196        −1.128
+                                              (.244)         (.242)        (.683)        (.694)
+    Intercept                                  .647           .765
+                                              (.947)         (.998)
+    N observations                        2435           2435          2435           2435
+    N countries                            135            135           135            135
+    N instruments                                                       122            124
+    Residual standard error                    3.056         3.055
+    Adjusted R2                                 .986          .985
+    Wooldridge AR(1) test (p-value)             .769          .882
+    Hansen test (p-value)                                                    .438          .469
+    Arellano-Bond AR(2) test (p-value)                                       .560          .546
+∗
+  p < .05. Pooled OLS models include Beck-Katz panel-corrected standard errors in parentheses.
+Standard errors for System GMM models incorporate the Windmeijer correction. Democracy is mea-
+sured using the V-Dem Liberal Democracy index and is scaled from 0 to 100. Support is standardized.
+
+
+
+
+                                                21
+support on subsequent democracy under the assumptions of data-generating process (b) in Figure 2.
+These results indicate that support is positively and significantly related to subsequent democratic
+change.22
+         One concern with such a model is possible serial correlation due to the temporal persistence
+of democracy. Including two lags of the dependent variable appears to have resolved this problem,
+as indicated by the insignificant (p = 0.77) Wooldridge test for serial correlation. A second concern
+is cross-sectional correlation across countries and heteroscedasticity within countries (Beck and
+Katz 1995). I include Beck-Katz panel-corrected standard errors to adjust for these possibilities.
+         In addition, as discussed earlier, this model does not take account of unobserved time-
+invariant factors which might affect the relationship between support and democracy. Model 1.3,
+Table 1 does; it corresponds to equation 2, which focuses only on the within-country effect of
+support on democracy. In particular, Model 1.3 is estimated using the system GMM method. As
+can be seen, the estimated short-run effect of support on democracy remains positive and significant
+in this GMM set up.
+         GMM models are fairly sensitive to the number of lags used to create instruments. Rood-
+man (2009) therefore suggests limiting the number of instruments to no more than the number
+of cross-sectional units (countries). I follow this advice by using only the 3rd through 5th lags
+of democracy as instruments. A Hansen test (p = 0.44) indicates that the instruments are jointly
+valid. An Arellano-Bond test (p = 0.56) shows that there is no second-order serial correlation,
+meaning that I do not have to resort to using more distant lags.
+         The pooled OLS estimate of the short-run effect of support on subsequent democracy is
+0.27, with the GMM estimate being somewhat higher (0.88). Since the measure of democracy has
+a theoretical scale that ranges from 0 to 100, both effects are fairly small in the short term. Yet the
+dynamic nature of both models allows us to estimate both short and long-run effects (De Boef and
+Keele 2008). According to Model 1.1, a permanent one-standard-deviation increase in democratic
+
+  22
+       Because I have included lagged dependent variables, we can interpret the effect of support as
+
+pertaining to subsequent change in democracy (see, e.g., De Boef and Keele 2008).
+
+
+                                                  22
+support is expected to lead to an increase in democracy of 12.12 units (95% CI [6.43, 19.63]) in
+the long run.23 Despite the larger short run effect of support estimated by the GMM model (Model
+1.3), its long-run estimate is lower, at 7.83 (95% CI [4.30, 15.91]).
+          To demonstrate the long run effects of support on democracy, I plot the simulated effects
+of a one standard deviation increase in democracy in Figure 3. Such a plot is not straightforward
+when using dynamic models, because the predicted effects at time t feed forward to become lagged
+independent variables at time t +1. To do so, I set all independent variables to a moderate value and
+allow the system to run for 200 years. I then increase the level of democracy from the mean level
+to one standard deviation above the mean, and allow the system of equations to run for a further
+30 years. To capture the uncertainty inherent in the model, I use a method of dynamic simulation
+outlined by Williams and Whitten (2012).24
+          The first panel in Figure 3 shows the simulated effects on democracy when support in-
+creases by one standard deviation (from 0 to 1), which implies a moderate but not dramatic increase
+(the model used is Model 1.1). Following the increase in support, in year 0, democracy increases
+slowly but steadily over the ensuing years. After 30 years, democracy is 6.42 units higher, which
+
+  23
+       The formula for the long run effect is β/(1−(φ1 +φ2 )). The estimate and confidence intervals are
+
+generated by simulating 10,000 multivariate normal distributions with expectation being the model
+
+coefficients and the variance being the Beck-Katz panel corrected variance-covariance matrix.
+  24
+       In particular, I create multiple perturbed vectors of model coefficients by taking 10,000 draws
+
+from a multivariate normal distribution with expectation being the vector of model coefficients and
+
+variance being the Beck-Katz covariance matrix: Θ̃ ∼ MV N(Θ, Σ BK ). When predicting effects
+
+using each of the i simulated vectors of k coefficients, I add additional noise as estimated by the
+
+regression standard error: Ỹi ∼ N(Xk Θ̃ki , σ). I therefore do not use GMM results, for which
+
+regression standard error estimates are unavailable. Finally, I use the mean value of Ỹi as the point
+
+estimate for that year, and the 0.025 and 0.975 quantiles of Ỹi as the lower and upper confidence
+
+bounds.
+
+
+                                                   23
+                                         Figure 3. Simulated Long-Run Effects of Support on Democracy
+
+
+
+
+                         75                                                                                   75                        Effect within democracies
+
+
+
+
+    Level of democracy                                                                   Level of democracy
+                         50                                                                                   50
+
+
+
+                                                                                                                                         Effect within autocracies
+
+                         25                                                                                   25
+
+
+
+
+                                        support increases one std. dev. in year 0                                      support increases one std. dev. in year 0
+
+                                    0               10            20                                               0               10             20
+                                            Years after shock                                                              Years after shock
+
+Simulated effects are estimated using coefficients from models 1.1 and 1.2. The solid lines indicate the mean
+simulated effect; the shaded regions indicate the 95% confidence intervals of these simulated effects.
+
+
+represents slightly more than half the long-run effect discussed earlier.
+                          This simulation is, of course, extremely hypothetical. Political systems would hardly hold
+still for three decades while the effects of an increase in public support feed through the system.
+Yet this exercise demonstrates an important point. While changes in democratic support have a
+small effect in the short run, this effect accumulates over the long run. Changes in public support
+for democracy continue to exert an influence on political regimes for many years.
+                          In sum, I find evidence that support for democracy is positively associated with subsequent
+change in democracy. This finding resonates with earlier, cross-sectional research by Inglehart
+(2003) and Inglehart and Welzel (2005), but stands in contrast to the null findings of Hadenius and
+Teorell (2005) and Welzel (2007). However, this analysis goes substantially further than previous
+studies since the evidence is drawn from a much larger sample of countries and years. In particular,
+the temporal dimension of the data allows me to both model the dynamic relationships between
+support and democracy and adjust for the effects of unobserved country-specific confounders.
+
+
+
+
+                                                                                    24
+Effects of Support on Democratic Emergence and Survival
+
+The results presented thus far suggest a general relationship between support and democracy. I
+now examine more specific processes that might underpin such a general relationship. In other
+words, is support linked with democracy by aiding its emergence or its survival? To examine these
+more specific processes, I turn to my tests of hypotheses 2 and 3.
+       Model 1.2 and Model 1.4 (Table 1) follow Acemoglu et al. (2009) in separately estimating
+the effects of support within democratic versus autocratic regimes. I again utilize both pooled OLS
+and system GMM methods to test these hypotheses. Results from both specifications tell a sim-
+ilar story: within democracies, support is positively and significantly associated with subsequent
+change in democracy; within autocracies, the effect is insignificant, although still positive. The
+GMM results again indicate a stronger short term effect of support than the pooled OLS results. In
+sum, the evidence from my data is consistent with H2, but not consistent with H3.
+       In the second panel of Figure 3, I then display the long run effects of an increase in support
+in a hypothetical democratic (black line) and autocratic (grey line) country. Both effects are esti-
+mated using Model 1.2. The effect of support is even more pronounced when it is examined within
+democracies: after 30 years, the simulated regime is 7.67 units more democratic. For comparison,
+the full long run effect, calculated from the results of Model 1.2, is 14.78 (95% CI [7.39, 26.78]).
+The effect of support is noticeably weaker in autocracies, with the full long run effect being 4.08
+(95% CI [−23.02, 24.41]).
+       In the online supplementary materials I consider additional model specifications. First, I
+include a measure of corruption as an additional time-varying covariate in both the pooled OLS
+and system GMM models. Second, I follow Teorell (2010) and Boix (2011) in creating separate
+dependent variables of upturns and downturns in democracy. Third, I employ the interactive fixed
+effects models proposed by Bai (2009) for unobservable confounds with heterogenous over-time
+effects on different countries. Finally, I use a more minimal measure of democracy – V-Dem’s
+“electoral democracy index” – as the dependent variable. All these additional models show evi-
+dence consistent with H2, i.e., support aids in sustaining democracy. There is no evidence for the
+
+                                                25
+                             Table 2. Models of Support, Satisfaction, and Democracy
+
+                                                       Dependent variable: Level of democracy
+                                                         Pooled OLS                System GMM
+                                                     (2.1)         (2.2)         (2.3)          (2.4)
+           Supportt−1                                  .281∗                        .697∗
+                                                      (.103)                       (.303)
+           Supportt−1 , democracies                                  .294∗                        .660∗
+                                                                    (.113)                       (.293)
+           Supportt−1 , autocracies                                  .104                         .654
+                                                                    (.224)                       (.607)
+           Satisfactiont−1                           −.098                        −.053
+                                                     (.074)                       (.134)
+           Satisfactiont−1 , democracies                             .000                        .016
+                                                                    (.096)                      (.167)
+           Satisfactiont−1 , autocracies                            −.302                       −.187
+                                                                    (.161)                      (.249)
+           N observations                         2278          2278          2278           2278
+           N countries                             126           126           126            126
+           N instruments                                                       124            128
+           Residual standard error                    3.077         3.075
+           Adjusted R2                                 .985          .985
+           Wooldridge AR(1) test (p-value)             .894          .670
+           Hansen test (p-value)                                                    .563          .593
+           Arellano-Bond AR(2) test (p-value)                                       .561          .567
+       ∗
+        p < .05. All models include two lags of democracy and the covariates specified in Table 1. Pooled
+       OLS models include Beck-Katz panel-corrected standard errors in parentheses; standard errors for
+       System GMM models incorporate the Windmeijer correction. Democracy is measured using the V-
+       Dem Liberal Democracy index and is scaled from 0 to 100. Support and satisfaction are standardized.
+
+
+democratizing effect of support (H3), and mixed evidence for the overall effect (H1).
+       In sum, the findings of the analyses suggest that the effect of support is concentrated in sys-
+tems that are already democratic. In other words, while support appears to help sustain democracy,
+it does not appear to help autocracies democratize.
+
+
+Effects of Satisfaction on Democracy
+
+Finally, I consider the role played by satisfaction with the performance of democracy. This measure
+captures citizens’ evaluations of the performance of the system as a whole as well as the incumbent
+government of the time (Booth and Seligson 2009; Canache, Mondak, and Seligson 2001), and is
+
+                                                       26
+therefore a more instrumental and specific form of support. It may be the case that the favorable
+effects of support that we have observed are due to such instrumental approval of performance
+rather than any principled commitment to democracy. In this section I therefore test whether
+democratic support helps sustain democracy over and above any supportive effects exerted by
+democratic satisfaction.
+       I replicate my models from Table 1, in both the pooled OLS and system GMM specifica-
+tions, but now adding satisfaction to the equations. These are presented in Table 2. Satisfaction
+does not show a positive and significant effect on subsequent democracy, regardless of whether the
+pooled OLS or system GMM model is used, or whether its effects are examined within democra-
+cies or autocracies. Support, however, continues to exhibit a significant effect on democracy, and
+one that is of similar magnitude to those reported in Table 1.
+       These results suggest two findings which are consistent with Lipset-Easton theory of demo-
+cratic support. First, specific support for democracy exerts little or no independent effect on the
+rise or fall of democracy. Second, diffuse support helps sustain democratic regimes, and it does so
+quite aside from any specific support that democracy may attract due to instrumental performance
+evaluations.
+
+
+Conclusion
+
+From Latin America to Western Europe, and from Africa to North America, democracy is under
+attack from authoritarian and populist leaders. The findings described in this article are consistent
+with a classic theory for why this might occur – the support afforded to democracy by the public.
+As scholars have long argued, if support is low, emerging democracies might fail to consolidate,
+or even descend into autocracy. Moreover, although Western democracies were thought to have
+consolidated, and thus escaped this purgatory, the evidence presented here bolsters recent warn-
+ings that declining support for democracy might lead to even established democracies failing, or
+becoming “deconsolidated” (Foa and Mounk 2016; 2017; Plattner 2017).
+       However, the findings of this article are not consistent with another hypothesis regarding
+
+                                                 27
+public support for democracy: that it functions also as “demand for democracy,” spurring further
+democratization (Qi and Shin 2011). Thus, although public support may help bolster and defend
+already-existing democratic rights and institutions, it does not appear to push elites to establish
+or expand these rights and institutions. This is perhaps not terribly surprising. While political
+competition makes democracies at least somewhat responsive to public opinion – including opinion
+about whether the regime should be democratic or not – autocratic elites are arguably less pressured
+by popular sentiments. They also are more willing and able to suppress popular demands if need
+be.
+        In order to test the effects of support on democracy I gathered an expansive database of over
+3,000 nationally-aggregated opinions, and estimated a smooth country-by-year panel of democratic
+support that varies over 135 countries and up to 29 years. This dramatically increased the available
+data on support, with variation now over time as well as space. Yet by the standards of, for example,
+the literature on development and democracy, these data are still quite limited in geographic and
+temporal range. In particular, survey measures of support for democracy began in earnest only after
+the third wave of democracy crested in the early 1990s. As a consequence, we cannot ascertain
+whether these findings pertain to previous periods of democratic decline, such as the “reverse
+wave” seen in the 1960s and 1970s. Indeed, the literature on development and democracy has
+shown that the link between the two has varied considerably over time (e.g., Boix 2011; Acemoglu
+et al. 2009).
+        This article has also been silent on the mechanisms by which public support bolsters democ-
+racy and lack of support undermines it. Perhaps low support for democracy allows populist and
+undemocratic leaders to emerge (Foa and Mounk 2016; Plattner 2017); in contrast, when such
+leaders attempt to undermine democratic procedures, perhaps high support triggers collective ac-
+tion by an outraged public (Booth and Seligson 2009). Given the current challenges to democracy,
+these are crucial questions for scholars to investigate.
+
+
+
+
+                                                  28
+References
+
+Acemoglu, Daron, Simon Johnson, James A. Robinson, and Pierre Yared. 2008. “Income and
+  Democracy.” American Economic Review 98(3): 808–842.
+
+Acemoglu, Daron, Simon Johnson, James A. Robinson, and Pierre Yared. 2009. “Reevaluating the
+  Modernization Hypothesis.” Journal of Monetary Economics 56(8): 1043–1058.
+
+Alexander, Amy C., and Christian Welzel. 2011. “Measuring Effective Democracy: The Human
+  Empowerment Approach.” Comparative Politics 43(3): 271–289.
+
+Bai, Jushan. 2009. “Panel Data Models With Interactive Fixed Effects.” Econometrica 77(4): 1229–
+  1279.
+
+Beck, Nathaniel, and Jonathan N. Katz. 1995. “What To Do (And Not To Do) With Time-Series
+  Cross-Section Data.” American Political Science Review 89(3): 634–647.
+
+Blundell, Richard, and Stephen Bond. 1998. “Initial Conditions and Moment Restrictions in Dy-
+  namic Panel Data Models.” Journal of Econometrics 87(1): 115–143.
+
+Boix, Carles. 2011. “Democracy, Development, and the International System.” American Political
+  Science Review 105(4): 809–828.
+
+Booth, John A., and Mitchell A. Seligson. 2009. The Legitimacy Puzzle in Latin America: Political
+  Support and Democracy in Eight Nations. Cambridge: Cambridge University Press.
+
+Bowman, Kirk, Fabrice Lehoucq, and James Mahoney. 2005. “Measuring Political Democ-
+  racy: Case Expertise, Data Adequacy, and Central America.” Comparative Political Studies
+  38(8): 939–970.
+
+Bratton, Michael, and Richard Houessou. 2014.              “Demand for Democracy Is Ris-
+  ing in Africa, But Most Political Leaders Fail to Deliver.” Afrobarometer Policy Pa-
+  per No. 11. http://afrobarometer.org/sites/default/files/publications/Policy%20paper/
+  ab r5 policypaperno11.pdf.
+
+
+                                               29
+Bratton, Michael, Robert Mattes, and E. Gyimah-Boadi. 2005. Public Opinion, Democracy, and
+  Market Reform in Africa. Cambridge, UK: Cambridge University Press.
+
+Canache, Damarys, Jeffery J. Mondak, and Mitchell A. Seligson. 2001. “Meaning and Measure-
+  ment in Cross-National Research on Satisfaction with Democracy.” Public Opinion Quarterly
+  65(4): 506–528.
+
+Caughey, Devin, and Christopher Warshaw. 2015. “Dynamic Estimation of Latent Opinion Using
+  a Hierarchical Group-Level IRT Model.” Political Analysis 23(2): 197–211.
+
+Claassen, Christopher. 2019. “Estimating Smooth Country-Year Panels of Public Opinion.” Polit-
+  ical Analysis 27(1): 1–20.
+
+Dalton, Russell J. 2004. Democratic Challenges, Democratic Choices: The Erosion of Political
+  Support in Advanced Industrial Democracies. Oxford: Oxford University Press.
+
+De Boef, Susanna, and Luke Keele. 2008. “Taking Time Seriously.” American Journal of Political
+  Science 52(1): 184–200.
+
+Diamond, Larry. 1999. Developing Democracy: Towards Consolidation. Baltimore: Johns Hop-
+  kins University Press.
+
+Diamond, Larry, Seymour Martin Lipset, and Juan Linz. 1987. “Building and Sustaining Demo-
+  cratic Government in Developing Countries: Some Tentative Findings.” World Affairs 150(1): 5–
+  19.
+
+Easton, David. 1965. A Systems Analysis of Political Life. New York: Wiley.
+
+Easton, David. 1975. “A Re-Assessment of the Concept of Political Support.” British Journal of
+  Political Science 5(4): 435–457.
+
+Elkins, Zachary. 2000. “Gradations of Democracy? Empirical Tests of Alternative Conceptualiza-
+  tions.” American Journal of Political Science 44(2): 293–300.
+
+Fails, Matthew D., and Heather Nicole Pierce. 2010. “Changing Mass Attitudes and Democratic
+
+
+
+                                              30
+  Deepening.” Political Research Quarterly 63(1): 174–187.
+
+Fish, M. Steven. 2002. “Islam and Authoritarianism.” World Politics 55(1): 4–37.
+
+Foa, Roberto Stefan, and Yascha Mounk. 2016. “The Danger of Deconsolidation: The Democratic
+  Disconnect.” The Journal of Democracy 27(3): 5–17.
+
+Foa, Roberto Stefan, and Yascha Mounk. 2017. “The Signs of Deconsolidation.” Journal of
+  Democracy 28(1): 5–16.
+
+Freeman, John R., and Dennis P. Quinn. 2012. “The Economic Origins of Democracy Reconsid-
+  ered.” American Political Science Review 106(1): 58–80.
+
+Gibson, James L. 1996. “‘A Mile Wide But an Inch Deep’(?): The Structure of Democratic Com-
+  mitments in the Former USSR.” American Journal of Political Science 40(2): 396–420.
+
+Gleditsch, Kristian, and Michael D. Ward. 2006. “Diffusion and the International Context of
+  Democratization.” International Organization 60(4): 911–33.
+
+Haber, Stephen, and Victor A. Menaldo. 2011. “Do Natural Resources Fuel Authoritarianism? A
+  Reappraisal of the Resource Curse.” American Political Science Review 105(1): 1–26.
+
+Hadenius, Axel, and Jan Teorell. 2005. “Cultural and Economic Prerequisites of Democracy:
+  Reassessing Recent Evidence.” Studies in Comparative International Development 39(4): 87–
+  106.
+
+Haggard, Stephen, and Robert Kaufman. 1995. The Political Economy of Democratic Transitions.
+  Princeton, NJ: Princeton University Press.
+
+Imai, Kosuke, and In Song Kim. 2019. “When Should We Use Unit Fixed Effects Regression
+  Models for Causal Inference with Longitudinal Data?” American Journal of Political Science
+  https://doi.org/10.1111/ajps.12417.
+
+Inglehart, Ronald. 2003. “How Solid is Mass Support for Democracy – and How Can We Measure
+  It?” PS: Political Science & Politics 36(1): 51–57.
+
+
+
+                                               31
+Inglehart, Ronald, and Christian Welzel. 2005. Modernization, Cultural Change, and Democracy:
+  The Human Development Sequence. Cambridge: Cambridge University Press.
+
+Jamal, Amal, and Anna Kensicki. 2016. “A Theory of Critical Junctures for Democratization:
+  A Comparative Examination of Constitution-Making in Egypt and Tunisia.” Law & Ethics of
+  Human Rights 10(1): 185–222.
+
+Klingemann, Hans-Dieter. 1999. “Mapping Political Support in the 1990s: A Global Analysis.” In
+  Critical Citizens: Global Support for Democratic Governance, ed. Pippa Norris. Oxford, UK:
+  Oxford University Press.
+
+Lindberg, Staffan I., Michael Coppedge, John Gerring, Jan Teorell, Daniel Pemstein, Eitan Tzel-
+  gov, Yi ting Wang, Adam Glynn, David Altman, Michael Bernhard, Steven Fish, Alan Hicken,
+  Matthew Kroenig, Kelly McMann, Pamela Paxton, Megan Reif, Svend-Erik Skaaning, and
+  Jeffrey Staton. 2014. “V-Dem: A New Way to Measure Democracy.” Journal of Democracy
+  25(3): 159–169.
+
+Lipset, Seymour Martin. 1959. “Some Social Requisites of Democracy: Economic Development
+  and Political Legitimacy.” American Political Science Review 53(1): 69–105.
+
+Magalhães, Pedro C. 2014. “Government Effectiveness and Support for Democracy.” European
+  Journal of Political Research 53(1): 77–97.
+
+Mattes, Robert, and Michael Bratton. 2007. “Learning about Democracy in Africa: Awareness,
+  Performance, and Experience.” American Journal of Political Science 51(1): 192–217.
+
+Mechkova, Valeriya, Anna Lührmann, and Staffan I. Lindberg. 2017. “How Much Democratic
+  Backsliding?” Journal of Democracy 28(4): 162–169.
+
+Mishler, William, and Richard Rose. 1999. “Five Years After the Fall: Trajectories of Support for
+  Democracy in Post-Communist Europe.” In Critical Citizens: Global Support for Democratic
+  Governance, ed. Pippa Norris. Oxford, UK: Oxford University Press.
+
+Mishler, William, and Richard Rose. 2007. “Generation, Age, and Time: The Dynamics of
+
+
+                                                32
+  Political Learning during Russia’s Transformation.” American Journal of Political Science
+  51(4): 822–834.
+
+Morgan, Stephen L., and Christopher Winship. 2015. Counterfactuals and Causal Inference:
+  Methods and Principles for Social Research. 2nd ed. New York: Cambridge University Press.
+
+Munck, Gerardo L., and Jay Verkuilen. 2002. “Conceptualizing and Measuring Democracy: Eval-
+  uating Alternative Indices.” Comparative Political Studies 35(1): 5–34.
+
+Norris, Pippa. 2011. Democratic Deficit: Critical Citizens Revisited. Cambridge: Cambridge
+  University Press.
+
+Pemstein, Daniel, Stephen Meserve, and James Melton. 2010. “Democratic Compromise: A Latent
+  Variable Analysis of Ten Measures of Regime Type.” Political Analysis 18(4): 426–49.
+
+Plattner, Marc F. 2017. “Liberal Democracy’s Fading Allure.” Journal of Democracy 28(4): 5–14.
+
+Pop-Eleches, Grigore, and Joshua A. Tucker. 2017. Communism’s Shadow: Historical Legacies
+  and Contemporary Political Attitudes. Princeton, NJ: Princeton University Press.
+
+Przeworski, Adam, and Fernando Limongi. 1997. “Modernization: Theories and Facts.” World
+  Politics 49(2): 155–183.
+
+Qi, Lingling, and Doh Chull Shin. 2011. “How Mass Political Attitudes Affect Democratization:
+  Exploring the Facilitating Role Critical Democrats Play in the Process.” International Political
+  Science Review 32(3): 245–262.
+
+Roodman, David. 2009. “A Note on the Theme of Too Many Instruments.” Oxford Bulletin of
+  Economics and Statistics 71(1): 135–158.
+
+Rose, Richard, and William Mishler. 1996. “Testing the Churchill Hypothesis: Popular Support
+  for Democracy and Its Alternatives.” Journal of Public Policy 16(1): 29–58.
+
+Rose, Richard, William Mishler, and Christian Haerpfer. 1998. Democracy and Its Alternatives:
+  Understanding Post-Communist Societies. Baltimore: Johns Hopkins University Press.
+
+
+
+                                               33
+Ross, Michael L. 2001. “Does Oil Hinder Democracy?” World Politics 53(3): 325–361.
+
+Rueschemeyer, Dietrich, Evelyne Huber Stephens, and John D. Stephens. 1992. Capitalist Devel-
+  opment and Democracy. Chicago, IL: University of Chicago Press.
+
+Stegmueller, Daniel. 2011. “Apples and Oranges? The Problem of Equivalence in Comparative
+  Research.” Political Analysis 19(4): 471–487.
+
+Svolik, Milan. 2018. “When Polarization Trumps Civic Virtue: Partisan Conflict and the Sub-
+  version of Democracy by Incumbents.” Working Paper, Yale University, https://campuspress.
+  yale.edu/svolik/files/2018/09/polarization manuscript-2ex9y63.pdf.
+
+Teorell, Jan. 2010. Determinants of Democratization: Explaining Regime Change in the World,
+  1972-2006. Cambridge: Cambridge University Press.
+
+Teorell, Jan, Michael Coppedge, Staffan Lindberg, and Svend-Erik Skaaning. 2018. “Measuring
+  Polyarchy Across the Globe, 1900–2017.” Studies in Comparative International Development
+  forthcoming, https://doi.org/10.1007/s12116-018-9268-z.
+
+V-Dem Institute. 2018a.       “Codebook:     v8 – April 2018.” V-Dem Institute, Univer-
+  sity of Gothenburg, https://www.v-dem.net/media/filer public/64/ad/64ad9308-45fa-473e-
+  8e2b-e1c0c4e421e6/v-dem codebook v8.pdf.
+
+V-Dem Institute. 2018b. “Democracy for All? V-Dem Annual Democracy Report 2018.” V-
+  Dem Institute, University of Gothenburg, https://www.v-dem.net/media/filer public/3f/19/
+  3f19efc9-e25f-4356-b159-b5c0ec894115/v-dem democracy report 2018.pdf.
+
+V-Dem Institute. 2018c.       “Methodology, v8.” V-Dem Institute, University of Gothen-
+  burg,          https://www.v-dem.net/media/filer public/5a/f1/5af198e9-f3e8-4619-b9fd-
+
+  a8387fdc22a5/v-dem methodology v8.pdf.
+
+Welzel, Christian. 2007.   “Are Levels of Democracy Affected by Mass Attitudes?       Testing
+  Attainment and Sustainment Effects on Democracy.” International Political Science Review
+  28(4): 397–424.
+
+
+                                              34
+Welzel, Christian. 2013. Freedom Rising: Human Empowerment and the Quest for Emancipation.
+  Cambridge: Cambridge University Press.
+
+Wilke, Richard, and Janell Fetterolf. 2018. “Liberal Democracy’s Crisis of Confidence.” Journal
+  of Democracy 29(4): 136–150.
+
+Williams, Laron K., and Guy D. Whitten. 2012. “But Wait, There’s More! Maximizing Substantive
+  Inferences from TSCS Models.” Journal of Politics 74(3): 685–693.
+
+Wlezien, Christopher. 1995. “The Public as Thermostat: Dynamics of Preferences for Spending.”
+  American Journal of Political Science 39(4): 981–1000.
+
+
+
+
+                                              35
+

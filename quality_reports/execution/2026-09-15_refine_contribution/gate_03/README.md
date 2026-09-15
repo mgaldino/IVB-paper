@@ -17,3 +17,7 @@ dois leitores conseguem executar o procedimento e identificar quando ele permite
 - Pareceres e artefatos desta etapa serão preservados neste diretório.
 
 Este registro inicial não representa aprovação ou trabalho já realizado.
+
+## Estado da execução em 15/09/2026
+
+Planejado, sem execução. A [nota de dependência](dependency_note.md) registra o resultado desfavorável do Gate 1 e o que precisa ser decidido antes da retomada.

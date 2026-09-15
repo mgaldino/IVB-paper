@@ -1,0 +1,181 @@
+{
+  "result": "PASS",
+  "scope": "gate records, reviewed hashes and counts",
+  "gates": [
+    {
+      "gate": 0,
+      "state": "aprovado",
+      "checklist_items": 7,
+      "decision": "gate_00/decision.md",
+      "review": "gate_00/review/final_review_round2.json"
+    },
+    {
+      "gate": 1,
+      "state": "decisão do autor",
+      "checklist_items": 10,
+      "decision": "gate_01/decision.md",
+      "review": "gate_01/review/science/final_gate_review.json"
+    },
+    {
+      "gate": 2,
+      "state": "planejado",
+      "checklist_items": 11,
+      "decision": "gate_02/dependency_note.md",
+      "review": null
+    },
+    {
+      "gate": 3,
+      "state": "planejado",
+      "checklist_items": 11,
+      "decision": "gate_03/dependency_note.md",
+      "review": null
+    },
+    {
+      "gate": 4,
+      "state": "planejado",
+      "checklist_items": 12,
+      "decision": "gate_04/dependency_note.md",
+      "review": null
+    },
+    {
+      "gate": 5,
+      "state": "planejado",
+      "checklist_items": 10,
+      "decision": "gate_05/dependency_note.md",
+      "review": null
+    },
+    {
+      "gate": 6,
+      "state": "planejado",
+      "checklist_items": 10,
+      "decision": "gate_06/dependency_note.md",
+      "review": null
+    },
+    {
+      "gate": 7,
+      "state": "planejado",
+      "checklist_items": 8,
+      "decision": "gate_07/dependency_note.md",
+      "review": null
+    }
+  ],
+  "baseline": {
+    "files": [
+      {
+        "path": "ivb_paper_pa.pdf",
+        "baseline_sha256": "5375d3c27ac1b75ca7246f0e7483470d98a69cf129a853560ae84cfe107d447c",
+        "current_sha256": "5375d3c27ac1b75ca7246f0e7483470d98a69cf129a853560ae84cfe107d447c",
+        "unchanged": true
+      },
+      {
+        "path": "ivb_paper_pa.Rmd",
+        "baseline_sha256": "12493a67133f988c5e6a13933bf2b89c0d9880e96bae329248a207b3aeaf7b5e",
+        "current_sha256": "12493a67133f988c5e6a13933bf2b89c0d9880e96bae329248a207b3aeaf7b5e",
+        "unchanged": true
+      },
+      {
+        "path": "README.md",
+        "baseline_sha256": "205c6db9abc32415527d8967657b89ead798db909ccf755e9928db64588fcfb7",
+        "current_sha256": "205c6db9abc32415527d8967657b89ead798db909ccf755e9928db64588fcfb7",
+        "unchanged": true
+      },
+      {
+        "path": "CLAUDE.md",
+        "baseline_sha256": "972801f84080ad8cad5c4f86400bc35ee8858dee4795841ee62306204ad68648",
+        "current_sha256": "972801f84080ad8cad5c4f86400bc35ee8858dee4795841ee62306204ad68648",
+        "unchanged": true
+      },
+      {
+        "path": "references.bib",
+        "baseline_sha256": "467f85d5cea8303f2881d7fb7119e19f63466227b3581dbb35ac57060c2c1b00",
+        "current_sha256": "467f85d5cea8303f2881d7fb7119e19f63466227b3581dbb35ac57060c2c1b00",
+        "unchanged": true
+      },
+      {
+        "path": "derivations/adl_cet_identification_conditions.Rmd",
+        "baseline_sha256": "f67b41089d49018dc2c1b3a6cd80ce49b67dee771df75bdf72953d9a5e64db70",
+        "current_sha256": "f67b41089d49018dc2c1b3a6cd80ce49b67dee771df75bdf72953d9a5e64db70",
+        "unchanged": true
+      },
+      {
+        "path": "derivations/multivariate_specification_shift.Rmd",
+        "baseline_sha256": "551d6e46a7a8332e47fc5cccf81b5a52c2058941bee1f88ce5c38fdd97386d64",
+        "current_sha256": "551d6e46a7a8332e47fc5cccf81b5a52c2058941bee1f88ce5c38fdd97386d64",
+        "unchanged": true
+      },
+      {
+        "path": "derivations/specification_shift_uncertainty.Rmd",
+        "baseline_sha256": "317b7a81101a75e60ad3c9466500106878dd3b84dfc48f05722517699fbed963",
+        "current_sha256": "317b7a81101a75e60ad3c9466500106878dd3b84dfc48f05722517699fbed963",
+        "unchanged": true
+      },
+      {
+        "path": "derivations/shift_allocation_correlated_controls.Rmd",
+        "baseline_sha256": "ac3796a2d67dc08c759c7923d827b70656f7c57dbacbe22a27cadd8d6f49af09",
+        "current_sha256": "ac3796a2d67dc08c759c7923d827b70656f7c57dbacbe22a27cadd8d6f49af09",
+        "unchanged": true
+      },
+      {
+        "path": "derivations/scripts/specification_shift_uncertainty.R",
+        "baseline_sha256": "1918e907b51ea58980a75fbb9b4ab93e4d4319af7a084e8a05d8be6a6bcba45b",
+        "current_sha256": "1918e907b51ea58980a75fbb9b4ab93e4d4319af7a084e8a05d8be6a6bcba45b",
+        "unchanged": true
+      },
+      {
+        "path": "simulations/finite_T_dynamic_panel/R/metrics.R",
+        "baseline_sha256": "c6c424be0f819a6d80c35af42862cffeb02982d251402bf78339f155e8b3fd6f",
+        "current_sha256": "c6c424be0f819a6d80c35af42862cffeb02982d251402bf78339f155e8b3fd6f",
+        "unchanged": true
+      },
+      {
+        "path": "simulations/finite_T_dynamic_panel/R/simulation.R",
+        "baseline_sha256": "c242194a97e38101b7a466fca3ea475038a4abb6547e7c5bb9a12f6f5be6b254",
+        "current_sha256": "c242194a97e38101b7a466fca3ea475038a4abb6547e7c5bb9a12f6f5be6b254",
+        "unchanged": true
+      },
+      {
+        "path": "quality_reports/task13_finite_T_dynamic_panel/task13_main_text_summary.csv",
+        "baseline_sha256": "c953b9d2fa88d8b164a06e8450aaf4fcc0f79e016873386b3469dd41b7857eab",
+        "current_sha256": "c953b9d2fa88d8b164a06e8450aaf4fcc0f79e016873386b3469dd41b7857eab",
+        "unchanged": true
+      },
+      {
+        "path": "quality_reports/plans/2026-09-15_refine_contribution/evidence/refine_feedback_original.md",
+        "baseline_sha256": "f4e87230957a62bc52cae799d8f32fd8baa2e1cbe7ced2b25d74ec9ece5a89be",
+        "current_sha256": "f4e87230957a62bc52cae799d8f32fd8baa2e1cbe7ced2b25d74ec9ece5a89be",
+        "unchanged": true
+      },
+      {
+        "path": "ivb_paper_psrm.Rmd",
+        "baseline_sha256": "cae604d320a39739f33516ef4ecd619aac663b89d5d462aa51421a594426d6b3",
+        "current_sha256": "cae604d320a39739f33516ef4ecd619aac663b89d5d462aa51421a594426d6b3",
+        "unchanged": true
+      },
+      {
+        "path": "ivb_paper_psrm.pdf",
+        "baseline_sha256": "ebd9dbcbc13f1b2c2f662cd119a1bab6b1fab51ee5008dca823bdca035b35602",
+        "current_sha256": "ebd9dbcbc13f1b2c2f662cd119a1bab6b1fab51ee5008dca823bdca035b35602",
+        "unchanged": true
+      },
+      {
+        "path": "quality_reports/plans/2026-09-15_refine_contribution/plan.md",
+        "baseline_sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d",
+        "current_sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d",
+        "unchanged": true
+      }
+    ],
+    "all_unchanged": true
+  },
+  "saved_numeric_outputs": {
+    "executed": true,
+    "final_status": "PASS",
+    "hashed_outputs": 16,
+    "validation_checks": 168,
+    "covariance_checks": 20,
+    "reported_projection_checks": 106,
+    "max_projection_absolute_error": 6.66133814775094e-16,
+    "max_covariance_absolute_difference": 5.55111512312578e-17,
+    "scope": "deterministic fixtures; no Monte Carlo or coverage evaluation"
+  },
+  "analytical_execution": false
+}

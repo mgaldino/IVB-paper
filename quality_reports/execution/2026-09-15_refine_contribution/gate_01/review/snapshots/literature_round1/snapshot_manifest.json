@@ -1,0 +1,18 @@
+{
+  "saved_at_utc": "2026-09-15T12:20:50.201169+00:00",
+  "reason": "Preserve bytes before corrections to math notation and the Blackwell-Glynn page locator",
+  "files": [
+    {
+      "path": "gate_01/review/snapshots/literature_round1/reader_report.md",
+      "sha256": "d8bc7ec001f747b03fd407e8f1d66713f73cf7adc6866acd3f95e3b349cb5ed2"
+    },
+    {
+      "path": "gate_01/review/snapshots/literature_round1/reader_claim_comparison.csv",
+      "sha256": "1a86300890644c8d185f08bbf4ea596b3bf25ac96bcb5ba03d70eab1658c301d"
+    },
+    {
+      "path": "gate_01/review/snapshots/literature_round1/reader_manifest.json",
+      "sha256": "1c632069ea8c9f0d5ab7e129a72dfbde2b26feb7450aa4dad5f33086ec287b58"
+    }
+  ]
+}

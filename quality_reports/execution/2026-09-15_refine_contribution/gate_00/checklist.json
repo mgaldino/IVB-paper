@@ -5,44 +5,74 @@
     {
       "id": "G0-01",
       "requirement": "Conferir novamente commit, alterações preexistentes, fonte ativa e PDF; calcular hashes e preservar o parecer original. Reutilizar o contrato desta preparação apenas enquanto a identidade e a cobertura se mantiverem válidas.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "../baseline_manifest.json",
+        "revalidation/revalidation.md",
+        "review/final_review_round2.json"
+      ]
     },
     {
       "id": "G0-02",
       "requirement": "Ler corpo, figuras, tabelas e derivações vinculadas. Para cada claim, registrar objeto estatístico, interpretação causal, pressupostos, evidência e localizador. Manter conflitos locais visíveis, sem ampliar as afirmações do paper para criticá-las.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "coordinator_read.md",
+        "revalidation/revalidation.md",
+        "review/independent_read.md",
+        "review/final_review_round2.json"
+      ]
     },
     {
       "id": "G0-03",
       "requirement": "Registrar os cinco comentários gerais, os 12 detalhados e os quatro eixos da resposta complementar. Separar diagnóstico de solução sugerida e classificar cada finding como confirmado, parcial, refutado ou não resolvido.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "revalidation/response_matrix.csv",
+        "revalidation/response_matrix.json",
+        "review/final_review_round2.json"
+      ]
     },
     {
       "id": "G0-04",
       "requirement": "Inventariar os materiais de julho e os pacotes existentes. Para cada tarefa antiga, registrar arquivo, output, teste observado, validade para a pergunta atual e eventual retrabalho. “Já existe” não equivale a “já validado para este uso”.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "inventory/task_inventory.csv",
+        "inventory/memo.md",
+        "review/final_review_round2.json"
+      ]
     },
     {
       "id": "G0-05",
       "requirement": "Enumerar os 14 candidatos dos seis estudos e, separadamente, as comparações adicionais. Confrontar a seleção programada com as tabelas exibidas e definir o denominador de qualquer síntese ou superlativo.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "inventory/application_candidates.csv",
+        "inventory/rogowski_additional_comparisons.csv",
+        "inventory/number_provenance.csv",
+        "review/final_review_round2.json"
+      ]
     },
     {
       "id": "G0-06",
       "requirement": "Definir fronteiras de arquivos. A versão histórica PSRM e o repositório IVB-SDiD ficam preservados; criar diretórios próprios para os novos resultados sem sobrescrever resultados antigos.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "../baseline_manifest.json",
+        "assessment.md",
+        "review/final_review_round2.json"
+      ]
     },
     {
       "id": "G0-07",
       "requirement": "Entregar matriz de resposta com IDs estáveis, localizadores, gate responsável, dependências e critérios de encerramento. As propostas ainda dependentes de desenho seguem para o gate competente, sem serem tratadas como patches aprovados.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "revalidation/response_matrix.csv",
+        "revalidation/response_matrix.json",
+        "review/final_review_round2.json"
+      ]
     }
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "date_utc": "2026-09-15T11:54:22.248434+00:00",
+  "scope": "input acquisition only; scientific Gate1 begins after Gate0 approval",
+  "sources": [
+    {
+      "path": "references_pdfs/causal-tscs.pdf",
+      "sha256": "9beb98e874edbe73d084a73137e750e733458ce42145717bf7bc2a82613152c1",
+      "url": "https://doi.org/10.1017/S0003055418000357",
+      "version": "published PDF; version to be confirmed by full reader",
+      "full_read_status": "not_yet_read_for_gate1"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/cinelli_forney_pearl_2022.pdf",
+      "sha256": "2dec29ba484cc91d9c74a7de78132837deace77e33300d492391fd633b5c60f6",
+      "url": "https://carloscinelli.com/files/Cinelli%20et%20al%20(2020)%20-%20A%20Crash%20Course%20in%20Good%20and%20Bad%20Controls.pdf",
+      "version": "author PDF dated 21 March 2022",
+      "full_read_status": "not_yet_read_for_gate1"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/gelbach_b1x2.sthlp",
+      "sha256": "cd9e43999b58bea60de88046f9b92d75cb339fc2a1e46e23eb0f88d3d99ab56d",
+      "url": "http://fmwww.bc.edu/repec/bocode/b/b1x2.sthlp",
+      "version": "public SSC package by Jonah Gelbach, retrieved 2026-09-15; internal version to be checked by reader",
+      "license": "GPL v3 per SSC/RePEc record S457814",
+      "full_read_status": "delegated to literature reader; not executed"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/gelbach_b1x2.ado",
+      "sha256": "9bc1a3d41d7801cf1f778058f0ba23b1ddc636b8056254ffebed7979ec291875",
+      "url": "http://fmwww.bc.edu/repec/bocode/b/b1x2.ado",
+      "version": "public SSC package by Jonah Gelbach, retrieved 2026-09-15; internal version to be checked by reader",
+      "license": "GPL v3 per SSC/RePEc record S457814",
+      "full_read_status": "delegated to literature reader; not executed"
+    }
+  ],
+  "updated_utc": "2026-09-15T12:01:18.619028+00:00"
+}

@@ -1,0 +1,18 @@
+{
+  "created_at_utc": "2026-09-15T12:54:04.793600+00:00",
+  "scope": "Three pre-editorial-repair files; all other round2 bytes preserved in place",
+  "files": [
+    {
+      "path": "candidate_blair_peacekeeping.md",
+      "sha256": "ca6386c4f42bbd901f3d4d4a68dce9545f6ab93c1bdb30e299d9797b875e520e"
+    },
+    {
+      "path": "sources_manifest.csv",
+      "sha256": "4808b8123d2656d19879a67a606e7f82c8553f41720f634bd448484be1035ed0"
+    },
+    {
+      "path": "manifest_round2.json",
+      "sha256": "ea3140977b67f4d6a485a8ed9be8ac255d1e7743e11d7ef8c6bc801acc32ffe0"
+    }
+  ]
+}

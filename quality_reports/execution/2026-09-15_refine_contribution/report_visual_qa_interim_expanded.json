@@ -1,0 +1,15 @@
+{
+  "checked_at_utc": "2026-09-15T12:34:06.504494+00:00",
+  "artifact": "execution_report.pdf",
+  "sha256": "586256b91bae49600e4245f8b973f4f7a9f03625e3b165a3777e4903c1c289d1",
+  "pages_viewed": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "status": "REPAIR",
+  "finding": "Pandoc default markdown did not parse single-backslash display math on page 2; formula appeared as text with missing glyphs. Reader paragraphs, margins and other pages were legible.",
+  "correction": "Enable markdown+tex_math_single_backslash in render_report.py. Re-render and inspect every page after final content updates.",
+  "final_qa_pending": true
+}

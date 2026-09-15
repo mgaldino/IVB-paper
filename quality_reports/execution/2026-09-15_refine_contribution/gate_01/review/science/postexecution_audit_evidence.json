@@ -1,0 +1,1835 @@
+{
+  "verdict": "PASS",
+  "audit_kind": "read_only_output_audit_with_independent_closed_form_arithmetic",
+  "R_rerun": false,
+  "checks": [
+    {
+      "check": "hash_and_size:synthetic_fixture_e1.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:synthetic_fixture_e2.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:expected_vs_computed_projections.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:actions_and_losses.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:sign_checks.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:input_consistency.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:rank_and_conditioning.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:e2_observable_covariances.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:e2_interventional_effects.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:covariance_transform_checks.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:covariance_matrices.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:product_gradients.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:procedure_comparison.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:validation_checks.csv",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:run_log.txt",
+      "pass": true
+    },
+    {
+      "check": "hash_and_size:sessionInfo.txt",
+      "pass": true
+    },
+    {
+      "check": "final_status_and_manifest",
+      "pass": true
+    },
+    {
+      "check": "exact_reviewed_code",
+      "pass": true
+    },
+    {
+      "check": "all_16_manifested_outputs",
+      "pass": true
+    },
+    {
+      "check": "168_successful_validation_rows",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:C0:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:C0:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:beta_U",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-central:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-central:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:d_lag",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-central:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-central:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:C0:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:theta_Z_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:pi_Z_given_L",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:theta_L_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-central:Cplus:pi_L_given_Z",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:C0:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:C0:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:beta_U",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-menos:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-menos:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:d_lag",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-menos:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-menos:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:C0:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:theta_Z_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:pi_Z_given_L",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:theta_L_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-menos:Cplus:pi_L_given_Z",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:C0:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:C0:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:beta_U",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-mais:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-mais:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:d_lag",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-mais:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-mais:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:C0:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:theta_Z_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:pi_Z_given_L",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:theta_L_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-mais:Cplus:pi_L_given_Z",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:C0:beta_B",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:C0:beta_C",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:beta_U",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-nulo:beta_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-nulo:d_add",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:d_lag",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-nulo:d_lag",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:E1-nulo:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:C0:d_total",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:theta_Z_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:pi_Z_given_L",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:theta_L_U",
+      "pass": true
+    },
+    {
+      "check": "projection:E1-nulo:Cplus:pi_L_given_Z",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:P:beta_S",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:Cplus:beta_S",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:C0:beta_S",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:P:beta_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:Cplus:beta_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:C0:beta_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:Cplus:theta_Z_T",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:G_M:theta_Z_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:Cplus:pi_Z",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:G_M:pi_Z",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:P:delta",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:Cplus:delta",
+      "pass": true
+    },
+    {
+      "check": "projection:G_M:C0:delta",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:P:beta_S",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:Cplus:beta_S",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:C0:beta_S",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:P:beta_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:Cplus:beta_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:C0:beta_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:Cplus:theta_Z_T",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:G_F:theta_Z_T",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:Cplus:pi_Z",
+      "pass": true
+    },
+    {
+      "check": "unscored_C0_projection:G_F:pi_Z",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:P:delta",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:Cplus:delta",
+      "pass": true
+    },
+    {
+      "check": "projection:G_F:C0:delta",
+      "pass": true
+    },
+    {
+      "check": "four_E1_cells_eight_rows_each",
+      "pass": true
+    },
+    {
+      "check": "two_E2_graphs_eight_rows_each",
+      "pass": true
+    },
+    {
+      "check": "lexicographic_unique_ids:E1-central",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x000",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x001",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x010",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x011",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x100",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x101",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x110",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-central:x111",
+      "pass": true
+    },
+    {
+      "check": "lexicographic_unique_ids:E1-menos",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x000",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x001",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x010",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x011",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x100",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x101",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x110",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-menos:x111",
+      "pass": true
+    },
+    {
+      "check": "lexicographic_unique_ids:E1-mais",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x000",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x001",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x010",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x011",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x100",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x101",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x110",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-mais:x111",
+      "pass": true
+    },
+    {
+      "check": "lexicographic_unique_ids:E1-nulo",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x000",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x001",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x010",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x011",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x100",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x101",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x110",
+      "pass": true
+    },
+    {
+      "check": "fixture_equations:E1-nulo:x111",
+      "pass": true
+    },
+    {
+      "check": "18_action_rows",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-central:C0",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-central:Cplus",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-central:P",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-menos:C0",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-menos:Cplus",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-menos:P",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-mais:C0",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-mais:Cplus",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-mais:P",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-nulo:C0",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-nulo:Cplus",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:E1-nulo:P",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:G_M:C0",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:G_M:Cplus",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:G_M:P",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:G_F:C0",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:G_F:Cplus",
+      "pass": true
+    },
+    {
+      "check": "action_and_loss:G_F:P",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:P:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:Cplus:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:linear_A_V_At:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:linear_A_V_At:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:linear_A_V_At:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-central:linear_A_V_At:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:P:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:Cplus:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:linear_A_V_At:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:linear_A_V_At:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:linear_A_V_At:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-menos:linear_A_V_At:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:P:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:Cplus:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:linear_A_V_At:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:linear_A_V_At:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:linear_A_V_At:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-mais:linear_A_V_At:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:P:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_add:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_lag:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_total:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_total:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:Cplus:d_total:d_total",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:linear_A_V_At:d_add:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:linear_A_V_At:d_add:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:linear_A_V_At:d_lag:d_add",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:E1-nulo:linear_A_V_At:d_lag:d_lag",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:G_M:P:delta:delta",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:G_M:Cplus:delta:delta",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:G_F:P:delta:delta",
+      "pass": true
+    },
+    {
+      "check": "independent_covariance:G_F:Cplus:delta:delta",
+      "pass": true
+    },
+    {
+      "check": "20_covariance_and_influence_checks",
+      "pass": true
+    },
+    {
+      "check": "complete_nonzero_gradient_entries",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:P:d_add:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:P:d_total:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:P:d_lag:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:P:d_total:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:P:d_add:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:P:d_lag:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_lag:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_total:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_add:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_total:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_add:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_total:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_lag:aux_L::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-central:Cplus_product:d_total:aux_L::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:P:d_add:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:P:d_total:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:P:d_lag:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:P:d_total:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:P:d_add:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:P:d_lag:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_lag:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_total:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_add:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_total:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_add:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_total:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_lag:aux_L::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-menos:Cplus_product:d_total:aux_L::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:P:d_add:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:P:d_total:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:P:d_lag:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:P:d_total:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:P:d_add:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:P:d_lag:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_lag:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_total:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_add:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_total:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_add:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_total:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_lag:aux_L::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-mais:Cplus_product:d_total:aux_L::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:P:d_add:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:P:d_total:B::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:P:d_lag:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:P:d_total:C::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:P:d_add:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:P:d_lag:U::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:Cplus_product:d_lag:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:Cplus_product:d_total:U::L",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:Cplus_product:d_add:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:E1-nulo:Cplus_product:d_total:U::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_M:P:delta:S::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_M:P:delta:T::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_M:Cplus_product:delta:T::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_M:Cplus_product:delta:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_F:P:delta:S::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_F:P:delta:T::D",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_F:Cplus_product:delta:T::Z",
+      "pass": true
+    },
+    {
+      "check": "gradient:G_F:Cplus_product:delta:aux_Z::D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:D:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:D:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:D:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:Z:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:Z:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:Z:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:Y:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:Y:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:structural_transform:Y:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:D:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:D:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:D:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:Z:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:Z:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:Z:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:Y:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:Y:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_M:fixture_moments:Y:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:D:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:D:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:D:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:Z:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:Z:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:Z:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:Y:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:Y:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:structural_transform:Y:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:D:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:D:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:D:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:Z:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:Z:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:Z:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:Y:D",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:Y:Z",
+      "pass": true
+    },
+    {
+      "check": "E2_Sigma:G_F:fixture_moments:Y:Y",
+      "pass": true
+    },
+    {
+      "check": "E2_do_D:G_M",
+      "pass": true
+    },
+    {
+      "check": "E2_do_D:G_F",
+      "pass": true
+    },
+    {
+      "check": "all_recorded_models_full_rank",
+      "pass": true
+    },
+    {
+      "check": "all_normal_equations_small",
+      "pass": true
+    },
+    {
+      "check": "all_common_inputs",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-central:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-central:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-central:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-central:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-central:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-central:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-menos:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-menos:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-menos:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-menos:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-menos:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-menos:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-mais:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-mais:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-mais:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-mais:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-mais:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-mais:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-nulo:P:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-nulo:P:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-nulo:P:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-nulo:Cplus:d_add",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-nulo:Cplus:signed_removal",
+      "pass": true
+    },
+    {
+      "check": "sign:E1-nulo:Cplus:d_total",
+      "pass": true
+    },
+    {
+      "check": "sign:G_M:P:delta",
+      "pass": true
+    },
+    {
+      "check": "sign:G_M:Cplus:delta",
+      "pass": true
+    },
+    {
+      "check": "sign:G_F:P:delta",
+      "pass": true
+    },
+    {
+      "check": "sign:G_F:Cplus:delta",
+      "pass": true
+    }
+  ],
+  "bytes_reviewed": [
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/synthetic_fixture_e1.csv",
+      "sha256": "e5c4d6271c486ad9d1fc2c7ab91093c5b115ba335c64fca94cc3b5d4b26b5ac4",
+      "bytes": 2026
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/synthetic_fixture_e2.csv",
+      "sha256": "e73ad1c743d593d32d1a663f4e7ab4b6440351fc14b2b79a27f4ccf66c40f125",
+      "bytes": 1279
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/expected_vs_computed_projections.csv",
+      "sha256": "975fe20a2ec99e2180afa2c6fe7800229e7b85847500c96c74a10c4ff4b5fe20",
+      "bytes": 10888
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/actions_and_losses.csv",
+      "sha256": "7e5b780bd12fef06e204f371aa4a3a6e9528722ea38967c7e011e34c87cd969e",
+      "bytes": 8338
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/sign_checks.csv",
+      "sha256": "1162cdb3d6fdb8bd9de04780ff56a43c6515c4b68c9caa606fde4b47b92ace85",
+      "bytes": 2111
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/input_consistency.csv",
+      "sha256": "8661fe93af393f2b94c822228d00ade209465e10a488911f3007ba719e5ac9ad",
+      "bytes": 959
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/rank_and_conditioning.csv",
+      "sha256": "8f297246f188283e0041197de134160fbcb670b70e7f1b8216e26d0088e8b66f",
+      "bytes": 6446
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/e2_observable_covariances.csv",
+      "sha256": "27a920e9e048a6c3cada364bf7754ccacfd5ee3efcedb769a9cf9f3ee4d82c01",
+      "bytes": 1673
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/e2_interventional_effects.csv",
+      "sha256": "abbf823a15d77b1b039cf4f8469773cf822f7e8dd2586bf5ae9ec174190d7a80",
+      "bytes": 274
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/covariance_transform_checks.csv",
+      "sha256": "8c3d06055f8869fbdb2cbf6349e8f63c1e885e69a3d11f522e3469cbe85eca05",
+      "bytes": 2813
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/covariance_matrices.csv",
+      "sha256": "b7fe7f9d9bef2ea35edaf862314bcbc9c8ddc6efb435d42d0bd1023c3046f1b0",
+      "bytes": 7822
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/product_gradients.csv",
+      "sha256": "0558ad783ec6504cd8dc1025872347bb0d2e94f8ca37199269bf720c06ed394e",
+      "bytes": 6418
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/procedure_comparison.csv",
+      "sha256": "ae1aa674f24356b80e58da38716fa0057fd01729f6dd7f640ae9af5f7c3a52b8",
+      "bytes": 628
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/validation_checks.csv",
+      "sha256": "2afca8f4dafd869ced464f2ad1776cdfeb8344962ed6468a3c04d3af0c855992",
+      "bytes": 24332
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/run_log.txt",
+      "sha256": "7c7228c8ba72f49e75958acb2bc5aa4a082b10ae314282b58a519231ee48967a",
+      "bytes": 432
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/sessionInfo.txt",
+      "sha256": "c0d2eea1d4bbe22eea22116507c2abffaef60b23ac7be5a3477527b3a6cb98ec",
+      "bytes": 559
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/output_manifest.csv",
+      "sha256": "aedc8deff4e1b3ea99aa3bd7c21da3d98932d146b8e2e6a2900ff610f08a7cdc",
+      "bytes": 2569
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary/final_status.txt",
+      "sha256": "d9aaed651984db90575b8197f5f132437709cccdf52a8dbc24c819455f7d9ff1",
+      "bytes": 217
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/execution_authorization.json",
+      "sha256": "e1175dd6bab092c667fe33a579279e4c6e8a6527aa50218e982aa5bc0eadcbfd",
+      "bytes": 1064
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/execution_console.txt",
+      "sha256": "0d9a1360a93ae29efd2509724bcfb9c66853e864b2d621a8b5c837fa89f489bd",
+      "bytes": 800
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/verify_examples.R",
+      "sha256": "98b4fbc20bdce3d03eaae7e1828a34a2c37e1e07c7f46cb848cc32131aff7127",
+      "bytes": 53299
+    }
+  ],
+  "summary": {
+    "R_validation_rows": 168,
+    "audit_checks": 426,
+    "projection_rows": 126,
+    "reported_projection_rows": 106,
+    "action_rows": 18,
+    "model_diagnostic_rows": 54,
+    "covariance_check_rows": 20,
+    "max_projection_error_vs_independent_formula": 9.992007221626409e-16,
+    "max_covariance_error_vs_independent_formula": 9.71445146547012e-17,
+    "max_recorded_covariance_difference": 5.55111512312578e-17,
+    "max_normal_equation_error": 2.88657986402541e-15,
+    "max_condition_design": 4.04891733952231,
+    "max_condition_gram": 16.3937316222844,
+    "e1_rows": 32,
+    "e2_rows": 16
+  }
+}

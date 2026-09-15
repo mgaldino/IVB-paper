@@ -1,0 +1,4 @@
+status=PASS
+reason=all_prespecified_checks_and_required_outputs_completed
+output_manifest_sha256=aedc8deff4e1b3ea99aa3bd7c21da3d98932d146b8e2e6a2900ff610f08a7cdc
+manifest_excludes=output_manifest.csv|final_status.txt

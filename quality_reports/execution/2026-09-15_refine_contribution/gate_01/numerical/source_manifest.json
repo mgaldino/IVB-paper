@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.1",
+  "artifact": "gate1_deterministic_numeric_verification",
+  "repair_round": 2,
+  "status": "code_repaired_not_executed_pending_new_independent_review",
+  "prepared_at_utc": "2026-09-15T12:36:06Z",
+  "governing_freeze": {
+    "path": "../contribution/freeze_prespec_v2.json",
+    "frozen_at_utc": "2026-09-15T12:03:13.129547+00:00",
+    "tested_before_freeze": false,
+    "files": [
+      {
+        "path": "../contribution/test_prespec_v2.md",
+        "sha256": "37562fccf615793d0b589b58303e0afeb225edd73ea85e44a7bb1b7688be7097",
+        "role": "governing_prespecification"
+      },
+      {
+        "path": "../contribution/test_prespec_v2.json",
+        "sha256": "12affe0250af02ada1fc4213a1067ccfe5b482fa5d7a78c52261069c7e7ff00f",
+        "role": "governing_machine_readable_prespecification"
+      }
+    ]
+  },
+  "repair_authority": [
+    {
+      "path": "../review/science/review_r_v1.md",
+      "sha256": "b4201843be132f36cafdcc4b9f9447c149f5bdc35f24ac96665da6d3db28a9c0",
+      "role": "independent_static_review"
+    },
+    {
+      "path": "../review/coordinator_findings.md",
+      "sha256": "b89047d9c4677ba87c369ddc787cba777aa1e3a0354343936d15b2e517f4863b",
+      "role": "confirmed_findings_NUM_01_through_NUM_04"
+    }
+  ],
+  "supporting_sources": [
+    {
+      "path": "../contribution/derivation.md",
+      "sha256": "7038d74a1623e9b18a8902b48a44cbe7ba69530c7de96a03b876203055edb0c8",
+      "role": "supporting_algebra_not_governing"
+    },
+    {
+      "path": "../../../../../CLAUDE.md",
+      "sha256": "972801f84080ad8cad5c4f86400bc35ee8858dee4795841ee62306204ad68648",
+      "role": "repository_workflow"
+    },
+    {
+      "path": "/Users/manoelgaldino/.codex/skills/review-r/SKILL.md",
+      "sha256": "da643bcf23fb0ba753f35b57ce032f087af8568da3167212464ea039670911b2",
+      "role": "review_workflow_only"
+    }
+  ],
+  "preserved_round1": {
+    "path": "../review/snapshots/numerical_round1",
+    "files": [
+      {
+        "path": "verify_examples.R",
+        "sha256": "eaa328c2c7394c27443f28481f0fc2ebb9436534ad4c1bc390203a88ca7beae6"
+      },
+      {
+        "path": "README.md",
+        "sha256": "543829a14cf7cc17ed203e516f9b19c1dab1c3abecb808213b4e0a35b5ff7cdb"
+      },
+      {
+        "path": "source_manifest.json",
+        "sha256": "d07fef66fca01c424146e3304c0bb13685309078b1be988fb0d6823f7a7ac208"
+      }
+    ]
+  },
+  "prepared_artifacts": [
+    {
+      "path": "verify_examples.R",
+      "sha256": "98b4fbc20bdce3d03eaae7e1828a34a2c37e1e07c7f46cb848cc32131aff7127",
+      "language": "R",
+      "dependencies": ["base_R", "external_shasum_with_C_locale"]
+    },
+    {
+      "path": "README.md",
+      "sha256": "d29514a2f655c2f7efa6cb6cda28e934d5d6b0b0ae38c883fb812d3389806c4b"
+    },
+    {
+      "path": "repair_round2.md",
+      "sha256": "1fb7de332d8e53fb76f9626ca4fabc32478c1468a74a18812a563acc5f3b5531"
+    }
+  ],
+  "repairs": [
+    "NUM_01_portable_sha256_subprocess_validation",
+    "NUM_02_declarative_action_oracles_and_computed_losses",
+    "NUM_03_structural_do_D_responses",
+    "NUM_04_authoritative_status_after_required_outputs"
+  ],
+  "implementation_scope": {
+    "examples": ["E1", "E2"],
+    "e1_cells": ["E1-central", "E1-menos", "E1-mais", "E1-nulo"],
+    "e2_graphs": ["G_M", "G_F"],
+    "fixture_rows_per_cell_or_graph": 8,
+    "methods": [
+      "direct_unweighted_OLS",
+      "independent_FWL_auxiliary_regressions",
+      "rank_and_conditioning",
+      "declarative_action_oracle_with_0_1_4_loss",
+      "structural_unit_intervention_response",
+      "deterministic_structural_covariance_transform",
+      "stacked_HC0_algebra_transform_without_inferential_claims",
+      "product_gradient_and_influence_equivalence"
+    ]
+  },
+  "output_status_protocol": {
+    "authoritative_file": "results/<run>/final_status.txt",
+    "pass_written_after": [
+      "all_prespecified_checks",
+      "all_required_output_files",
+      "output_manifest.csv",
+      "recalculated_output_manifest_sha256"
+    ],
+    "manifest_excludes": ["output_manifest.csv", "final_status.txt"],
+    "failure_before_pass": "status_FAILED_written_by_explicit_branch_or_on_exit"
+  },
+  "execution_state": {
+    "R_executed": false,
+    "R_parsed": false,
+    "results_directory_created": false,
+    "required_next_step": "new_independent_review_r_before_any_execution"
+  },
+  "excluded": [
+    "real_data",
+    "simulation",
+    "monte_carlo",
+    "bootstrap",
+    "causal_discovery_or_DAG_solver",
+    "empirical_confidence_intervals",
+    "coverage_or_calibration_claims",
+    "cluster_coverage_claims",
+    "short_panel_estimation",
+    "paper_changes"
+  ]
+}

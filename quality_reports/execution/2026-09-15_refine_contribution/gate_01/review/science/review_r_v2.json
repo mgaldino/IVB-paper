@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "review_id": "ivb-gate1-independent-review-r-round2",
+  "date": "2026-09-15",
+  "reviewer": "gate1_scientific_review",
+  "review_kind": "independent_static_preexecution_review",
+  "verdict": "PASS",
+  "verdict_scope": "Frozen deterministic E1/E2 verification; coordinator adjudication and execution remain separate",
+  "code_path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/verify_examples.R",
+  "code_sha256": "98b4fbc20bdce3d03eaae7e1828a34a2c37e1e07c7f46cb848cc32131aff7127",
+  "code_lines": 1645,
+  "artifact_sha256": {
+    "README.md": "d29514a2f655c2f7efa6cb6cda28e934d5d6b0b0ae38c883fb812d3389806c4b",
+    "repair_round2.md": "1fb7de332d8e53fb76f9626ca4fabc32478c1468a74a18812a563acc5f3b5531",
+    "source_manifest.json": "cb96ea39df03496bec9b801181103e9de57316a97de69fe56df9d9a2ce9549d6"
+  },
+  "governing_prespecification_sha256": {
+    "test_prespec_v2.md": "37562fccf615793d0b589b58303e0afeb225edd73ea85e44a7bb1b7688be7097",
+    "test_prespec_v2.json": "12affe0250af02ada1fc4213a1067ccfe5b482fa5d7a78c52261069c7e7ff00f"
+  },
+  "rechecked_findings": [
+    {"id": "NUM-01", "status": "RESOLVED_STATIC", "lines": [35,65], "evidence": "Portable subprocess locale, exit/format validation; shell shasum returned one correct line"},
+    {"id": "NUM-02", "status": "RESOLVED_STATIC", "lines": [350,392,505,545,599,628,882,942,1174,1232,1372,1415,1449,1455,1477,1485,1509,1517], "evidence": "Separate declarative oracles, computed losses, per-action correctness included in overall_pass"},
+    {"id": "NUM-03", "status": "RESOLVED_STATIC", "lines": [578,589,1303,1349], "evidence": "SCM intervention functions calculate Y(1)-Y(0) and compare with distinct analytical targets"},
+    {"id": "NUM-04", "status": "RESOLVED_STATIC", "lines": [152,175,1567,1641], "evidence": "Authoritative final_status follows all outputs and manifest hashing; failure path preserves FAILED"}
+  ],
+  "new_material_findings": [],
+  "verification": {
+    "full_diff_read_against_round1_snapshot": true,
+    "affected_dependency_chain_read": true,
+    "artifact_hashes_match": true,
+    "round1_snapshot_hashes_preserved": true,
+    "json_manifest_read_with_python": true,
+    "portable_shell_hash_checked": true,
+    "numerical_results_directory_absent_at_review": true,
+    "R_executed": false,
+    "R_parsed": false,
+    "numerical_tests_executed": false,
+    "failure_branches_executed": false,
+    "implementation_edited_by_reviewer": false
+  },
+  "causal_outputs_status": "Analytical inputs supplied and checked against frozen oracle; no DAG solver or causal discovery",
+  "covariance_status": "Static approval of algebraic stacked HC0/influence transformations; no coverage or calibration claim",
+  "postexecution_review_required": true,
+  "not_certified": [
+    "statistical coverage",
+    "cluster inference validity",
+    "short-panel estimation",
+    "human usability gain",
+    "real-data causal results",
+    "literature completeness",
+    "methodological novelty",
+    "global Gate1 PASS"
+  ],
+  "remaining_literature_gap": "Gelbach 2016 full article unavailable",
+  "report": "review_r_v2.md"
+}

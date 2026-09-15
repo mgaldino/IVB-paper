@@ -1,0 +1,1044 @@
+Codebook for Support_democracy_ajps_correct.csv
+
+
+=========================================================================
+
+   Country
+
+-------------------------------------------------------------------------
+
+   Factor with 135 levels
+
+                Values and labels   N    Percent
+
+     1 'Albania'                    31   0.7
+     2 'Algeria'                    31   0.7
+     3 'Argentina'                  31   0.7
+     4 'Armenia'                    31   0.7
+     5 'Australia'                  31   0.7
+     6 'Austria'                    31   0.7
+     7 'Azerbaijan'                 31   0.7
+     8 'Bahrain'                    31   0.7
+     9 'Bangladesh'                 31   0.7
+    10 'Belarus'                    31   0.7
+    11 'Belgium'                    31   0.7
+    12 'Benin'                      31   0.7
+    13 'Bolivia'                    31   0.7
+    14 'Bosnia and Herzegovina'     31   0.7
+    15 'Botswana'                   31   0.7
+    16 'Brazil'                     31   0.7
+    17 'Bulgaria'                   31   0.7
+    18 'Burkina Faso'               31   0.7
+    19 'Burundi'                    31   0.7
+    20 'Cambodia'                   31   0.7
+    21 'Cameroon'                   31   0.7
+    22 'Canada'                     31   0.7
+    23 'Cape Verde'                 31   0.7
+    24 'Chile'                      31   0.7
+    25 'China'                      31   0.7
+    26 'Colombia'                   31   0.7
+    27 'Costa Rica'                 31   0.7
+    28 'Croatia'                    31   0.7
+    29 'Cyprus'                     31   0.7
+    30 'Czech Republic'             31   0.7
+    31 'Denmark'                    31   0.7
+    32 'Dominican Republic'         31   0.7
+    33 'Ecuador'                    31   0.7
+    34 'Egypt'                      31   0.7
+    35 'El Salvador'                31   0.7
+    36 'Estonia'                    31   0.7
+    37 'Finland'                    31   0.7
+    38 'France'                     31   0.7
+    39 'Georgia'                    31   0.7
+    40 'Germany'                    31   0.7
+    41 'Ghana'                      31   0.7
+    42 'Greece'                     31   0.7
+    43 'Guatemala'                  31   0.7
+    44 'Guinea'                     31   0.7
+    45 'Guyana'                     31   0.7
+ 46 'Haiti'          31   0.7
+ 47 'Honduras'       31   0.7
+ 48 'Hungary'        31   0.7
+ 49 'Iceland'        31   0.7
+ 50 'India'          31   0.7
+ 51 'Indonesia'      31   0.7
+ 52 'Iran'           31   0.7
+ 53 'Iraq'           31   0.7
+ 54 'Ireland'        31   0.7
+ 55 'Israel'         31   0.7
+ 56 'Italy'          31   0.7
+ 57 'Ivory Coast'    31   0.7
+ 58 'Jamaica'        31   0.7
+ 59 'Japan'          31   0.7
+ 60 'Jordan'         31   0.7
+ 61 'Kazakhstan'     31   0.7
+ 62 'Kenya'          31   0.7
+ 63 'Kuwait'         31   0.7
+ 64 'Kyrgyzstan'     31   0.7
+ 65 'Latvia'         31   0.7
+ 66 'Lebanon'        31   0.7
+ 67 'Lesotho'        31   0.7
+ 68 'Liberia'        31   0.7
+ 69 'Libya'          31   0.7
+ 70 'Lithuania'      31   0.7
+ 71 'Luxembourg'     31   0.7
+ 72 'Macedonia'      31   0.7
+ 73 'Madagascar'     31   0.7
+ 74 'Malawi'         31   0.7
+ 75 'Malaysia'       31   0.7
+ 76 'Mali'           31   0.7
+ 77 'Mauritius'      31   0.7
+ 78 'Mexico'         31   0.7
+ 79 'Moldova'        31   0.7
+ 80 'Mongolia'       31   0.7
+ 81 'Montenegro'     31   0.7
+ 82 'Morocco'        31   0.7
+ 83 'Mozambique'     31   0.7
+ 84 'Namibia'        31   0.7
+ 85 'Nepal'          31   0.7
+ 86 'Netherlands'    31   0.7
+ 87 'New Zealand'    31   0.7
+ 88 'Nicaragua'      31   0.7
+ 89 'Niger'          31   0.7
+ 90 'Nigeria'        31   0.7
+ 91 'Norway'         31   0.7
+ 92 'Pakistan'       31   0.7
+ 93 'Panama'         31   0.7
+ 94 'Paraguay'       31   0.7
+ 95 'Peru'           31   0.7
+ 96 'Philippines'    31   0.7
+ 97 'Poland'         31   0.7
+ 98 'Portugal'       31   0.7
+ 99 'Romania'        31   0.7
+100 'Russia'         31   0.7
+101 'Rwanda'         31   0.7
+102 'Saudi Arabia'   31   0.7
+103 'Senegal'        31   0.7
+   104 'Serbia'                         31   0.7
+   105 'Sierra Leone'                   31   0.7
+   106 'Singapore'                      31   0.7
+   107 'Slovakia'                       31   0.7
+   108 'Slovenia'                       31   0.7
+   109 'South Africa'                   31   0.7
+   110 'South Korea'                    31   0.7
+   111 'Spain'                          31   0.7
+   112 'Sri Lanka'                      31   0.7
+   113 'Sudan'                          31   0.7
+   114 'Suriname'                       31   0.7
+   115 'Swaziland'                      31   0.7
+   116 'Sweden'                         31   0.7
+   117 'Switzerland'                    31   0.7
+   118 'Taiwan'                         31   0.7
+   119 'Tanzania'                       31   0.7
+   120 'Thailand'                       31   0.7
+   121 'Togo'                           31   0.7
+   122 'Trinidad and Tobago'            31   0.7
+   123 'Tunisia'                        31   0.7
+   124 'Turkey'                         31   0.7
+   125 'Uganda'                         31   0.7
+   126 'Ukraine'                        31   0.7
+   127 'United Kingdom'                 31   0.7
+   128 'United States of America'       31   0.7
+   129 'Uruguay'                        31   0.7
+   130 'Uzbekistan'                     31   0.7
+   131 'Venezuela'                      31   0.7
+   132 'Vietnam'                        31   0.7
+   133 'Yemen'                          31   0.7
+   134 'Zambia'                         31   0.7
+   135 'Zimbabwe'                       31   0.7
+
+=========================================================================
+
+   Cnt_code
+
+   Country abbreviation
+
+-------------------------------------------------------------------------
+
+   Factor with 135 levels
+
+   Values and labels     N    Percent
+
+               1 'ALB'   31   0.7
+               2 'ALG'   31   0.7
+               3 'ARG'   31   0.7
+               4 'ARM'   31   0.7
+               5 'AUL'   31   0.7
+               6 'AUS'   31   0.7
+               7 'AZE'   31   0.7
+               8 'BAH'   31   0.7
+               9 'BEL'   31   0.7
+              10 'BEN'   31   0.7
+              11 'BFO'   31   0.7
+              12 'BLR'   31   0.7
+              13 'BNG'   31   0.7
+14 'BOL'   31   0.7
+15 'BOS'   31   0.7
+16 'BOT'   31   0.7
+17 'BRA'   31   0.7
+18 'BUI'   31   0.7
+19 'BUL'   31   0.7
+20 'CAM'   31   0.7
+21 'CAN'   31   0.7
+22 'CAO'   31   0.7
+23 'CAP'   31   0.7
+24 'CDI'   31   0.7
+25 'CHL'   31   0.7
+26 'CHN'   31   0.7
+27 'COL'   31   0.7
+28 'COS'   31   0.7
+29 'CRO'   31   0.7
+30 'CYP'   31   0.7
+31 'CZR'   31   0.7
+32 'DEN'   31   0.7
+33 'DOM'   31   0.7
+34 'ECU'   31   0.7
+35 'EGY'   31   0.7
+36 'EST'   31   0.7
+37 'FIN'   31   0.7
+38 'FRN'   31   0.7
+39 'GHA'   31   0.7
+40 'GMY'   31   0.7
+41 'GRC'   31   0.7
+42 'GRG'   31   0.7
+43 'GUA'   31   0.7
+44 'GUI'   31   0.7
+45 'GUY'   31   0.7
+46 'HAI'   31   0.7
+47 'HON'   31   0.7
+48 'HUN'   31   0.7
+49 'ICE'   31   0.7
+50 'IND'   31   0.7
+51 'INS'   31   0.7
+52 'IRE'   31   0.7
+53 'IRN'   31   0.7
+54 'IRQ'   31   0.7
+55 'ISR'   31   0.7
+56 'ITA'   31   0.7
+57 'JAM'   31   0.7
+58 'JOR'   31   0.7
+59 'JPN'   31   0.7
+60 'KEN'   31   0.7
+61 'KUW'   31   0.7
+62 'KYR'   31   0.7
+63 'KZK'   31   0.7
+64 'LAT'   31   0.7
+65 'LBR'   31   0.7
+66 'LEB'   31   0.7
+67 'LES'   31   0.7
+68 'LIB'   31   0.7
+69 'LIT'   31   0.7
+70 'LUX'   31   0.7
+71 'MAC'   31   0.7
+ 72 'MAG'   31   0.7
+ 73 'MAL'   31   0.7
+ 74 'MAS'   31   0.7
+ 75 'MAW'   31   0.7
+ 76 'MEX'   31   0.7
+ 77 'MLD'   31   0.7
+ 78 'MLI'   31   0.7
+ 79 'MNE'   31   0.7
+ 80 'MON'   31   0.7
+ 81 'MOR'   31   0.7
+ 82 'MZM'   31   0.7
+ 83 'NAM'   31   0.7
+ 84 'NEP'   31   0.7
+ 85 'NEW'   31   0.7
+ 86 'NIC'   31   0.7
+ 87 'NIG'   31   0.7
+ 88 'NIR'   31   0.7
+ 89 'NOR'   31   0.7
+ 90 'NTH'   31   0.7
+ 91 'PAK'   31   0.7
+ 92 'PAN'   31   0.7
+ 93 'PAR'   31   0.7
+ 94 'PER'   31   0.7
+ 95 'PHI'   31   0.7
+ 96 'POL'   31   0.7
+ 97 'POR'   31   0.7
+ 98 'ROK'   31   0.7
+ 99 'ROM'   31   0.7
+100 'RUS'   31   0.7
+101 'RWA'   31   0.7
+102 'SAF'   31   0.7
+103 'SAL'   31   0.7
+104 'SAU'   31   0.7
+105 'SEN'   31   0.7
+106 'SIE'   31   0.7
+107 'SIN'   31   0.7
+108 'SLO'   31   0.7
+109 'SLV'   31   0.7
+110 'SPN'   31   0.7
+111 'SRB'   31   0.7
+112 'SRI'   31   0.7
+113 'SUD'   31   0.7
+114 'SUR'   31   0.7
+115 'SWA'   31   0.7
+116 'SWD'   31   0.7
+117 'SWZ'   31   0.7
+118 'TAW'   31   0.7
+119 'TAZ'   31   0.7
+120 'THI'   31   0.7
+121 'TOG'   31   0.7
+122 'TRI'   31   0.7
+123 'TUN'   31   0.7
+124 'TUR'   31   0.7
+125 'UGA'   31   0.7
+126 'UKG'   31   0.7
+127 'UKR'   31   0.7
+128 'URU'   31   0.7
+129 'USA'   31   0.7
+           130 'UZB'     31   0.7
+           131 'VEN'     31   0.7
+           132 'VNM'     31   0.7
+           133 'YEM'     31   0.7
+           134 'ZAM'     31   0.7
+           135 'ZIM'     31   0.7
+
+=========================================================================
+
+   ISO_code
+
+   Country ISO code
+
+-------------------------------------------------------------------------
+
+   Factor with 135 levels
+
+   Values and labels     N    Percent
+
+               1 'ALB'   30   0.7 0.7
+               2 'ARG'   30   0.7 0.7
+               3 'ARM'   30   0.7 0.7
+               4 'AUS'   30   0.7 0.7
+               5 'AUT'   30   0.7 0.7
+               6 'AZE'   30   0.7 0.7
+               7 'BDI'   30   0.7 0.7
+               8 'BEL'   30   0.7 0.7
+               9 'BEN'   30   0.7 0.7
+              10 'BFA'   30   0.7 0.7
+              11 'BGD'   30   0.7 0.7
+              12 'BGR'   30   0.7 0.7
+              13 'BHR'   30   0.7 0.7
+              14 'BIH'   30   0.7 0.7
+              15 'BLR'   30   0.7 0.7
+              16 'BOL'   30   0.7 0.7
+              17 'BRA'   30   0.7 0.7
+              18 'BWA'   30   0.7 0.7
+              19 'CAN'   30   0.7 0.7
+              20 'CHE'   30   0.7 0.7
+              21 'CHL'   30   0.7 0.7
+              22 'CHN'   30   0.7 0.7
+              23 'CIV'   30   0.7 0.7
+              24 'CMR'   30   0.7 0.7
+              25 'COL'   30   0.7 0.7
+              26 'CPV'   30   0.7 0.7
+              27 'CRI'   30   0.7 0.7
+              28 'CYP'   30   0.7 0.7
+              29 'CZE'   30   0.7 0.7
+              30 'DEU'   30   0.7 0.7
+              31 'DNK'   30   0.7 0.7
+              32 'DOM'   30   0.7 0.7
+              33 'DZA'   30   0.7 0.7
+              34 'ECU'   30   0.7 0.7
+              35 'EGY'   30   0.7 0.7
+              36 'ESP'   30   0.7 0.7
+              37 'EST'   30   0.7 0.7
+              38 'FIN'   30   0.7 0.7
+              39 'FRA'   30   0.7 0.7
+40 'GBR'   30   0.7 0.7
+41 'GEO'   30   0.7 0.7
+42 'GHA'   30   0.7 0.7
+43 'GIN'   30   0.7 0.7
+44 'GRC'   30   0.7 0.7
+45 'GTM'   30   0.7 0.7
+46 'GUY'   30   0.7 0.7
+47 'HND'   30   0.7 0.7
+48 'HRV'   30   0.7 0.7
+49 'HTI'   30   0.7 0.7
+50 'HUN'   30   0.7 0.7
+51 'IDN'   30   0.7 0.7
+52 'IND'   30   0.7 0.7
+53 'IRL'   30   0.7 0.7
+54 'IRN'   30   0.7 0.7
+55 'IRQ'   30   0.7 0.7
+56 'ISL'   30   0.7 0.7
+57 'ISR'   30   0.7 0.7
+58 'ITA'   30   0.7 0.7
+59 'JAM'   30   0.7 0.7
+60 'JOR'   30   0.7 0.7
+61 'JPN'   30   0.7 0.7
+62 'KAZ'   30   0.7 0.7
+63 'KEN'   30   0.7 0.7
+64 'KGZ'   30   0.7 0.7
+65 'KHM'   30   0.7 0.7
+66 'KOR'   30   0.7 0.7
+67 'KWT'   30   0.7 0.7
+68 'LBN'   30   0.7 0.7
+69 'LBR'   30   0.7 0.7
+70 'LBY'   30   0.7 0.7
+71 'LKA'   30   0.7 0.7
+72 'LSO'   30   0.7 0.7
+73 'LTU'   30   0.7 0.7
+74 'LUX'   30   0.7 0.7
+75 'LVA'   30   0.7 0.7
+76 'MAR'   30   0.7 0.7
+77 'MDA'   30   0.7 0.7
+78 'MDG'   30   0.7 0.7
+79 'MEX'   30   0.7 0.7
+80 'MKD'   30   0.7 0.7
+81 'MLI'   30   0.7 0.7
+82 'MNE'   30   0.7 0.7
+83 'MNG'   30   0.7 0.7
+84 'MOZ'   30   0.7 0.7
+85 'MUS'   30   0.7 0.7
+86 'MWI'   30   0.7 0.7
+87 'MYS'   30   0.7 0.7
+88 'NAM'   30   0.7 0.7
+89 'NER'   30   0.7 0.7
+90 'NGA'   30   0.7 0.7
+91 'NIC'   30   0.7 0.7
+92 'NLD'   30   0.7 0.7
+93 'NOR'   30   0.7 0.7
+94 'NPL'   30   0.7 0.7
+95 'NZL'   30   0.7 0.7
+96 'PAK'   30   0.7 0.7
+97 'PAN'   30   0.7 0.7
+            98 'PER' 30      0.7 0.7
+            99 'PHL' 30      0.7 0.7
+           100 'POL' 30      0.7 0.7
+           101 'PRT' 30      0.7 0.7
+           102 'PRY' 30      0.7 0.7
+           103 'ROU' 30      0.7 0.7
+           104 'RUS' 30      0.7 0.7
+           105 'RWA' 30      0.7 0.7
+           106 'SAU' 30      0.7 0.7
+           107 'SDN' 30      0.7 0.7
+           108 'SEN' 30      0.7 0.7
+           109 'SGP' 30      0.7 0.7
+           110 'SLE' 30      0.7 0.7
+           111 'SLV' 30      0.7 0.7
+           112 'SRB' 30      0.7 0.7
+           113 'SUR' 30      0.7 0.7
+           114 'SVK' 30      0.7 0.7
+           115 'SVN' 30      0.7 0.7
+           116 'SWE' 30      0.7 0.7
+           117 'SWZ' 30      0.7 0.7
+           118 'TGO' 30      0.7 0.7
+           119 'THA' 30      0.7 0.7
+           120 'TTO' 30      0.7 0.7
+           121 'TUN' 30      0.7 0.7
+           122 'TUR' 30      0.7 0.7
+           123 'TWN' 31      0.8 0.7
+           124 'TZA' 30      0.7 0.7
+           125 'UGA' 30      0.7 0.7
+           126 'UKR' 30      0.7 0.7
+           127 'URY' 30      0.7 0.7
+           128 'USA' 30      0.7 0.7
+           129 'UZB' 30      0.7 0.7
+           130 'VEN' 30      0.7 0.7
+           131 'VNM' 30      0.7 0.7
+           132 'YEM' 30      0.7 0.7
+           133 'ZAF' 30      0.7 0.7
+           134 'ZMB' 30      0.7 0.7
+           135 'ZWE' 30      0.7 0.7
+            NA       134         3.2
+
+=========================================================================
+
+   Year
+
+-------------------------------------------------------------------------
+
+          Min.:   1987
+       1st Qu.:   1994
+        Median:   2002
+          Mean:   2002.000
+       3rd Qu.:   2010
+          Max.:   2017
+
+=========================================================================
+
+   Region_UN
+
+   United Nations sub-region
+   Source: United Nations (UN). 2019. Standard Country or Area Codes for
+Statistical Use. UN Statistics Division.
+https://unstats.un.org/unsd/methodology/m49/
+
+-------------------------------------------------------------------------
+
+   Factor with 19 levels
+
+                  Values and labels   N   Percent
+
+    1 'Australia and New Zealand' 62      1.5
+    2 'Caribbean'                124      3.0
+    3 'Central America'          217      5.2
+    4 'Central Asia'              93      2.2
+    5 'Eastern Africa'           341      8.1
+    6 'Eastern Asia'             155      3.7
+    7 'Eastern Europe'           310      7.4
+    8 'Middle Africa'             31      0.7
+    9 'Northern Africa'          186      4.4
+   10 'Northern America'          62      1.5
+   11 'Northern Europe'          310      7.4
+   12 'South-Eastern Asia'       217      5.2
+   13 'South America'            372      8.9
+   14 'Southern Africa'          155      3.7
+   15 'Southern Asia'            186      4.4
+   16 'Southern Europe'          341      8.1
+   17 'Western Africa'           403      9.6
+   18 'Western Asia'             403      9.6
+   19 'Western Europe'           217      5.2
+
+=========================================================================
+
+   Region_VD
+
+   Region (politico-geographic)
+
+   Source: Varieties of Democracy Project (V-Dem). 2019. V-Dem [Country-
+Year/Country-Date] Dataset v8. Varieties of Democracy (V-Dem) Project.
+https://doi.org/10.23696/vdemcy18
+
+   1: Eastern Europe and Central Asia (post-Communist; including
+Mongolia)
+   2: Latin America (including Cuba and the Dominican Republic)
+   3: The Middle East and North Africa/MENA (including Israel and Turkey)
+   4: Sub-Saharan Africa
+   5: Western Europe and North America (including Cyprus, Australia and
+New Zealand)
+   6: East Asia
+   7: South-East Asia
+   8: South Asia
+   9: The Pacific (excluding Australia and New Zealand; see 5)
+   10: The Caribbean (including Belize, Haiti, Guyana and Suriname)
+
+-------------------------------------------------------------------------
+
+          Min.:    1.000
+       1st Qu.:    2.000
+        Median:    4.000
+          Mean:    3.741
+       3rd Qu.:    5.000
+          Max.:   10.000
+
+=========================================================================
+
+   Libdem_VD
+
+   V-Dem Liberal Democracy Index
+
+   Source: Varieties of Democracy Project (V-Dem). 2019. V-Dem [Country-
+Year/Country-Date] Dataset v8. Varieties of Democracy (V-Dem) Project.
+https://doi.org/10.23696/vdemcy18
+
+-------------------------------------------------------------------------
+
+          Min.:    1.221
+       1st Qu.:   18.566
+        Median:   40.656
+          Mean:   44.130
+       3rd Qu.:   72.534
+          Max.:   90.342
+          NA's:   15.000
+
+=========================================================================
+
+   Polyarchy_VD
+
+   V-Dem Electoral Democracy Index
+
+   Source: Varieties of Democracy Project (V-Dem). 2019. V-Dem [Country-
+Year/Country-Date] Dataset v8. Varieties of Democracy (V-Dem) Project.
+https://doi.org/10.23696/vdemcy18
+
+-------------------------------------------------------------------------
+
+          Min.:    1.504
+       1st Qu.:   31.619
+        Median:   57.144
+          Mean:   55.460
+       3rd Qu.:   82.578
+          Max.:   93.998
+
+=========================================================================
+
+   Regime_VD
+
+   V-Dem Regimes of the World
+
+   Source: Varieties of Democracy Project (V-Dem). 2019. V-Dem [Country-
+Year/Country-Date] Dataset v8. Varieties of Democracy (V-Dem) Project.
+https://doi.org/10.23696/vdemcy18
+
+   0=closed autocracy
+   1=electoral autocracy
+   2=electoral democracy
+   3=liberal democracy
+-------------------------------------------------------------------------
+
+          Min.:   0.000
+       1st Qu.:   1.000
+        Median:   2.000
+          Mean:   1.712
+       3rd Qu.:   3.000
+          Max.:   3.000
+
+=========================================================================
+
+   Libdem_m1
+
+   V-Dem Liberal democracy index lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:    1.221
+       1st Qu.:   17.587
+        Median:   39.469
+          Mean:   43.557
+       3rd Qu.:   72.400
+          Max.:   90.342
+          NA's:   16.000
+
+=========================================================================
+
+   Libdem_m2
+
+   V-Dem Liberal democracy index lagged two years
+
+-------------------------------------------------------------------------
+
+          Min.:     1.221
+       1st Qu.:    17.351
+        Median:    39.073
+          Mean:    43.424
+       3rd Qu.:    72.413
+          Max.:    90.342
+          NA's:   151.000
+
+=========================================================================
+
+   ChgDem
+
+   Change in V-Dem liberal democracy index (Libdem_VD – Libdem_m1)
+
+-------------------------------------------------------------------------
+
+          Min.:   -43.294
+       1st Qu.:    -0.363
+        Median:     0.014
+          Mean:     0.582
+       3rd Qu.:     0.760
+          Max.:    68.527
+          NA's:    16.000
+=========================================================================
+
+   UpChgDem
+
+   Upturns in V-Dem liberal democracy index (downturns set to 0)
+
+
+          Min.:       0.000
+       1st Qu.:       0.000
+        Median:       0.014
+          Mean:       1.136
+       3rd Qu.:       0.760
+          Max.:      68.527
+          NA's:      16.000
+
+=========================================================================
+
+   DwnChgDem
+
+   Downturns in V-Dem liberal democracy index (upturns set to 0)
+
+
+-------------------------------------------------------------------------
+
+          Min.:       0.000
+       1st Qu.:       0.000
+        Median:       0.000
+          Mean:       0.554
+       3rd Qu.:       0.363
+          Max.:      43.294
+          NA's:      16.000
+
+=========================================================================
+
+   SupDem_trim
+
+   Support for democracy smooth estimates, as generated by supdem stan
+estimation ajps.R
+
+-------------------------------------------------------------------------
+
+          Min.:        -2.108
+       1st Qu.:        -0.640
+        Median:        -0.042
+          Mean:         0.030
+       3rd Qu.:         0.601
+          Max.:         2.719
+          NA's:      1615.000
+
+=========================================================================
+
+   ChgSup
+
+   Annual change in support for democracy smooth estimates
+
+-------------------------------------------------------------------------
+
+              Min.    :   4.00
+           1st Qu.: 47.00
+           Median : 67.00
+           Mean   : 59.44
+           3rd Qu.: 76.43
+           Max.   :100.00
+           NA's   :1733
+
+=========================================================================
+
+   SupDem_m1
+
+   Support estimates lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.108
+       1st Qu.:     -0.640
+        Median:     -0.042
+          Mean:      0.030
+       3rd Qu.:      0.601
+          Max.:      2.719
+          NA's:   1615.000
+
+=========================================================================
+
+   SupDem_Democ
+
+   Support estimates, democracies only (set to 0 for autocracies)
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.107
+       1st Qu.:     -0.211
+        Median:      0.000
+          Mean:      0.141
+       3rd Qu.:      0.505
+          Max.:      2.719
+          NA's:   1615.000
+
+=========================================================================
+
+   SupDem_democ_m1
+
+   SupDem_Democ lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.108
+       1st Qu.:     -0.212
+        Median:      0.000
+          Mean:      0.143
+       3rd Qu.:      0.507
+          Max.:      2.719
+          NA's:   1615.000
+
+=========================================================================
+
+   SupDem_Autoc
+   Support estimates, autocracies only (set to 0 for democracies)
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.108
+       1st Qu.:      0.000
+        Median:      0.000
+          Mean:     -0.111
+       3rd Qu.:      0.000
+          Max.:      1.591
+          NA's:   1615.000
+
+=========================================================================
+
+   SupDem_autoc_m1
+
+   SupDem_Autoc lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.108
+       1st Qu.:      0.000
+        Median:      0.000
+          Mean:     -0.108
+       3rd Qu.:      0.000
+          Max.:      1.591
+          NA's:   1750.000
+
+=========================================================================
+
+   lnGDP_imp
+
+   Logged GDP per capita, current international dollars, purchasing power
+parity. Most values sourced from the IMF, with missing values imputed
+using data from World Bank World Development Indicators and Penn World
+Tables 9.0.
+
+   Sources:
+   International Monetary Fund (IMF). 2019. IMF DataMapper,
+https://www.imf.org/external/datamapper/PPPPC@WEO/OEMDC/ADVEC/WEOWORLD
+   World Bank. 2019. World Bank DataBank: World Development Indicators.
+https://databank.worldbank.org/data/source/world-development-indicators
+   Feenstra, Robert C., Robert Inklaar and Marcel P. Timmer. 2015. Penn
+World Tables 9.0. Federal Reserve Bank of St Louis (FRED) [distributor].
+https://fred.stlouisfed.org/categories/33402
+
+-------------------------------------------------------------------------
+
+          Min.:    5.214
+       1st Qu.:    7.937
+        Median:    8.966
+          Mean:    8.878
+       3rd Qu.:    9.842
+          Max.:   11.575
+
+=========================================================================
+   lnGDP_imp_m1
+
+   lnGDP_imp lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:    5.051
+       1st Qu.:    7.897
+        Median:    8.945
+          Mean:    8.845
+       3rd Qu.:    9.806
+          Max.:   11.545
+          NA's:    1.000
+
+=========================================================================
+
+   GDP_imp_grth
+
+   Annual growth rate in GDP per capita, calculated using lnGDP_imp
+
+-------------------------------------------------------------------------
+
+          Min.:   -88.139
+       1st Qu.:     2.005
+        Median:     4.360
+          Mean:     3.912
+       3rd Qu.:     6.728
+          Max.:   255.182
+          NA's:     1.000
+
+=========================================================================
+
+   GDP_imp_grth_m1
+
+   GDP_imp_grth lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:   -88.139
+       1st Qu.:     1.936
+        Median:     4.369
+          Mean:     3.898
+       3rd Qu.:     6.762
+          Max.:   255.182
+          NA's:   136.000
+
+=========================================================================
+
+   Libdem_regUN
+
+   Average level of V-Dem liberal democracy (Libdem_VD) within UN sub-
+regions (Region_VD)
+
+-------------------------------------------------------------------------
+
+          Min.:    5.361
+       1st Qu.:   24.294
+        Median:   41.368
+          Mean:    41.839
+       3rd Qu.:    54.271
+          Max.:    85.220
+          NA's:    15.000
+
+=========================================================================
+
+   Libdem_regUN_m1
+
+   Libdem_regUN lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:     5.629
+       1st Qu.:    23.832
+        Median:    39.256
+          Mean:    41.339
+       3rd Qu.:    54.473
+          Max.:    85.220
+          NA's:    16.000
+
+=========================================================================
+
+   Res_cp_WDI_di
+
+   0 = less than $1000 oil, natural gas and minerals revenue per capita
+   1 = $1000+ oil, natural gas and minerals revenue per capita
+
+   Source: World Bank. 2019. World Bank DataBank: World Development
+Indicators. https://databank.worldbank.org/data/source/world-development-
+indicators
+
+
+-------------------------------------------------------------------------
+
+          Min.:      0.000
+       1st Qu.:      0.000
+        Median:      0.000
+          Mean:      0.064
+       3rd Qu.:      0.000
+          Max.:      1.000
+          NA's:    372.000
+
+=========================================================================
+
+   Res_cp_WDI_di_m1
+
+   Res_cp_WDI_di lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:      0.000
+       1st Qu.:      0.000
+        Median:      0.000
+          Mean:      0.064
+       3rd Qu.:      0.000
+          Max.:      1.000
+          NA's:    375.000
+=========================================================================
+
+   Pr_Muslim
+
+   Percent identifying as Muslim in 1990.
+
+   Source: Pew Research Center. 2011. Table: Muslim Population by
+Country. https://www.pewforum.org/2011/01/27/table-muslim-population-by-
+country/
+
+-------------------------------------------------------------------------
+
+          Min.:    0.000
+       1st Qu.:    0.200
+        Median:    2.400
+          Mean:   22.633
+       3rd Qu.:   30.000
+          Max.:   99.600
+
+=========================================================================
+
+   Satis_trim
+
+   Satisfaction with democracy smooth estimates, as generated by satisdem
+stan estimation ajps.R
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.845
+       1st Qu.:     -0.654
+        Median:     -0.145
+          Mean:     -0.063
+       3rd Qu.:      0.548
+          Max.:      2.451
+          NA's:   1522.000
+
+=========================================================================
+
+   Satis_m1
+
+   Satis_trim lagged one year
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.841
+       1st Qu.:     -0.653
+        Median:     -0.143
+          Mean:     -0.061
+       3rd Qu.:      0.549
+          Max.:      2.451
+          NA's:   1636.000
+
+=========================================================================
+
+   Satis_Democ
+
+   Satisfaction estimates, democracies only (set to 0 for autocracies)
+-------------------------------------------------------------------------
+
+          Min.:     -2.318
+       1st Qu.:     -0.367
+        Median:      0.000
+          Mean:      0.009
+       3rd Qu.:      0.332
+          Max.:      2.451
+          NA's:   1522.000
+
+=========================================================================
+
+   Satis_Autoc
+
+   Satisfaction estimates, autocracies only (set to 0 for democracies)
+
+-------------------------------------------------------------------------
+
+          Min.:     -2.845
+       1st Qu.:      0.000
+        Median:      0.000
+          Mean:     -0.073
+       3rd Qu.:      0.000
+          Max.:      2.416
+          NA's:   1522.000
+
+=========================================================================
+
+   lnInflat_imp
+
+   Sign-log of inflation rate ( sign[x] * log[abs[x]] ).
+
+   Source: International Monetary Fund (IMF). 2019. IMF DataMapper,
+https://www.imf.org/external/datamapper/PCPIPCH@WEO/OEMDC/ADVEC/WEOWORLD
+
+-------------------------------------------------------------------------
+
+          Min.:    -4.791
+       1st Qu.:     0.857
+        Median:     1.645
+          Mean:     1.688
+       3rd Qu.:     2.417
+          Max.:    13.902
+          NA's:   143.000
+
+=========================================================================
+
+   Corrup_TI
+
+   Corruption perceptions index from Transparency International.
+
+   Source: Varieties of Democracy Project (V-Dem). 2019. V-Dem [Country-
+Year/Country-Date] Dataset v8. V-Dem [distributor].
+https://doi.org/10.23696/vdemcy18
+
+-------------------------------------------------------------------------
+   Min.:      4.000
+1st Qu.:     47.000
+ Median:     67.000
+   Mean:     59.437
+3rd Qu.:     76.435
+   Max.:    100.000
+   NA's:   1733.000
+

@@ -1,9 +1,16 @@
 {
   "gate": 5,
   "state": "planejado",
-  "updated_at_utc": "2026-09-15T02:37:35.795460+00:00",
+  "updated_at_utc": "2026-09-15T12:59:56.277554+00:00",
   "dependency": 4,
-  "evidence": [],
+  "evidence": [
+    "gate_01/decision.md",
+    "gate_05/dependency_note.md"
+  ],
   "review": null,
-  "decision": null
+  "decision": "gate_05/dependency_note.md",
+  "execution_started": false,
+  "pending": [
+    "Gate 1 não aprovado: aguarda decisão de rota do autor; dependências intermediárias não executadas"
+  ]
 }

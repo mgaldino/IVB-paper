@@ -1,0 +1,18 @@
+{
+  "authorized_at_utc": "2026-09-15T12:42:56.759207+00:00",
+  "coordinator": "root",
+  "authorization_basis": "Explicit user instruction to implement plan; internal execution allowed by plan section3.2 after independent review",
+  "adjudication": "PASS pre-execution for exact bytes; NUM-01 through NUM-04 resolved in static review",
+  "review_path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/science/review_r_v2.json",
+  "review_sha256": "2c0a0f0ccb96b011a4890d2a3410024d3c4b6c75bed2fc6a793314ad32a3b373",
+  "code_path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/verify_examples.R",
+  "code_sha256": "98b4fbc20bdce3d03eaae7e1828a34a2c37e1e07c7f46cb848cc32131aff7127",
+  "command": "Rscript --vanilla quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/verify_examples.R",
+  "scope": "Deterministic E1/E2 fixtures and algebra only",
+  "does_not_authorize": [
+    "new simulations",
+    "real-data estimation",
+    "scientific scope change",
+    "global Gate1 approval"
+  ]
+}

@@ -1,0 +1,379 @@
+{
+  "review_id": "IVB-G1-APPLICATIONS-INDEPENDENT-BLIND-2026-09-15-A",
+  "phase": "A",
+  "status": "FROZEN_BEFORE_IMPLEMENTER_COMPARISON",
+  "reviewer": "gate1_application_review",
+  "plan_sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d",
+  "protocol_id": "IVB-G1-APPLICATIONS-2026-09-15-v1",
+  "independence": {
+    "implementer_selection_read": false,
+    "implementer_reports_read": false,
+    "ivb_results_read": false,
+    "existing_ivb_or_se_values_consulted": false,
+    "primary_scientific_results_used_for_selection": false,
+    "incidental_primary_results_exposure": true,
+    "memory_consulted": false,
+    "web_consulted": false,
+    "empirical_execution": false
+  },
+  "classification_scope": "Literal E1–E7 separately from compatibility with the approved plan's contemporaneous-effect target.",
+  "protocol_finding": {
+    "id": "A-P01",
+    "adjudication_status": "CANDIDATE",
+    "severity": "material",
+    "claim": "E2 passes a dated exposure and subsequent outcome without establishing the contemporaneous-effect target required by the plan.",
+    "evidence": [
+      "plan.md §1, Gate 1 and Gate 5",
+      "protocol.json criteria E1/E2"
+    ],
+    "proposed_resolution": "Require intervention in physical time, response horizon and future treatment trajectory explicitly; retain future-effect classifications separately and version any protocol change."
+  },
+  "selection": {
+    "principal": null,
+    "reserve": null,
+    "reason": "All three pairs have documentary gaps under literal criteria; no plan-compatible CET application established.",
+    "result_independent": true
+  },
+  "candidates": [
+    {
+      "id": "blair",
+      "study": "Blair, Di Salvatore and Smidt (2023)",
+      "design": "Country fixed-effects linear model, full conflict/postconflict sample",
+      "unit": "country-year",
+      "period_documented": "1991–2016",
+      "D": {
+        "variable": "ipema_any_demo_assist_dum_2l",
+        "meaning": "UN democracy-promotion mandate in t−2, continuing until mandate revision removes task",
+        "intervention_type": "mandate exposure; not implementation, personnel or necessarily new adoption"
+      },
+      "Y": {
+        "variable": "v2x_polyarchy",
+        "meaning": "V-Dem electoral democracy in t"
+      },
+      "Z": {
+        "raw": "wdi_oda",
+        "original": "iwdi_oda_3l",
+        "meaning": "foreign aid",
+        "proposed_comparison": "Add Z[t] while retaining Z[t−3] and admissible Y/D history on common sample"
+      },
+      "clock": "Z[t−3] → D[t−2] → Y[t]; Z[t] is after exposure but within outcome year",
+      "estimand": "Adjusted association, with causal arguments, of mandate exposure two years earlier with subsequent electoral democracy; not automatically a contemporaneous treatment effect.",
+      "current_vs_lagged": "Exposure is lagged two years in outcome clock; reindexing s=t−2 yields Y[s+2], not Y[s].",
+      "cet_status": "NOT_DEMONSTRATED_NO_IMPOSSIBILITY_CLAIM",
+      "classification": "HOLD_DOCUMENTATION",
+      "criteria": [
+        {
+          "id": "E1",
+          "status": "PASS",
+          "evidence": [
+            "article pp. 1311, 1315",
+            "replication.do:75–95,446"
+          ],
+          "limitation": "Mandate presence is not first adoption or execution."
+        },
+        {
+          "id": "E2",
+          "status": "PASS",
+          "evidence": [
+            "article pp. 1315–1316"
+          ],
+          "limitation": "Subsequent response, not CET."
+        },
+        {
+          "id": "E3",
+          "status": "PASS",
+          "evidence": [
+            "article p. 1317",
+            "replication.do:42–61,99–133"
+          ],
+          "limitation": "Raw history is documented; country-mean imputation and row-offset lags need repair/verification."
+        },
+        {
+          "id": "E4",
+          "status": "PASS",
+          "evidence": [
+            "article pp. 1309–1310,1315–1318",
+            "indvar_separate_ctrls.ado:13"
+          ],
+          "limitation": "No statistical support or identification certified."
+        },
+        {
+          "id": "E5",
+          "status": "MISSING",
+          "evidence": [
+            "replication.do:35–45",
+            "indvar_separate_ctrls.ado:13,23"
+          ],
+          "limitation": "Country/year are identified, but primary command does not declare clustered/robust residual dependence; country FE are not clustered SE."
+        },
+        {
+          "id": "E6",
+          "status": "PASS",
+          "evidence": [
+            "metadata.json latestVersion.files: dataFile.id=6692645, restricted=false",
+            "article p. 1324",
+            "replication.do"
+          ],
+          "limitation": "Public recoverability documented; no live retrieval or data schema verified. Dependence gap retained in E5."
+        },
+        {
+          "id": "E7",
+          "status": "PASS",
+          "evidence": [
+            "article pp. 1311,1317–1318"
+          ],
+          "limitation": "Post-exposure aid is substantively relevant; mediation/collider status not established."
+        }
+      ],
+      "preparation": [
+        "Reconstruct lags within country/calendar instead of unguarded row offsets.",
+        "Audit all-years country-mean imputation before treating lagged controls as pre-exposure information.",
+        "Document residual dependence and data import.",
+        "Declare response horizon and intervention persistence."
+      ],
+      "findings": [
+        {
+          "id": "A-B01",
+          "status": "CANDIDATE",
+          "claim": "Original two-year-lag model does not itself supply a CET application."
+        },
+        {
+          "id": "A-B02",
+          "status": "CANDIDATE",
+          "claim": "Whole-country-mean imputation may import post-exposure values into lagged controls; row-offset lags may cross country boundaries or gaps.",
+          "empirical_extent_checked": false
+        }
+      ]
+    },
+    {
+      "id": "ballard_rosa",
+      "study": "Ballard-Rosa, Mosley and Wellhausen (2022)",
+      "design": "Country fixed-effects country-month issuance model, non-OECD sample",
+      "unit": "country-month",
+      "period_documented": "1990–2016",
+      "D": {
+        "variable": "l.ib2.execrlc_mo",
+        "meaning": "Executive partisanship in previous month, contrasted with center/other",
+        "intervention_type": "partisan orientation/state in office; not a specific economic policy"
+      },
+      "Y": {
+        "variable": "propDom_gt1yr",
+        "meaning": "Share of issuance value denominated domestically, among relevant-maturity bonds issued in the month; undefined with no issuance"
+      },
+      "Z": {
+        "variable": "gdp_growth",
+        "original": "l12.gdp_growth",
+        "meaning": "annual economic growth",
+        "proposed_comparison": "Add current annual growth while retaining a genuinely prior economic and outcome history"
+      },
+      "clock": "D[m−1] → Y[m]; annual Z may overlap D and, for current Z, contain months after Y",
+      "estimand": "Adjusted next-month difference in domestic-denomination share among observed issuing country-months; requires addressing issuance selection for causal interpretation.",
+      "current_vs_lagged": "Original model uses prior-month partisanship. Reindexing leaves response in next month; same-month intervention at issue dates is not documented here.",
+      "cet_status": "NOT_DEMONSTRATED_NO_IMPOSSIBILITY_CLAIM",
+      "classification": "HOLD_DOCUMENTATION",
+      "criteria": [
+        {
+          "id": "E1",
+          "status": "PASS",
+          "evidence": [
+            "article p. 48, note 91",
+            "IO replication.do:73–79"
+          ],
+          "limitation": "Monthly dates reflect entry into office, not election date; current-at-issue state needs verification."
+        },
+        {
+          "id": "E2",
+          "status": "PASS",
+          "evidence": [
+            "article p. 50",
+            "IO replication.do:74–79"
+          ],
+          "limitation": "One-month-ahead ordering, not proof of current within-month response."
+        },
+        {
+          "id": "E3",
+          "status": "PASS",
+          "evidence": [
+            "article pp. 47–50",
+            "Coming_to_Terms_data.tab header"
+          ],
+          "limitation": "Earlier history reconstructible; l12 annual aggregate not necessarily strictly before D[m−1], especially January."
+        },
+        {
+          "id": "E4",
+          "status": "PASS",
+          "evidence": [
+            "article pp. 48–50",
+            "IO replication.do:66–79"
+          ],
+          "limitation": "Outcome observed only with issuance; statistical support and selection not resolved."
+        },
+        {
+          "id": "E5",
+          "status": "PASS",
+          "evidence": [
+            "article p. 50",
+            "IO replication.do:74–79"
+          ],
+          "limitation": "vce(cluster ccode) documented; effective cluster count and global dependence untested."
+        },
+        {
+          "id": "E6",
+          "status": "PASS",
+          "evidence": [
+            "Coming_to_Terms_data.tab header",
+            "IO replication.do:9–10,66–79"
+          ],
+          "limitation": "No observations inspected; monthly time origin and exported Stata metadata need reconstruction."
+        },
+        {
+          "id": "E7",
+          "status": "MISSING",
+          "evidence": [
+            "article pp. 49–50",
+            "IO replication.do:66"
+          ],
+          "limitation": "Annual current growth has no documented intraperiod order and can include information after monthly outcome."
+        }
+      ],
+      "preparation": [
+        "Document reference interval of annual controls before choosing current/history contrast.",
+        "Use sufficiently earlier annual data for pre-exposure history, then check available sample.",
+        "Reconcile paper timing with code: Treasury l12 and unlagged crises versus article description.",
+        "Preserve non-issuance as undefined outcome; do not silently set share to zero.",
+        "Reconcile maturity cutoff wording with variable construction."
+      ],
+      "findings": [
+        {
+          "id": "A-R01",
+          "status": "CANDIDATE",
+          "claim": "Monthly treatment combined with annual controls does not establish an ordered current-control contrast."
+        },
+        {
+          "id": "A-R02",
+          "status": "CANDIDATE",
+          "claim": "Timing differs between paper description and code for Treasury and crisis controls.",
+          "empirical_extent_checked": false
+        }
+      ]
+    },
+    {
+      "id": "claassen",
+      "study": "Claassen (2020), local corrected replication inputs",
+      "design": "Annual dynamic pooling and system GMM models",
+      "unit": "country-year",
+      "D": {
+        "variable": "lag(SupDem_trim,1)",
+        "meaning": "Latent smooth national diffuse support for democracy in t−1",
+        "intervention_type": "latent attitude exposure; distinct from satisfaction and an assigned treatment"
+      },
+      "Y": {
+        "variable": "Libdem_VD",
+        "meaning": "V-Dem liberal democracy in t"
+      },
+      "Z": {
+        "variable": "lnGDP_imp",
+        "original": "lag(lnGDP_imp,1)",
+        "meaning": "economic development, log GDP per capita PPP",
+        "proposed_comparison": "Add Z[t] while retaining earlier values; original Z[t−1] is contemporaneous with D[t−1]"
+      },
+      "clock": "Y[t] ~ Y[t−1]+Y[t−2]+D[t−1]+Z[t−1]; original DAG permits Y[t−1]→D[t−1] and Z[t−1]→D[t−1]",
+      "estimand": "Subsequent democracy response to previous-year support, with dynamic/long-run and initial-regime variants.",
+      "current_vs_lagged": "Original text explicitly assumes no contemporaneous effect of support on democracy; reindexing does not change response horizon.",
+      "cet_status": "ORIGINAL_DESIGN_ASSUMES_NO_CONTEMPORANEOUS_EFFECT_ADAPTATION_NOT_RULED_OUT",
+      "classification": "HOLD_DOCUMENTATION",
+      "criteria": [
+        {
+          "id": "E1",
+          "status": "PASS",
+          "evidence": [
+            "paper pp. 9–12",
+            "codebook SupDem_trim",
+            "R:51–53"
+          ],
+          "limitation": "Latent exposure defined; intervention consistency not established."
+        },
+        {
+          "id": "E2",
+          "status": "PASS",
+          "evidence": [
+            "paper pp. 15–17, Figure 2 and equation 1",
+            "R:51–53"
+          ],
+          "limitation": "Explicitly subsequent response; contemporaneous effect excluded by original assumption."
+        },
+        {
+          "id": "E3",
+          "status": "PASS",
+          "evidence": [
+            "codebook current and lagged GDP/democracy variables",
+            "Support_democracy_ajps_correct.tab header"
+          ],
+          "limitation": "Older annual measures reconstructible; original t−1 controls are not strictly earlier than D[t−1]. Imputation/smoothing information sets require audit."
+        },
+        {
+          "id": "E4",
+          "status": "PASS",
+          "evidence": [
+            "paper pp. 15–20",
+            "R:51–73,311–341"
+          ],
+          "limitation": "No support or causal identification certified."
+        },
+        {
+          "id": "E5",
+          "status": "PASS",
+          "evidence": [
+            "R:30–31,78–85,311–353",
+            "paper p. 22"
+          ],
+          "limitation": "Pooling uses Beck–Katz dependence, GMM separate structure; simple country bootstrap not automatically suitable."
+        },
+        {
+          "id": "E6",
+          "status": "PASS",
+          "evidence": [
+            "readme.txt",
+            "codebook",
+            "Support_democracy_ajps_correct.tab header",
+            "R:26–31"
+          ],
+          "limitation": "Corrected inputs differ from original paper; CSV/TAB import and version provenance require care."
+        },
+        {
+          "id": "E7",
+          "status": "MISSING",
+          "evidence": [
+            "paper p. 17"
+          ],
+          "limitation": "Original causal assumptions exclude support→Z and do not establish current GDP as post-treatment descendant. Related, time-varying Z does not satisfy affirmative ineligibility conditions."
+        }
+      ],
+      "preparation": [
+        "Preserve distinction between diffuse support and satisfaction.",
+        "Reconcile corrected codebook GDP provenance with older paper.",
+        "Distinguish construct year, smoothing input information and uncertainty.",
+        "Do not treat original t−1 Y/Z as strictly pre-exposure history.",
+        "Any CET redesign must change and defend assumptions explicitly."
+      ],
+      "findings": [
+        {
+          "id": "A-C01",
+          "status": "CANDIDATE",
+          "claim": "Original causal model explicitly excludes contemporaneous support→democracy effect; cannot be converted to CET by relabeling."
+        },
+        {
+          "id": "A-C02",
+          "status": "CANDIDATE",
+          "claim": "Original Z and first lag of Y are contemporaneous with the treatment, not automatically strict pre-treatment history."
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No empirical calculations, support checks, missingness/duplicates inspection or effective-cluster assessment.",
+    "No identification, estimator compatibility, inference validation or incremental-contribution claim.",
+    "No implementer reports read; all findings await orchestrator adjudication."
+  ],
+  "next_step": "Stop after saving and hashing Fase A; do not compare implementer selection until explicitly released by parent."
+}

@@ -1,0 +1,126 @@
+{
+  "review_id": "IVB-G1-APPLICATIONS-INDEPENDENT-BLIND-2026-09-15-A",
+  "created_utc": "2026-09-15 12:25:38 UTC",
+  "phase": "A",
+  "state": "FROZEN_BEFORE_IMPLEMENTER_COMPARISON",
+  "algorithm": "SHA-256",
+  "root": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper",
+  "manifest_self_hash_excluded": true,
+  "files": [
+    {
+      "path": "quality_reports/plans/2026-09-15_refine_contribution/plan.md",
+      "sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d",
+      "role": "input"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/protocol.md",
+      "sha256": "57e59f01ab55263e05d5e191a0ac88020c7893bd3cc61bec056d87f5c916f8f4",
+      "role": "input"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/protocol.json",
+      "sha256": "2cdd660814ea3951ff7ede8603d8df96ecd43630279b39c6ecfdc9c754ad442e",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/un-peacekeeping-and-democratization-in-conflict-affected-countries.pdf",
+      "sha256": "88c97e193a93617548971182e373879c7f1d110869d9f721d61f5bedc07d3b5c",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/peacekeeping/replication.do",
+      "sha256": "e50f8ddce654872bc7d7ba0f024dab0ffd451174e9a172edb5875f404838078f",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/peacekeeping/indvar_separate_ctrls.ado",
+      "sha256": "587e53faa17b6d8168cab8f1303a2562f6fa15ab1e85ae0270aed7dbd3cf7b7d",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/peacekeeping/metadata.json",
+      "sha256": "58950ad49400846ccf01c55a62780e2e1572df20f7e666129431d7bdae2c6ae9",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/BallardRosa-ComingTerms-2022.pdf",
+      "sha256": "9fb287fe70d3c6217ba9fcd08604e18b889d2151ab2072112c28413a2e6f8d52",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/ballard_rosa_2022/IO replication.do",
+      "sha256": "5092de0e836cc6ddb14d7d0fe20b7437af9b2cd04549256f55ab65effddb536a",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/ballard_rosa_2022/Coming_to_Terms_data.tab",
+      "sha256": "9871f8e5bb89cd0cbaabb63608f183469f7e55a2324af4e55504041fe8a28f16",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/Claassen_2020_AJPS_democracy_support.pdf",
+      "sha256": "962fae3bcddb1ea4f04aa1f70490f502f40ec950602c7aece67e7242bb169023",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/claassen_2020/readme.txt",
+      "sha256": "4acb434215207e07051f6aeb040cd2f1752d3d44413eb7a92840a0de7669bc0c",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/claassen_2020/codebook_support_democracy_ajps_correct.pdf",
+      "sha256": "b51856294a83a5304569a03c56c91a3057011d8bba17bdd8051e23a28ae2dfde",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/claassen_2020/supdem_democracy_ajps_replication_correct.R",
+      "sha256": "aace829aa83583d90d54ee4b99714bcd786bde3cde325dbaeb06ac95b8834879",
+      "role": "input"
+    },
+    {
+      "path": "replication/candidate_papers/claassen_2020/Support_democracy_ajps_correct.tab",
+      "sha256": "951de2c0bad944b8753bcb9ef6fe1286c7285b8ca95bcc207ce5e63dc1732f49",
+      "role": "input"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/independent_blind_triage.md",
+      "sha256": "ede8fb0848b7824c4d838c4fc38aa99e2d256617d3ca9224ea7e5d9771064045",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/independent_blind_triage.json",
+      "sha256": "0d1e147621c4f5a0012b3be60ff552c5dc7cf8414297a656b3d067f1379e2cbc",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/commands_executed.md",
+      "sha256": "6dbe38e39a67d22f438c0a279d12be61c30863ea7e1a0c7bb9e5a2835f9c6921",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/schema_headers.json",
+      "sha256": "69b35f9ff996804cc8b8c84e433d296b34b1bea36500078f9cafce73abb112a7",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/source_extracts/blair.txt",
+      "sha256": "8e1d6e11cae074e063760405eeccf79e3ddb084104388edcaad1a0023449b995",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/source_extracts/ballard_rosa.txt",
+      "sha256": "79e649d06e9b53d9ddc73cd8212ba38dd791f41070770cc21c6d3ba9182d34c4",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/source_extracts/claassen.txt",
+      "sha256": "320be23c548816701e2aac676ce9f3268a3d70c6416ede1d042dd88cb150ce0a",
+      "role": "output"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/source_extracts/claassen_codebook.txt",
+      "sha256": "e585822ac1c700a1691edb37d598d7d67a73359a0da5a1be44b06f556b1a2eae",
+      "role": "output"
+    }
+  ]
+}

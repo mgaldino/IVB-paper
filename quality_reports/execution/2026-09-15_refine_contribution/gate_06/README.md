@@ -17,3 +17,7 @@ um leitor independente reconstrói corretamente o argumento e as passagens matem
 - Pareceres e artefatos desta etapa serão preservados neste diretório.
 
 Este registro inicial não representa aprovação ou trabalho já realizado.
+
+## Estado da execução em 15/09/2026
+
+Planejado, sem execução. A [nota de dependência](dependency_note.md) registra o resultado desfavorável do Gate 1 e o que precisa ser decidido antes da retomada.

@@ -1,0 +1,9 @@
+{
+  "time_utc": "2026-09-15T13:01:33.997339+00:00",
+  "source_id": "applications/sources_manifest.csv:S41",
+  "original_path": "gate_01/review/coordinator_findings.md",
+  "preserved_path": "gate_01/review/snapshots/coordinator_findings_before_round2_closure.md",
+  "sha256": "403bdee60b1893e6c8a3ac782d55aeea84521b5a3f6693210533b98ff2b4e31d",
+  "method": "Exact earlier byte prefix recovered from append-only live log; SHA256 equals previously independently reviewed S41 digest",
+  "scope": "Historical round2 source. Current log contains later adjudication closures."
+}

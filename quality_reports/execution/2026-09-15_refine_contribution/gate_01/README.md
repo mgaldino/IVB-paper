@@ -1,6 +1,6 @@
 # Gate 1. Demonstrar valor incremental e viabilidade da aplicação
 
-Estado inicial: **planejado**.
+Estado atual: **decisão do autor**. O teste foi implementado e revisado, mas não demonstrou ganho distinto frente ao comparador forte. Não há aplicação CET aprovada, e a leitura integral de Gelbach permanece pendente. Consulte a [decisão e as alternativas](decision.md).
 
 ## Objetivo
 
@@ -14,6 +14,11 @@ a ficha do teste está fechada e um exemplo verificável identifica uma capacida
 
 - `state.json`: estado e decisão mais recentes.
 - `checklist.json`: requisitos do plano e evidências por item.
-- Pareceres e artefatos desta etapa serão preservados neste diretório.
+- `decision.md`: critérios, resultados e alternativas de continuação.
+- `contribution/`: ficha congelada, prova, exemplos e memo inicial.
+- `literature/`: leituras, matriz de confronto, fontes e limite de acesso.
+- `applications/`: protocolo, fichas corrigidas, cronologia e adendo CET posterior.
+- `numerical/execution_result.md`: estado atual do teste; código, revisão prévia e saídas persistentes.
+- `review/`: pareceres independentes, adjudicação e snapshots anteriores.
 
-Este registro inicial não representa aprovação ou trabalho já realizado.
+Os memos e READMEs das frentes preservam o estado de sua entrega original; a decisão, este índice e o resultado numérico registram a síntese posterior. O PASS técnico confirma os artefatos no escopo revisado, sem aprovar a contribuição científica.

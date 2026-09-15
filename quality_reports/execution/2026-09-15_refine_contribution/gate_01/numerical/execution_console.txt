@@ -1,0 +1,14 @@
+During startup - Warning messages:
+1: Setting LC_CTYPE failed, using "C" 
+2: Setting LC_COLLATE failed, using "C" 
+3: Setting LC_TIME failed, using "C" 
+4: Setting LC_MESSAGES failed, using "C" 
+5: Setting LC_MONETARY failed, using "C" 
+2026-09-15T12:42:58Z inicio run=primary
+2026-09-15T12:42:58Z fontes governantes conferidas contra freeze_prespec_v2.json
+2026-09-15T12:42:58Z escopo=fixture_algebrico_deterministico_sem_inferencia
+2026-09-15T12:42:58Z celulas_E1_preservadas=4
+2026-09-15T12:42:58Z grafos_E2_preservados=2
+2026-09-15T12:42:58Z validation_checks=168
+2026-09-15T12:42:58Z overall_pass=TRUE
+PASS: verificacao deterministica concluida em /Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/execution/2026-09-15_refine_contribution/gate_01/numerical/results/primary

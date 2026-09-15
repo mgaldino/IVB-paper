@@ -1,0 +1,123 @@
+{
+  "schema_version": "1.0",
+  "review_id": "IVB-G1-APPLICATIONS-POINT-REVIEW-ROUND3-2026-09-15",
+  "finding_id": "R2-N01",
+  "reviewer": "gate1_application_review",
+  "date": "2026-09-15",
+  "decision": {
+    "technical_result": "PASS",
+    "scope": "Editorial page-locator repair and bounded documentary integrity verification.",
+    "finding_resolved": true,
+    "material_findings": [],
+    "CET_application_approved": false,
+    "principal_CET": null,
+    "reserve_CET": null,
+    "global_gate1_decision": "NOT_MADE_BY_THIS_REVIEW"
+  },
+  "current_evidence": [
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/manifest_round3.json",
+      "sha256": "c3a996aea6eab960e1c4000deabe999689726025eb91aa96c91bb7f5f88f12cb"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/candidate_blair_peacekeeping.md",
+      "sha256": "234a81c359dbec46f8a73f2f33b736cf37d6fb6f2b5244782196ebaa2d044dd3"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/sources_manifest.csv",
+      "sha256": "397c2283963f72f15c159d28ccd53d8e569a9c847279d2dbf96b379f8f1233bb"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/repair_round3.md",
+      "sha256": "8f59530fa4a6e8e483af4647fd29d715658f536045892d769e15efe1f0a08e55"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/source_extracts/blair.txt",
+      "sha256": "8e1d6e11cae074e063760405eeccf79e3ddb084104388edcaad1a0023449b995",
+      "passage_lines": "1215–1223",
+      "printed_page_line": 1250,
+      "correct_printed_page": 1323
+    }
+  ],
+  "exact_deltas": [
+    {
+      "file": "candidate_blair_peacekeeping.md",
+      "before": "(p. 1324)",
+      "after": "(p. 1323)",
+      "occurrences": 1,
+      "other_text_unchanged": true
+    },
+    {
+      "file": "sources_manifest.csv",
+      "source_id": "S10",
+      "before": "article pp. 1314-1318 and 1324",
+      "after": "article pp. 1314-1318 and 1323",
+      "occurrences": 1,
+      "other_text_unchanged": true
+    }
+  ],
+  "checks": {
+    "round3_artifacts": {
+      "verified": 16,
+      "matches": 16,
+      "inventory_complete": true,
+      "self_manifest_excluded_from_self_hash": true
+    },
+    "round2_snapshot": {
+      "verified": 3,
+      "matches": 3
+    },
+    "round2_manifest": {
+      "sha256": "ea3140977b67f4d6a485a8ed9be8ac255d1e7743e11d7ef8c6bc801acc32ffe0",
+      "current_and_snapshot_identical": true
+    },
+    "other_round2_artifacts": {
+      "unchanged": 11
+    },
+    "protocol_and_receipt_unchanged": true,
+    "classifications_unchanged": true,
+    "README_index_read": true,
+    "no_CET_roles": true,
+    "source_manifest": {
+      "current_sources_verified": 24,
+      "historical_sources_verified": 1
+    }
+  },
+  "historical_S41": {
+    "original_live_path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/coordinator_findings.md",
+    "historical_snapshot_path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/snapshots/coordinator_findings_before_round2_closure.md",
+    "historical_sha256": "403bdee60b1893e6c8a3ac782d55aeea84521b5a3f6693210533b98ff2b4e31d",
+    "snapshot_matches_recorded_digest": true,
+    "live_file_has_later_bytes": true,
+    "recorded_hash_claimed_current": false,
+    "resolution_record_path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/historical_source_resolution.json",
+    "resolution_record_sha256": "17764bc215bc10a5c4fc6d3aaf6f3065032672af4e859592346eaa43a2b12169",
+    "explanation_location": "applications/repair_round3.md, Relação com a rodada 2",
+    "assessment": "Historical provenance is recoverable and explicitly limited; no recursive update of the live coordinator log hash is required."
+  },
+  "execution": {
+    "commands": [
+      "shasum -a 256",
+      "cat / nl / rg for bounded documentary inspection",
+      "Python standard-library JSON/CSV parsing, SHA-256 and exact textual replacement equality checks",
+      "apply_patch only review_round3.md/json"
+    ],
+    "R": false,
+    "Stata": false,
+    "empirical_analysis": false,
+    "shifts": false,
+    "new_candidates": false,
+    "exhaustive_rereading": false,
+    "source_observation_values_displayed": false
+  },
+  "markdown_report": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/review_round3.md",
+    "sha256": "c071612f7c8eb578365b79c4ffcab396ad61ecfec9ea1d7351f6110e492eadfa"
+  },
+  "limits": [
+    "Technical closure of R2-N01 only.",
+    "No new empirical, identification, support, sample or inferential validation.",
+    "Global freeze and Gate 1 decision reserved to orchestrator."
+  ],
+  "stop_state": "DELIVERED_AND_ENDED"
+}

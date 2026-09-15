@@ -1,0 +1,18 @@
+{
+  "saved_at_utc": "2026-09-15T12:29:39.028057+00:00",
+  "reason": "Preserve corrected SCI01-03 bytes before SCI04 wording repair",
+  "files": [
+    {
+      "path": "gate_01/review/snapshots/literature_round2/reader_report.md",
+      "sha256": "554110c8664b04f25bde2758629dd564607a0ad05e6df39693d08c7bbd37d818"
+    },
+    {
+      "path": "gate_01/review/snapshots/literature_round2/reader_claim_comparison.csv",
+      "sha256": "bd4ac603ff321a74ae05129260ed8e09ca46b60e446cec4ebff8445aaa4b1336"
+    },
+    {
+      "path": "gate_01/review/snapshots/literature_round2/reader_manifest.json",
+      "sha256": "75360ac300f85c97906def841864c119822385a6596f403324535eea6e755770"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "test_id": "ivb-g1-contribution-v1",
+  "frozen_at_utc": "2026-09-15T12:02:10.889103+00:00",
+  "purpose": "freeze prespecification before independent numeric implementation/tests",
+  "tested_before_freeze": false,
+  "analytical_development_before_freeze": true,
+  "files": [
+    {
+      "path": "test_prespec_v1.md",
+      "sha256": "a8a0367575d28c532c141a37d8b911645651fd9d74c97397d5fa97ad0db5f46e"
+    },
+    {
+      "path": "test_prespec_v1.json",
+      "sha256": "0ea2a24268b719a57a3e6ce26d07a5c2814e7351ce5133881cf5e9c7bc0fc0d5"
+    }
+  ]
+}

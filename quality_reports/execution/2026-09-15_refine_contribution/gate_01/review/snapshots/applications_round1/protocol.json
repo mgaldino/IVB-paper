@@ -1,0 +1,100 @@
+{
+  "protocol_id": "IVB-G1-APPLICATIONS-2026-09-15-v1",
+  "created_at": "2026-09-15T00:00:00-03:00",
+  "status": "FROZEN_BEFORE_CANDIDATE_TRIAGE",
+  "scope": "Documentary eligibility screening of at most three application candidates already in the local archive.",
+  "scientific_question": "Can the application document a current exposure, a later outcome, an admissible pre-exposure history, and an interpretable comparison between retaining that history and adding a current control on a common sample?",
+  "forbidden_selection_information": [
+    "IVB or specification-shift estimates",
+    "standard errors",
+    "p-values or statistical significance",
+    "signs or magnitudes of treatment coefficients",
+    "results selected because they favor the proposed method"
+  ],
+  "allowed_sources": [
+    "local full text of the original study",
+    "original replication README, codebook, questionnaire, appendix, and data documentation",
+    "original do-files or scripts, read only for variable definitions, timing, sample construction, specification, and clustering",
+    "read-only inspection of file names, variable names, labels, storage types, and panel keys without computing shifts, models, or substantive summaries"
+  ],
+  "unit_of_screening": "study-design and one substantively named current-control contrast; multiple controls from the same study do not create independent applications",
+  "criteria": [
+    {
+      "id": "E1",
+      "name": "current_intervention_defined",
+      "requirement": "The exposure or intervention D is substantively defined, attached to a unit and period, and distinguishable from eligibility, assignment, receipt, intensity, or a proxy. Its current-period meaning is documented by a primary source.",
+      "pass_rule": "Primary documentation identifies what changes, for whom, and when.",
+      "fail_rule": "Primary documentation demonstrates that D cannot be dated or does not represent an intervention/exposure at the analysis unit.",
+      "missing_rule": "D appears in code or data but its timing or substantive meaning is not documented."
+    },
+    {
+      "id": "E2",
+      "name": "exposure_to_outcome_window",
+      "requirement": "The outcome Y and its reference interval are documented, and the ordering D -> Y is defensible. Same-period measures require documented within-period ordering; otherwise they remain ambiguous.",
+      "pass_rule": "Primary documentation provides dates or intervals sufficient to order exposure and outcome.",
+      "fail_rule": "Primary documentation places Y before D or makes the proposed outcome a component of D.",
+      "missing_rule": "Labels such as current, annual, or five-year are present without dates or ordering sufficient to establish the window."
+    },
+    {
+      "id": "E3",
+      "name": "pre_exposure_history_available",
+      "requirement": "The archive contains or documents pre-exposure measures needed to define a baseline history for Y and the candidate control Z without using post-exposure values as history.",
+      "pass_rule": "Variables, time indices, and construction rules identify at least one genuinely pre-exposure Y and Z measure; the exact admissible lag order remains for Gates 2-3.",
+      "fail_rule": "Primary documentation demonstrates that all available Y or Z measures occur at or after exposure.",
+      "missing_rule": "Earlier measures may exist, but their dates, construction, or alignment with exposure are not documented."
+    },
+    {
+      "id": "E4",
+      "name": "documented_support_and_comparison",
+      "requirement": "The design documents repeated exposure variation and a substantively relevant contemporaneous comparison, such as unexposed/lower-exposed units or within-unit changes, without conditioning on future outcomes.",
+      "pass_rule": "The paper or replication design states the source of treatment variation and the comparison used.",
+      "fail_rule": "The documented sample has no exposure contrast at the relevant time or defines comparison groups using future outcomes.",
+      "missing_rule": "A model is listed, but the source and timing of identifying variation are not documented."
+    },
+    {
+      "id": "E5",
+      "name": "panel_cluster_structure",
+      "requirement": "Repeated unit and time identifiers are available, and the primary analysis documents a cluster or dependence level that can be reconstructed. Suitability of the eventual inference method is provisional until Gate 3.",
+      "pass_rule": "The archive identifies unit, time, and the primary clustering/dependence structure.",
+      "fail_rule": "The application is cross-sectional or lacks any repeated unit/time structure needed for the proposed history comparison.",
+      "missing_rule": "Panel identifiers exist but clustering, dependence, or effective cluster count is undocumented."
+    },
+    {
+      "id": "E6",
+      "name": "data_and_documentation_accessible",
+      "requirement": "Data required for the intended comparison are locally accessible or publicly recoverable from a primary repository, and variables can be mapped from documentation to files without reconstructing protected or unavailable inputs.",
+      "pass_rule": "Local data plus primary documentation and specification code identify D, Y, Z, unit, time, sample restrictions, and clustering variables.",
+      "fail_rule": "Required variables or records are documented as unavailable, restricted without access, or absent from the archived data.",
+      "missing_rule": "Files exist but essential variables cannot yet be mapped or provenance is incomplete."
+    },
+    {
+      "id": "E7",
+      "name": "substantively_relevant_control_contrast",
+      "requirement": "A named Z has both a pre-exposure historical role and a current value whose causal role could differ after D. Adding current Z while retaining documented history answers a real specification decision in the study; it is not created by merely relabeling a subscript.",
+      "pass_rule": "Primary substantive reasoning and timing make both historical adjustment and current-control interpretation relevant.",
+      "fail_rule": "The archived design documents Z only as time-invariant, only post-outcome, or unrelated to the exposure-outcome process.",
+      "missing_rule": "Current and lagged Z can be constructed, but no primary source documents why the contrast matters or when Z is measured."
+    }
+  ],
+  "classification_rule": {
+    "ELIGIBLE_DOCUMENTARY": "All E1-E7 pass. Only this status permits provisional principal or reserve selection.",
+    "HOLD_DOCUMENTATION": "No criterion is demonstrably failed, but one or more criteria have missing documentation. This is not evidence of substantive ineligibility.",
+    "INELIGIBLE_DEMONSTRATED": "At least one criterion fails on affirmative primary-source evidence.",
+    "NOT_SCREENED": "Not among the at-most-three candidates selected for full documentary screening."
+  },
+  "candidate_selection_rule": {
+    "stage_1": "Start from the Gate 0 archive and rank study-designs without consulting forbidden selection information.",
+    "stage_2": "Prioritize a clearly dated exposure-outcome clock, reconstructible pre-history, local data and code, documented panel/clustering, and a control with a credible changing temporal role.",
+    "stage_3": "Screen at most three study-designs in that order and record why other archive groups were not selected for full screening.",
+    "principal_reserve": "Choose principal and reserve only among ELIGIBLE_DOCUMENTARY candidates. Selection is provisional until the joint Gate 3 compatibility check and cannot be changed because a later estimate is small, null, or unfavorable."
+  },
+  "inspection_limits": {
+    "no_estimation": true,
+    "no_R_execution": true,
+    "no_shift_computation": true,
+    "schema_inspection_only": true,
+    "no_manuscript_or_analysis_edits": true
+  },
+  "stopping_rule": "Stop after three full screenings, or earlier if two ELIGIBLE_DOCUMENTARY candidates allow principal and reserve selection. If none passes, specify a bounded additional search or a descriptive route for the author; do not manufacture eligibility by changing notation.",
+  "downstream_limits": "Gate 1 documentary eligibility does not establish causal identification, estimator compatibility, sufficient pre-periods, adequate effective clusters, statistical support, or novelty. Those require Gates 2-5."
+}

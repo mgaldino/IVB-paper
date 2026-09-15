@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.0",
+  "review_id": "IVB-G1-FINAL-INTEGRITY-FIDELITY-REVIEW",
+  "date": "2026-09-15",
+  "reviewer": "gate1_scientific_review",
+  "verdict": "PASS",
+  "verdict_scope": "Integrity of frozen bytes and fidelity of negative Gate1 decision to completed independent reviews",
+  "gate_approved": false,
+  "gate_state": "decisão do autor",
+  "goal_completion": false,
+  "freeze_manifest": "gate_01/freeze_round1.json",
+  "freeze_manifest_sha256": "13be567e0bf6d2d1f127594f0ad6792df81ff5521e96797182fb3566198322c0",
+  "frozen_files_checked": 62,
+  "frozen_files_matched": 62,
+  "reviewed_context": [
+    {
+      "path": "gate_01/decision.md",
+      "sha256": "f4eb96cb79d35535d159e2e90ef14c5f387fe54a834d498a7b0eb16f911fd7b3"
+    },
+    {
+      "path": "execution_report.md",
+      "sha256": "4dba5bdc280e45ddbc56c952dd8356b997e99fd8fde377dfa31b6d581672637c"
+    },
+    {
+      "path": "gate_01/state.json",
+      "sha256": "319fbf570b0f0c340be1d8e7b9dc317d07dc9c8e00c0693b029f7861d5d06142"
+    },
+    {
+      "path": "gate_01/checklist.json",
+      "sha256": "653c2c19093e2f37eb07367032ec0cbf402c19957d07a33491a559d5f65fb8d5"
+    }
+  ],
+  "reviewed_reviews": [
+    {
+      "path": "gate_01/review/applications/review_round2.md",
+      "sha256": "3a3f1ad2f7a80137b8b4c3889142b5d84a9e1c482738a9d7b992840d57126bd0"
+    },
+    {
+      "path": "gate_01/review/applications/review_round2.json",
+      "sha256": "64a5f8a39d36c2f513b89222a9e8c182e2c40767916c92729135a5cb1c34c827"
+    },
+    {
+      "path": "gate_01/review/applications/review_round3.md",
+      "sha256": "c071612f7c8eb578365b79c4ffcab396ad61ecfec9ea1d7351f6110e492eadfa"
+    },
+    {
+      "path": "gate_01/review/applications/review_round3.json",
+      "sha256": "125fcfa56264fde572f26190f663802c7eff455f40747046c2988f01ca206664"
+    },
+    {
+      "path": "gate_01/review/science/postexecution_review.md",
+      "sha256": "c0bdd186762cfdaf5b35b5a6d41be5d456be72bc0e3bd2ec980ff740544d47db"
+    },
+    {
+      "path": "gate_01/review/science/postexecution_review.json",
+      "sha256": "ebca9402e97c6b8dc102910fbd808a547eae9b41d1a8c42daf2ae72a747cdbad"
+    },
+    {
+      "path": "gate_01/review/science/literature_revalidation_v3.md",
+      "sha256": "663c777dfbf6ba23bb0b24e9d64bfa58e47487bd7454ac37f0598b6b43606f48"
+    }
+  ],
+  "baseline_verification": {
+    "manifest": "baseline_manifest.json",
+    "manifest_sha256": "0f7b738c809e3e11426b423c17ed4662d67fb503b58b88b51102d8968803c3c5",
+    "files_checked": 17,
+    "files_matched": 17
+  },
+  "later_gate_states": [
+    {
+      "gate": 2,
+      "state": "planejado"
+    },
+    {
+      "gate": 3,
+      "state": "planejado"
+    },
+    {
+      "gate": 4,
+      "state": "planejado"
+    },
+    {
+      "gate": 5,
+      "state": "planejado"
+    },
+    {
+      "gate": 6,
+      "state": "planejado"
+    },
+    {
+      "gate": 7,
+      "state": "planejado"
+    }
+  ],
+  "fidelity_checks": {
+    "negative_incremental_contribution_result": true,
+    "constructive_equivalence_limited_to_frozen_domain": true,
+    "single_R_run_after_independent_PASS": true,
+    "168_checks_not_Monte_Carlo_repetitions": true,
+    "causal_certificates_are_analytical_inputs": true,
+    "no_principal_or_reserve_CET": true,
+    "Gelbach_full_text_pending": true,
+    "initial_blinding_not_certified": true,
+    "later_review_does_not_erase_prior_exposure": true,
+    "author_route_decision_remains": true,
+    "application_round3_read_before_finalization": true,
+    "historical_S41_not_claimed_as_current_live_hash": true
+  },
+  "material_findings": [],
+  "application_review_scope": "Read completed independent reviews round2 and round3; no primary sources or datasets reopened",
+  "execution": {
+    "R": false,
+    "new_analysis": false,
+    "new_application_triage": false,
+    "hash_and_JSON_checks": true,
+    "PDF_QA": false
+  },
+  "excluded_from_reviewed_context": [
+    "final PDF",
+    "live coordinator_findings log",
+    "future artifacts",
+    "visual QA still in progress"
+  ],
+  "limits": [
+    "PASS is documentary integrity and fidelity only, not approval of Gate1 contribution",
+    "Gelbach full article still missing",
+    "No CET principal or reserve established",
+    "Numerical failure branches not executed",
+    "No causal discovery, inferential coverage or human-performance claim",
+    "PDF and final QA remain independently verified downstream"
+  ]
+}

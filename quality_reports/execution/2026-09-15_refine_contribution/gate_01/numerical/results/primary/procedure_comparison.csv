@@ -1,0 +1,7 @@
+"comparison","result","information_gain_claim"
+"P_vs_Cplus_projections","iguais_dentro_da_tolerancia","nenhum_ganho_informacional_atribuido"
+"P_vs_Cplus_actions","iguais","nenhum_ganho_informacional_atribuido"
+"all_scored_actions_vs_frozen_oracle","corretas","nenhum_ganho_informacional_atribuido"
+"P_vs_Cplus_covariance_transform","iguais_dentro_da_tolerancia","nenhum_ganho_informacional_atribuido"
+"C0_component_fields","campo_nao_reportado_sem_perda","nenhum_ganho_informacional_atribuido"
+"tested_domain_conclusion","equivalencia_do_procedimento_testado_no_dominio_de_posto_completo","nenhum_ganho_informacional_atribuido"

@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "artifact": "gate1_deterministic_numeric_verification",
+  "status": "code_prepared_not_executed_pending_independent_review",
+  "prepared_at_utc": "2026-09-15T12:20:57Z",
+  "governing_freeze": {
+    "path": "../contribution/freeze_prespec_v2.json",
+    "frozen_at_utc": "2026-09-15T12:03:13.129547+00:00",
+    "tested_before_freeze": false,
+    "files": [
+      {
+        "path": "../contribution/test_prespec_v2.md",
+        "sha256": "37562fccf615793d0b589b58303e0afeb225edd73ea85e44a7bb1b7688be7097",
+        "role": "governing_prespecification"
+      },
+      {
+        "path": "../contribution/test_prespec_v2.json",
+        "sha256": "12affe0250af02ada1fc4213a1067ccfe5b482fa5d7a78c52261069c7e7ff00f",
+        "role": "governing_machine_readable_prespecification"
+      }
+    ]
+  },
+  "supporting_sources": [
+    {
+      "path": "../contribution/derivation.md",
+      "sha256": "7038d74a1623e9b18a8902b48a44cbe7ba69530c7de96a03b876203055edb0c8",
+      "role": "supporting_algebra_not_governing"
+    },
+    {
+      "path": "../../../../../CLAUDE.md",
+      "sha256": "972801f84080ad8cad5c4f86400bc35ee8858dee4795841ee62306204ad68648",
+      "role": "repository_workflow"
+    },
+    {
+      "path": "/Users/manoelgaldino/.codex/skills/review-r/SKILL.md",
+      "sha256": "da643bcf23fb0ba753f35b57ce032f087af8568da3167212464ea039670911b2",
+      "role": "review_workflow_only"
+    }
+  ],
+  "prepared_artifacts": [
+    {
+      "path": "verify_examples.R",
+      "sha256": "eaa328c2c7394c27443f28481f0fc2ebb9436534ad4c1bc390203a88ca7beae6",
+      "language": "R",
+      "dependencies": "base_R_only"
+    },
+    {
+      "path": "README.md",
+      "sha256": "543829a14cf7cc17ed203e516f9b19c1dab1c3abecb808213b4e0a35b5ff7cdb"
+    }
+  ],
+  "implementation_scope": {
+    "examples": ["E1", "E2"],
+    "e1_cells": ["E1-central", "E1-menos", "E1-mais", "E1-nulo"],
+    "e2_graphs": ["G_M", "G_F"],
+    "fixture_rows_per_cell_or_graph": 8,
+    "methods": [
+      "direct_unweighted_OLS",
+      "independent_FWL_auxiliary_regressions",
+      "rank_and_conditioning",
+      "deterministic_structural_covariance_transform",
+      "stacked_HC0_algebra_transform_without_inferential_claims",
+      "product_gradient_and_influence_equivalence"
+    ]
+  },
+  "execution_state": {
+    "R_executed": false,
+    "R_parsed": false,
+    "results_directory_created": false,
+    "required_next_step": "independent_review_r_before_any_execution"
+  },
+  "excluded": [
+    "real_data",
+    "simulation",
+    "monte_carlo",
+    "bootstrap",
+    "empirical_confidence_intervals",
+    "coverage_or_calibration_claims",
+    "cluster_coverage_claims",
+    "short_panel_estimation",
+    "paper_changes"
+  ]
+}

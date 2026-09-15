@@ -1,0 +1,192 @@
+{
+  "schema_version": "1.0",
+  "generated_date": "2026-09-15",
+  "reader_task": "Gate 1 bibliographic confrontation",
+  "scope": "Literature reading and comparison only; no manuscript, bibliography, R, Stata, or analytical-output changes.",
+  "coverage_rule": "Full_read_complete means every page of the identified local PDF was read. Extracted text supports search and location but does not substitute for the recorded page reading. Targeted_code_inspection means only listed code ranges were inspected. Abstract_only is never treated as full reading.",
+  "gate_assessment": {
+    "literature_module_status": "not_cleared_for_novelty",
+    "core_mathematical_assessment": "equivalent_to_Gelbach_FWL_under_common_sample_and_matched_specification",
+    "incremental_operational_value": "plausible_but_not_yet_distinguished_from_fully_informed_strong_comparator",
+    "blocking_evidence_gap": "Gelbach_2016_full_article_not_available"
+  },
+  "sources": [
+    {
+      "source_id": "blackwell_glynn_2018",
+      "citation": "Blackwell, Matthew, and Adam N. Glynn. 2018. How to Make Causal Inferences with Time-Series Cross-Sectional Data under Selection on Observables. American Political Science Review 112(4):1067-1082.",
+      "version": "published journal PDF",
+      "doi": "10.1017/S0003055418000357",
+      "path": "references_pdfs/causal-tscs.pdf",
+      "sha256": "9beb98e874edbe73d084a73137e750e733458ce42145717bf7bc2a82613152c1",
+      "pdf_pages": 16,
+      "article_pages": "1067-1082",
+      "read_status": "full_read_complete",
+      "coverage": "16/16 PDF pages",
+      "primary_localizers": [
+        "1067-1072",
+        "Eq. 17 on 1073",
+        "1073-1079",
+        "1079-1082"
+      ],
+      "supporting_extract": {
+        "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/blackwell_glynn_fulltext.txt",
+        "sha256": "dfb7a98b5dffce6c24a7a0fb07589be9d6285e5da9ad88b82f17ab885e281e21",
+        "lines": 1193,
+        "words": 14402
+      }
+    },
+    {
+      "source_id": "cinelli_forney_pearl_2022",
+      "citation": "Cinelli, Carlos, Andrew Forney, and Judea Pearl. A Crash Course in Good and Bad Controls.",
+      "version": "author PDF dated 2022-03-21",
+      "url": "https://carloscinelli.com/files/Cinelli%20et%20al%20(2020)%20-%20A%20Crash%20Course%20in%20Good%20and%20Bad%20Controls.pdf",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/cinelli_forney_pearl_2022.pdf",
+      "sha256": "2dec29ba484cc91d9c74a7de78132837deace77e33300d492391fd633b5c60f6",
+      "pdf_pages": 30,
+      "read_status": "full_read_complete",
+      "coverage": "30/30 PDF pages",
+      "primary_localizers": [
+        "1-14",
+        "20-24",
+        "25-30"
+      ],
+      "supporting_extract": {
+        "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/cinelli_forney_pearl_fulltext.txt",
+        "sha256": "ac1ada71808562d7a2719c7ae6fb24c331db97219af1ab64454da1853bf8d12a",
+        "lines": 1329,
+        "words": 10433
+      }
+    },
+    {
+      "source_id": "imai_kim_2019",
+      "citation": "Imai, Kosuke, and In Song Kim. 2019. When Should We Use Unit Fixed Effects Regression Models for Causal Inference with Longitudinal Data? American Journal of Political Science 63(2):467-490.",
+      "version": "published journal PDF",
+      "doi": "10.1111/ajps.12417",
+      "path": "references_pdfs/Imai_2019_AJPS_UFE.pdf",
+      "sha256": "640c1650347ae005ab6592d9b21813482f2c5f5c7abf3e835bfb00272817192d",
+      "pdf_pages": 24,
+      "article_pages": "467-490",
+      "read_status": "full_read_complete",
+      "coverage": "24/24 PDF pages",
+      "primary_localizers": [
+        "467-474",
+        "475-483",
+        "484-490"
+      ]
+    },
+    {
+      "source_id": "imai_kim_2021",
+      "citation": "Imai, Kosuke, and In Song Kim. 2021. On the Use of Two-Way Fixed Effects Regression Models for Causal Inference with Panel Data. Political Analysis 29(3):405-415.",
+      "version": "published journal PDF in JSTOR scan",
+      "doi": "10.1017/pan.2020.33",
+      "path": "references_pdfs/Imai_2021_UseTwoWayFixed.pdf",
+      "sha256": "019a48ff89b5e88b68ed80c7beaa7d60a4d400ee81cb7303cd752732b9132e50",
+      "pdf_pages": 12,
+      "article_pages": "405-415 plus JSTOR cover page",
+      "read_status": "full_read_complete",
+      "coverage": "12/12 PDF pages",
+      "primary_localizers": [
+        "405-410",
+        "410-413",
+        "413-415"
+      ]
+    },
+    {
+      "source_id": "bellemare_masaki_pepinsky_2017",
+      "citation": "Bellemare, Marc F., Takaaki Masaki, and Thomas B. Pepinsky. 2017. Lagged Explanatory Variables and the Estimation of Causal Effect. The Journal of Politics 79(3):949-963.",
+      "version": "published journal PDF in JSTOR scan",
+      "doi": "10.1086/690946",
+      "path": "references_pdfs/Bellemare-LaggedExplanatoryVariables-2017.pdf",
+      "sha256": "5ad136e2b8fc8bbb7d624728272d6df3ab2d8b5c565bfc6ea73f2a43a9797ec8",
+      "pdf_pages": 16,
+      "article_pages": "949-963 plus JSTOR cover page",
+      "read_status": "full_read_complete",
+      "coverage": "16/16 PDF pages",
+      "primary_localizers": [
+        "949-954",
+        "955-960",
+        "falsification tests on 961",
+        "961-963"
+      ]
+    },
+    {
+      "source_id": "gelbach_2016_article",
+      "citation": "Gelbach, Jonah B. 2016. When Do Covariates Matter? And Which Ones, and How Much? Journal of Labor Economics 34(2):509-543.",
+      "version": "published article identified by editor; SSRN working-paper version dated 2014-08-28 and revised 2014-09-16 identified but not obtained",
+      "doi": "10.1086/683668",
+      "path": null,
+      "sha256": null,
+      "pdf_pages": null,
+      "read_status": "full_text_unavailable_abstract_only",
+      "coverage": "Editorial and SSRN metadata/abstract only. No claim in the report treats this as full reading.",
+      "acquisition_note": "See root-owned acquisition_log.md. Prior 403/404 routes were not repeated."
+    },
+    {
+      "source_id": "gelbach_b1x2_help",
+      "citation": "Gelbach, Jonah B. b1x2 Stata help file, SSC/RePEc S457814.",
+      "version": "public author software help retrieved 2026-09-15; paired code identifies package version 4.1.0",
+      "url": "http://fmwww.bc.edu/repec/bocode/b/b1x2.sthlp",
+      "record_url": "https://ideas.repec.org/c/boc/bocode/s457814.html",
+      "license": "GPL v3 per SSC/RePEc record S457814",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/gelbach_b1x2.sthlp",
+      "sha256": "cd9e43999b58bea60de88046f9b92d75cb339fc2a1e46e23eb0f88d3d99ab56d",
+      "text_lines": 457,
+      "read_status": "full_read_complete",
+      "coverage": "457/457 lines",
+      "primary_localizers": [
+        "35-65",
+        "79-89",
+        "114-203",
+        "222-251",
+        "254-457"
+      ],
+      "execution_status": "not_executed"
+    },
+    {
+      "source_id": "gelbach_b1x2_code",
+      "citation": "Gelbach, Jonah B. b1x2 Stata source code, SSC/RePEc S457814.",
+      "version": "4.1.0 dated 2010-01-20; original 4.0.0 dated 2008-11-10",
+      "url": "http://fmwww.bc.edu/repec/bocode/b/b1x2.ado",
+      "record_url": "https://ideas.repec.org/c/boc/bocode/s457814.html",
+      "license": "GPL v3 per SSC/RePEc record S457814",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/gelbach_b1x2.ado",
+      "sha256": "9bc1a3d41d7801cf1f778058f0ba23b1ddc636b8056254ffebed7979ec291875",
+      "text_lines": 1352,
+      "read_status": "targeted_code_inspection",
+      "coverage": "Inspected header/syntax and all code ranges needed to verify coefficient construction, robust/cluster covariance, product cross terms, aggregation, saved results and reporting warning.",
+      "inspected_ranges": [
+        "1-30",
+        "60-64",
+        "131-214",
+        "465-490",
+        "720-815",
+        "910-965",
+        "1028-1062",
+        "1188-1238"
+      ],
+      "execution_status": "not_executed"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/reader_report.md",
+      "role": "narrative synthesis and Gate 1 recommendation"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/reader_claim_comparison.csv",
+      "role": "claim-by-claim known-gap-proposal-evidence matrix"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/reader_manifest.json",
+      "role": "version, hash, coverage and status manifest"
+    }
+  ],
+  "verification": {
+    "pdf_page_counts_checked_with_pdfinfo": true,
+    "sha256_recomputed": true,
+    "json_parse_checked": true,
+    "csv_parse_checked": true,
+    "report_localizers_spot_checked": true,
+    "statistical_software_run": false
+  }
+}

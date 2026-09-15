@@ -1,0 +1,54 @@
+{
+  "saved_at_utc": "2026-09-15T12:36:03.462850+00:00",
+  "reason": "Preserve initial application selection, protocol and reading incident before adjudicated corrections",
+  "files": [
+    {
+      "path": "gate_01/review/snapshots/applications_round1/README.md",
+      "sha256": "17f5625992a8f28839be416d7daedfa40f6adede029d8b6ab780fdb8b2209b50"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/archive_disposition.md",
+      "sha256": "5021eb85722bec70a8bd47b784ce082b95fb4bf25db423dd72a254e19d84edae"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/candidate_ballard_rosa_debt.md",
+      "sha256": "08a62f081e4f16edf7b53b9322e1bb8ca668e4bb4d54455ddcc2c285a2d92a5c"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/candidate_blair_peacekeeping.md",
+      "sha256": "8d335801b7b0e54dab7a9cc96e3d2fd3e8e949906d840a9c83363012363dcd7c"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/candidate_claassen_support.md",
+      "sha256": "82ecbbc95c2079f8ff5d1f981795d8a2efefd5caaf0fa608aeda92340d1785c9"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/decision_log.md",
+      "sha256": "ce171e4e3a1ab44f713f8734e661dd8775f0914bc1224691040c3f0175a3733e"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/inspection_log.md",
+      "sha256": "9d57eaeb70764c57942c129f19016575778f9355dfe4fb2f99e2f174fc4b1b43"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/protocol.json",
+      "sha256": "2cdd660814ea3951ff7ede8603d8df96ecd43630279b39c6ecfdc9c754ad442e"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/protocol.md",
+      "sha256": "57e59f01ab55263e05d5e191a0ac88020c7893bd3cc61bec056d87f5c916f8f4"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/protocol_freeze.md",
+      "sha256": "593526407b8c135d4b0feb2c91722df5b8d8d5f42694d43880746ca5cc5d1763"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/selection.md",
+      "sha256": "4495e71a10e1e9b1a884033c3af57eb9332f66ca76e3f968fda59640b7e34b18"
+    },
+    {
+      "path": "gate_01/review/snapshots/applications_round1/sources_manifest.csv",
+      "sha256": "db0ffb5ef1a7d42814aecc7a8156b6c4ba94d9dd9cc79a6c8815371e67344068"
+    }
+  ]
+}

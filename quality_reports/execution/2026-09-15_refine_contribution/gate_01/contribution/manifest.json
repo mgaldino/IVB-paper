@@ -1,0 +1,165 @@
+{
+  "artifact": "Gate1 contribution design",
+  "created_at_utc": "2026-09-15T12:12:20.031833+00:00",
+  "author": "gate1_contribution",
+  "governing_test_id": "ivb-g1-contribution-v2",
+  "status": "ready_for_independent_review",
+  "head_observed": "b17c0a47a2b0f4526d03fdfccf5380fe60b5bc2f",
+  "input_files": [
+    {
+      "path": "CLAUDE.md",
+      "sha256": "972801f84080ad8cad5c4f86400bc35ee8858dee4795841ee62306204ad68648"
+    },
+    {
+      "path": "quality_reports/plans/2026-09-15_refine_contribution/plan.md",
+      "sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d"
+    },
+    {
+      "path": "ivb_paper_pa.Rmd",
+      "sha256": "12493a67133f988c5e6a13933bf2b89c0d9880e96bae329248a207b3aeaf7b5e"
+    },
+    {
+      "path": "quality_reports/argument_contracts/ivb-pa-refine/5375d3c27ac1/argument_contract.json",
+      "sha256": "a85ea8096d4a5044eed1c6993cdcf82ec83b29a783f27dc989e1771afe7709d7"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_00/decision.md",
+      "sha256": "1248dd50b6e0d960e90a145aca8e192dadc0b738d13be6272abc7a79a3b605a9"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_00/freeze_round2.json",
+      "sha256": "6cabcc31b691492eeb44e6390250bb14b09cedc04f03e7ca63e85ffdcdbc7faa"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_00/revalidation/revalidation.md",
+      "sha256": "32892e8013eed4c3538ac40559f2d6817753b7b7b4bfd4f6c789bf7833ef46e7"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_00/revalidation/response_matrix.csv",
+      "sha256": "46637a6a02e7181f4ee652ed0ea2dda799266068245bb679654c06525f96f847"
+    },
+    {
+      "path": "derivations/specification_shift_uncertainty.Rmd",
+      "sha256": "317b7a81101a75e60ad3c9466500106878dd3b84dfc48f05722517699fbed963"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/literature/sources/gelbach_b1x2.sthlp",
+      "sha256": "cd9e43999b58bea60de88046f9b92d75cb339fc2a1e46e23eb0f88d3d99ab56d"
+    }
+  ],
+  "output_files": [
+    {
+      "path": "README.md",
+      "sha256": "43c1f1d4801c17badd26156f489c9dd5e169c9bbee5b1cf4c518071b10d80a48"
+    },
+    {
+      "path": "contribution_memo.md",
+      "sha256": "973f3f9ff578054b78ee889464a987cede704ef0ca8304c72d621a38bfa24a98"
+    },
+    {
+      "path": "contribution_onepage.md",
+      "sha256": "ce02beed613504d125ef99c4e68e832a2a4b9296f9a29375cd3619f812cb9bbe"
+    },
+    {
+      "path": "derivation.md",
+      "sha256": "7038d74a1623e9b18a8902b48a44cbe7ba69530c7de96a03b876203055edb0c8"
+    },
+    {
+      "path": "expected_analytical_results.json",
+      "sha256": "d1e7514636531ddf383bb7fad6bc75a6e6b90a7c03e3143ca45b1038955e104e"
+    },
+    {
+      "path": "freeze_prespec_v1.json",
+      "sha256": "7f3e12ac0cdb0bf5114c839cf2e1127155ccf5d7ff1fab4ccdd346e70bd8ad06"
+    },
+    {
+      "path": "freeze_prespec_v2.json",
+      "sha256": "31cb5c7ef7ffa47851118065031027992a603bfdec73c334313b36737d81562a"
+    },
+    {
+      "path": "test_prespec_v1.json",
+      "sha256": "0ea2a24268b719a57a3e6ce26d07a5c2814e7351ce5133881cf5e9c7bc0fc0d5"
+    },
+    {
+      "path": "test_prespec_v1.md",
+      "sha256": "a8a0367575d28c532c141a37d8b911645651fd9d74c97397d5fa97ad0db5f46e"
+    },
+    {
+      "path": "test_prespec_v2.json",
+      "sha256": "12affe0250af02ada1fc4213a1067ccfe5b482fa5d7a78c52261069c7e7ff00f"
+    },
+    {
+      "path": "test_prespec_v2.md",
+      "sha256": "37562fccf615793d0b589b58303e0afeb225edd73ea85e44a7bb1b7688be7097"
+    }
+  ],
+  "documentary_checks": [
+    {
+      "check": "JSON parses",
+      "file": "expected_analytical_results.json",
+      "result": "PASS"
+    },
+    {
+      "check": "JSON parses",
+      "file": "freeze_prespec_v1.json",
+      "result": "PASS"
+    },
+    {
+      "check": "JSON parses",
+      "file": "freeze_prespec_v2.json",
+      "result": "PASS"
+    },
+    {
+      "check": "JSON parses",
+      "file": "test_prespec_v1.json",
+      "result": "PASS"
+    },
+    {
+      "check": "JSON parses",
+      "file": "test_prespec_v2.json",
+      "result": "PASS"
+    },
+    {
+      "check": "Frozen specification hashes unchanged",
+      "version": 1,
+      "result": "PASS"
+    },
+    {
+      "check": "Frozen specification hashes unchanged",
+      "version": 2,
+      "result": "PASS"
+    },
+    {
+      "check": "Same governing test id, two candidates and four E1 cells",
+      "result": "PASS"
+    },
+    {
+      "check": "Manuscript and approved Gate0 freeze match received hashes",
+      "result": "PASS"
+    },
+    {
+      "check": "All localized evidence paths exist",
+      "result": "PASS"
+    }
+  ],
+  "commands_executed_categories": [
+    "read-only pwd/git status/git rev-parse/rg/cat/sed/nl/shasum",
+    "apply_patch writes only contribution directory",
+    "python3 standard library document creation/JSON parsing/hashing and documentary assertions",
+    "git diff --check and file inventory"
+  ],
+  "not_executed": [
+    "R",
+    "statistical computation",
+    "numeric fixture",
+    "simulation",
+    "bootstrap",
+    "real data shifts",
+    "human usability evaluation",
+    "paper rendering or edit",
+    "commit"
+  ],
+  "scientific_validation": "analytical derivation by designer; independent mathematical review and numerical implementation pending",
+  "literature_limit": "localized official Gelbach help read; full article not read",
+  "metadata_policy": "manifest excludes own hash to avoid circularity"
+}

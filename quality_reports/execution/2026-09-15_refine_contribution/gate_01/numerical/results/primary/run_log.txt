@@ -1,0 +1,9 @@
+2026-09-15T12:42:58Z inicio run=primary
+2026-09-15T12:42:58Z fontes governantes conferidas contra freeze_prespec_v2.json
+2026-09-15T12:42:58Z escopo=fixture_algebrico_deterministico_sem_inferencia
+2026-09-15T12:42:58Z celulas_E1_preservadas=4
+2026-09-15T12:42:58Z grafos_E2_preservados=2
+2026-09-15T12:42:58Z validation_checks=168
+2026-09-15T12:42:58Z overall_pass=TRUE
+verification_checks=PASS
+delivery_status=PENDING_FINALIZATION

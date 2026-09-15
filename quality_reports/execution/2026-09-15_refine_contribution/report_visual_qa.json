@@ -1,0 +1,57 @@
+{
+  "reviewed_at_utc": "2026-09-15T13:06:06.312628+00:00",
+  "verdict": "PASS",
+  "source_sha256": "4dba5bdc280e45ddbc56c952dd8356b997e99fd8fde377dfa31b6d581672637c",
+  "pdf_sha256": "82a892a1704ed498981eda4a5b5c500fd680e5a440f11de6178ee06c34a977a9",
+  "page_count": 5,
+  "all_pages_inspected": true,
+  "pages": [
+    {
+      "page": 1,
+      "status": "PASS",
+      "inspection": "visual image inspection by coordinator",
+      "image_path": "/tmp/ivb-execution-report-qa/verified-1.png",
+      "image_sha256": "07a1bbe7fc48969317889afc3feb368638023f9bc371a4da9fc5337b0b9d8cf3",
+      "notes": "Título, resultado principal, status dos gates e texto do Gate 0 legíveis; margens e rodapé preservados."
+    },
+    {
+      "page": 2,
+      "status": "PASS",
+      "inspection": "visual image inspection by coordinator",
+      "image_path": "/tmp/ivb-execution-report-qa/verified-2.png",
+      "image_sha256": "b8787424b435198bdc10c577462502c85387e0285be852df51c1d9e78f020563",
+      "notes": "Equação de substituição renderizada corretamente; matemática e subscritos legíveis; sem comandos LaTeX expostos."
+    },
+    {
+      "page": 3,
+      "status": "PASS",
+      "inspection": "visual image inspection by coordinator",
+      "image_path": "/tmp/ivb-execution-report-qa/verified-3.png",
+      "image_sha256": "17b62bc6fed2b37df960646d3f846093d84b2ca1082e543d463e11307434327a",
+      "notes": "Tabela 1 e caption legíveis; sinais, setas, quatro células e magnitudes conferidos; equações e expoentes preservados."
+    },
+    {
+      "page": 4,
+      "status": "PASS",
+      "inspection": "visual image inspection by coordinator",
+      "image_path": "/tmp/ivb-execution-report-qa/verified-4.png",
+      "image_sha256": "74226bca5f1dcd60e473ebbd99d02fada7311ce3075b71af658fb7b5875b83f6",
+      "notes": "Literatura, limite de acesso, cronologia e três classificações documentais legíveis; sem glifos ausentes."
+    },
+    {
+      "page": 5,
+      "status": "PASS",
+      "inspection": "visual image inspection by coordinator",
+      "image_path": "/tmp/ivb-execution-report-qa/verified-5.png",
+      "image_sha256": "3b5e48defedffe2b4eaf5ec83543f710fd1717b8e834f9e8f1af0dda4d4c772c",
+      "notes": "Decisão negativa, quatro alternativas, dependências e verificação final legíveis; sem transbordamento ou sobreposição."
+    }
+  ],
+  "render_tool": "Poppler pdftoppm -scale-to 1700 -png",
+  "render_log_missing_glyph_warnings": false,
+  "repairs": [
+    "Enabled pandoc tex_math_single_backslash for display equation",
+    "Replaced unsupported text arrows with mathematical arrows or explicit causal wording"
+  ],
+  "scope": "Visual layout and rendered content of this execution report, not the 22-page manuscript or scientific Gate 7"
+}

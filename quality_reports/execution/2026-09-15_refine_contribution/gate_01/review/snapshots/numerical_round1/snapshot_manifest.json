@@ -1,0 +1,18 @@
+{
+  "saved_at_utc": "2026-09-15T12:24:27.605239+00:00",
+  "reason": "Preserve pre-execution bytes with confirmed NUM-01 to NUM-03 findings",
+  "files": [
+    {
+      "path": "gate_01/review/snapshots/numerical_round1/verify_examples.R",
+      "sha256": "eaa328c2c7394c27443f28481f0fc2ebb9436534ad4c1bc390203a88ca7beae6"
+    },
+    {
+      "path": "gate_01/review/snapshots/numerical_round1/README.md",
+      "sha256": "543829a14cf7cc17ed203e516f9b19c1dab1c3abecb808213b4e0a35b5ff7cdb"
+    },
+    {
+      "path": "gate_01/review/snapshots/numerical_round1/source_manifest.json",
+      "sha256": "d07fef66fca01c424146e3304c0bb13685309078b1be988fb0d6823f7a7ac208"
+    }
+  ]
+}

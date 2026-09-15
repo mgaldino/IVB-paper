@@ -1,0 +1,395 @@
+{
+  "schema_version": "1.0",
+  "adjudication_id": "IVB-G1-applications:4495e71a10e1:review-round1",
+  "record_type": "INDEPENDENT_REVIEW_CANDIDATES_NOT_FINAL_ADJUDICATION",
+  "source": {
+    "reviewed_artifact": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/selection.md",
+    "sha256": "4495e71a10e1e9b1a884033c3af57eb9332f66ca76e3f968fda59640b7e34b18",
+    "artifact_intact": true
+  },
+  "contract": {
+    "required": false,
+    "path": null,
+    "sha256": null,
+    "contract_id": null,
+    "artifact_sha256": null,
+    "status": null,
+    "stale": false,
+    "operational_contract": "Approved plan d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d and documentary protocol v1; no manuscript argument contract needed for this bounded screen."
+  },
+  "review_sources": [
+    {
+      "review_id": "A",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/independent_blind_triage.md",
+      "sha256": "ede8fb0848b7824c4d838c4fc38aa99e2d256617d3ca9224ea7e5d9771064045"
+    },
+    {
+      "review_id": "R1",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/review_round1.md",
+      "sha256": "c8e31cb8e5ec1fbba182002caf6283344076dc21099d882ba07cf21fdde4312e"
+    }
+  ],
+  "reviewed_input_manifest": [
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/README.md",
+      "sha256": "17f5625992a8f28839be416d7daedfa40f6adede029d8b6ab780fdb8b2209b50"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/archive_disposition.md",
+      "sha256": "5021eb85722bec70a8bd47b784ce082b95fb4bf25db423dd72a254e19d84edae"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/candidate_ballard_rosa_debt.md",
+      "sha256": "08a62f081e4f16edf7b53b9322e1bb8ca668e4bb4d54455ddcc2c285a2d92a5c"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/candidate_blair_peacekeeping.md",
+      "sha256": "8d335801b7b0e54dab7a9cc96e3d2fd3e8e949906d840a9c83363012363dcd7c"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/candidate_claassen_support.md",
+      "sha256": "82ecbbc95c2079f8ff5d1f981795d8a2efefd5caaf0fa608aeda92340d1785c9"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/decision_log.md",
+      "sha256": "ce171e4e3a1ab44f713f8734e661dd8775f0914bc1224691040c3f0175a3733e"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/inspection_log.md",
+      "sha256": "9d57eaeb70764c57942c129f19016575778f9355dfe4fb2f99e2f174fc4b1b43"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/protocol.json",
+      "sha256": "2cdd660814ea3951ff7ede8603d8df96ecd43630279b39c6ecfdc9c754ad442e"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/protocol.md",
+      "sha256": "57e59f01ab55263e05d5e191a0ac88020c7893bd3cc61bec056d87f5c916f8f4"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/protocol_freeze.md",
+      "sha256": "593526407b8c135d4b0feb2c91722df5b8d8d5f42694d43880746ca5cc5d1763"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/selection.md",
+      "sha256": "4495e71a10e1e9b1a884033c3af57eb9332f66ca76e3f968fda59640b7e34b18"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/applications/sources_manifest.csv",
+      "sha256": "db0ffb5ef1a7d42814aecc7a8156b6c4ba94d9dd9cc79a6c8815371e67344068"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/independent_blind_triage.md",
+      "sha256": "ede8fb0848b7824c4d838c4fc38aa99e2d256617d3ca9224ea7e5d9771064045"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/independent_blind_triage.json",
+      "sha256": "0d1e147621c4f5a0012b3be60ff552c5dc7cf8414297a656b3d067f1379e2cbc"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "R1-F001",
+      "source_review": "R1",
+      "quoted_finding": "The selected lagged-exposure applications do not yet establish the contemporaneous-effect estimand required by the plan.",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "estimand",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "authority_status": "CANDIDATE_FOR_ORCHESTRATOR_ADJUDICATION",
+      "criteria": [
+        "E1",
+        "E2",
+        "plan Gate 1"
+      ],
+      "source_locations": [
+        "candidate_blair_peacekeeping.md:18-23,28-33,69",
+        "candidate_ballard_rosa_debt.md:18-23,27-32,69",
+        "selection.md:5-8,16-18",
+        "plan.md:124-127",
+        "Blair article pp. 1315-1317; replication.do:446",
+        "Ballard-Rosa article pp. 48-50; IO replication.do:74-79"
+      ],
+      "defect_evidence": [
+        "The documented models relate D[t−2] or D[t−1] to later Y[t].",
+        "The plan explicitly prohibits resolving absent CET applications by renaming time indices."
+      ],
+      "refuting_evidence": [
+        "The implementation correctly calls its statistical object a future-outcome projection and recognizes causal limits; it does not claim completed causal identification."
+      ],
+      "mechanical_checks": [
+        "Read cited primary text/code and frozen documentary criterion; no empirical estimation."
+      ],
+      "reasoning": "A future response can pass literal E2 without demonstrating the plan's contemporaneous target. A conditional contemporaneous/direct-effect label does not define a new intervention/window.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "Separate literal documentary classification from CET compatibility. State physical-time intervention, response window and treatment persistence. Update selection and any protocol version transparently; reserve changing the scientific target to the author.",
+      "eligibility_impact": "Prevents treating literal Blair eligibility or the proposed reserve as established CET applications."
+    },
+    {
+      "finding_id": "R1-F002",
+      "source_review": "R1",
+      "quoted_finding": "The Ballard-Rosa inflation-crisis ficha asserts monthly crisis timing and pre-exposure Z[t−2] without sufficient documentary evidence.",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "measurement_and_timing",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "authority_status": "CANDIDATE_FOR_ORCHESTRATOR_ADJUDICATION",
+      "criteria": [
+        "E3",
+        "E7"
+      ],
+      "source_locations": [
+        "candidate_ballard_rosa_debt.md:13,20,29-32,40,44,53,57,66",
+        "selection.md:8,17,33",
+        "Ballard-Rosa article p. 49 note 94 and p. 50; pp. 39-46,49,57 substantive context",
+        "IO replication.do:67-79,111-123"
+      ],
+      "defect_evidence": [
+        "The article describes controls as annual unless otherwise stated; exceptions named in the timing section are partisanship and Treasury.",
+        "The code uses both current and monthly-lag operators on crisis_inflation, which does not establish the measurement frequency of the source indicator."
+      ],
+      "refuting_evidence": [
+        "Crisis has a substantive connection to partisan preferences and creditor risk; this is a different named control from GDP growth screened in Phase A.",
+        "The sources inspected do not affirmatively prove that no monthly exception exists elsewhere."
+      ],
+      "mechanical_checks": [
+        "Read cited primary text/code and frozen documentary criterion; no empirical estimation."
+      ],
+      "reasoning": "The unresolved issue is the crisis measure's reference interval, not merely within-month ordering. An annual indicator repeated by month could invalidate Z[t−2] as strictly prior and carry later-month information in Z[t]. This is a source-based assessment of crisis, not a transfer of the GDP criticism.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Mark E7 MISSING/HOLD; correct certainty that Z[t−2] is admissible. Identify primary crisis source, reference interval and timing rule; reconcile article/code. Preserve possible availability of older annual history.",
+      "eligibility_impact": "HOLD_DOCUMENTATION for the actual crisis contrast until timing is documented. E3 availability need not FAIL, but its specific proposed-lag justification is unsupported."
+    },
+    {
+      "finding_id": "R1-F003",
+      "source_review": "R1",
+      "quoted_finding": "The absence of support→GDP in Claassen does not satisfy the frozen affirmative FAIL rule for E7.",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "classification",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "authority_status": "CANDIDATE_FOR_ORCHESTRATOR_ADJUDICATION",
+      "criteria": [
+        "E7",
+        "classification rule"
+      ],
+      "source_locations": [
+        "candidate_claassen_support.md:3-5,17,29,40-42",
+        "selection.md:10,18",
+        "archive_disposition.md:9",
+        "decision_log.md:9",
+        "protocol.md:25,31-33",
+        "Claassen paper p. 17, equations 1-2; replication R:51-56"
+      ],
+      "defect_evidence": [
+        "Frozen E7 FAIL applies to invariant, only post-outcome, or unrelated controls; the primary DAG explicitly makes GDP a cause of both support and democracy."
+      ],
+      "refuting_evidence": [
+        "The DAG does exclude support→GDP, so the implementation correctly refuses to invent mediation under the original assumptions."
+      ],
+      "mechanical_checks": [
+        "Read cited primary text/code and frozen documentary criterion; no empirical estimation."
+      ],
+      "reasoning": "Missing evidence for a role-changing post-treatment contrast is not proof of the stated exclusion conditions. E7 PASS is also not yet demonstrated; HOLD preserves that distinction.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Replace E7 FAIL and INELIGIBLE_DEMONSTRATED with MISSING/HOLD consistently. Revise reopening rule so it does not require proving a new D→Z arrow as the only admissible route; preserve separate CET limitation.",
+      "eligibility_impact": "Removes unsupported demonstrated ineligibility; does not make Claassen eligible or certify CET."
+    },
+    {
+      "finding_id": "R1-F004",
+      "source_review": "R1",
+      "quoted_finding": "A later independent matching choice cannot eliminate uncertainty about influence from initially seen forbidden values.",
+      "type": "overclaim",
+      "severity": "major",
+      "scientific_dimension": "blinding_and_provenance",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "authority_status": "CANDIDATE_FOR_ORCHESTRATOR_ADJUDICATION",
+      "criteria": [
+        "forbidden selection information",
+        "protocol freeze chronology"
+      ],
+      "source_locations": [
+        "selection.md:37",
+        "inspection_log.md:9-11,25",
+        "decision_log.md:20-22",
+        "protocol_freeze.md:3,14"
+      ],
+      "defect_evidence": [
+        "The documented sequence places roster access before protocol writing/freezing.",
+        "The claim that a matching independent route 'elimina a dúvida de influência' exceeds what agreement shows."
+      ],
+      "refuting_evidence": [
+        "The incident is openly recorded; no evidence here demonstrates intentional use of numerical results.",
+        "Independent review can provide additional documentary support for a decision."
+      ],
+      "mechanical_checks": [
+        "Read cited primary text/code and frozen documentary criterion; no empirical estimation."
+      ],
+      "reasoning": "Agreement cannot recover the initial analyst's counterfactual cognitive process or prove absence of influence on prioritization/protocol choices. The review also received an already fixed three-candidate set.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Replace elimination claim with evidence-strengthening language and retain compromised initial blinding. State that freeze preceded classification but followed incidental exposure, per recorded sequence. Preserve incident and disagreements.",
+      "eligibility_impact": "Limits certification of blinding; does not independently demonstrate result-driven selection or disqualify a substantively justified candidate."
+    },
+    {
+      "finding_id": "R1-F005",
+      "source_review": "A",
+      "quoted_finding": "Phase A treated lack of explicit clustered VCE in Blair as sufficient for MISSING E5.",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "inference_screening",
+      "held_decision": false,
+      "status": "REFUTED",
+      "authority_status": "CANDIDATE_FOR_ORCHESTRATOR_ADJUDICATION",
+      "criteria": [
+        "E5"
+      ],
+      "source_locations": [
+        "independent_blind_triage.md:Blair E5",
+        "protocol.md:23,27,44",
+        "candidate_blair_peacekeeping.md:43,58,67",
+        "replication.do:35-45; indvar_separate_ctrls.ado:13,23",
+        "Blair article pp. 1315-1317"
+      ],
+      "defect_evidence": [],
+      "refuting_evidence": [
+        "E5 requires identifiable panel and cluster/dependence level; it defers adequacy of eventual inference.",
+        "Country-year and within-country unit structure are documented; the implementation expressly flags conventional covariance and potential cross-country dependence."
+      ],
+      "mechanical_checks": [
+        "Read cited primary text/code and frozen documentary criterion; no empirical estimation."
+      ],
+      "reasoning": "The initial reviewer objection demanded adequate original VCE rather than reconstructible structure. It was stronger than the frozen documentary requirement.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Withdraw the Phase A E5 hold in the new round only, leaving Phase A bytes intact. Accept PASS documentary/risk; retain Gate 3 inference audit and do not equate FE with clustering.",
+      "eligibility_impact": "Blair changes to ELIGIBLE_DOCUMENTARY under literal E1–E7; independent CET obstacle remains."
+    },
+    {
+      "finding_id": "R1-F006",
+      "source_review": "R1",
+      "quoted_finding": "The Ballard-Rosa ficha conflates exposure to a left government and transition into a left government.",
+      "type": "exposition",
+      "severity": "moderate",
+      "scientific_dimension": "estimand",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "authority_status": "CANDIDATE_FOR_ORCHESTRATOR_ADJUDICATION",
+      "criteria": [
+        "E1"
+      ],
+      "source_locations": [
+        "candidate_ballard_rosa_debt.md:11,18,32,41",
+        "selection.md:8",
+        "Ballard-Rosa article p. 48; IO replication.do:74-79"
+      ],
+      "defect_evidence": [
+        "The proposed target uses 'passagem para/exposição a governo de esquerda'.",
+        "The original model uses lagged partisan category levels, including continuing governments and separate right/left contrasts against center/other."
+      ],
+      "refuting_evidence": [
+        "Entry-into-office dates genuinely help construct the monthly partisan state; the source contains a meaningful exposure contrast."
+      ],
+      "mechanical_checks": [
+        "Read cited primary text/code and frozen documentary criterion; no empirical estimation."
+      ],
+      "reasoning": "Monthly partisanship levels are not an adoption indicator. A dated observed government start is not automatically the intervention time for every observation or counterfactual comparison.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Choose and state the partisan state and comparator, or explicitly propose a separate transition design. Do not silently collapse the original multi-category contrast.",
+      "eligibility_impact": "E1 can remain PASS for the original categorical exposure; proposed intervention must be made unambiguous."
+    }
+  ],
+  "classification_recommendations": [
+    {
+      "candidate": "Blair mandate / foreign aid",
+      "literal_class": "ELIGIBLE_DOCUMENTARY",
+      "criteria": {
+        "E1": "PASS",
+        "E2": "PASS",
+        "E3": "PASS",
+        "E4": "PASS",
+        "E5": "PASS_DOCUMENTARY_WITH_RISK",
+        "E6": "PASS",
+        "E7": "PASS"
+      },
+      "change_from_phase_A": "E5 hold withdrawn; Phase A files preserved.",
+      "plan_CET": "NOT_ESTABLISHED",
+      "principal_for_CET": null
+    },
+    {
+      "candidate": "Ballard-Rosa partisanship / inflation crisis",
+      "literal_class": "HOLD_DOCUMENTATION",
+      "criteria": {
+        "E1": "PASS_ORIGINAL_CATEGORICAL_EXPOSURE",
+        "E2": "PASS",
+        "E3": "PASS_AVAILABILITY_REQUIRES_CORRECTED_HISTORY_ROUTE",
+        "E4": "PASS",
+        "E5": "PASS",
+        "E6": "PASS",
+        "E7": "MISSING_TIMING"
+      },
+      "change_from_phase_A": "Different control evaluated de novo; no transfer of GDP finding as refutation.",
+      "plan_CET": "NOT_ESTABLISHED",
+      "reserve_for_CET": null
+    },
+    {
+      "candidate": "Claassen support / GDP per capita",
+      "literal_class": "HOLD_DOCUMENTATION",
+      "criteria": {
+        "E1": "PASS",
+        "E2": "PASS",
+        "E3": "PASS_DOCUMENTARY_WITH_LIMITS",
+        "E4": "PASS",
+        "E5": "PASS",
+        "E6": "PASS",
+        "E7": "MISSING_NOT_FAIL"
+      },
+      "change_from_implementation": "Affirmative ineligibility unsupported by frozen fail rule.",
+      "plan_CET": "ORIGINAL_ASSUMPTIONS_EXCLUDE_CONTEMPORANEOUS_SUPPORT_EFFECT"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "confirmed": 5,
+    "partial": 0,
+    "refuted": 1,
+    "unresolved": 0,
+    "held_decisions": 0
+  },
+  "adjudication": {
+    "verdict": "BLOCKED",
+    "checked_at": "2026-09-15",
+    "reasons": [
+      "Reviewer's provisional disposition only; all findings await orchestrator adjudication.",
+      "Documentary corrections are bounded but CET application adequacy remains unresolved and no change of scientific target is authorized by this review."
+    ]
+  },
+  "owner_decisions": [
+    "Whether to change scientific target to future effects or adopt an explicitly descriptive route."
+  ],
+  "checks": {
+    "phase_A_hashes_unchanged": true,
+    "protocol_hashes_match_receipt": true,
+    "empirical_execution": false,
+    "new_candidates": false,
+    "writes": [
+      "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/review_round1.md",
+      "quality_reports/execution/2026-09-15_refine_contribution/gate_01/review/applications/review_round1.json"
+    ],
+    "commands": [
+      "rg --files",
+      "nl -ba / cat / sed / rg for authorized source reading",
+      "shasum -a 256",
+      "apply_patch review outputs only",
+      "JSON/documentary validation"
+    ]
+  },
+  "limits": [
+    "No causal identification, statistical support, common-sample or inference adequacy established.",
+    "No R, Stata, regression, shift, bootstrap or new candidate search.",
+    "No proof of intentional outcome-driven selection."
+  ],
+  "stop_state": "ROUND_1_DELIVERED_STOP_FOR_IMPLEMENTER_CORRECTIONS"
+}

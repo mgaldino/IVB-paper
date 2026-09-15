@@ -5,62 +5,121 @@
     {
       "id": "G1-01",
       "requirement": "Escrever uma página com problema, usuário do método, decisão concreta, procedimento existente mais forte e resultado adicional pretendido. A frase de contribuição deve ser compreensível sem os nomes internos do projeto.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/contribution/contribution_onepage.md",
+        "gate_01/contribution/contribution_memo.md"
+      ],
+      "note": "Problema, comparador e capacidade desejada registrados, com resultado negativo."
     },
     {
       "id": "G1-02",
       "requirement": "Construir uma tabela “resultado conhecido / lacuna específica / acréscimo proposto / evidência exigida”. Ler integralmente os trabalhos mais próximos, incluindo Gelbach. Confrontar a decomposição conjunta, a alocação, a covariância e o papel da informação temporal, sem atribuir novidade pelo nome dado ao objeto.",
-      "status": "pendente",
-      "evidence": []
+      "status": "parcial",
+      "evidence": [
+        "gate_01/literature/reader_report.md",
+        "gate_01/literature/reader_claim_comparison.csv",
+        "gate_01/literature/acquisition_log.md",
+        "gate_01/review/science/literature_revalidation_v3.md"
+      ],
+      "note": "Cinco textos integrais e 17 confrontos; Gelbach integral continua pendente. Não permite afirmar novidade."
     },
     {
       "id": "G1-03",
       "requirement": "Desenvolver no máximo dois exemplos candidatos. Explicitar o que cada comparador observa e qual decisão deve tomar. Incluir uma situação de benefício, uma de ausência de ganho e uma de ambiguidade causal. O exemplo serve para testar o argumento; não é evidência empírica de adoção ou compreensão humana.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/contribution/test_prespec_v2.md",
+        "gate_01/numerical/execution_result.md",
+        "gate_01/review/science/postexecution_review.md"
+      ],
+      "note": "Dois exemplos com compensação, ausência de ganho e ambiguidade. Benefício expositivo não se tornou vantagem metodológica sobre C+."
     },
     {
       "id": "G1-04",
       "requirement": "Comparar a proposta com uma decomposição existente que receba exatamente o mesmo DAG, o mesmo timing e a mesma história. Decompor a fonte de eventual vantagem: informação nova, resultado novo, organização operacional ou simples mudança de apresentação.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/contribution/derivation.md",
+        "gate_01/review/science/independent_derivation_v1.md",
+        "gate_01/review/science/scientific_review_v1.md",
+        "gate_01/numerical/results/primary/procedure_comparison.csv"
+      ],
+      "note": "Equivalência construtiva e numérica da rotina com mesma informação, regressões e hipóteses no domínio declarado."
     },
     {
       "id": "G1-05",
       "requirement": "Congelar uma ficha do teste de contribuição com decisão, ações possíveis, critério de acerto ou perda, implementação do comparador forte, resultado que distingue os procedimentos e resultado que obriga a reconhecer equivalência. Identificar se o acréscimo pretendido é matemático, inferencial, computacional ou operacional. O comparador não pode ser artificialmente impedido de executar regressões ou aplicar hipóteses às quais tem acesso.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/contribution/test_prespec_v2.md",
+        "gate_01/contribution/test_prespec_v2.json",
+        "gate_01/contribution/freeze_prespec_v2.json",
+        "gate_01/numerical/execution_authorization.json"
+      ],
+      "note": "Ficha v2 anterior à implementação e execução, com v1 preservada e comparador sem restrição artificial."
     },
     {
       "id": "G1-06",
       "requirement": "Fazer triagem documental de até três aplicações candidatas, começando pelo acervo. Usar critérios definidos antes de calcular os deslocamentos: intervenção atual bem definida, janelas documentadas, história prévia disponível, suporte, painel e clusters adequados, dados acessíveis e contraste relevante entre controles. Registrar exclusões.",
-      "status": "pendente",
-      "evidence": []
+      "status": "parcial",
+      "evidence": [
+        "gate_01/applications/protocol.json",
+        "gate_01/applications/protocol_freeze.md",
+        "gate_01/applications/inspection_log.md",
+        "gate_01/review/applications/independent_blind_triage.md",
+        "gate_01/review/applications/review_round2.md"
+      ],
+      "note": "Três candidatas, nenhum shift novo. Exposição incidental ao roster antes do protocolo impede certificar cegamento; revisão posterior não apaga o incidente."
     },
     {
       "id": "G1-07",
       "requirement": "Produzir para cada candidata uma ficha de timing, variáveis, unidade de análise, estimando, disponibilidade, limitações e trabalho de preparação. Não selecionar por magnitude ou significância de $\\Delta$. Um efeito pequeno pode cumprir a função científica.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/applications/candidate_blair_peacekeeping.md",
+        "gate_01/applications/candidate_ballard_rosa_debt.md",
+        "gate_01/applications/candidate_claassen_support.md",
+        "gate_01/review/applications/review_round2.md"
+      ],
+      "note": "Fichas reparadas e revalidadas; elegibilidade literal, CET, riscos e preparação separados. Ressalva do processo inicial no item G1-06."
     },
     {
       "id": "G1-08",
       "requirement": "Escolher uma aplicação principal e uma reserva por critérios substantivos. Se nenhuma servir, formular uma busca adicional delimitada ou uma rota explicitamente descritiva; a falta de uma aplicação CET não será resolvida apenas renomeando o índice temporal.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/applications/selection.md",
+        "gate_01/applications/cet_correspondence_addendum.md",
+        "gate_01/decision.md"
+      ],
+      "note": "Nenhuma principal/reserva CET. Busca delimitada ou rota descritiva/futura formuladas conforme o item, ainda não escolhidas."
     },
     {
       "id": "G1-09",
       "requirement": "Registrar essa escolha como provisória até a verificação conjunta do Gate 3. Anotar desde já se história, número de períodos, suporte ou dependência podem exigir um estimador fora do núcleo algébrico do paper.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/applications/selection.md",
+        "gate_01/applications/archive_disposition.md",
+        "gate_01/applications/candidate_blair_peacekeeping.md",
+        "gate_01/applications/candidate_ballard_rosa_debt.md",
+        "gate_01/applications/candidate_claassen_support.md"
+      ],
+      "note": "Riscos de história, estimador e dependência registrados. Nenhuma classificação recebe aprovação da matriz conjunta do Gate 3."
     },
     {
       "id": "G1-10",
       "requirement": "Submeter a proposta a um ataque explícito: “Isto é Gelbach mais um checklist já conhecido?” Registrar o que sobrevive, qual proposição ou capacidade exige desenvolvimento e por que merece um artigo autônomo.",
-      "status": "pendente",
-      "evidence": []
+      "status": "verificado",
+      "evidence": [
+        "gate_01/contribution/contribution_memo.md",
+        "gate_01/review/science/scientific_review_v1.md",
+        "gate_01/decision.md"
+      ],
+      "note": "Ataque explícito realizado. Utilidade expositiva possível; capacidade metodológica adicional não demonstrada."
     }
-  ]
+  ],
+  "updated_at_utc": "2026-09-15T12:59:56.277554+00:00",
+  "interpretation": "Verificado significa trabalho e evidência conferidos; não significa resultado científico favorável."
 }

@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0",
+  "review_id": "gate0-independent-round2",
+  "reviewer": "gate0_reviewer",
+  "created_at_utc": "2026-09-15T11:54:41.950766+00:00",
+  "verdict": "PASS",
+  "scope": "Documentary Gate0; no scientific validity certification",
+  "freeze_manifest": "gate_00/freeze_round2.json",
+  "freeze_manifest_sha256": "6cabcc31b691492eeb44e6390250bb14b09cedc04f03e7ca63e85ffdcdbc7faa",
+  "frozen_at_utc": "2026-09-15T11:52:39.121782+00:00",
+  "reviewed_files": [
+    {
+      "path": "gate_00/assessment.md",
+      "sha256": "93d6f4b7c28b32d84b735dac7eb9cb5b9a0949387a0f2293fa71eec2e59e80b9"
+    },
+    {
+      "path": "gate_00/coordinator_read.md",
+      "sha256": "70efa5638d2c89e4f7b432e47481974573eb39e14751fd68c637e195dee5d736"
+    },
+    {
+      "path": "gate_00/inventory/application_candidates.csv",
+      "sha256": "c4468cbc7670f3f39cb28fabe583df6d80e552cafa06f99226ce53b44a6e17e9"
+    },
+    {
+      "path": "gate_00/inventory/correction_round2.md",
+      "sha256": "740a174bf5e52e1c15ec481b6b0b31351dd46608405b5e76231f0e92fa07dfe4"
+    },
+    {
+      "path": "gate_00/inventory/input_sha256.csv",
+      "sha256": "bf17de583f91b6da2a1cc05525d034c5ce4adcfea93c779da7d540bd03548469"
+    },
+    {
+      "path": "gate_00/inventory/memo.md",
+      "sha256": "5710d59fd525045a81dadf5d56a537aa7df88ceffd85eb9a0cb95f2641b87bf7"
+    },
+    {
+      "path": "gate_00/inventory/number_provenance.csv",
+      "sha256": "3708ca3f6dcdb9306bd3148d292a955f66912bd695d228910a54930fd264ea7e"
+    },
+    {
+      "path": "gate_00/inventory/rogowski_additional_comparisons.csv",
+      "sha256": "ad1187f3ab90ccbd7acca44f42f301efa412989ab028622f1a49f9e9565a8b23"
+    },
+    {
+      "path": "gate_00/inventory/task_inventory.csv",
+      "sha256": "b3fabecd53ac00149a5ea1c2a80bc416f2617b646f8bfa67cf43e3432817d656"
+    },
+    {
+      "path": "gate_00/revalidation/response_matrix.csv",
+      "sha256": "46637a6a02e7181f4ee652ed0ea2dda799266068245bb679654c06525f96f847"
+    },
+    {
+      "path": "gate_00/revalidation/response_matrix.json",
+      "sha256": "d5586e38d4de98ec9270e44e04a4aa597f58681857ac182545174d85fd334585"
+    },
+    {
+      "path": "gate_00/revalidation/revalidation.md",
+      "sha256": "32892e8013eed4c3538ac40559f2d6817753b7b7b4bfd4f6c789bf7833ef46e7"
+    }
+  ],
+  "prior_review": "gate_00/review/final_review_round1.json",
+  "prior_review_sha256": "bc05d93dc5eb6b7102ecaae63cd1a1fde3929cf7430f3c2bde748eed1a6f054f",
+  "contract_id": "ivb-pa-refine:5375d3c27ac1:round1",
+  "base_commit": "731cd6570651ea0f602d5c7cdff89ab43ecdb962",
+  "integrity": {
+    "frozen_files_verified": 12,
+    "frozen_file_mismatches": 0,
+    "prior_snapshot_hashes_verified": 2,
+    "prior_snapshot_mismatches": 0,
+    "baseline_hashes_verified": 17,
+    "baseline_mismatches": 0,
+    "unchanged_artifacts_reused": 9,
+    "changed_task_ids": [
+      "T06"
+    ]
+  },
+  "coverage": {
+    "sections": 7,
+    "claims": 8,
+    "tasks": 26,
+    "unique_candidates": 14,
+    "studies": 6,
+    "specification_labels": 7,
+    "available_ratios": 11,
+    "missing_ratios": 3,
+    "extra_comparisons": 3,
+    "response_units": 21,
+    "general_comments": 5,
+    "detailed_comments": 12,
+    "followup_axes": 4,
+    "primary_confirmed": 7,
+    "primary_partial": 10,
+    "csv_json_structural_agreement": true,
+    "mapped_ids_exist": true
+  },
+  "finding_resolutions": [
+    {
+      "id": "G0-R1-F01",
+      "resolution": "RESOLVED",
+      "evidence": "T06 now records existing Table3 at ivb_paper_pa.Rmd:479-499 and requires review/integration instead of creation; memo and correction note agree",
+      "implementation_independent_of_reviewer": true
+    }
+  ],
+  "open_material_findings": [],
+  "gate1_readiness": "READY: documentary criteria satisfied; Gate1 must independently test incremental contribution and application feasibility",
+  "reused_checks": [
+    "102 input manifest hashes from round1; manifest unchanged",
+    "candidate and additional-comparison numeric matching",
+    "21 CSV/JSON response IDs/statuses/gates/mappings",
+    "Task14 static source check and historical-output distinction",
+    "contract coverage and same-byte reuse"
+  ],
+  "executed_now": [
+    "read changed artifacts",
+    "diff snapshots against corrected artifacts",
+    "verify12 frozen hashes",
+    "verify2 original snapshots",
+    "verify17 baseline hashes",
+    "verify onlyT06 changed among26 tasks"
+  ],
+  "not_executed": [
+    "R",
+    "bootstrap",
+    "simulation",
+    "reestimation",
+    "manuscript rendering",
+    "new full PDF visual audit"
+  ],
+  "report_markdown_sha256": "b7a77544728975a74009ec76fd81adcb5847f3c1d37cfbddf92c1f08c3d2d898"
+}

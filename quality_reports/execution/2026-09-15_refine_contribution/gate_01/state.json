@@ -1,9 +1,28 @@
 {
   "gate": 1,
-  "state": "planejado",
-  "updated_at_utc": "2026-09-15T02:37:35.795460+00:00",
+  "state": "decisão do autor",
+  "updated_at_utc": "2026-09-15T12:59:56.277554+00:00",
   "dependency": 0,
-  "evidence": [],
-  "review": null,
-  "decision": null
+  "evidence": [
+    "gate_00/decision.md",
+    "gate_01/contribution/freeze_prespec_v2.json",
+    "gate_01/numerical/execution_result.md",
+    "gate_01/literature/reader_report.md",
+    "gate_01/applications/selection.md",
+    "gate_01/decision.md"
+  ],
+  "review": "gate_01/review/science/final_gate_review.json",
+  "decision": "gate_01/decision.md",
+  "pass_criteria": {
+    "distinct_gain": "not_met",
+    "cet_application": "not_established",
+    "full_nearest_literature": "partial"
+  },
+  "pending": [
+    "Escolha de rota científica pelo autor após equivalência demonstrada",
+    "Leitura integral de Gelbach, ainda sem cópia acessível",
+    "Nenhuma aplicação principal ou reserva CET aprovada"
+  ],
+  "goal_completion": false,
+  "technical_review_scope": "Integrity and fidelity of documented decision; does not approve Gate 1 scientific contribution"
 }

@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "review_id": "gate0-independent-round1",
+  "reviewer": "gate0_reviewer",
+  "created_at_utc": "2026-09-15T11:53:06.463680+00:00",
+  "verdict": "REPAIR",
+  "scope": "Documentary Gate 0 package; scientific repairs remain in downstream gates",
+  "base_commit": "731cd6570651ea0f602d5c7cdff89ab43ecdb962",
+  "contract_id": "ivb-pa-refine:5375d3c27ac1:round1",
+  "freeze_manifest": "gate_00/freeze_round1.json",
+  "freeze_manifest_sha256": "e6d0fef058954a8a0072338c850b2e27c0f07c88e1d2283249af9b0564d253f9",
+  "frozen_at_utc": "2026-09-15T11:49:33.017093+00:00",
+  "reviewed_files": [
+    {
+      "path": "gate_00/assessment.md",
+      "sha256": "93d6f4b7c28b32d84b735dac7eb9cb5b9a0949387a0f2293fa71eec2e59e80b9"
+    },
+    {
+      "path": "gate_00/coordinator_read.md",
+      "sha256": "70efa5638d2c89e4f7b432e47481974573eb39e14751fd68c637e195dee5d736"
+    },
+    {
+      "path": "gate_00/inventory/application_candidates.csv",
+      "sha256": "c4468cbc7670f3f39cb28fabe583df6d80e552cafa06f99226ce53b44a6e17e9"
+    },
+    {
+      "path": "gate_00/inventory/input_sha256.csv",
+      "sha256": "bf17de583f91b6da2a1cc05525d034c5ce4adcfea93c779da7d540bd03548469"
+    },
+    {
+      "path": "gate_00/inventory/memo.md",
+      "sha256": "1ca5968f76ef08764ed9c317689f849ebf9cbe3210bc1e1dcd30f8becc6318cb"
+    },
+    {
+      "path": "gate_00/inventory/number_provenance.csv",
+      "sha256": "3708ca3f6dcdb9306bd3148d292a955f66912bd695d228910a54930fd264ea7e"
+    },
+    {
+      "path": "gate_00/inventory/rogowski_additional_comparisons.csv",
+      "sha256": "ad1187f3ab90ccbd7acca44f42f301efa412989ab028622f1a49f9e9565a8b23"
+    },
+    {
+      "path": "gate_00/inventory/task_inventory.csv",
+      "sha256": "0b4f92f68d464a92e986d10a457330481d417f926b28c0e22834f5b8768a6266"
+    },
+    {
+      "path": "gate_00/revalidation/response_matrix.csv",
+      "sha256": "46637a6a02e7181f4ee652ed0ea2dda799266068245bb679654c06525f96f847"
+    },
+    {
+      "path": "gate_00/revalidation/response_matrix.json",
+      "sha256": "d5586e38d4de98ec9270e44e04a4aa597f58681857ac182545174d85fd334585"
+    },
+    {
+      "path": "gate_00/revalidation/revalidation.md",
+      "sha256": "32892e8013eed4c3538ac40559f2d6817753b7b7b4bfd4f6c789bf7833ef46e7"
+    }
+  ],
+  "integrity": {
+    "frozen_files_verified": 11,
+    "frozen_file_mismatches": 0,
+    "inventory_input_hashes_verified": 102,
+    "inventory_input_hash_mismatches": 0,
+    "baseline_hashes_verified": 17,
+    "baseline_hash_mismatches": 0
+  },
+  "coverage": {
+    "sections": 7,
+    "claims": 8,
+    "tasks": 26,
+    "unique_candidates": 14,
+    "studies": 6,
+    "specification_labels": 7,
+    "available_ratios": 11,
+    "missing_ratios": 3,
+    "extra_comparisons": 3,
+    "response_units": 21,
+    "general_comments": 5,
+    "detailed_comments": 12,
+    "followup_axes": 4,
+    "primary_confirmed": 7,
+    "primary_partial": 10,
+    "csv_json_structural_agreement": true,
+    "mapped_ids_exist": true
+  },
+  "findings": [
+    {
+      "id": "G0-R1-F01",
+      "status": "CANDIDATE",
+      "severity": "medium",
+      "blocks_gate_closure": true,
+      "artifact": "gate_00/inventory/task_inventory.csv",
+      "line": 7,
+      "row_key": "T06",
+      "fields": [
+        "tests_observed_in_records",
+        "rework_needed"
+      ],
+      "claim": "Tabela de scope conditions tratada como ausente e destinada a materialização",
+      "counterevidence": "ivb_paper_pa.Rmd:479-499 contém a Tabela 3 com condições de escopo",
+      "criterion": "Registrar tabela e localizador como existente; substituir alegação de ausência/criação por revisão e integração pertinentes; conferir dependências e recongelar sem editar manuscrito",
+      "coordinator_response": "Coordinator independently confirmed the source evidence; final adjudication remains separate"
+    }
+  ],
+  "checks_passed": [
+    "11 frozen hashes",
+    "102 input hashes",
+    "17 baseline hashes",
+    "26 unique task IDs and full field coverage",
+    "14 candidates and numerical match to source CSV",
+    "11 available ratios and 3 missing Albers ratios",
+    "3 disjoint additional comparisons",
+    "21 response IDs and CSV/JSON status/gate/mapping agreement",
+    "all four followup mappings point to existing findings",
+    "coverage 0.700 target and cell",
+    "Task14 current-code conflict and incomplete-output status",
+    "historical tests separated from newly executed documentary checks"
+  ],
+  "nonblocking_notes": [
+    "Some prose localizers use Rmd441 adjacent to actual Rmd442; matrix D09 includes 441-442 and meaning is unambiguous.",
+    "No new visual PDF audit or scientific proof audit is claimed."
+  ],
+  "gate1_readiness": "Eligible after T06 documentary repair and independent verification of the new freeze; reuse unchanged checks by hash. No other material Gate0 documentary gap found.",
+  "not_executed": [
+    "R",
+    "Monte Carlo",
+    "bootstrap",
+    "reestimation",
+    "manuscript rendering",
+    "scientific implementation",
+    "full literature comparison"
+  ],
+  "report_markdown_sha256": "da277c8d38d0882df2cf5ea8e7c50533e8577c74ed523007b2d0fc8cc191278f"
+}

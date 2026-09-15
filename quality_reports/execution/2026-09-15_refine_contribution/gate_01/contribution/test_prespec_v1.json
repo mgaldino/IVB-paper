@@ -1,0 +1,261 @@
+{
+  "schema_version": "1.0",
+  "test_id": "ivb-g1-contribution-v1",
+  "status": "prespecified_before_numeric_implementation",
+  "designed_by": "gate1_contribution",
+  "date": "2026-09-15",
+  "scientific_base": {
+    "commit_received": "731cd6570651ea0f602d5c7cdff89ab43ecdb962",
+    "head_observed": "b17c0a47a2b0f4526d03fdfccf5380fe60b5bc2f",
+    "head_change": "coordinator confirmed observed checkpoint; scientific hashes unchanged",
+    "rmd_sha256": "12493a67133f988c5e6a13933bf2b89c0d9880e96bae329248a207b3aeaf7b5e",
+    "gate0_freeze_sha256": "6cabcc31b691492eeb44e6390250bb14b09cedc04f03e7ca63e85ffdcdbc7faa"
+  },
+  "primary_question": "Does P add a verifiable capability beyond explicit FWL decomposition and the same causal information?",
+  "scope": [
+    "unweighted OLS",
+    "common observations",
+    "common transformations",
+    "full rank",
+    "fixed history",
+    "population projections and deterministic finite sample identity"
+  ],
+  "common_information": [
+    "data or exact moments",
+    "row identifiers",
+    "timing",
+    "defended DAG or same set of DAGs",
+    "history",
+    "estimand",
+    "causal and functional assumptions",
+    "unit and dependence definitions when inference is discussed"
+  ],
+  "decisions": {
+    "descriptive": {
+      "actions": [
+        "compensacao",
+        "sem_compensacao_material",
+        "nao_determinado"
+      ],
+      "small_total_threshold": "1/8",
+      "material_step_threshold": "1/4",
+      "rule": "abs(d_total)<=1/8 and abs(d_add)>=1/4 and abs(-d_lag)>=1/4 and d_add*(-d_lag)<0"
+    },
+    "causal": {
+      "actions": [
+        "set_of_models_certified_for_stated_causal_class",
+        "somente_descritivo_with_graph_conditional_statements"
+      ],
+      "criterion": "structural identification for stated class; numerical equality at a point alone is insufficient"
+    },
+    "loss": {
+      "correct": 0,
+      "unnecessarily_undetermined_given_available_information": 1,
+      "incorrect_determined_or_overstated_causal_certificate": 4,
+      "aggregation": "report coordinate vector, no weighted sum",
+      "honest_unresolved_graph_union": 0
+    }
+  },
+  "models": {
+    "B": [
+      "intercept",
+      "D",
+      "L"
+    ],
+    "C": [
+      "intercept",
+      "D",
+      "Z"
+    ],
+    "U": [
+      "intercept",
+      "D",
+      "L",
+      "Z"
+    ],
+    "E2_S": [
+      "intercept",
+      "D"
+    ],
+    "E2_T": [
+      "intercept",
+      "D",
+      "Z"
+    ]
+  },
+  "contrasts": {
+    "d_add": "beta_U-beta_B",
+    "d_lag": "beta_U-beta_C",
+    "d_total": "beta_C-beta_B=d_add-d_lag",
+    "signed_removal": "-d_lag"
+  },
+  "comparators": {
+    "C0": {
+      "type": "endpoint report",
+      "fits": [
+        "B",
+        "C"
+      ],
+      "can_apply_same_causal_assumptions": true,
+      "can_report_undetermined": true,
+      "not_a_novelty_benchmark": true
+    },
+    "Cplus": {
+      "type": "explicit FWL plus same causal information",
+      "fits": [
+        "B",
+        "C",
+        "U",
+        "Z~D+W+L",
+        "L~D+W+Z"
+      ],
+      "can_fit_all_intermediate_models": true,
+      "can_apply_same_causal_assumptions": true,
+      "multivariate_blocks": true,
+      "paired_covariance": true,
+      "cluster_sandwich_or_identical_resamples": true,
+      "receives_proposal_outputs": false,
+      "bibliographic_mapping_pending_full_Gelbach": true
+    },
+    "P": {
+      "type": "current proposed timing/history/specification-shift workflow",
+      "same_fits_and_assumptions": true,
+      "new_mathematical_operation_specified": false
+    }
+  },
+  "candidates": [
+    {
+      "id": "E1",
+      "name": "history_replacement",
+      "equations": [
+        "L=e_L",
+        "D=L+e_D",
+        "Z=D+e_Z",
+        "Y=q*D+b*L+r*Z+e_Y"
+      ],
+      "errors": "mutually independent mean-zero unit-variance Gaussian in population SCM",
+      "clock": "L before D before Z before Y",
+      "history": [
+        "L"
+      ],
+      "CET": "q+r",
+      "cells": [
+        {
+          "id": "E1-central",
+          "q": "1/2",
+          "b": "1",
+          "r": "1/2"
+        },
+        {
+          "id": "E1-menos",
+          "q": "1/2",
+          "b": "4/5",
+          "r": "1/2"
+        },
+        {
+          "id": "E1-mais",
+          "q": "1/2",
+          "b": "6/5",
+          "r": "1/2"
+        },
+        {
+          "id": "E1-nulo",
+          "q": "1",
+          "b": "0",
+          "r": "0",
+          "dag_restriction": "L->Y and Z->Y absent and known absent"
+        }
+      ],
+      "fixture": {
+        "n": 8,
+        "rows": "all triples x in {0,1}^3 lexicographic",
+        "errors": [
+          "(-1)^x1",
+          "(-1)^x2",
+          "(-1)^x3",
+          "(-1)^(x1+x2)"
+        ],
+        "moments_denominator": "n",
+        "status": "deterministic algebra fixture, not Gaussian sample or coverage evidence"
+      }
+    },
+    {
+      "id": "E2",
+      "name": "observational_equivalence",
+      "history": [],
+      "clock": "D and Z order unresolved; Y after both",
+      "graph_information": "same set {G_M,G_F} for all procedures",
+      "G_M": {
+        "equations": [
+          "D=e_D",
+          "Z=D+e_Z",
+          "Y=D+Z+e_Y"
+        ],
+        "error_variances": [
+          "1",
+          "1",
+          "1"
+        ]
+      },
+      "G_F": {
+        "equations": [
+          "Z=u_Z",
+          "D=Z/2+u_D",
+          "Y=D+Z+u_Y"
+        ],
+        "error_variances": [
+          "2",
+          "1/2",
+          "1"
+        ]
+      },
+      "errors": "independent mean-zero Gaussian within each SCM",
+      "checks": [
+        "equal observable covariance",
+        "different do(D) total effects",
+        "same regression shift",
+        "graph conditional certification only"
+      ],
+      "fixture": "three orthogonal columns from E1; compare G_F covariance by exact linear transformation"
+    }
+  ],
+  "success": {
+    "required": [
+      "strictly lower loss coordinate for P than Cplus without worsening another",
+      "explicit source of gain",
+      "identical information and assumptions",
+      "independent verification"
+    ],
+    "alternative_specific_guarantee": "a precisely developed inferential or computational guarantee may qualify, but none follows from renaming outputs"
+  },
+  "equivalence": {
+    "criterion": "same coefficients, contrasts, causal actions and covariance transformations plus FWL proof over full-rank domain",
+    "scope": "tested procedure, not impossibility of all future methods",
+    "same_bootstrap_outputs_imply_coverage": false,
+    "operational_benefit_demonstrated": false
+  },
+  "validation": {
+    "scalar_tolerance": "1e-10*(1+abs(target))",
+    "matrix_tolerance": "1e-10*(1+max(abs(target_matrix)))",
+    "record_conditioning": true,
+    "review_r_before_execution": true,
+    "independent_code_review": true,
+    "freeze_before_numeric_implementation": true
+  },
+  "not_authorized_here": [
+    "R execution by designer",
+    "simulation",
+    "bootstrap",
+    "real data shifts",
+    "paper edit",
+    "extension beyond approved scope",
+    "human usability claims"
+  ],
+  "development_exposure": "examples and expected mechanisms developed analytically before freeze; not holdout evaluation",
+  "dependencies": [
+    "independent proof and code review",
+    "full-text Gelbach confrontation",
+    "separate documentary application viability"
+  ],
+  "companion_markdown": "test_prespec_v1.md"
+}
