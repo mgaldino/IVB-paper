@@ -1,0 +1,11 @@
+{
+  "gate": 0,
+  "state": "em revisão",
+  "updated_at_utc": "2026-09-15T11:50:37.384785+00:00",
+  "dependency": null,
+  "evidence": [
+    "gate_00/freeze_round1.json"
+  ],
+  "review": "gate_00/review/final_review_round1.json",
+  "decision": null
+}

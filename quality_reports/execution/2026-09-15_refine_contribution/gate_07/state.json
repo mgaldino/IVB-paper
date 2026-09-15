@@ -1,0 +1,9 @@
+{
+  "gate": 7,
+  "state": "planejado",
+  "updated_at_utc": "2026-09-15T02:37:35.795460+00:00",
+  "dependency": 6,
+  "evidence": [],
+  "review": null,
+  "decision": null
+}

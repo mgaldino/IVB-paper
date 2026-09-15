@@ -1,0 +1,72 @@
+{
+  "gate": 3,
+  "title": "Tornar história e inferência procedimentos executáveis",
+  "items": [
+    {
+      "id": "G3-01",
+      "requirement": "Definir o conjunto mínimo de história a partir do processo substantivo e de uma classe explícita de DAGs/dinâmicas. Distinguir lags causalmente obrigatórios de escolhas de aproximação. Um critério de informação não pode retirar um confundidor necessário apenas para melhorar o ajuste.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-02",
+      "requirement": "Fixar uma regra primária de lag/transformações antes de examinar $\\Delta$, usando a frequência dos dados, a duração plausível dos mecanismos e a informação pré-exposição. Delimitar um conjunto pequeno de alternativas e fixar a mesma janela de observações comparável. AIC/BIC, se usados, escolhem dentro de um conjunto já admissível; não certificam intercambialidade.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-03",
+      "requirement": "Usar os resultados existentes de seleção de lags para identificar limites e dúvidas. Especificar o que autocorrelação residual, instabilidade, pouco suporte, alta persistência ou sensibilidade ao histórico devem provocar: revisão do modelo, restrição da conclusão ou resultado inconclusivo. Ausência de rejeição não prova suficiência causal.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-04",
+      "requirement": "Escrever o procedimento completo em passos, com entradas, saídas e exemplos. Permitir explicitamente que ele devolva “somente diagnóstico descritivo” quando timing ou identificação não estiverem defendidos. Esclarecer por que ADL+FE é uma implementação condicional da média, sem lhe atribuir privilégio universal.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-05",
+      "requirement": "Definir separadamente os alvos dos intervalos: CET, coeficientes de projeção dos modelos e deslocamento populacional. O diagnóstico amostral observado é uma identidade exata; sua incerteza se refere a um parâmetro definido, não à aritmética já calculada.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-06",
+      "requirement": "Escolher inferência conforme a amostragem e a dependência da aplicação. Bootstrap por unidade requer independência ou dependência suficientemente fraca entre unidades; FE de tempo não garantem isso. Se forem necessários clusters mais amplos, poucos-clusters ou dependência transversal residual, justificar e validar o procedimento específico ou restringir o escopo.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-07",
+      "requirement": "Tratar escolhas de história feitas com os próprios dados como parte do procedimento. Preferir uma especificação primária previamente fixada. Se seleção por dados for mantida, distinguir intervalos condicionais à especificação de incerteza do procedimento completo; repetir seleção em reamostras é uma candidata a validar, não garantia de validade pós-seleção.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-08",
+      "requirement": "Definir regimes difíceis da inferência: poucos clusters, estimador dinâmico viesado, denominador próximo de zero, produto com ambos os componentes próximos de zero e muitos controles. Não presumir que diferença pareada ou bootstrap usual elimina o problema não regular na origem. Validar a solução ou declarar sua região de validade.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-09",
+      "requirement": "Para cada restrição de uso, especificar como o pesquisador a aplicará com informação observável ou premissa substantiva defendida. Não definir uma região prática apenas pelos valores verdadeiros desconhecidos de $\\theta$ e $\\pi$. Qualquer regra que, a partir dos dados, altere história, classificação do caso ou método de intervalo integra o procedimento completo a calibrar, inclusive nas fronteiras entre regimes. Se a validade não puder ser defendida, a saída deve ser descritiva ou usar um procedimento conservador com justificativa própria.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-10",
+      "requirement": "Fixar magnitudes substantivas e critérios de avaliação antes da execução. Reportar o deslocamento em unidades interpretáveis, seu intervalo e, quando estável, razão para um benchmark nomeado. Não selecionar controles pelo teste de significância do shift nem usar $|\\Delta|/SE(\\widehat\\beta_L)$ como teste.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G3-11",
+      "requirement": "Fechar uma matriz de compatibilidade para aplicação principal e reserva: história admissível defendida, equações estimáveis, suporte, $N/T$, estimador, dependência e inferência disponível. A necessidade de corrigir viés não pode transformar silenciosamente a identidade OLS em identidade de outro estimador. Pelo menos uma candidata deve permanecer na região coberta antes da campanha integral de simulações.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}

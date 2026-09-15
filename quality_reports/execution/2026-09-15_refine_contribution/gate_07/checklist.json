@@ -1,0 +1,54 @@
+{
+  "gate": 7,
+  "title": "Aprovação científica e pacote reproduzível",
+  "items": [
+    {
+      "id": "G7-01",
+      "requirement": "Congelar os bytes candidatos e revalidar o contrato argumental das partes alteradas e suas dependências. O PASS da versão de julho não aprova automaticamente a nova versão.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-02",
+      "requirement": "Pedir uma revisão adversarial da contribuição: o que o procedimento permite fazer, o que já existia, quais pressupostos sustentam a diferença e se a aplicação demonstra esse ganho. O revisor deve apontar a objeção mais forte e a evidência capaz de respondê-la.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-03",
+      "requirement": "Revisar independentemente as provas, o alinhamento de estimandos e estimadores, a seleção de história, a incerteza pareada, a dependência e os limites. Separar erros críticos, imprecisões locais e limitações já reconhecidas; adjudicar todos os achados materiais.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-04",
+      "requirement": "Reproduzir o pacote a partir de scripts documentados em ambiente limpo apropriado. Executar testes relevantes, auditar todos os números citados e registrar versões, sementes, entradas, saídas e falhas. Não exigir reruns irrelevantes quando as dependências permanecem intactas.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-05",
+      "requirement": "Inspecionar todas as páginas do PDF e do apêndice: matemática, tabelas, figuras, captions, referências, fontes, tamanho do texto e quebras de página. Corrigir o fonte e conferir novamente a região alterada.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-06",
+      "requirement": "Fechar a matriz do Refine com uma resposta interna por comentário: diagnóstico, mudança, localização e evidência. A resposta pode rejeitar uma solução inadequada, desde que o motivo esteja demonstrado.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-07",
+      "requirement": "Produzir avaliação editorial final: contribuição sustentada, público e gênero do artigo, limitações e eventual decisão pendente do autor. A escolha do periódico será feita com base no paper resultante e nas regras atuais, sem prometer aceite ou inferir probabilidade a partir de PASS técnico.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G7-08",
+      "requirement": "Entregar PDF principal, apêndice, fontes, scripts, dados/outputs permitidos, manifesto, instruções de reprodução e resumo do que foi executado. Commit, tag, push, submissão e mensagens a terceiros dependem de pedido explícito para essas ações.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}

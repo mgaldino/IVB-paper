@@ -1,0 +1,66 @@
+{
+  "gate": 6,
+  "title": "Reescrever para compreensão, com matemática explicada",
+  "items": [
+    {
+      "id": "G6-01",
+      "requirement": "Criar um roteiro argumental de uma página: uma pergunta, uma contribuição central, o papel de cada resultado e a evidência que o sustenta. A introdução será reescrita a partir do resultado efetivamente obtido, com atribuição explícita do que já era conhecido.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-02",
+      "requirement": "Abrir com um problema aplicado concreto e um exemplo que reapareça ao introduzir notação, modelos, decomposição e decisão. O exemplo deve ajudar o leitor a acompanhar a lógica; não precisa concentrar todas as exceções do apêndice.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-03",
+      "requirement": "Organizar o corpo em: problema e contribuição; alvo e timing; comparação entre especificações; procedimento dinâmico e inferência; evidência simulada; aplicação central; limites. Integrar as condições perto da afirmação a que se aplicam, evitando uma seção inteira de ressalvas desconectadas.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-04",
+      "requirement": "Para cada equação ou proposição, escrever antes a pergunta que ela responde; definir símbolos localmente; explicar depois cada componente, a intuição e um exemplo. O corpo mostra os passos indispensáveis e o apêndice contém a derivação completa, com referências concretas a equações.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-05",
+      "requirement": "Abrir cada seção lembrando brevemente o problema e o resultado anterior necessário. Encerrar com o que foi estabelecido e por que isso permite o próximo passo. Reintroduzir símbolos usados após uma distância longa; evitar “as above” quando o leitor precisa procurar qual hipótese está em jogo.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-06",
+      "requirement": "Eliminar nomes como “Task 12”, “Task 13”, “firewall”, “safe”, “bad” e rótulos de conveniência quando exigirem conhecimento interno. Usar nomes científicos ou descritivos definidos. Preservar nomes internos apenas nos arquivos de trabalho e na proveniência.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-07",
+      "requirement": "Revisar cada parágrafo telegráfico: fornecer sujeito, conexão causal ou lógica e consequência para o leitor. Remover repetição que apenas reafirme contribuição; preservar repetição orientadora que restabeleça estimando e escopo no lugar em que serão usados.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-08",
+      "requirement": "Fazer cada tabela e figura funcionar autonomamente: título, modelos completos ou chave inequívoca, alvos, unidades, parâmetros essenciais, tamanho amostral, denominador e natureza exata dos intervalos. Numerar e referenciar todo apêndice; não depender de nomes de arquivos para a compreensão científica.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-09",
+      "requirement": "Dar o PDF a um leitor sem acesso ao plano, às conversas ou aos nomes internos. Pedir que explique por escrito a contribuição, a diferença para Gelbach, os passos da substituição, os dois testes para admissibilidade do lag, o alvo dos intervalos e a decisão da aplicação. Exigir localizadores e explicação com suas próprias palavras.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G6-10",
+      "requirement": "Adjudicar erros desse leitor: distinguir incompreensão causada pelo texto de crítica científica. Reescrever as passagens responsáveis e repetir a leitura das partes afetadas. Não aprovar por uma nota média de estilo se a contribuição ou uma derivação continuar incompreensível.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}

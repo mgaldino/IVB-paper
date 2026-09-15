@@ -1,0 +1,78 @@
+{
+  "gate": 4,
+  "title": "Implementar e demonstrar o ganho com evidência controlada",
+  "items": [
+    {
+      "id": "G4-01",
+      "requirement": "Adaptar as rotinas existentes em módulos separados para amostra comum, modelos aninhados, substituição, inferência e relatórios. Preservar IDs de linhas e clusters; recusar silenciosas mudanças de regressoras, pesos ou amostra. Lags devem respeitar unidade e continuidade do calendário.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-02",
+      "requirement": "Testar identidade escalar/vetorial, inclusão/retirada, sinais, colinearidade, missing, unidades reamostradas repetidas, covariância cruzada e erros de entrada. Usar tolerância relativa escalada, por exemplo $10^{-10}(1+|\\Delta|)$ nos casos bem condicionados, e registrar condicionamento numérico.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-03",
+      "requirement": "Retirar cálculos do Rmd: scripts R produzem saídas persistentes, e o documento lê essas saídas. `dplyr::select()` será explícito. Preservar sementes, versões, parâmetros, saídas brutas e falhas de todas as replicações.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-04",
+      "requirement": "Fazer revisão de código antes de execução e resolver todos os achados materiais. Rodar primeiro um piloto pequeno que verifique equações, estabilidade, alvos, amostragem e fluxo de inferência. Uma execução integral do plano, quando autorizada, inclui os pilotos e simulações especificados; não exige repetir a autorização por gate.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-05",
+      "requirement": "Construir a matriz mínima de simulações a partir do teste de contribuição: incluir e omitir $Z_t$ mantendo o lag; substituição com passos separados; confundidor legítimo; mediador; collider; papéis mistos/cancelamento; história insuficiente; e ambiguidade que não pode ser resolvida pelos coeficientes. Reutilizar DGPs existentes quando responderem à pergunta.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-06",
+      "requirement": "Comparar os três procedimentos do Gate 1 com o mesmo conjunto de informações. Pré-especificar decisão, erro relevante, magnitude substantiva e regiões de parâmetros; não escolher depois o caso em que a proposta parece melhor. Separar ganho demonstrado por uma regra formal de uma hipótese sobre comportamento de leitores.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-07",
+      "requirement": "Separar desenvolvimento de avaliação posterior do procedimento congelado. Registrar versões, resultados que motivaram ajustes e quais casos já foram examinados; preservar os casos desfavoráveis como limites. Uma nova rodada pré-especificada não apaga o fato de que sua hipótese foi desenvolvida à luz das anteriores.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-08",
+      "requirement": "Para cada DGP, publicar equações, parâmetros, condições iniciais, restrições de estabilidade, burn-in, número de unidades/períodos, repetições e regras de retenção. Calibrar também as regras de seleção e troca de intervalos, com casos nas suas fronteiras e próximos à origem do produto. Substituir “Task 12/13” por apêndices científicos identificados e diretamente acessíveis.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-09",
+      "requirement": "Definir $\\beta_S^P$, $\\beta_L^P$ e $\\Delta^P$ a partir do DGP, por cálculo analítico quando disponível ou por aproximação independente de alta precisão com erro documentado. Estimar separadamente o componente de especificação e o viés de estimação; explicitar a sequência assintótica. Recalcular as figuras que hoje dizem “isolar” viés sem essa separação.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-10",
+      "requirement": "Auditar a cobertura de 70% até a célula e o estimador de origem. Distinguir IC do CET, IC de $\\Delta^P$ e intervalo Monte Carlo para uma média simulada. Incluir calibração do procedimento final, não apenas da versão com história e clusters conhecidos.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-11",
+      "requirement": "Fixar precisão Monte Carlo e tolerância de cobertura antes da rodada integral. Como ponto inicial de planejamento, estimar cobertura com MCSE de no máximo 0,005 nas células que sustentam recomendações; isso requer cerca de 1.900 repetições se a cobertura for 0,95 e até 10.000 no pior caso. Ajustar o orçamento pelo piloto, sem reduzir silenciosamente a precisão. Reportar falhas e intervalos de Monte Carlo; cobertura baixa exige reparo ou restrição de uso, não descarte da célula.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G4-12",
+      "requirement": "Reavaliar a comparação mediador+confundidor. Os valores 1,023 e 1,016 estão mais próximos de 1,03 que de 1,00; explicitar distâncias e incerteza Monte Carlo. Ampliar separação de alvos apenas com parâmetros substantivamente motivados e pré-especificados, preservando o caso original.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}

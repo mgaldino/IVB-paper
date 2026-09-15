@@ -1,0 +1,66 @@
+{
+  "gate": 5,
+  "title": "Executar a aplicação central e organizar as demais",
+  "items": [
+    {
+      "id": "G5-01",
+      "requirement": "Preservar a seleção da aplicação feita sem acesso aos shifts; documentar qualquer mudança de elegibilidade ou disponibilidade. A aplicação reserva não será escolhida porque o primeiro resultado foi pequeno, nulo ou desfavorável.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-02",
+      "requirement": "Ativar a reserva somente por falha de elegibilidade definida previamente, como indisponibilidade dos dados ou impossibilidade documental/estatística de implementar o desenho. Ausência de vantagem incremental é evidência sobre a proposta e deve permanecer no artigo ou no diagnóstico de viabilidade; não autoriza procurar uma aplicação mais favorável.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-03",
+      "requirement": "Reproduzir a especificação original pertinente e registrar diferenças antes de adaptá-la. Validar tipos, ausências, duplicidades, unidade de análise, intervalos de datas, construção de lags, suporte e perdas de amostra. Documentar o novo estimando se a análise original tinha outro alvo.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-04",
+      "requirement": "Publicar uma figura simples das janelas de exposição, covariadas, história e outcome; citar documentação primária para as datas. Um CET exige uma intervenção atual e uma janela de resposta defensáveis; converter subscritos de um estoque acumulado não basta.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-05",
+      "requirement": "Expor os DAGs plausíveis, suas premissas e o que permanece incerto. Na aplicação observacional, não tratar o modelo preferido como verdade conhecida: formular a conclusão condicionalmente à evidência e às hipóteses defendidas.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-06",
+      "requirement": "Estimar a linha de base congelada e os modelos que acrescentam controles atuais mantendo a história. Exibir as equações completas. Quando a prática substantiva motivar substituição, apresentar a diferença total e os passos aninhados separados, sobre a mesma amostra.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-07",
+      "requirement": "Calcular coeficientes, shift assinado, componentes, covariância e intervalos com o procedimento validado. Separar efeitos da amostra, do estimador, da dinâmica e da inclusão do controle. Explicar sinais e magnitudes em unidades da aplicação, sem selecionar o denominador mais favorável.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-08",
+      "requirement": "Mostrar em linguagem aplicada qual conclusão muda, ou por que uma conclusão antes confiante deve permanecer inconclusiva. Comparar com a decomposição existente e as mesmas informações causais. Reportar também o que o procedimento não consegue decidir.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-09",
+      "requirement": "Reorganizar Leipziger e Rogowski como exemplos complementares de ambiguidade, se continuarem úteis. Fornecer tabela completa dos seis estudos e 14 candidatos; identificar controles adicionais e retirar superlativos sem universo explícito. Manter a amostra intencional e seus critérios transparentes.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G5-10",
+      "requirement": "Obter reprodução independente a partir dos dados e scripts congelados, incluindo amostra comum, sinais, intervalos, janelas e conclusões. Desacordos de interpretação causal são adjudicados separadamente de diferenças computacionais.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}

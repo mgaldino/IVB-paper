@@ -1,0 +1,66 @@
+{
+  "gate": 1,
+  "title": "Demonstrar valor incremental e viabilidade da aplicação",
+  "items": [
+    {
+      "id": "G1-01",
+      "requirement": "Escrever uma página com problema, usuário do método, decisão concreta, procedimento existente mais forte e resultado adicional pretendido. A frase de contribuição deve ser compreensível sem os nomes internos do projeto.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-02",
+      "requirement": "Construir uma tabela “resultado conhecido / lacuna específica / acréscimo proposto / evidência exigida”. Ler integralmente os trabalhos mais próximos, incluindo Gelbach. Confrontar a decomposição conjunta, a alocação, a covariância e o papel da informação temporal, sem atribuir novidade pelo nome dado ao objeto.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-03",
+      "requirement": "Desenvolver no máximo dois exemplos candidatos. Explicitar o que cada comparador observa e qual decisão deve tomar. Incluir uma situação de benefício, uma de ausência de ganho e uma de ambiguidade causal. O exemplo serve para testar o argumento; não é evidência empírica de adoção ou compreensão humana.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-04",
+      "requirement": "Comparar a proposta com uma decomposição existente que receba exatamente o mesmo DAG, o mesmo timing e a mesma história. Decompor a fonte de eventual vantagem: informação nova, resultado novo, organização operacional ou simples mudança de apresentação.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-05",
+      "requirement": "Congelar uma ficha do teste de contribuição com decisão, ações possíveis, critério de acerto ou perda, implementação do comparador forte, resultado que distingue os procedimentos e resultado que obriga a reconhecer equivalência. Identificar se o acréscimo pretendido é matemático, inferencial, computacional ou operacional. O comparador não pode ser artificialmente impedido de executar regressões ou aplicar hipóteses às quais tem acesso.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-06",
+      "requirement": "Fazer triagem documental de até três aplicações candidatas, começando pelo acervo. Usar critérios definidos antes de calcular os deslocamentos: intervenção atual bem definida, janelas documentadas, história prévia disponível, suporte, painel e clusters adequados, dados acessíveis e contraste relevante entre controles. Registrar exclusões.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-07",
+      "requirement": "Produzir para cada candidata uma ficha de timing, variáveis, unidade de análise, estimando, disponibilidade, limitações e trabalho de preparação. Não selecionar por magnitude ou significância de $\\Delta$. Um efeito pequeno pode cumprir a função científica.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-08",
+      "requirement": "Escolher uma aplicação principal e uma reserva por critérios substantivos. Se nenhuma servir, formular uma busca adicional delimitada ou uma rota explicitamente descritiva; a falta de uma aplicação CET não será resolvida apenas renomeando o índice temporal.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-09",
+      "requirement": "Registrar essa escolha como provisória até a verificação conjunta do Gate 3. Anotar desde já se história, número de períodos, suporte ou dependência podem exigir um estimador fora do núcleo algébrico do paper.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G1-10",
+      "requirement": "Submeter a proposta a um ataque explícito: “Isto é Gelbach mais um checklist já conhecido?” Registrar o que sobrevive, qual proposição ou capacidade exige desenvolvimento e por que merece um artigo autônomo.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "gate": 2,
+  "title": "Estabilizar os objetos matemáticos e os relógios causais",
+  "items": [
+    {
+      "id": "G2-01",
+      "requirement": "Fixar as definições de efeito contemporâneo, coeficiente populacional, estimador amostral, deslocamento de especificação e viés relativo ao alvo. Especificar a sequência assintótica quando ela importar. Manter uma folha de notação comum ao corpo, apêndice e código.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-02",
+      "requirement": "Distinguir a projeção populacional de referência do limite do estimador within quando $N$ cresce e $T$ permanece fixo. Se ambos forem usados, dar nomes e definições diferentes e derivar sua relação. Uma grande simulação com $T$ fixo e a mesma transformação within não será aceita automaticamente como verdade populacional livre do componente dinâmico que se quer medir.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-03",
+      "requirement": "Definir separadamente os relógios de mediador e collider. No segundo, explicitar como o processo de resultado anterior à mensuração do controle se relaciona com o outcome do estimando. Corrigir “any within-period responses” sem apagar a inclusão das vias mediadas no CET total.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-04",
+      "requirement": "Separar anterioridade temporal de admissibilidade causal. Classificar timing documentadamente pré-exposição, documentadamente pós-exposição, plausível ou ambíguo; depois avaliar o papel no DAG e a suficiência da história. Um timestamp não resolve essas outras condições.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-05",
+      "requirement": "Re-derivar a identidade escalar e vetorial por residualização e equações normais. Explicar cada passagem, posto, interceptos/FE, amostra comum e a distinção entre coeficientes de projeção e efeitos causais. Confrontar com a literatura de decomposição, com atribuição apropriada.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-06",
+      "requirement": "Fixar como comparação principal a inclusão de $Z_t$ preservando toda a história justificada. Para estudar substituição, usar modelos definidos por conjuntos de regressoras. Se $B$ contém a história e o lag, $C$ contém a história e o valor atual, e $U$ contém ambos, escrever e provar $\\widehat\\beta_C-\\widehat\\beta_B=(\\widehat\\beta_U-\\widehat\\beta_B)-(\\widehat\\beta_U-\\widehat\\beta_C)$. Todos usam as mesmas observações e transformações.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-07",
+      "requirement": "Explicar que cada parcela da expressão anterior é uma inclusão aninhada com sua própria auxiliar. Comparar as duas ordens possíveis de adição/retirada e distinguir diferença final única de atribuição dependente do percurso. Verificar colinearidade e casos em que o modelo de união não é estimável; nesses casos, não fingir uma decomposição identificada.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-08",
+      "requirement": "Separar mudança de especificação de mudança de amostra e de pesos. O núcleo permanece OLS sem pesos; extensões só entram se necessárias à aplicação e formalmente demonstradas. Não aplicar a identidade de OLS a GMM, estimadores penalizados ou coeficientes corrigidos por viés sem uma derivação específica.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-09",
+      "requirement": "Reconciliar a intercambialidade do corpo com o conjunto completo $H^-_{it},\\alpha_i,\\tau_t$ da derivação. Reexaminar a passagem de médias potenciais a média observada e ortogonalidade; distinguir isso da correlação induzida pelo demeaning em $T$ finito. Transportar para o corpo as hipóteses adicionais necessárias à interpretação como efeito direto.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-10",
+      "requirement": "Formalizar a decomposição $E[\\widehat\\Delta]=\\Delta^P+b_L-b_S$, onde $b_m=E[\\widehat\\beta_m]-\\beta_m^P$. Mostrar também $E[\\widehat\\beta_m]-\\tau=(\\beta_m^P-\\tau)+b_m$. Cada termo deve ter um alvo e um modo de avaliação; comparar dois vieses observados não isola automaticamente os componentes.",
+      "status": "pendente",
+      "evidence": []
+    },
+    {
+      "id": "G2-11",
+      "requirement": "Fazer verificação independente linha a linha e checagens numéricas determinísticas dos sinais, limites, conjuntos de regressoras e identidade. Incluir exemplos de controles correlacionados e um contraexemplo à aplicação indevida em comparação não aninhada. Tests confirmam implementação; não substituem a prova.",
+      "status": "pendente",
+      "evidence": []
+    }
+  ]
+}
