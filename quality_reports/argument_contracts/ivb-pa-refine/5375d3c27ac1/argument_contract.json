@@ -1,0 +1,376 @@
+{
+  "schema_version": "1.0",
+  "contract_id": "ivb-pa-refine:5375d3c27ac1:round1",
+  "profile": "general",
+  "source": {
+    "reviewed_artifact": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_pa.pdf",
+    "sha256": "5375d3c27ac1b75ca7246f0e7483470d98a69cf129a853560ae84cfe107d447c",
+    "editable_sources": [
+      {
+        "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_pa.Rmd",
+        "sha256": "12493a67133f988c5e6a13933bf2b89c0d9880e96bae329248a207b3aeaf7b5e"
+      },
+      {
+        "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/adl_cet_identification_conditions.Rmd",
+        "sha256": "f67b41089d49018dc2c1b3a6cd80ce49b67dee771df75bdf72953d9a5e64db70"
+      },
+      {
+        "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/multivariate_specification_shift.Rmd",
+        "sha256": "551d6e46a7a8332e47fc5cccf81b5a52c2058941bee1f88ce5c38fdd97386d64"
+      },
+      {
+        "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/specification_shift_uncertainty.Rmd",
+        "sha256": "317b7a81101a75e60ad3c9466500106878dd3b84dfc48f05722517699fbed963"
+      },
+      {
+        "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/shift_allocation_correlated_controls.Rmd",
+        "sha256": "ac3796a2d67dc08c759c7923d827b70656f7c57dbacbe22a27cadd8d6f49af09"
+      }
+    ]
+  },
+  "document": {
+    "title": "From Specification Shifts to Included Variable Bias in Dynamic Panels: A Diagnostic for Time-Varying Controls and a Benchmark for the Contemporaneous Treatment Effect",
+    "language": "en",
+    "format": "pdf",
+    "word_count": 8247,
+    "page_count": 22,
+    "substantive_sections": 7
+  },
+  "section_map": [
+    {
+      "section_id": "S01",
+      "title": "Introduction",
+      "locator": "ivb_paper_pa.Rmd:178-195; PDF pp.1-3",
+      "reader_id": "read_timing, turno reader-introduction",
+      "function": "motivação e contribuição",
+      "claims": [
+        "C01",
+        "C04"
+      ],
+      "evidence": [
+        "section_reads/section_01_*.md"
+      ],
+      "non_claims": [
+        "Não propõe estimador causal universal"
+      ],
+      "ambiguities": [
+        "Promete interação entre diagnóstico e baseline nas aplicações"
+      ]
+    },
+    {
+      "section_id": "S02",
+      "title": "The Time-Varying Control Problem",
+      "locator": "ivb_paper_pa.Rmd:196-207; PDF pp.3-4",
+      "reader_id": "read_simulations, turno reader-control-problem",
+      "function": "problema, alvo e escopo",
+      "claims": [
+        "C03",
+        "C04"
+      ],
+      "evidence": [
+        "section_reads/section_02_*.md"
+      ],
+      "non_claims": [
+        "Não resolve identificação geral de covariadas responsivas"
+      ],
+      "ambiguities": []
+    },
+    {
+      "section_id": "S03",
+      "title": "DAGs, Timing, and Why Z_t Is Not Z_t-1",
+      "locator": "ivb_paper_pa.Rmd:208-386; PDF pp.4-7",
+      "reader_id": "read_timing",
+      "function": "relógio temporal e papéis causais",
+      "claims": [
+        "C03"
+      ],
+      "evidence": [
+        "section_reads/section_03_*.md"
+      ],
+      "non_claims": [
+        "Lag não prova anterioridade; Y lag não fecha collider atual"
+      ],
+      "ambiguities": [
+        "Any responses e relógio de collider precisam conciliação local"
+      ]
+    },
+    {
+      "section_id": "S04",
+      "title": "The Specification-Shift Diagnostic",
+      "locator": "ivb_paper_pa.Rmd:387-502; PDF pp.8-12",
+      "reader_id": "read_diagnostic",
+      "function": "álgebra, inferência e identificação",
+      "claims": [
+        "C01",
+        "C02",
+        "C04",
+        "C06"
+      ],
+      "evidence": [
+        "section_reads/section_04_*.md"
+      ],
+      "non_claims": [
+        "Não é novo estimador; sem IC aplicado; FE têm limites"
+      ],
+      "ambiguities": [
+        "Moved sugere substituição; qualificações sobre FE e mediação estão mais completas nas derivações"
+      ]
+    },
+    {
+      "section_id": "S05",
+      "title": "Benchmarking Dynamic Specifications for the CET",
+      "locator": "ivb_paper_pa.Rmd:503-643; PDF pp.12-18",
+      "reader_id": "read_simulations",
+      "function": "DGPs e workflow",
+      "claims": [
+        "C05",
+        "C04"
+      ],
+      "evidence": [
+        "section_reads/section_05_*.md"
+      ],
+      "non_claims": [
+        "Simulações não generalizam fora do grid"
+      ],
+      "ambiguities": [
+        "ADL denota RHS diferentes; cobertura de long não é cobertura de Delta; isola é claim mais forte que a comparação"
+      ]
+    },
+    {
+      "section_id": "S06",
+      "title": "Applications",
+      "locator": "ivb_paper_pa.Rmd:644-823; PDF pp.19-21",
+      "reader_id": "read_applications",
+      "function": "diagnósticos empíricos e ambiguidade",
+      "claims": [
+        "C07"
+      ],
+      "evidence": [
+        "section_reads/section_06_*.md"
+      ],
+      "non_claims": [
+        "Não estima prevalência; não demonstra diretamente CET; sem IC pareado"
+      ],
+      "ambiguities": [
+        "14 candidatos, seis estudos e controles adicionais não são exibidos em universo único"
+      ]
+    },
+    {
+      "section_id": "S07",
+      "title": "Conclusion",
+      "locator": "ivb_paper_pa.Rmd:824-836; PDF p.21",
+      "reader_id": "read_applications, turno conclusion",
+      "function": "síntese e fronteiras",
+      "claims": [
+        "C01",
+        "C04",
+        "C08"
+      ],
+      "evidence": [
+        "section_reads/section_07_*.md"
+      ],
+      "non_claims": [
+        "Sem resultados SDiD, fatores, efeitos acumulados ou links não lineares"
+      ],
+      "ambiguities": []
+    }
+  ],
+  "synthesis": {
+    "thesis": "Quantificar mudanças de especificação com identidade linear e interpretar causalmente somente sob estimando, timing e identificação defendidos.",
+    "research_question": "Quanto um controle responsivo ao tratamento move o coeficiente e quando uma especificação dinâmica pode servir de comparação para o CET?",
+    "contribution": "O manuscrito reivindica organização diagnóstica da identidade e um baseline ADL+FE condicional; sua distinção da literatura é questão para revisão, não certificada pelo contrato.",
+    "claim_type": "matemático descritivo, causal condicional e simulado delimitado",
+    "core_claims": [
+      {
+        "claim_id": "C01",
+        "text": "O deslocamento entre regressões lineares aninhadas tem identidade exata FWL; sua interpretação como IVB exige identificação causal.",
+        "strength": "identidade amostral e interpretação causal condicional"
+      },
+      {
+        "claim_id": "C02",
+        "text": "O shift conjunto é único; incrementos sequenciais dependem da ordem e leave-one-out não é soma aditiva.",
+        "strength": "álgebra condicional"
+      },
+      {
+        "claim_id": "C03",
+        "text": "O relógio substantivo determina papéis candidatos; lag não torna controle admissível automaticamente.",
+        "strength": "causal condicional a DAG e relógio"
+      },
+      {
+        "claim_id": "C04",
+        "text": "ADL+FE é baseline condicional para CET linear homogêneo com história suficiente e condições de identificação e estimação.",
+        "strength": "resultado populacional condicional"
+      },
+      {
+        "claim_id": "C05",
+        "text": "Os modelos com estados relevantes têm menor viés em DGPs exibidos; o baseline falha com confounding omitido.",
+        "strength": "evidência numérica delimitada"
+      },
+      {
+        "claim_id": "C06",
+        "text": "Incerteza do shift deve preservar covariância entre estimadores; procedimentos são propostos, não calibrados nas aplicações.",
+        "strength": "proposta inferencial de escopo restrito"
+      },
+      {
+        "claim_id": "C07",
+        "text": "Aplicações são diagnósticos descritivos com timing ambíguo de contrastes defasado/prospectivo.",
+        "strength": "evidência descritiva intencional"
+      },
+      {
+        "claim_id": "C08",
+        "text": "A contribuição desenvolvida se limita a TSCS linear e uso condicional do diagnóstico.",
+        "strength": "escopo"
+      }
+    ],
+    "evidence_map": [
+      {
+        "claim_id": "C01",
+        "source_locator": "Rmd 184-190,389-420,826",
+        "evidence": "Equações curto/longo e auxiliar; Proposição 1",
+        "scope": "OLS sem pesos, posto completo, amostra e regressoras comuns"
+      },
+      {
+        "claim_id": "C02",
+        "source_locator": "Rmd 408-422; derivations/multivariate_specification_shift.Rmd",
+        "evidence": "Identidade vetorial, definições e prova por FWL",
+        "scope": "Especificações lineares aninhadas; alocação não causal"
+      },
+      {
+        "claim_id": "C03",
+        "source_locator": "Rmd 214-275,279,315,385",
+        "evidence": "Definição CET, tabelas1-2 e figuras1-2",
+        "scope": "CET atual; relógios de mediador e collider diferentes"
+      },
+      {
+        "claim_id": "C04",
+        "source_locator": "Rmd 457-501; derivations/adl_cet_identification_conditions.Rmd:63-73",
+        "evidence": "Média potencial, prova FWL, suporte, tabela3",
+        "scope": "Intercambialidade completa nas derivações; não garante within sem viés em T finito"
+      },
+      {
+        "claim_id": "C05",
+        "source_locator": "Rmd 551-642; figuras4-5; tabela6",
+        "evidence": "Outputs existentes e parâmetros/captions",
+        "scope": "DGPs testados; cobertura0.700 é de long para CET; não é calibração de IC do shift"
+      },
+      {
+        "claim_id": "C06",
+        "source_locator": "Rmd 424-438; derivations/specification_shift_uncertainty.Rmd:260-264",
+        "evidence": "Variância da diferença, script pareado, nota de trabalho não executado",
+        "scope": "Um controle, OLS, amostra completa comum, cluster por unidade; limites reconhecidos na nota"
+      },
+      {
+        "claim_id": "C07",
+        "source_locator": "Rmd 646-650,732-736,822",
+        "evidence": "Leipziger e Rogowski; tabelas7-8",
+        "scope": "14 candidatos em seis estudos; duas aplicações, três controles extras de Rogowski; sem CET direto ou IC do shift"
+      },
+      {
+        "claim_id": "C08",
+        "source_locator": "Rmd 444,828-832",
+        "evidence": "Conclusão e declaração de extensões futuras",
+        "scope": "Sem resultados para SDiD, fatores, regimes, links não lineares ou efeitos acumulados"
+      }
+    ],
+    "scope_conditions": [
+      "OLS sem pesos, posto completo, amostra e regressoras comuns",
+      "Especificações lineares aninhadas; alocação não causal",
+      "CET atual; relógios de mediador e collider diferentes",
+      "Intercambialidade completa nas derivações; não garante within sem viés em T finito",
+      "DGPs testados; cobertura0.700 é de long para CET; não é calibração de IC do shift",
+      "Um controle, OLS, amostra completa comum, cluster por unidade; limites reconhecidos na nota",
+      "14 candidatos em seis estudos; duas aplicações, três controles extras de Rogowski; sem CET direto ou IC do shift",
+      "Sem resultados para SDiD, fatores, regimes, links não lineares ou efeitos acumulados"
+    ],
+    "non_claims": [
+      "Não cria novo estimador causal universal.",
+      "Não infere causalidade ou papel do controle apenas de theta, pi ou Delta.",
+      "Não garante lag admissível ou história suficiente pelo índice temporal.",
+      "Não oferece ICs pareados nas aplicações atuais.",
+      "Não resolve efeitos de regimes, SDiD, fatores ou confounding contemporâneo omitido.",
+      "Não interpreta seis estudos como amostra representativa."
+    ],
+    "terminology": [
+      {
+        "preferred": "specification shift",
+        "avoid": [
+          "causal bias sem identificação"
+        ],
+        "reason": "Contraste de projeções não é automaticamente viés causal."
+      },
+      {
+        "preferred": "conditional ADL+FE baseline",
+        "avoid": [
+          "safe model",
+          "universal estimator"
+        ],
+        "reason": "CET, timing, história e condições são necessários."
+      },
+      {
+        "preferred": "intervalo Monte Carlo da média do viés",
+        "avoid": [
+          "IC do CET",
+          "IC do shift"
+        ],
+        "reason": "Objetos de incerteza distintos."
+      }
+    ],
+    "ambiguities": [],
+    "profile_fields": {
+      "methodological_objects": [
+        "CET",
+        "projeção populacional",
+        "coeficiente amostral",
+        "shift",
+        "viés",
+        "intervalo"
+      ],
+      "empirical_adapter": "Aplicações são ilustrações heterogêneas; não há tratamento/outcome único.",
+      "formal_adapter": "Não é jogo estratégico; perfil general cobre teoremas e condições estatísticas."
+    },
+    "not_applicable": {
+      "empirical_profile": "Paper metodológico, aplicações não constituem desenho empírico único.",
+      "formal_game_fields": "Não há jogadores, estratégias ou equilíbrio."
+    }
+  },
+  "reconciliation": {
+    "questions": [
+      "A versão afirma identificação universal ou condicional?",
+      "Moved significa uma inclusão aninhada?",
+      "Intercambialidade com FE está ausente de todo o argumento?",
+      "O paper identifica efeito direto somente pelo DAG?",
+      "Cobertura0.700 é para Delta?",
+      "As cinco linhas são subset simples dos14 candidatos?",
+      "Restam dúvidas que mudem a descrição do argumento?"
+    ],
+    "responses": [
+      "Condicional: Rmd190,457-501,828 e nota de identificação. Frases locais mais fortes continuam registradas como inconsistências, sem atribuir claim universal ao paper.",
+      "A intenção não é inferida. O contrato registra a identidade válida para adição e a frase operacional451 compatível com substituição, não coberta por essa identidade. É um defeito/ambiguidade textual localizado que o plano deve resolver, não prova de erro no teorema.",
+      "Não: explicitada na nota63-73; omitida na formulação abreviada Rmd465. A crítica incide na consistência de exposição e na rechecagem da cadeia afetada.",
+      "Seção3,315 exige hipóteses de mediação; Rmd441 comprime inadequadamente essa condição. O contrato conserva ambos os localizadores e não atribui uma tese incondicional global.",
+      "Não. metrics.R:57 usa covered_long; simulation.R:70-111 compara ao beta_true, com beta_cet como alvo. Não é IC pareado de Delta.",
+      "Não. Rmd141-150 seleciona só GDP em Rogowski; sua tabela inclui três controles adicionais. O contrato separa estudo, candidato selecionado e comparação adicional.",
+      "Não para o escopo de planejar revisão: as tensões foram explicitamente preservadas como propriedades textuais, não eliminadas ou resolvidas por atribuição de intenção. Validade científica e decisões de desenho permanecem para os gates futuros."
+    ],
+    "unresolved": []
+  },
+  "gate": {
+    "status": "PASS",
+    "round": 1,
+    "checked_at": "2026-09-15T02:16:26.659240+00:00",
+    "checks": {
+      "coverage": true,
+      "anchors": true,
+      "scope": true,
+      "nonclaims": true,
+      "preferred_specification": true,
+      "ambiguities": true,
+      "source_hash": true
+    },
+    "reasons": [
+      "Sete seções cobertas por registros próprios; quatro agentes reutilizados em turnos para seções curtas devido ao limite do ambiente. Não são sete contextos independentes.",
+      "Síntese macro feita pelo orquestrador após leitura integral; tensões textuais preservadas na seção e no log de reconciliação.",
+      "PASS de fidelidade para planejar revisão; não aprova novidade, validade das provas ou publicação."
+    ]
+  }
+}

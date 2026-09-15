@@ -1,0 +1,16 @@
+\usepackage{fancyhdr}
+\setlength{\emergencystretch}{3em}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+\widowpenalty=10000
+\clubpenalty=10000
+\brokenpenalty=10000
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small IVB-paper | Plano de revisão}
+\fancyhead[R]{\small 15.09.2026}
+\fancyfoot[C]{\small\thepage}
+\setlength{\headheight}{14pt}
+\renewcommand{\headrulewidth}{0.3pt}
+\let\originaltoc\tableofcontents
+\renewcommand{\tableofcontents}{\originaltoc\clearpage}

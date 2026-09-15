@@ -1,0 +1,52 @@
+{
+  "routes_are": "Conservative, uncalibrated task-specific choices",
+  "readings": [
+    {
+      "agent": "read_timing",
+      "model": "gpt-5.6-sol",
+      "effort": "xhigh",
+      "sections": [
+        "S03",
+        "S01"
+      ]
+    },
+    {
+      "agent": "read_diagnostic",
+      "model": "gpt-6-astra",
+      "effort": "high",
+      "sections": [
+        "S04"
+      ]
+    },
+    {
+      "agent": "read_simulations",
+      "model": "gpt-5.6-sol",
+      "effort": "xhigh",
+      "sections": [
+        "S05",
+        "S02"
+      ]
+    },
+    {
+      "agent": "read_applications",
+      "model": "gpt-5.6-sol",
+      "effort": "high",
+      "sections": [
+        "S06",
+        "S07"
+      ]
+    },
+    {
+      "agent": "devils_advocate_plan",
+      "model": "gpt-6-astra",
+      "effort": "xhigh",
+      "sections": [
+        "plan"
+      ]
+    }
+  ],
+  "concurrency": "root + up to 3 active workers",
+  "plan_review_snapshot_sha256": "19437eee55763f34a1a14ff5cb6458e5d76cd2a510aea38297899655d0e3c995",
+  "selection_source": "https://developers.openai.com/tracks/building-agents#how-to-choose",
+  "no_claim": "No measured comparative success probabilities, cost optimum, or model change to current root claimed."
+}

@@ -1,0 +1,80 @@
+{
+  "files": [
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/README.md",
+      "sha256": "0f8d9d5f25208d5fecaba118deeba9cd4ae665faf61aa5839328154517c39e8d"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/build_records.py",
+      "sha256": "c0e5e852cf156c15af37bfb45cee5aae58ffe297ecd7aca67b269db8475e5da6"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/devils_advocate.md",
+      "sha256": "cecc1294e45df4b3979636c65ba3ee04df9faa7509126648325ded6299c0c211"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/devils_advocate_recheck.md",
+      "sha256": "2779cf3d165e7a98abc0193a3e41c3d57a64d56472e97916d3d4a7a7b504bb24"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/agent_routing.json",
+      "sha256": "15940ad56187fe13ef37f2f7bfa073099b89a2c3f0f6684571662f773e00a8a2"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/manuscript_pdf_text.txt",
+      "sha256": "e1deca55922d5476dfdd69dad9449f687f5782581aa6a9911634b6199410aab1"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/plan_before_critique.md",
+      "sha256": "19437eee55763f34a1a14ff5cb6458e5d76cd2a510aea38297899655d0e3c995"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/plan_reviewed_v1.md",
+      "sha256": "1091ba500ce48d0ba326667b0b634fda909edc9f24ba20a25113a6c61c83e7d9"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/plan_reviewed_v2.md",
+      "sha256": "93cd5efd1d2920593be8356c8bdc53a99e2fca558fe6bc1d8f62f6e5792818df"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/refine_feedback_original.md",
+      "sha256": "f4e87230957a62bc52cae799d8f32fd8baa2e1cbe7ced2b25d74ec9ece5a89be"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/refine_followup_from_chat.md",
+      "sha256": "c055d75e3a62e1b3d68ff22b9236a0e552fc59695eeae282214ec9138260a738"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/source_manifest.json",
+      "sha256": "f11ad082e1854f8ca656824a17a83a8e7cf03030ce096ef228dcf10ee552cc0a"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/gates.json",
+      "sha256": "9b1bd0855cc1778a91d70420db47155393896c2a035037774d8c3ec2d5b8e84f"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/pdf_header.tex",
+      "sha256": "c508c864cb79a282e636c830ff515670bec02b77fb4d5551842342bc495fca27"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/plan.md",
+      "sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/plan.pdf",
+      "sha256": "38dffbe5eca065580fd13ccb9a703d1524dd6d6bccb128be3f6a3ab16a600d05"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/plan_adjudication.json",
+      "sha256": "4208c63e924a3b70f9e7613dd326f1fac941768a10f8d5ef244140fc45882111"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/qa.json",
+      "sha256": "4cf67ec29821a0ba44d1caa60cc331030d727815d51a0885365d30a686c41f30"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/render_plan.py",
+      "sha256": "3700ab5b05de9add167fc9c1480f7e6e834a422775d62067c2caf373b546f4e4"
+    }
+  ]
+}

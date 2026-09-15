@@ -1,0 +1,1353 @@
+     From Specification Shifts to Included Variable Bias in Dynamic
+
+Panels: A Diagnostic for Time-Varying Controls and a Benchmark
+
+                       for the Contemporaneous Treatment Effect
+
+                     Manoel Galdino∗                 Davi Moreira†              Carolina Dolleans‡
+
+
+                                                        July 2026
+
+
+                                                          Abstract
+
+           We study specification shifts that arise when researchers condition on observed covariates that may
+                                                                                   b Z = βb⋆ − βb has the ex-
+       themselves respond to treatment. For linear nested models, the sample shift ∆
+
+       act decomposition −θb⋆ π
+                              b. This algebra does not by itself establish causal bias: directed acyclic graphs,
+       substantive timing, and identification assumptions determine whether the shift reflects collider bias, over-
+
+       control, deconfounding, or an ambiguous change in projection. For time-series cross-sectional settings
+
+       that target a linear, homogeneous contemporaneous treatment effect (CET), we evaluate ADL + FE
+
+       with lagged state variables as a conditional baseline. In the reported collider, dual-role, and mediator
+
+       designs, specifications with the relevant lagged state produce smaller CET bias than the displayed al-
+
+       ternatives, while conditioning on a contemporaneous mediator moves the coefficient toward the direct
+
+       effect. Applications illustrate the descriptive diagnostic and the timing judgments required before inter-
+
+       preting a shift causally. The baseline applies only with a defended causal clock and history, sequential
+
+       exchangeability, adequate dynamics and support, no relevant interference, and a time dimension or bias
+
+       correction appropriate for dynamic fixed-effects estimation.
+
+
+
+
+1      Introduction
+
+Researchers using time-series cross-sectional data constantly face a deceptively simple specification choice:
+
+should an observed time-varying covariate be included in the regression? Consider an international-relations
+    ∗ Assistant Professor of Political Science, Universidade de São Paulo. E-mail: mgaldino@usp.br
+    † Professor of Quantitative Methods, Mitch Daniels School of Business, Purdue University.
+    ‡ Graduate Student of Political Science, Universidade Federal de Pernambuco.
+
+
+
+
+                                                              1
+scholar studying the effect of UN peacekeeping on democratization. Conditioning on conflict intensity is
+
+tempting because more severe conflicts are more likely to receive peacekeeping missions and are less likely to
+
+democratize. But peacekeeping can itself reduce violence. If so, conditioning on contemporaneous conflict
+
+intensity means conditioning on a variable that may already have responded to treatment. Omitting conflict
+
+may leave confounding; including realized conflict may introduce a different problem. The same logic appears
+
+whenever researchers want to control for GDP, aid, inflation, turnout, repression, or any other variable that
+
+evolves within the same period as treatment and outcome.
+
+Recent work on difference-in-differences with time-varying covariates makes this problem stark. When a
+
+covariate can itself respond to treatment, both conditioning on the realized covariate and omitting it can be
+
+problematic, because the causally relevant object may be something like the untreated potential covariate
+
+Zt (0) rather than the realized Zt (Caetano and Callaway, 2024; Caetano et al., 2022; Lin and Zhang,
+
+2022). Related work on panels and causal dynamics likewise shows that time-varying covariates can create
+
+demanding identification problems (Blackwell and Glynn, 2018; Imai and Kim, 2021). We take that broader
+
+literature as the starting point rather than the target of critique.
+
+Our contribution is different and narrower, but also more operational. We introduce the specification-shift
+
+diagnostic for cases in which researchers condition on observed covariates that may themselves respond to
+
+treatment. In linear nested models, the resulting shift admits a simple closed-form decomposition:
+
+
+                                                βb⋆ − βb = −θb⋆ π
+                                                                b,
+
+
+where θb⋆ is the coefficient on the candidate control in the long regression and π
+                                                                                 b is the coefficient on treatment
+                                                               b Z = βb⋆ − βb measures how much including
+in an auxiliary regression for that control. The sample object ∆
+
+Z moves the treatment coefficient. Directed acyclic graphs (DAGs), timing, and identification assumptions
+
+determine whether that descriptive shift can be interpreted as causal bias. This is the paper’s general
+
+contribution. The current manuscript develops it for the linear models most common in TSCS work, where
+
+the decomposition is exact and directly estimable.
+
+The paper’s main applied payoff is narrower. For TSCS settings focused on the contemporaneous treatment
+
+effect (CET), we study ADL + FE with lagged state variables as a conditional baseline: lagged covariates
+
+enter only when their timestamps and causal roles are defended, while contemporaneous time-varying con-
+
+trols require an explicit causal clock. The coefficient can represent the CET only under the identification,
+
+functional-form, support, and estimation conditions stated below. The baseline is therefore a comparison
+
+specification for a defined TSCS problem, not a universal causal estimator or a rule that lagging a variable
+
+
+                                                        2
+makes it admissible.
+
+This architecture helps distinguish the paper from two nearby contributions. It is not only a warning that
+
+time-varying controls are hard, because the specification-shift decomposition gives that difficulty a named
+
+and estimable diagnostic. And it is not only a recommendation to use dynamic specifications, because the
+
+benchmark is presented as the main applied implication of a more general specification-shift framework. The
+
+broader research program behind this diagnostic may well travel beyond the current setting, but this paper
+
+develops its full payoff in the linear TSCS case.
+
+We proceed in four steps. Section~2 defines the control-variable problem when observed covariates may
+
+themselves respond to treatment. Section~3 uses DAG logic to show why the same substantive variable can
+
+be harmful at t and useful at t−1. Section~4 presents the specification-shift diagnostic and derives the closed-
+
+form decomposition used in linear TSCS models. Section~5 then develops the main applied implication of
+
+that framework: a benchmark for the CET based on ADL + FE with lagged state variables. Section~6
+
+shows how the diagnostic and the benchmark interact in published TSCS studies. Section~7 closes with the
+
+paper’s claim, its limits, and the agenda it opens.
+
+
+
+2    The Time-Varying Control Problem for the Contemporaneous
+
+     Treatment Effect
+
+Applied researchers working with time-series cross-sectional (TSCS) data rarely face a binary choice between
+
+control'' anddo not control.’ ’ The more realistic problem is whether an observed time-varying covariate
+
+should enter the specification when the estimand is the contemporaneous treatment effect (CET), that is,
+
+the effect of Dt on Yt . The same variable can help, hurt, or redefine the estimand depending on timing. A
+
+contemporaneous covariate Zt may be a confounder, a collider, or a mediator. Its lag, Zt−1 , may instead
+
+behave as a predetermined state variable relative to the CET.
+
+Standard heuristics are too coarse for this problem. Control checking'' recommends adding predictors
+
+of the outcome to gain precision;confounding checking’ ’ recommends adding joint causes of treatment
+
+and outcome (Cinelli, Forney and Pearl, 2022). Both heuristics ignore the possibility that a candidate control
+
+is post-treatment in the period of interest. That omission is costly in TSCS designs because treatment,
+
+outcome, and covariates evolve jointly over time, often with persistence in all three processes (Blackwell and
+
+Glynn, 2018; Imai and Kim, 2021).
+
+Recent DID work sharpens the problem further: if Zt may itself respond to treatment, neither conditioning
+
+
+
+                                                       3
+on realized Zt nor omitting it necessarily identifies the target estimand, because the relevant object may be
+
+the untreated potential covariate Zt (0) rather than the observed Zt (Caetano and Callaway, 2024; Caetano
+
+et al., 2022). We do not resolve that identification problem in general. Instead, we ask a more operational
+
+question. When applied researchers condition on an observed time-varying covariate that may respond to
+
+treatment, how much does that choice move the treatment coefficient, and under what conditions can a
+
+dynamic TSCS specification serve as a CET baseline?
+
+Our answer has two parts. The general contribution is an exact decomposition of the specification shift
+
+in linear nested models; calling that shift causal bias requires a DAG, a target estimand, and identification
+
+assumptions. The more specific contribution is the paper’s payoff in TSCS settings with the CET: evaluating
+
+a dynamic baseline based on ADL + FE with lagged state variables under stated scope conditions. The
+
+formula quantifies the change between specifications, while the causal argument determines what that change
+
+means.
+
+The scope qualification matters. A lagged control can be called pre-treatment only relative to the effect of
+
+Dt on Yt , and only when its substantive timestamp supports that ordering. Even then, it can be treatment-
+
+responsive relative to cumulative, delayed, or long-run effects. The paper’s conditional baseline is therefore
+
+explicitly local to the CET. Difference-in-differences and related panel designs remain part of the motivation
+
+for why time-varying controls are hard, but the paper’s formal and applied results are developed in the linear
+
+TSCS setting.
+
+
+
+3     DAGs, Timing, and Why Zt Is Not Zt−1
+
+The causal role of a time-varying covariate depends on its substantive timing, not its subscript alone. Before
+
+classifying a control, we therefore need to map the variables recorded in a panel row onto a causal sequence
+
+within the period.
+
+
+3.1      The CET and the Within-Period Causal Clock
+     −
+Let Hit denote the information and state variables fixed immediately before the period-t treatment begins.
+
+For two well-defined treatment levels d and d′ , we define the contemporaneous treatment effect as
+
+
+
+                                                                           −
+                               τCET (d, d′ ; h) = E Yit (d) − Yit (d′ ) | Hit
+                                                                               
+                                                                              =h ,
+
+
+where Yit (d) is measured after the period-t intervention and any within-period responses it induces. Thus,
+
+
+                                                       4
+unless a controlled direct effect is explicitly targeted, the CET includes paths such as Dit → Zit → Yit . In
+
+a constant linear model with a scalar treatment, βCET is the corresponding unit contrast, or marginal effect
+
+for a continuous dose.
+
+The substantive clock underlying this definition is
+
+
+
+                                         −
+                                        Hit −→ Dit −→ Zit −→ Yit+ ,
+
+
+       −
+where Hit is the state at the opening of the causal period, Dit records the onset and intensity of treatment,
+
+Zit is allowed to respond, and Yit+ is measured after the relevant exposure window. This ordering is an
+
+empirical claim, not a consequence of notation. Table~1 states the minimum timestamp information needed
+
+to assess it.
+
+This displayed chain is the candidate clock when Zt is a mediator. It is not imposed on every graph below.
+
+A contemporaneous-collider claim Dt → Zt ← Yt instead requires the outcome process represented by Yt
+
+to precede the measurement of Zt within the causal period, while Dt can affect both. Thus the common
+
+subscript denotes a panel period, not simultaneity or a universal within-period order; each application must
+
+defend the mechanism-specific clock.
+
+Table 1: Minimum timestamp record for defining the contemporaneous treatment effect. A lag label is not
+evidence that a covariate is pretreatment.
+
+    Variable    Minimum timestamp record                        Requirement for the CET clock
+    D           Onset, end, and intensity window;               Defines the intervention or exposure contrast
+                whether the measure is a stock, flow,           within period t
+                event, or period average
+    Z           Reference and measurement window;               Must close before the first relevant exposure to be
+                whether it can respond to anticipated,          called pretreatment; otherwise classify its timing
+                prior, or current treatment                     as plausible or ambiguous
+    Y           Reference window and measurement                Must follow the relevant exposure window for the
+                time; whether any part is recorded before       stated CET; overlapping aggregates require a finer
+                treatment begins                                estimand
+
+
+Three complications are common in annual and other aggregated panels. First, anticipation can make a
+
+recorded Zt−1 treatment-responsive before the formal onset of Dt . Second, when treatment varies continu-
+
+ously within the period, a scalar annual value may summarize a treatment path with repeated D ↔ Z ↔ Y
+
+feedback; the relevant intervention is then a contrast between exposure trajectories, not automatically a
+
+one-unit change in the annual average. Third, annual measures may overlap: a late-year treatment can
+
+occur after much of Zt or Yt has already been realized, while a beginning-of-year outcome may precede the
+
+nominally contemporaneous treatment. When documentation establishes nonoverlapping windows, timing
+
+
+                                                            5
+is known; when institutional knowledge supports but does not timestamp the sequence, it is plausible; and
+
+when windows overlap or remain undocumented, it is ambiguous. The lagged-control benchmark below
+
+applies only after this clock has been defended.
+
+
+3.2    Dynamic Causal Structures for the CET
+
+The elementary fork, chain, and collider remain the building blocks of causal graphs (Pearl, 2009; Elwert
+
+and Winship, 2014), but TSCS specifications combine those structures across periods. Figure 1 makes the
+
+inherited path explicit for a contemporaneous collider. The blue arrows mark the treatment–outcome causal
+
+edges in successive periods. Conditioning on Zt opens Dt → Zt ← Yt . Because Zt is also a descendant of the
+
+lagged collider Zt−1 , that conditioning can activate the inherited path Dt ← Dt−1 → Zt−1 ← Yt−1 → Yt .
+
+Conditioning on Yt−1 blocks this inherited path at a noncollider, but it does not close the contemporaneous
+
+path opened at Zt . The graph also shows the ordinary dynamic path Dt ← Dt−1 → Yt−1 → Yt ; that path
+
+is distinct from collider activation and is likewise blocked at Yt−1 .
+
+
+
+                       Lagged state      Dt−1                  Zt−1               Yt−1
+
+
+
+
+                            Period t      Dt                    Zt                 Yt
+
+
+
+Figure 1: Dynamic contemporaneous-collider DAG for the CET. Red arrows meet at Zt and Zt−1 ; blue marks
+the causal Dt → Yt path. Conditioning on Zt opens the contemporaneous collider and, as conditioning on a
+descendant of Zt−1 , can also activate the inherited lag path.
+
+
+
+Figure 2 represents a different role for the same contemporaneous variable. Here Zt transmits part of the
+
+effect of Dt to Yt , while Zt−1 is a lagged state that can affect current treatment and outcome. For the total
+
+CET, both current-period blue paths belong to the estimand. Conditioning on a substantively pretreatment
+
+Zt−1 blocks Dt ← Zt−1 → Yt without blocking the within-period mediated path. The remaining lag path
+
+Dt ← Dt−1 → Yt−1 → Yt requires Dt−1 , Yt−1 , or other sufficient history. Conditioning on Zt instead blocks
+
+Dt → Zt → Yt and changes the target to a direct-effect parameter under additional mediation assumptions.
+
+
+
+
+                                                        6
+                      Lagged state        Dt−1                  Zt−1                Yt−1
+
+
+
+
+                            Period t      Dt                       Zt                 Yt
+
+
+
+Figure 2: Dynamic contemporaneous-mediator DAG with lagged confounding and state dependence. For the
+total CET, the direct path and the path through Zt remain open. Conditioning on a genuinely pretreatment
+Zt−1 can block lagged confounding; conditioning on Zt blocks the displayed mediated path.
+
+
+
+3.3      Timing Logic for Candidate Controls
+
+Table~2 summarizes the main timing logic. The key point is that the paper’s benchmark is anchored to the
+
+CET rather than to a generic slogan such as “lag everything.’ ’
+
+Table 2: Timing logic for observed controls when the estimand is the contemporaneous treatment effect.
+Subscripts identify candidate roles; the substantive clock determines the causal classification.
+
+  Candidate      Possible role for the      Main risk or benefit        Conditional action
+  control        CET
+  Zt             Collider if                Opens a noncausal           Do not condition unless the DAG and
+                 post-treatment             collider path               causal clock rule out post-treatment
+                                                                        status
+  Zt             Mediator if                Blocks part of the total    Do not condition if the target is the
+                 post-treatment             effect                      total contemporaneous effect
+  Zt−1           Predetermined state if     Captures state              Candidate baseline control only after
+                 timestamp passes           dependence                  the timestamp check
+  Zt−1           Lagged confounder if       Removes OVB without         Candidate baseline control only after
+                 timestamp passes           blocking the                the timestamp check
+                                            contemporaneous path
+
+
+Three cases are especially relevant for the remainder of the paper. First, conditioning on a contemporaneous
+
+collider Zt opens a noncausal collider path and can create included variable bias relative to the CET when the
+
+graph and identification assumptions establish that interpretation. Second, a contemporaneous mediator Zt
+
+creates over-control if the target is the total contemporaneous effect. Third, a dual-role variable can be both
+
+a lagged confounder and a contemporaneous collider. In that case, the empirical question is not whether the
+
+variable should ever appear in the specification, but whether its documented measurement window places it
+
+before or after the relevant treatment begins.
+
+
+
+
+                                                        7
+4     The Specification-Shift Diagnostic
+
+The paper’s general contribution is to define the specification shift as a distinct diagnostic object. Once
+
+researchers accept that an observed control may itself respond to treatment, they need a language for the
+
+resulting coefficient change. The decomposition quantifies that change in a given linear specification; the
+
+DAG, timing, estimand, and identification assumptions determine its causal meaning. We reserve the term
+
+included variable bias (IVB) for cases in which those elements establish that including Z moves the estimator
+
+away from the contemporaneous-effect target βCET .
+
+Consider the short model
+
+                                               Y = βD + W δ + u                                                 (1)
+
+
+and the long model
+
+                                          Y = β ⋆ D + θ ⋆ Z + W δ ⋆ + u⋆ ,                                      (2)
+
+
+where W collects admissible controls. By the Frisch–Waugh–Lovell theorem,
+
+
+                                                 βb⋆ − βb = −θb⋆ π
+                                                                 b,                                             (3)
+
+
+where π
+      b is the coefficient on D in the auxiliary regression of Z on D and W .
+
+Proposition 1 (Multiple candidate controls). Under the usual full-rank conditions for unweighted OLS and
+
+using the same observations and common regressors, let Z = (Z1 , . . . , Zq )′ , let θb be its coefficient vector in
+
+the joint long regression, and let π
+                                   b collect the coefficients on D from the auxiliary regressions of each Zj on
+
+D and W . Then
+                                             b Z = βbZ − βb∅ = −θb′ π
+                                             ∆                      b.
+
+
+For any order of inclusion, the conditional increments telescope to ∆
+                                                                    b Z , but their control-specific allocation
+
+generally depends on that order. Leave-one-control-out increments are instead last-in conditional comparisons
+
+and need not sum to the joint shift.
+
+The vector identity remains a diagnostic for nested linear TSCS specifications, not an automatic decompo-
+
+sition of causal bias. Correlated controls make the distinction especially important: the endpoint shift is
+
+unique, whereas sequential allocations are path dependent and leave-one-out comparisons answer a differ-
+
+ent sensitivity question. The online appendix gives the FWL proof, formal definitions, and a deterministic
+
+correlated-control example.
+
+For reporting, we recommend the endpoint shift together with leave-one-control-out comparisons, each de-
+
+
+                                                         8
+fined as the full-model coefficient minus the coefficient from a model omitting one candidate control while
+
+retaining the others. These are conditional sensitivity checks, not additive shares of the joint shift. A
+
+symmetric Shapley allocation can summarize the average contribution across all inclusion orders when the
+
+candidate set is small, but it remains an allocation of a linear projection movement; we therefore place it in
+
+the online appendix rather than treat it as a causal decomposition.
+
+
+4.1    Quantifying Uncertainty in the Shift
+
+Because the short and long coefficients are estimated from the same observations, uncertainty for ∆
+                                                                                                  bZ =
+
+βbL − βbS must preserve their dependence. Our primary procedure resamples whole units and, on every paired
+
+resample, re-estimates the short, long, and auxiliary equations on exactly the same rows. A complementary
+
+delta calculation uses
+
+                               Var(
+                               d ∆                    d βbS ) − 2Cov(
+                                            d βbL ) + Var(
+                                    b Z ) = Var(                 d βbL , βbS ),
+
+
+with the cross-estimator covariance obtained from a stacked cluster sandwich. Treating the nested estimates
+
+as independent is not justified. Applying the delta method to − b
+                                                               θbπ requires the covariance between θb and π
+                                                                                                          b
+
+and serves as a verification of the paired calculation, not an automatic substitute for it.
+
+When this inference is executed and validated for an application, the diagnostic should report the signed ∆
+                                                                                                          b Z,
+
+an interval for ∆Z , and the prespecified relative magnitude |∆
+                                                              b Z |/|βbbenchmark |. The benchmark denominator
+
+must be identified in advance and the ratio is unstable when it is near zero. The current applications report
+
+only point shifts and relative magnitudes already supported by the replication outputs; they do not yet
+
+report confidence intervals for ∆Z . The online appendix gives the derivation, implementation, deterministic
+
+checks, and the limits of the proposed procedures.
+
+In cross-sections, W may contain baseline covariates. In TSCS settings, W can include fixed effects, lagged
+
+dependent variables, lagged treatment, and other lagged state variables. The formula is therefore an exact
+
+linear-model identity, not a separate estimator. That exactness makes the specification-shift diagnostic
+
+directly readable from nested linear regressions already familiar to applied researchers.
+
+Two interpretive points matter. First, the formula is diagnostic rather than self-justifying. If Z is a con-
+
+founder, the same arithmetic difference reflects deconfounding rather than harm. If Z is a mediator, the
+
+difference reflects movement from the total to the direct effect (Acharya, Blackwell and Sen, 2016). Only the
+
+DAG tells the researcher which interpretation applies. Second, the formula remains useful precisely because
+
+it converts a vague modeling dispute into two estimable components: how strongly Z predicts the outcome
+
+in the long model, and how strongly D predicts Z once admissible controls have been partialled out.
+
+
+                                                       9
+This is also where the paper’s originality lies. Work on dynamic identification, sequential ignorability, and
+
+DID with time-varying covariates shows why observed controls may be problematic (Blackwell and Glynn,
+
+2018; Imai and Kim, 2021; Caetano and Callaway, 2024). The paper contributes a different object: a
+
+named and estimable decomposition of the specification shift itself. It develops that object in the linear
+
+TSCS domain, where it yields both a diagnostic and, in the next section, a conditional comparison baseline.
+
+Whether analogous specification-shift diagnostics can be built for synthetic-control-style estimators, synthetic
+
+DID, or factor models is an important agenda, but not a result claimed here.
+
+For the CET in TSCS settings, the practically relevant auxiliary regression is dynamic. If the benchmark
+
+specification is
+                                                             ′
+                           Yit = βDit + ρYi,t−1 + κDi,t−1 + Xi,t−1 λ + αi + τt + εit ,                      (4)
+
+
+then the corresponding decomposition asks how much the treatment coefficient shifts when a candidate
+
+control is moved from the lagged-state set Xi,t−1 into the contemporaneous set. This is the operational
+
+meaning of diagnosing a candidate time-varying control in the remainder of the paper.
+
+The formula also clarifies a point that is easy to miss in practice: lagging the treatment does not mechanically
+
+remove the problematic path. If Dt is autocorrelated, a collider that is contemporaneous with Dt can remain
+
+associated with Dt−1 . What matters is not whether the treatment index moved backward by one period,
+
+but whether the specification blocks the relevant noncausal path for the estimand of interest.
+
+
+4.2    Conditions Under Which the ADL + FE Coefficient Represents the CET
+                                                                                       −
+The ADL + FE coefficient represents the CET only under explicit scope conditions. Let Hit be the observed
+
+pre-exposure history defined above. A calendar-lag vector Hi,t−1 is a valid implementation only when the
+                                          −
+timestamp checklist establishes Hi,t−1 ⊆ Hit and the included lags and transformations are sufficient for
+
+current assignment and the conditional outcome mean. A lag label alone establishes neither condition. A
+
+sufficient constant-coefficient restriction is
+
+
+
+                                           −                             − ′
+                              E[Yit (d) | Hit , αi , τt ] = αi + τt + r(Hit ) γ + βCET d,
+
+
+together with consistency, no interference, no anticipation, sequential mean exchangeability of Dit given
+ −
+Hit , and conditional positivity for the treatment contrast. For discrete treatment, the target levels must
+
+have positive conditional probability; for continuous treatment, the target doses must lie in the conditional
+
+common support with local support around them. The causal clock must also be recursive: Dit precedes
+
+
+
+                                                          10
+the contemporaneous outcome innovation, so simultaneous Yit → Dit feedback is excluded. By contrast,
+                                                                       −
+Yi,t−1 → Dit feedback is compatible with identification when Yi,t−1 ∈ Hit and the conditioned history is
+
+sufficient.
+
+These causal support conditions are distinct from the rank condition for the population projection. If D
+                                                                                                       e it
+
+is the population residual from projecting Dit on the included history and the unit and time effects, and
+      e 2 ] < ∞, then
+0 < E[D it
+
+
+
+
+                                            P     E[D
+                                                    e it Yit ]
+                                           βD =                = βCET .
+                                                   E[De2 ]
+                                                        it
+
+
+The online appendix states this result as a proposition and gives the full proof. This equality is a population
+
+identification result. Unit effects absorb additive time-invariant unit factors and time effects absorb additive
+
+common shocks; neither removes omitted time-varying confounding or heterogeneous responses to common
+
+shocks. A misspecified lag order or nonlinear history also breaks the stated conditional mean. If treatment
+
+effects or dynamics vary over units, periods, or histories, the single coefficient is generally a projection-
+
+weighted summary rather than a common CET.
+
+
+
+
+                                                       11
+Table 3: Standardized scope conditions for using ADL + FE with lagged state variables as a CET baseline.
+
+    Condition              Required scope condition                                          If unmet
+
+    CET target and         A well-defined CET; consistency; no relevant spillovers or        The stated intervention, ordering, or
+    causal clock           interference; defended within-period timing; no anticipation      unit-level causal contrast is not
+                           or simultaneous Yit → Dit feedback                                identified
+                                     −
+    Observed history and   Hi,t−1 ⊆ Hit and sufficient observed history; sequential          The coefficient can retain
+    exchangeability        mean exchangeability; no unobserved contemporaneous cause         confounding or condition on a
+                           of Dit and Yit                                                    treatment-responsive state
+    Dynamic conditional    Plausible lag order and transformations that span assignment The regression can omit relevant
+    mean                   and the dynamic conditional outcome mean                          dynamics even when every included
+                                                                                             variable is correctly timed
+    Functional form and    An additive linear response and a homogeneous CET if one          The coefficient is generally a
+    effect summary         coefficient is to represent a common effect                       projection-weighted or
+                                                                                             best-linear-approximation parameter
+    Fixed effects and      Additive unit heterogeneity and common time shocks; no            Fixed effects do not absorb the
+    common shocks          omitted treatment-correlated time-varying unit process or         omitted process, so population
+                           heterogeneous common-shock response                               identification can fail
+    Support and            Conditional overlap for the target contrast and                   The contrast extrapolates, or the
+                                   2
+    projection rank        0 < E[D
+                                 eit ] < ∞ after partialling out history and fixed effects   population FWL coefficient is
+                                                                                             undefined
+    Finite-T estimation    A time dimension adequate for within-estimator bias, or a         The population CET can be
+                           bias correction or alternative estimator whose assumptions fit identified while the conventional
+                           the panel                                                         within estimate has Nickell-type bias
+    Inference              An uncertainty procedure appropriate for serial and               Point identification can be
+                           cross-sectional dependence                                        unchanged while standard errors and
+                                                                                             confidence intervals are invalid
+
+
+
+
+The distinction between population identification and estimation matters in dynamic panels. With lagged
+
+outcomes, demeaning generally correlates the transformed lag with the transformed innovation, producing
+
+Nickell-type bias at finite T even when the level conditional mean identifies βCET (Nickell, 1981). Serial and
+
+cross-sectional dependence are separately inference problems when the remaining innovations are condition-
+
+ally mean zero; an omitted common factor correlated with treatment is instead an identification problem.
+
+For short panels, bias corrections or Arellano–Bond may be useful alternatives under their own moment
+
+and instrument conditions, but GMM is not uniformly superior and does not repair a failed causal clock
+
+(Arellano and Bond, 1991). These qualifications align the benchmark with the sequential-identification logic
+
+in the dynamic-panel literature (Blackwell and Glynn, 2018; Imai and Kim, 2021).
+
+
+
+
+                                                                 12
+5     Benchmarking Dynamic Specifications for the CET
+
+This section develops the paper’s main applied implication of the specification-shift framework. Conditional
+
+on Table~3, an informative applied comparison for the CET is between dynamic specifications that differ in
+
+whether they condition on contemporaneous Zt , rather than treating a static TWFE short regression as a
+
+causal reference. The baseline does not substitute for the specification-shift diagnostic: the former defines a
+
+conditional comparison specification, while the latter measures the coefficient change.
+
+
+5.1    Collider and Dual-Role Controls in TSCS
+
+We begin with the dual-role setting in which Zt−1 is a confounder for (Dt , Yt ), but Zt is contemporaneously
+
+affected by both treatment and outcome. In this structure, a variable such as GDP can serve as a lagged
+
+state variable while its contemporaneous value has a different causal role.
+
+The dual role is visible in Figure 3. Without conditioning, Dt ← Zt−1 → Yt is an open backdoor path.
+
+Conditioning on Zt−1 closes that fork but opens the inherited path Dt ← Dt−1 → Zt−1 ← Yt−1 → Yt ,
+
+because Zt−1 is a collider on that path. Adding Yt−1 blocks this inherited path at the noncollider Yt−1 and
+
+also blocks the distinct omitted-dynamics path Dt ← Dt−1 → Yt−1 → Yt . This d-separation statement is
+
+conditional on the displayed graph: it does not close Dt → Zt ← Yt if Zt is conditioned on, and it does not
+
+rule out other omitted paths or finite-T estimation bias.
+
+
+
+      Lagged state      Dt−1                  Zt−1                 Yt−1       Double border: conditioning set
+                                                                              {Zt−1 , Yt−1 } for the
+                                                                              displayed inherited path
+
+
+
+
+           Period t      Dt                    Zt                   Yt
+
+
+
+Figure 3: Dynamic dual-role DAG. Orange arrows form the lagged-confounding fork; red arrows trace
+the inherited collider path. Conditioning on Zt−1 blocks the former but opens the latter. Conditioning
+additionally on Yt−1 blocks that inherited path, subject to the displayed DAG and the paper’s timing and
+identification conditions.
+
+
+
+
+                                                      13
+                                                             Bias relative to true beta
+
+
+
+
+   0.6
+
+
+
+
+   0.4
+
+
+
+
+   0.2
+
+
+
+
+   0.0
+
+                                                                       RMSE
+
+
+
+
+   0.6
+
+
+
+
+   0.4
+
+
+
+
+   0.2
+
+
+
+
+   0.0
+              0.10                           0.30                             0.50                          0.70                   0.85
+                                                                         ρZ
+
+                                                               TWFE short            TWFE + lagged Z
+                                        Specification
+                                                               ADL + FE              ADL + FE + lagged Z
+
+         Error bars in the bias panel are 95% Monte Carlo uncertainty intervals for the simulated mean bias (not estimator confidence intervals).
+
+
+Figure 4: Dual-role DGP: bias relative to the true contemporaneous treatment effect and RMSE across
+collider persistence. The DGP has Zt−1 as a confounder and Zt as a contemporaneous collider; the estimand
+is β = 1. The displayed subset sets σαZ = 0.5, with N = 100, T = 30, a burn-in of 100 periods, and 500
+Monte Carlo replications per scenario. Models are TWFE short, TWFE plus Zt−1 , ADL+FE, and ADL+FE
+plus Zt−1 ; FE models include unit and time effects. Error bars are 95% Monte Carlo uncertainty intervals
+for simulated mean bias, not estimator confidence intervals.
+
+
+
+In the main dual-role design, the bias of ADL + FE + Zt−1 stays between 0.008 and 0.010, while the bias
+
+of TWFE + Zt−1 remains between 0.237 and 0.271. The static short model has the largest reported bias,
+
+reaching 0.716 in the most persistent scenarios. For this DGP, the relevant comparison is therefore between
+
+specifications that represent Z as a lagged state inside the dynamic outcome model and specifications that
+
+
+
+                                                                       14
+omit part of that state.
+
+The additional existing designs delimit, rather than generalize, this comparison. Table 4 records the main
+
+boundaries: each row describes a tested family of DGPs and should not be read as evidence that the
+
+conditional baseline is robust or identified outside its stated assumptions. Detailed grids, outcome measures,
+
+retained replication counts, and provenance are recorded in the static audit.
+
+Table 4: Boundary conditions represented by existing Monte Carlo artifacts. Each row is a design-specific
+result, not a general robustness or identification claim. Exact grids and provenance are in the Task 12 audit.
+
+
+   Boundary examined in      Existing evidence                                   Interpretation boundary
+   existing DGPs
+
+   Panel length, N, and      T varies from 10 to 100 with N and burn-in fixed;   Figure 2’s T = 30 result is conditional on
+   burn-in                   the separately declared 200-rep T output is         its fixed N, burn-in, DGP, and estimator
+                             absent.                                             set; it is not evidence that dynamic FE is
+                                                                                 generally free of finite-T bias.
+   Binary and staggered      Binary staggered and absorbing-treatment            These are design-specific CET comparisons
+   absorbing treatment       designs vary adoption composition and timing        under stated adoption clocks; they do not
+                             (500 retained replications per scenario).           validate a general DID, event-study, or
+                                                                                 treatment-regime estimator.
+   Nonlinear treatment and   Named nonlinear collider, interaction, carryover,   The results test only named stable
+   covariate response        and trend designs report bias/RMSE only for         functional forms and a linear CET target;
+                             their retained stable scenarios.                    they bound neither unknown nonlinearities
+                                                                                 nor link-function misspecification generally.
+   Measurement error in      A legacy static TWFE design varies                  Measurement error changes the observed
+   the observed control      measurement-error variance in Z (500                projection and attenuation pattern; it does
+                             replications per scenario).                         not turn the observed shift into a causal
+                                                                                 estimate or supply reliability correction.
+   Lagged feedback from      Lagged-feedback and feedback-plus-carryover         Lagged feedback can be studied only within
+   outcome to treatment      designs report bias and stability within their      the stated stable grid; the conditional
+                             stated grids.                                       baseline still requires a defended causal
+                                                                                 clock, history, and exchangeability.
+   Carryover and lag         Linear and nonlinear lag structures are varied;     Correctly representing the relevant history
+   specification             omitted or misspecified history can change the      is a scope condition. If the target is
+                             estimand.                                           cumulative or the lag order is wrong, the
+                                                                                 reported coefficient can answer a different
+                                                                                 question.
+   Contemporaneous           When a current common cause is unobserved,          The observed-history ADL baseline does
+   unobserved confounding    observed-history ADL retains material bias; the     not solve contemporaneous unobserved
+                             oracle observes that cause.                         confounding; an additional design,
+                                                                                 measurement, or assumption is required.
+
+
+
+
+Figure 5 isolates finite-T estimation from the specification shift in the pre-specified principal grid. In this
+
+dual-role design, absolute Monte Carlo bias is at least as large as the absolute mean ∆Z in 0 of 54 FE-ADL
+
+cells and 6 of 54 split-panel jackknife cells. Across the 108 displayed cells, the maximum absolute bias is
+
+0.0454, the maximum absolute mean shift is 0.0381, and the minimum empirical 95% coverage is 0.700. These
+
+finite-grid comparisons neither establish a universal acceptable-T cutoff nor demonstrate causal robustness.
+
+The full estimator comparison, Arellano–Bond diagnostics, stress grid, and exact provenance are reported
+
+in the Task 13 report/online appendix.
+
+
+
+
+                                                             15
+                                            N = 50                           N = 100                               N = 250
+
+
+                            0.8   <    <    <    <    <    <    <      <     <     <     <      <     <      <     <     <      <     <
+
+
+
+
+                                                                                                                                           FE−ADL within
+                            0.5   <    <    <    <    <    <    <      <     <     <     <      <     <      <     <     <      <     <
+
+
+
+
+ Outcome persistence (ρY)
+                            0.2   <    <    <    <    <    <    <      <     <     <     <      <     <      <     <     <      <     <
+
+
+
+
+                                                                                                                                           Split−panel jackknife FE−ADL
+                            0.8   >=   <    <    <    <    <    >=     <     <     <     <      <     >=     <     <     <      <     <
+
+
+
+                            0.5   >=   <    <    <    <    <    >=     <     <     <     <      <     >=     <     <     <      <     <
+
+
+
+                            0.2   <    <    <    <    <    <    <      <     <     <     <      <     <      <     <     <      <     <
+
+
+                                  8    10   15   20   30   50   8     10    15     20    30    50     8     10    15     20    30     50
+                                                                     Observed periods (T)
+
+                                       Design−specific comparison       No: |bias| < |mean Delta_Z|   Yes: |bias| >= |mean Delta_Z|
+
+
+Figure 5: Finite-T phase map for the principal dual-role grid. Each tile reports the design-specific com-
+parison |Monte Carlo bias| ≥ |mean(∆Z )| for the long FE-ADL within estimator or its split-panel jackknife
+correction. Columns vary N , the horizontal axis varies T , and the vertical axis varies outcome persistence
+ρY ; each cell contains 500 Monte Carlo replications with βCET = 1. Symbols redundantly encode the color
+categories. This diagnostic comparison does not define an acceptable-T threshold. Arellano–Bond, the stress
+grid, and full provenance are reported in the Task 13 report/online appendix.
+
+
+
+In the displayed DGP, outcome persistence transmits both the inherited collider path and the ordinary
+
+lagged treatment–outcome path through Yt−1 . Table 5 shows that when this edge is removed by setting
+
+ρY = 0, the TWFE bias is approximately zero across the reported values of ρZ . Conditioning on Yt−1 blocks
+
+both displayed paths when ρY > 0, subject to the graph and scope conditions stated above; the simulation
+
+contrast does not identify how much of the improvement comes from each path.
+
+
+
+
+                                                                             16
+Table 5: Firewall mechanism in the dual-role DGP (true contemporaneous treatment effect β = 1). Each cell
+reports simulated mean bias and its 95% Monte Carlo uncertainty interval in brackets; these are uncertainty
+intervals for the simulated mean, not confidence intervals for an estimator. The absolute-bias reduction is
+|BiasTWFE+Zt−1 | − |BiasADL+FE+Zt−1 ,Yt−1 |. The existing firewall result artifact reports 500 replications per
+scenario; the associated dual-role design has N = 100, T = 30, and a burn-in of 100 periods. Models include
+unit and time fixed effects.
+
+  ρY     ρZ    TWFE + Zt−1 : bias [MC 95% interval]   ADL + FE + Zt−1 : bias [MC 95% interval]   Absolute-bias reduction
+
+  0.0   0.30   0.0002 [-0.0013, 0.0017]               0.0076 [0.0060, 0.0092]                    -0.0074
+  0.0   0.50   0.0006 [-0.0010, 0.0021]               0.0081 [0.0065, 0.0098]                    -0.0076
+  0.0   0.70   -0.0010 [-0.0025, 0.0004]              0.0065 [0.0049, 0.0081]                    -0.0055
+  0.0   0.85   -0.0008 [-0.0023, 0.0007]              0.0065 [0.0049, 0.0081]                    -0.0057
+  0.5   0.30   0.2617 [0.2592, 0.2643]                0.0095 [0.0079, 0.0112]                    0.2522
+  0.5   0.50   0.2511 [0.2486, 0.2536]                0.0093 [0.0078, 0.0109]                    0.2418
+  0.5   0.70   0.2384 [0.2361, 0.2408]                0.0079 [0.0064, 0.0094]                    0.2305
+  0.5   0.85   0.2363 [0.2338, 0.2388]                0.0088 [0.0072, 0.0104]                    0.2275
+  0.8   0.30   0.2924 [0.2875, 0.2974]                0.0051 [0.0035, 0.0066]                    0.2874
+  0.8   0.50   0.2615 [0.2566, 0.2664]                0.0042 [0.0027, 0.0057]                    0.2573
+  0.8   0.70   0.3485 [0.3432, 0.3538]                0.0038 [0.0024, 0.0053]                    0.3447
+  0.8   0.85   0.3996 [0.3948, 0.4045]                0.0076 [0.0060, 0.0091]                    0.3920
+
+
+
+
+This finding disciplines the paper’s recommendation. The lagged outcome is not generally sufficient. In
+
+the displayed DGP, it conditions on the persistent outcome state through which both cited lag paths reach
+
+Yt . ADL + FE with Yt−1 and substantively justified lags of candidate controls is therefore the comparison
+
+baseline for this dual-role design, conditional on the identification and estimation conditions above.
+
+
+5.2     Over-Control with Contemporaneous Mediators
+
+The second recurring problem is not collider bias but over-control. When Zt lies on the path from Dt to
+
+Yt , conditioning on Zt shifts the estimate toward the direct effect. For the CET, the reported comparison
+
+is dynamic: an ADL specification that leaves the contemporaneous mediator out of the regression, one that
+
+conditions on Zt , and one that includes Zt−1 . Whether the lagged version belongs in the baseline depends
+
+on the timing and adjustment conditions above.
+
+Table 6: Over-control simulations for the CET. In both the pure-mediator and mediator-plus-confounder
+designs, the displayed ADL specification with contemporaneous Zt produces a coefficient near the direct-
+effect target, whereas the displayed specification with Zt−1 produces a coefficient near the total-effect target.
+These are design-specific comparisons.
+
+  Scenario                                 Target total   Target direct         ADL, no Z   ADL + Zt       ADL + Zt−1
+  Pure mediator, ρZ = 0.3                         1.20                   1          1.201        0.998             1.199
+  Pure mediator, ρZ = 0.7                         1.20                   1          1.199        0.992             1.197
+  Mediator + confounder, ρZ = 0.5                 1.03                   1          1.091        1.023             1.031
+  Mediator + confounder, ρZ = 0.7                 1.03                   1          1.111        1.016             1.028
+
+
+                                                           17
+The clean mediator design is the simplest illustration. The ADL specification without Z estimates about
+
+1.20, the ADL specification with Zt estimates about 1.00, and the ADL specification with Zt−1 remains near
+
+1.20. In this DGP, those values correspond respectively to the total-effect target, the direct-effect target,
+
+and the total-effect target. In the mediator-plus-confounder design, including Zt−1 removes the displayed
+
+lagged backdoor path without blocking Dt → Zt → Yt ; that interpretation depends on the known DGP and
+
+does not follow from the specification label alone.
+
+For this reason, the static TWFE short specification is not the primary comparison for the mediator DGP.
+
+Without the relevant dynamics, its coefficient mixes the effect of conditioning on Zt with lag misspecification.
+
+The reported operational contrast is therefore ADL without Z, ADL with Zt , and ADL with Zt−1 .
+
+
+5.3    Conditional Workflow for the CET Baseline
+
+For applied TSCS work centered on the CET, the baseline is usable only through the following conditional
+
+workflow:
+
+  1. Define the CET and document the exposure, covariate, and outcome windows; do not infer causal
+
+      order from panel subscripts.
+
+  2. Assess every condition in Table~3, including history sufficiency, exchangeability, lag structure, support,
+
+      finite-T behavior, and interference.
+
+  3. If those conditions are defended, use ADL + FE with the required lagged state variables as a baseline
+
+      and state the exact lag order and transformations.
+
+  4. Compare that baseline with the specification containing a candidate contemporaneous Zt and report
+
+      the resulting specification shift ∆
+                                        b Z.
+
+  5. Interpret ∆
+               b Z as causal bias only when the DAG, timing, and identifying assumptions establish the
+
+      CET interpretation; otherwise retain the descriptive specification-shift language.
+
+  6. Choose another target and method when the estimand is distributed, cumulative, long-run, or a treat-
+
+      ment regime rather than the CET.
+
+Additional simulations delimit this recommendation. When the reported outcome equations contain the
+
+tested nonlinear effects of Zt−1 or level-dependent trends, the absolute bias of ADL(all) does not exceed
+
+0.4 percent of β across the stable scenarios in that grid. This result describes those scenarios; it does not
+
+establish adequacy under untested nonlinearities or lag structures. In the contemporaneous-confounding
+
+simulations, the bias of ADL(all) instead ranges from 8 to 53 percent of β, while the oracle specification that
+
+observes the confounder keeps bias below 0.3 percent. The baseline therefore does not address unobserved
+
+
+
+                                                      18
+contemporaneous confounding.
+
+This baseline is intentionally narrower than a recommendation for panel estimators in general. It is one
+
+conditional comparison specification for observed time-varying controls when the target is the CET and the
+
+scope conditions in Table~3 are defended.
+
+
+
+6     Applications
+
+The applications serve two purposes. First, they show that the decomposition yields empirical specification-
+
+shift diagnostics rather than only theoretical algebra. Second, they show why those shifts require separate
+
+timing and causal judgments. The existing replication outputs provide point shifts for 14 theory-selected
+
+candidate controls in six studies, together with endpoint coefficients and previously calculated scale compar-
+
+isons. They do not contain paired confidence intervals for ∆Z , so none is imputed here. These are descriptive
+
+results from a purposive set of applications, not estimates of the prevalence or magnitude of causal bias in
+
+TSCS research.
+
+
+6.1    Application 1: Democracy and Ethnic Inequality
+
+Leipziger (2024) estimates the effect of democratization on ethnic inequality with a two-way fixed-effects
+
+design in which democracy and GDP per capita are both lagged one calendar year relative to the outcome.
+
+Indexing by the outcome year, the estimated exposure contrast is therefore Dt−1 → Yt ; equivalently, if s =
+
+t − 1 denotes the exposure year, it is Ds → Ys+1 . This application is an audit of a lagged exposure contrast,
+
+not a direct demonstration of the manuscript’s core contemporaneous Dt → Yt CET. The comparison remains
+
+useful because the same timestamp questions determine whether GDP closes before the democracy exposure
+
+in year s and because the coefficient shift shows how sensitive the lagged contrast is to conditioning on
+
+GDP. GDP is pre-outcome, but not demonstrably pretreatment relative to democracy: the two predictors
+
+share the same annual index, and the replication documentation does not provide within-year transition
+
+and measurement dates. We therefore classify the timing of GDP as ambiguous for the treatment contrast,
+
+rather than treating its lag label as dispositive. The practical question is whether GDP should be treated
+
+as a confounder, a treatment-responsive variable, or a dual-role variable.
+
+GDP per capita is a plausible dual-role variable in this setting. Democratization can raise income over
+
+time (Acemoglu et al., 2019; Papaioannou and Siourounis, 2008), while ethnic inequality can depress income
+
+through weaker public-goods provision and conflict channels (Grundler and Link, 2024). The decomposition
+
+therefore does not mechanically tell us to drop GDP. It reports how the treatment coefficient changes when
+
+
+                                                     19
+GDP enters the specification; the ambiguous timing prevents that shift from receiving a unique causal
+
+interpretation.
+
+      Table 7: Specification-shift decomposition for Leipziger (2024), public-services inequality measure.
+
+                                    Component                        Estimate
+                                    β̂short                          -0.0407
+                                    β̂long                           -0.0352
+                                    θ̂⋆                              -0.0497
+                                    π̂                               0.1123
+                                    ∆b Z = −θ̂⋆ π̂                   0.0056
+                                    |∆
+                                     b Z |/SE(
+                                           c β̂long ) (scale only)   0.48
+                                    |∆
+                                     b Z |/|β̂long |                 15.9%
+
+
+The estimated specification shift is 0.0056, with a magnitude equal to about 16 percent of the long-model
+
+coefficient. The previously calculated ratio 0.48 divides the shift by the standard error of one endpoint; it is
+
+retained only as a scale comparison and is neither a test statistic nor an interval for ∆Z . A paired confidence
+
+interval has not yet been computed. Because GDP’s causal role and within-year timing are ambiguous, the
+
+point shift does not establish attenuation bias or deconfounding.
+
+
+6.2     Application 2: Postal Infrastructure and Economic Growth
+
+Rogowski et al. (2022) provide the complementary case. Their panel is organized in five-year steps, the
+
+outcome is led one panel period, and the postal-stock and GDP measures enter the same regression row.
+
+Letting s index the baseline five-year row, the estimated exposure contrast relates the cumulative postal stock
+
+Ds to forward growth Ys+1 , where s + 1 is the next five-year panel step. This application is therefore an
+
+audit of a forward exposure contrast, not a direct demonstration of the manuscript’s core contemporaneous
+
+Dt → Yt CET. It remains useful for timing and sensitivity because a cumulative stock makes prior exposure
+
+explicit and because the coefficient shift reveals how strongly the forward contrast depends on conditioning
+
+on baseline GDP. Baseline GDP is a plausible state variable for subsequent growth, but it is not demonstrably
+
+prior to the treatment represented by an accumulated stock of post offices; it may already embody responses
+
+to earlier postal investment. Its timing is ambiguous for the treatment contrast even though it precedes the
+
+measured outcome window. Here the specification-shift decomposition reveals a large arithmetic shift but
+
+cannot decide, by itself, whether dropping GDP improves identification.
+
+For lagged GDP per capita, the point shift is 0.0115, with a magnitude equal to 58 percent of the long-model
+
+coefficient. The previously calculated endpoint-SE ratio is 2.11, the largest such scale comparison among
+
+the published applications, but it is not uncertainty for the paired shift and no confidence interval for ∆Z is
+
+
+                                                       20
+                     Table 8: Specification-shift decomposition for Rogowski et al. (2022).
+
+    Control as z     β̂short    β̂long       θ̂⋆        π̂        ∆
+                                                                  bZ    |∆
+                                                                         b Z |/ c
+                                                                               SE(β̂long ) (scale only)   |∆
+                                                                                                           b Z |/|β̂long | (%)
+    Log GDP p.c.     0.0083    0.0198    -4.0130    0.0029     0.0115                             2.11                   58.0
+    Log population   0.0206    0.0198    -1.9465   -0.0004    -0.0008                             0.15                    4.0
+    Urbanization     0.0192    0.0198    -3.1421    0.0002     0.0006                             0.11                    3.0
+    Polity2          0.0191    0.0198     0.0341   -0.0221     0.0008                             0.14                    3.8
+
+
+claimed. GDP’s causal role is unresolved: conditional convergence makes it a possible confounder; inherited
+
+postal infrastructure may make it a legacy treatment-responsive state or mediator; and both channels could
+
+give it a dual role. The large point shift is therefore descriptive until a DAG and evidence on the relevant
+
+measurement and exposure windows establish more. The lesson is not “drop GDP.’ ’ The lesson is that a
+
+large specification shift demands explicit causal reasoning about timing and role. This is the use case for a
+
+diagnostic paired with a conditional baseline rather than an automatic decision rule.
+
+
+
+7      Conclusion
+
+This paper studies specification shifts that arise when researchers condition on observed covariates that may
+
+themselves respond to treatment. In the linear nested models used throughout TSCS work, ∆
+                                                                                        b Z admits a
+
+simple closed-form decomposition. That identity does not decide whether a control is admissible and does
+
+not, by itself, measure causal bias. It quantifies the size and direction of the coefficient shift; a CET, a
+
+time-indexed DAG, defended timing, and identification assumptions are required for causal interpretation.
+
+The paper’s main applied payoff is narrower and more concrete. For TSCS settings focused on the CET,
+
+ADL + FE with lagged state variables is a conditional baseline only when the target and causal clock are
+
+defined, the observed history is sufficient, sequential exchangeability and support are credible, the dynamic
+
+conditional mean is plausible, relevant interference is absent, and finite-T bias is negligible or addressed. The
+
+simulations show how that specification compares with the displayed alternatives in the reported dual-role,
+
+inherited-path, and mediator DGPs; they do not establish it as a causal estimator outside those conditions.
+
+This combination of a descriptive diagnostic and a conditional TSCS baseline is the paper’s contribution.
+
+The diagnostic reports how coefficients move across nested specifications; the baseline defines a structured
+
+comparison when the CET scope conditions hold. Keeping those roles separate prevents the observed spec-
+
+ification shift from being treated as causal bias without the required assumptions.
+
+The limits are equally important. The baseline is local to the CET. A lagged covariate that is pre-treatment
+
+for Dt → Yt can be treatment-responsive for distributed, cumulative, or long-run effects. The reported
+
+
+
+                                                             21
+nonlinearity results cover only the tested stable scenarios, while the contemporaneous-confounding designs
+
+show substantial remaining bias when a current common cause is unobserved. This paper also does not claim
+
+results for synthetic-control-style estimators, synthetic DID, factor models, treatment regimes, or nonlinear
+
+links. The present contribution is limited to the specification-shift diagnostic and its conditional use in linear
+
+TSCS settings.
+
+
+References
+Acemoglu, Daron, Suresh Naidu, Pascual Restrepo and James A. Robinson. 2019. “Democracy Does Cause
+  Growth.” Journal of Political Economy 127(1):47–100.
+Acharya, Avidit, Matthew Blackwell and Maya Sen. 2016. “Explaining Causal Findings Without Bias:
+  Detecting and Assessing Direct Effects.” American Political Science Review 110(3):512–529.
+Arellano, Manuel and Stephen Bond. 1991. “Some Tests of Specification for Panel Data: Monte Carlo
+  Evidence and an Application to Employment Equations.” The Review of Economic Studies 58(2):277–297.
+Blackwell, Matthew and Adam N. Glynn. 2018. “How to Make Causal Inferences with Time-Series Cross-
+  Sectional Data under Selection on Observables.” American Political Science Review 112(4):1067–1082.
+Caetano, Carolina and Brantly Callaway. 2024. “Difference in Differences when Parallel Trends Holds Con-
+  ditional on Observables.” arXiv preprint arXiv:2406.15288 .
+Caetano, Carolina, Brantly Callaway, Stroud Payne and Hugo Sant’Anna Rodrigues. 2022. “Difference in
+  Differences with Time-Varying Covariates.” arXiv preprint arXiv:2202.02903 .
+Cinelli, Carlos, Andrew Forney and Judea Pearl. 2022. “A Crash Course in Good and Bad Controls.”
+  Sociological Methods & Research 51(3):1071–1104.
+Elwert, Felix and Christopher Winship. 2014. “Endogenous Selection Bias: The Problem of Conditioning
+  on a Collider Variable.” Annual Review of Sociology 40:31–53.
+Grundler, Klaus and Sebastian Link. 2024. “The Causal Effect of Ethnic Inequality on Income Per Capita.”
+  The Economic Journal 134(661):1985–2016.
+Imai, Kosuke and In Song Kim. 2021. “On the Use of Two-Way Fixed Effects Regression Models for Causal
+  Inference with Panel Data.” Political Analysis 29(3):405–415.
+Leipziger, Lukas E. 2024. “Does Democracy Reduce Ethnic Inequality?” American Journal of Political
+  Science 68(4):1335–1352.
+Lin, Zhiwei and Fan Zhang. 2022. “On the Bias of Two-Way Fixed Effects Estimators with Time-Varying
+  Covariates.” Economics Letters 221:110903.
+Nickell, Stephen. 1981. “Biases in Dynamic Models with Fixed Effects.” Econometrica 49(6):1417–1426.
+Papaioannou, Elias and Gregorios Siourounis. 2008. “Democratisation and Growth.” The Economic Journal
+  118(532):1520–1551.
+Pearl, Judea. 2009. Causality: Models, Reasoning, and Inference. 2nd ed. Cambridge University Press.
+Rogowski, Jon C., John Gerring, Matthew Maguire and Lee Cojocaru. 2022. “Public Infrastructure and
+  Economic Development: Evidence from Postal Systems.” American Journal of Political Science 66(4):885–
+  901.
+
+
+
+
+                                                       22
+

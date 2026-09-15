@@ -1,0 +1,425 @@
+{
+  "schema_version": "1.0",
+  "adjudication_id": "ivb-pa-refine:5375d3c27ac1:round1",
+  "source": {
+    "reviewed_artifact": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_pa.pdf",
+    "sha256": "5375d3c27ac1b75ca7246f0e7483470d98a69cf129a853560ae84cfe107d447c",
+    "artifact_intact": true
+  },
+  "contract": {
+    "required": true,
+    "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/argument_contracts/ivb-pa-refine/5375d3c27ac1/argument_contract.json",
+    "sha256": "a85ea8096d4a5044eed1c6993cdcf82ec83b29a783f27dc989e1771afe7709d7",
+    "contract_id": "ivb-pa-refine:5375d3c27ac1:round1",
+    "artifact_sha256": "5375d3c27ac1b75ca7246f0e7483470d98a69cf129a853560ae84cfe107d447c",
+    "status": "PASS",
+    "stale": false
+  },
+  "review_sources": [
+    {
+      "review_id": "R1",
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/refine_feedback_original.md",
+      "sha256": "f4e87230957a62bc52cae799d8f32fd8baa2e1cbe7ced2b25d74ec9ece5a89be"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "R1-D01",
+      "source_review": "R1",
+      "quoted_finding": "Simulation boundaries rely on undefined artifacts",
+      "type": "artifact",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd559-585"
+      ],
+      "defect_evidence": [
+        "Referências a static audit e Task12/13 sem apêndices identificados no artigo."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [],
+      "reasoning": "Apêndices devem ter identificação científica e parâmetros acessíveis.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "G4,G6"
+    },
+    {
+      "finding_id": "R1-D02",
+      "source_review": "R1",
+      "quoted_finding": "Applications do not instantiate the CET baseline",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "identification",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd194,650,736"
+      ],
+      "defect_evidence": [
+        "A roadmap promete interação com baseline; nenhum caso estima o CET contemporâneo/ADL."
+      ],
+      "refuting_evidence": [
+        "Os casos declaram explicitamente sua função descritiva e contraste não contemporâneo."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Corrigir promessa e criar aplicação central; não acusar resultados de fingirem identificação.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G1,G5,G6"
+    },
+    {
+      "finding_id": "R1-D03",
+      "source_review": "R1",
+      "quoted_finding": "Section 6 omits most of the announced applications",
+      "type": "scope_or_consistency",
+      "severity": "moderate",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd141-150,646,777-799,822"
+      ],
+      "defect_evidence": [
+        "Faltam tabela completa e universo explícito do maior ratio; três controles de Rogowski são adicionais."
+      ],
+      "refuting_evidence": [
+        "A seção declara amostra intencional e não representativa."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Especificar universos de estudo, candidato e comparação extra.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "G0,G5"
+    },
+    {
+      "finding_id": "R1-D04",
+      "source_review": "R1",
+      "quoted_finding": "Unit resampling does not cover general TSCS dependence",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "inference",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd426-438; derivation uncertainty260-264"
+      ],
+      "defect_evidence": [
+        "Apresentação principal não explicita independência entre unidades para reamostragem."
+      ],
+      "refuting_evidence": [
+        "A nota reconhece dependência transversal e escopo unit-cluster restrito."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Trazer restrição ao corpo e validar para desenho escolhido; não reivindicar inferência geral.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G3,G4"
+    },
+    {
+      "finding_id": "R1-D05",
+      "source_review": "R1",
+      "quoted_finding": "CET outcome timing conflicts with the collider clock",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "identification",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd222-238"
+      ],
+      "defect_evidence": [
+        "Any responses coloca a mensuração depois de respostas que incluem Z; collider usa Y anterior a Z."
+      ],
+      "refuting_evidence": [
+        "A própria seção explicita dois relógios distintos."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Distinguir outcome/processo e limitar a frase, sem afirmar que todo DAG está incoerente.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G2"
+    },
+    {
+      "finding_id": "R1-D06",
+      "source_review": "R1",
+      "quoted_finding": "Missing fixed effects in exchangeability assumption",
+      "type": "logic_or_proof",
+      "severity": "major",
+      "scientific_dimension": "identification",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd465; derivations/adl_cet_identification_conditions.Rmd63-73"
+      ],
+      "defect_evidence": [
+        "Intercambialidade abreviada omite FE presentes na média potencial."
+      ],
+      "refuting_evidence": [
+        "Nota formal inclui FE explicitamente e usa essa condição no passo1."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Reconciliar corpo e prova, não inventar uma falha global da derivação.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "G2"
+    },
+    {
+      "finding_id": "R1-D07",
+      "source_review": "R1",
+      "quoted_finding": "Figure 4 leaves collider conditioning untested",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd551; Figura4"
+      ],
+      "defect_evidence": [
+        "Quatro modelos exibidos não incluem Z_t."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [],
+      "reasoning": "Acrescentar comparação realmente aninhada com Z_t se sustentar claim, ou limitar figura.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G4"
+    },
+    {
+      "finding_id": "R1-D08",
+      "source_review": "R1",
+      "quoted_finding": "Figure 5 does not isolate finite-T bias",
+      "type": "overclaim",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd583; metrics.R54-89; simulation.R70-111"
+      ],
+      "defect_evidence": [
+        "O phase map compara viés de long com diferença entre endpoints e não separa Delta populacional de viés finito."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Inspeção do CSV e código sem reexecutar análise; origem de coverage confirmada."
+      ],
+      "reasoning": "Definir ambos os alvos e decompor componentes; coverage observada é de long contra CET.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G2,G4"
+    },
+    {
+      "finding_id": "R1-D09",
+      "source_review": "R1",
+      "quoted_finding": "A DAG alone does not identify a direct-effect shift",
+      "type": "overclaim",
+      "severity": "major",
+      "scientific_dimension": "identification",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd315,441"
+      ],
+      "defect_evidence": [
+        "Only the DAG e a passagem para efeito direto omitem hipóteses na frase local."
+      ],
+      "refuting_evidence": [
+        "Seção3 exige hipóteses adicionais de mediação."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Aplicar os qualificadores junto à afirmação e verificar provas afetadas.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "G2,G6"
+    },
+    {
+      "finding_id": "R1-D10",
+      "source_review": "R1",
+      "quoted_finding": "Timestamp table omits known post-treatment controls",
+      "type": "exposition",
+      "severity": "moderate",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd250-253"
+      ],
+      "defect_evidence": [
+        "Regra otherwise só oferece plausible/ambiguous, omitindo pós-exposição documentada."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [],
+      "reasoning": "Separar status temporal de papel causal.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "G2,G3"
+    },
+    {
+      "finding_id": "R1-D11",
+      "source_review": "R1",
+      "quoted_finding": "Workflow and Section 4.1 leave the diagnostic's nesting unclear",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd408-417,451,635-637"
+      ],
+      "defect_evidence": [
+        "Moved e passos3-4 permitem leitura de substituição não coberta pelo produto único."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [],
+      "reasoning": "Preservar lags na adição primária; derivar troca em passos identificados.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G2,G3"
+    },
+    {
+      "finding_id": "R1-D12",
+      "source_review": "R1",
+      "quoted_finding": "Table 6 does not separate the mixed-design targets",
+      "type": "overclaim",
+      "severity": "moderate",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd619-625; Tabela6"
+      ],
+      "defect_evidence": [
+        "1.023 e1.016 distam .007 e.014 do total1.03, e .023 e.016 do direto1.00."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Distâncias aos dois alvos conferidas por aritmética."
+      ],
+      "reasoning": "Corrigir near, apresentar incerteza e preservar targets originais.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "G4,G6"
+    },
+    {
+      "finding_id": "R1-G1",
+      "source_review": "R1",
+      "quoted_finding": "Comentário geral G1",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "contribution",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd184-192,389-444"
+      ],
+      "defect_evidence": [
+        "Contribuição enfatiza nomear/estimar decomposição de ingredientes conhecidos."
+      ],
+      "refuting_evidence": [
+        "O texto atribui identidade a FWL e reconhece escopo estreito."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Novidade incremental exige confronto integral com Gelbach e demonstração de decisão; não é possível prometer forte publicação.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G1,G4,G5"
+    },
+    {
+      "finding_id": "R1-G2",
+      "source_review": "R1",
+      "quoted_finding": "Comentário geral G2",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Rmd451,629-637"
+      ],
+      "defect_evidence": [
+        "Workflow não reconcilia substituição com adição aninhada."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [],
+      "reasoning": "Corrigir contraste e provar decomposição da troca.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G2"
+    },
+    {
+      "finding_id": "R1-G3",
+      "source_review": "R1",
+      "quoted_finding": "Comentário geral G3",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd457-501,629-637"
+      ],
+      "defect_evidence": [
+        "Condições de história são assumidas sem procedimento de seleção no corpo."
+      ],
+      "refuting_evidence": [
+        "Baseline é expressamente condicional e nota possui prova de identificação."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Operacionalizar dentro de classe delimitada; AIC/BIC não prova suficiência causal.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G2,G3"
+    },
+    {
+      "finding_id": "R1-G4",
+      "source_review": "R1",
+      "quoted_finding": "Comentário geral G4",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd559-589"
+      ],
+      "defect_evidence": [
+        "Artigo não integra DGPs completos e não diagnostica coverage mínima."
+      ],
+      "refuting_evidence": [
+        "Equações/outputs existem em pacotes; 0.700 é CET de long, não IC Delta."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Integrar proveniência e desenhar avaliação correta de inferência.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G3,G4,G6"
+    },
+    {
+      "finding_id": "R1-G5",
+      "source_review": "R1",
+      "quoted_finding": "Comentário geral G5",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "Rmd650,736"
+      ],
+      "defect_evidence": [
+        "Aplicações não instanciam CET e inferência proposta."
+      ],
+      "refuting_evidence": [
+        "O texto admite ambos os limites."
+      ],
+      "mechanical_checks": [],
+      "reasoning": "Selecionar aplicação por compatibilidade documental, não resultado.",
+      "proposed_fix_assessment": "needs_design",
+      "disposition": "G1,G5"
+    }
+  ],
+  "summary": {
+    "total": 17,
+    "confirmed": 7,
+    "partial": 10,
+    "refuted": 0,
+    "unresolved": 0,
+    "held_decisions": 0
+  },
+  "adjudication": {
+    "verdict": "READY_FOR_IMPLEMENTATION",
+    "checked_at": "2026-09-15T02:16:26.659240+00:00",
+    "reasons": [
+      "Defeitos locais identificados para encaminhamento ao plano; soluções classificadas needs_design dependem dos gates correspondentes.",
+      "Veredicto técnico não autoriza execução nem certifica originalidade, eficácia futura ou publicação.",
+      "A previsão editorial da resposta complementar não é um finding verificável; quatro recomendações são mapeadas ao plano sem endossar certeza de êxito."
+    ]
+  }
+}

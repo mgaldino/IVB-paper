@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-09-15T02:16:26.659240+00:00",
+  "base_commit": "482796295b843cc6d9c88c33b4ae5a714c005123",
+  "files": [
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_pa.pdf",
+      "sha256": "5375d3c27ac1b75ca7246f0e7483470d98a69cf129a853560ae84cfe107d447c"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/ivb_paper_pa.Rmd",
+      "sha256": "12493a67133f988c5e6a13933bf2b89c0d9880e96bae329248a207b3aeaf7b5e"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/README.md",
+      "sha256": "205c6db9abc32415527d8967657b89ead798db909ccf755e9928db64588fcfb7"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/CLAUDE.md",
+      "sha256": "972801f84080ad8cad5c4f86400bc35ee8858dee4795841ee62306204ad68648"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/references.bib",
+      "sha256": "467f85d5cea8303f2881d7fb7119e19f63466227b3581dbb35ac57060c2c1b00"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/adl_cet_identification_conditions.Rmd",
+      "sha256": "f67b41089d49018dc2c1b3a6cd80ce49b67dee771df75bdf72953d9a5e64db70"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/multivariate_specification_shift.Rmd",
+      "sha256": "551d6e46a7a8332e47fc5cccf81b5a52c2058941bee1f88ce5c38fdd97386d64"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/specification_shift_uncertainty.Rmd",
+      "sha256": "317b7a81101a75e60ad3c9466500106878dd3b84dfc48f05722517699fbed963"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/shift_allocation_correlated_controls.Rmd",
+      "sha256": "ac3796a2d67dc08c759c7923d827b70656f7c57dbacbe22a27cadd8d6f49af09"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/derivations/scripts/specification_shift_uncertainty.R",
+      "sha256": "1918e907b51ea58980a75fbb9b4ab93e4d4319af7a084e8a05d8be6a6bcba45b"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/simulations/finite_T_dynamic_panel/R/metrics.R",
+      "sha256": "c6c424be0f819a6d80c35af42862cffeb02982d251402bf78339f155e8b3fd6f"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/simulations/finite_T_dynamic_panel/R/simulation.R",
+      "sha256": "c242194a97e38101b7a466fca3ea475038a4abb6547e7c5bb9a12f6f5be6b254"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/task13_finite_T_dynamic_panel/task13_main_text_summary.csv",
+      "sha256": "c953b9d2fa88d8b164a06e8450aaf4fcc0f79e016873386b3469dd41b7857eab"
+    },
+    {
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/refine_feedback_original.md",
+      "sha256": "f4e87230957a62bc52cae799d8f32fd8baa2e1cbe7ced2b25d74ec9ece5a89be"
+    }
+  ],
+  "limits": [
+    "Uploaded bytes to Refine are not independently recorded.",
+    "Paper analyses were inspected but not executed.",
+    "No journal acceptance probability or original methodological contribution established."
+  ]
+}

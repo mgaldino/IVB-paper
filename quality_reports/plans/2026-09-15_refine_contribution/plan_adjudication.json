@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0",
+  "adjudication_id": "ivb-plan:1091ba500ce4:round1",
+  "source": {
+    "reviewed_artifact": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/evidence/plan_reviewed_v1.md",
+    "sha256": "1091ba500ce48d0ba326667b0b634fda909edc9f24ba20a25113a6c61c83e7d9",
+    "artifact_intact": true
+  },
+  "contract": {
+    "required": false,
+    "path": null,
+    "sha256": null,
+    "contract_id": null,
+    "artifact_sha256": null,
+    "status": null,
+    "stale": false
+  },
+  "review_sources": [
+    {
+      "review_id": "DA1",
+      "path": "/Users/manoelgaldino/Documents/DCP/Papers/IVB/IVB-paper/quality_reports/plans/2026-09-15_refine_contribution/devils_advocate.md",
+      "sha256": "cecc1294e45df4b3979636c65ba3ee04df9faa7509126648325ded6299c0c211"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "DA-01",
+      "source_review": "DA1",
+      "quoted_finding": "Teste de novidade",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "planning",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Gate1:108-117"
+      ],
+      "defect_evidence": [
+        "Critério admitia ganho plausível sem decisão, ações, perda e equivalência fechadas."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Diff e hash final conferidos pelo revisor independente."
+      ],
+      "reasoning": "A exigência existia em termos gerais, mas faltava o critério operacional identificado pelo revisor.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Ficha congelada e comparador forte, Gate1:119-130"
+    },
+    {
+      "finding_id": "DA-02",
+      "source_review": "DA1",
+      "quoted_finding": "Alvo populacional",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "planning",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Gate2:123-131; Gate4:163"
+      ],
+      "defect_evidence": [
+        "Referência numérica podia incorporar o limite within com T fixo."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Diff e hash final conferidos pelo revisor independente."
+      ],
+      "reasoning": "A exigência existia em termos gerais, mas faltava o critério operacional identificado pelo revisor.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Projeção e limite within distinguidos, Gate2:136-148"
+    },
+    {
+      "finding_id": "DA-03",
+      "source_review": "DA1",
+      "quoted_finding": "Compatibilidade da aplicação",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "planning",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Gate1:112-117; Gate3:140-150"
+      ],
+      "defect_evidence": [
+        "Viabilidade documental e compatibilidade estatística podiam se separar."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Diff e hash final conferidos pelo revisor independente."
+      ],
+      "reasoning": "A exigência existia em termos gerais, mas faltava o critério operacional identificado pelo revisor.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Escolha provisória e matriz conjunta, Gate3:164-166"
+    },
+    {
+      "finding_id": "DA-04",
+      "source_review": "DA1",
+      "quoted_finding": "Restrições inferenciais",
+      "type": "method",
+      "severity": "major",
+      "scientific_dimension": "planning",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Gate3:146-150; Gate4:164-168"
+      ],
+      "defect_evidence": [
+        "Região de uso podia depender de parâmetros desconhecidos e ignorar seleção entre métodos."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Diff e hash final conferidos pelo revisor independente."
+      ],
+      "reasoning": "A exigência existia em termos gerais, mas faltava o critério operacional identificado pelo revisor.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Regras aplicáveis e calibração composta nas fronteiras, Gate3:160-166; Gate4:179-181"
+    },
+    {
+      "finding_id": "DA-05",
+      "source_review": "DA1",
+      "quoted_finding": "Seleção entre tentativas",
+      "type": "scope_or_consistency",
+      "severity": "major",
+      "scientific_dimension": "planning",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "Gate4:168; Gate5:174-184"
+      ],
+      "defect_evidence": [
+        "Retorno podia redefinir testes à luz de resultados sem preservar desenvolvimento."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Diff e hash final conferidos pelo revisor independente."
+      ],
+      "reasoning": "A exigência existia em termos gerais, mas faltava o critério operacional identificado pelo revisor.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Registro de reformulações e reserva só por inelegibilidade, Gate4:178; Gate5:191-202; seção5:244"
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "confirmed": 5,
+    "partial": 0,
+    "refuted": 0,
+    "unresolved": 0,
+    "held_decisions": 0
+  },
+  "adjudication": {
+    "verdict": "READY_FOR_IMPLEMENTATION",
+    "checked_at": "2026-09-15T02:29:36.466154+00:00",
+    "reasons": [
+      "Crítica é do plano de execução; contrato científico do paper fornecido como limite interpretativo.",
+      "Cinco correções já incorporadas e rechecadas por agente independente; ver registro final separado."
+    ]
+  },
+  "post_implementation": {
+    "status": "ALL_FIVE_RESOLVED_FOR_PLANNING",
+    "final_plan_sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d",
+    "independent_recheck": "devils_advocate_recheck.md",
+    "scope": "Does not certify future novelty, causal identification, analysis results or publication."
+  }
+}
