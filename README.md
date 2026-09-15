@@ -31,4 +31,10 @@ Os cálculos permanecem nos scripts R; os Rmds apresentam resultados já produzi
 
 ## Versionamento
 
-Não há tags Git no momento. Os commits históricos acima permitem reconstruir as versões estáveis. A migração para tags anotadas será feita somente depois da aprovação dos nomes e da descrição de cada snapshot.
+As versões científicas e os checkpoints de migração são preservados por tags Git anotadas:
+
+- `paper/psrm-2026-03-23`: versão PSRM de 49 páginas, no commit `51c3a34`.
+- `paper/pa-2026-07-12`: versão PA de 22 páginas, no commit `c281e69`.
+- `archive/ivb-sdid-pre-split-2026-09-14`: checkpoint da extensão antes da separação de repositório, no commit `6a22a4b`.
+
+As tags são locais até que seu envio ao remoto seja autorizado. Para recuperar ou comparar uma versão, use `git show <tag>:<arquivo>` e `git diff <tag1> <tag2> -- <arquivo>`.

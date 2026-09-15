@@ -124,14 +124,15 @@ IVB-paper/
 
 ## Versionamento
 
-O projeto está migrando de versões por nomes de arquivo para snapshots por tags Git anotadas.
+As versões científicas e os checkpoints de migração são preservados por tags Git anotadas.
 
-- `c281e6926437e41c7660b573457ae746d6f8a3aa`: estado substantivo atual da versão PA, de 2026-07-12.
-- `51c3a34dbf68dd4a8fc07adb9f481e8acac355fb`: versão PSRM de 2026-03-23.
-- `3d93c894aab7b0329fb8e731f0bc65f19d8ef21a`: snapshot PSRM anterior à reorganização, de 2026-03-01.
-- `60b1fbcf4ffe2857f948dbb92e76c1b687298a51`: versão inicial arquivada, de 2026-02-10.
+- `paper/pa-2026-07-12` -> `c281e6926437e41c7660b573457ae746d6f8a3aa`: versão PA de 22 páginas.
+- `paper/psrm-2026-03-23` -> `51c3a34dbf68dd4a8fc07adb9f481e8acac355fb`: versão PSRM de 49 páginas.
+- `archive/ivb-sdid-pre-split-2026-09-14` -> `6a22a4bd892185cadf238b3a05c29353f88a3e7c`: checkpoint limpo da extensão antes da separação de repositório.
+- `3d93c894aab7b0329fb8e731f0bc65f19d8ef21a`: snapshot PSRM anterior à reorganização, preservado no histórico sem tag.
+- `60b1fbcf4ffe2857f948dbb92e76c1b687298a51`: versão inicial arquivada, preservada no histórico sem tag.
 
-Ainda não há tags. Não criar tags até que o autor aprove os nomes e as descrições dos snapshots. Uma tag deve apontar para um commit limpo e representar o estado completo do repositório, não apenas um PDF.
+As tags acima foram criadas localmente em 2026-09-14. Não fazer `git push --tags` sem autorização explícita. Uma tag deve apontar para um commit limpo e representar o estado completo do repositório, não apenas um PDF.
 
 ## Simulacao v1 (COMPLETA)
 
