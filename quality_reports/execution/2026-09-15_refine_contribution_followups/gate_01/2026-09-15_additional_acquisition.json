@@ -1,0 +1,83 @@
+{
+  "date": "2026-09-15",
+  "gate": 1,
+  "scope": "Additional bounded full-text acquisition search; no scientific reformulation",
+  "drive": {
+    "read_only": true,
+    "skill": "/Users/manoelgaldino/.codex/plugins/cache/openai-curated-remote/google-drive/0.1.16/skills/google-drive/SKILL.md",
+    "queries": [
+      {
+        "kind": "legacy_keyword",
+        "query": "Gelbach",
+        "result_count": 1,
+        "article_identified_from_metadata": false,
+        "scope": "One other report; not the requested article"
+      },
+      {
+        "kind": "legacy_keyword",
+        "query": "When Do Covariates Matter",
+        "result_count": 25,
+        "article_identified_from_metadata": false,
+        "scope": "Bounded list of 25 results; broad text relevance is not exact article matching"
+      },
+      {
+        "kind": "provider_filter",
+        "request": {
+          "item_type": "document",
+          "best_effort_fetch": false,
+          "special_filter_query_str": "trashed = false and (name contains 'Gelbach' or name contains 'gelbach' or name contains 'Covariates' or name contains 'covariates' or name contains '683668' or name contains '1425737')",
+          "topn": 100
+        },
+        "result_count": 0,
+        "next_page_token": null,
+        "article_identified_from_metadata": false
+      },
+      {
+        "kind": "provider_filter",
+        "request": {
+          "item_type": "document",
+          "best_effort_fetch": false,
+          "special_filter_query_str": "trashed = false and fullText contains 'Gelbach'",
+          "topn": 100
+        },
+        "result_count": 1,
+        "next_page_token": null,
+        "article_identified_from_metadata": false
+      }
+    ],
+    "raw_response_location": "Tool responses in the current task; unrelated file metadata omitted from this saved summary",
+    "downloaded_article": false
+  },
+  "institutional_search": {
+    "queries": [
+      {
+        "q": "\"When Do Covariates Matter\" Gelbach filetype:pdf",
+        "domains": [
+          "law.upenn.edu",
+          "repository.upenn.edu"
+        ]
+      },
+      {
+        "q": "\"When Do Covariates Matter\" Gelbach",
+        "domains": [
+          "law.berkeley.edu",
+          "escholarship.org"
+        ]
+      }
+    ],
+    "candidate_matches": [
+      {
+        "url": "https://www.law.berkeley.edu/library/resources/cvs/Gelbach.pdf",
+        "kind": "CV mentioning the article; not full text"
+      },
+      {
+        "url": "https://www.law.berkeley.edu/wp-content/uploads/2024/03/CV-for-Jonah-B.-Gelbach-March-7-2024.pdf",
+        "kind": "Earlier CV mentioning the article; not full text"
+      }
+    ],
+    "article_obtained": false,
+    "scope": "Search results inspected, not exhaustive repository enumeration; unrelated citing papers not downloaded"
+  },
+  "result": "Full Gelbach article not identified in this additional search",
+  "implication": "The mandatory full reading remains incomplete; negative search does not establish nonexistence or global unavailability"
+}
