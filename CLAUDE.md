@@ -1,16 +1,24 @@
 # IVB Paper — Contexto para Claude Code
 
+## Estado atual — 2026-09-14
+
+- **Manuscrito ativo**: `ivb_paper_pa.Rmd` e `ivb_paper_pa.pdf`.
+- **Objeto central**: mudança de especificação em modelos lineares aninhados; a identidade IVB só recebe interpretação causal depois de fixados o estimando, o relógio temporal, o DAG e as hipóteses de identificação.
+- **Versão histórica**: `ivb_paper_psrm.Rmd` e `ivb_paper_psrm.pdf`; mantidos para rastreabilidade, não para edição corrente.
+- **Extensão SDiD**: branch `feature/ivb-sdid-factor-models`, em worktree isolado. O estado vivo foi preservado no commit `67aa080` e é candidato a repositório independente.
+- **Lean/CausalSmith**: avaliação concluída, implementação adiada até a organização de repositórios e versões.
+
 ## O que e este projeto
 
-Paper academico sobre **Included Variable Bias (IVB)** — o vies que surge quando se inclui um colisor (collider) como controle em regressao. Aplicado a paineis com TWFE (two-way fixed effects) em Ciencia Politica.
+Paper acadêmico sobre **Included Variable Bias (IVB)** e, de forma mais geral, mudanças de especificação produzidas pela inclusão de covariadas potencialmente responsivas ao tratamento em painéis dinâmicos.
 
 **Benchmark de exposição**: Imai, Kim & Wang (2023) AJPS; Blackwell (2013) AJPS. Ver `Papers/references/benchmark_library.md` Gênero 4.
 
-**Formula central**: IVB = beta_long - beta_short = -theta* x pi (identidade FWL)
-- theta* = coeficiente de Z no modelo longo
-- pi = coeficiente de D na regressao auxiliar Z ~ D + FE
+**Fórmula central**: `Delta_Z = beta_long - beta_short = -theta' pi` (identidade FWL)
+- `theta` = vetor de coeficientes dos controles candidatos no modelo longo;
+- `pi` = associações parciais entre o tratamento e esses controles, usando a mesma amostra e os mesmos regressores comuns.
 
-## Framing do paper — STATUS: INVALIDADO (2026-03-03)
+## Histórico do framing anterior — INVALIDADO (2026-03-03)
 
 ### O que aconteceu
 
@@ -50,7 +58,7 @@ Os UNICOS pais de Y_{t+1} no DAG sao {D_{t+1}, Y_t, Z_t}. Condicionar em {Y_t, Z
 - **NAO confundir** adl_Ylag (parcial, PODE ter vies ate 41%) com adl_all (completo, vies < 3%).
 - **NAO confundir** adl_all_nofe (sem FE, vies 8-13%) com adl_all (com FE, vies < 3%). FE sao essenciais.
 
-### O que sobrevive (potencialmente)
+### O que foi preservado no framing atual
 
 - A formula IVB em si (identidade algebrica, quantifica vies de incluir collider)
 - Diagnostico para TWFE (muitos pesquisadores usam TWFE, nao ADL)
@@ -67,7 +75,9 @@ Os UNICOS pais de Y_{t+1} no DAG sao {D_{t+1}, Y_t, Z_t}. Condicionar em {Y_t, Z
 
 ```
 IVB-paper/
-  ivb_paper_psrm.Rmd           # Paper principal (Rmd source)
+  ivb_paper_pa.Rmd             # Manuscrito ativo
+  ivb_paper_pa.pdf             # PDF correspondente
+  ivb_paper_psrm.Rmd/pdf       # Versão histórica de março de 2026
   references.bib                # Bibliografia
 
   derivations/                  # Notas teoricas e derivacoes
@@ -111,6 +121,17 @@ IVB-paper/
     unified_ivb_report.Rmd      # Relatorio unificado
     standardized_ivb_metrics.csv
 ```
+
+## Versionamento
+
+O projeto está migrando de versões por nomes de arquivo para snapshots por tags Git anotadas.
+
+- `c281e6926437e41c7660b573457ae746d6f8a3aa`: estado substantivo atual da versão PA, de 2026-07-12.
+- `51c3a34dbf68dd4a8fc07adb9f481e8acac355fb`: versão PSRM de 2026-03-23.
+- `3d93c894aab7b0329fb8e731f0bc65f19d8ef21a`: snapshot PSRM anterior à reorganização, de 2026-03-01.
+- `60b1fbcf4ffe2857f948dbb92e76c1b687298a51`: versão inicial arquivada, de 2026-02-10.
+
+Ainda não há tags. Não criar tags até que o autor aprove os nomes e as descrições dos snapshots. Uma tag deve apontar para um commit limpo e representar o estado completo do repositório, não apenas um PDF.
 
 ## Simulacao v1 (COMPLETA)
 
