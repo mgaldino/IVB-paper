@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "adjudication_id": "gelbach-fulltext:f150900bba2a:round1",
+  "source": {
+    "reviewed_artifact": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review_input_freeze_round1.json",
+    "sha256": "f150900bba2ac9a355f5ded9dc503d0fe04866fe2ab6a4cb84bbdbecc8942029",
+    "artifact_intact": true,
+    "scope": "The seven files identified in this immutable packet, with recoverable snapshots"
+  },
+  "contract": {
+    "required": false,
+    "path": null,
+    "sha256": null,
+    "contract_id": null,
+    "artifact_sha256": null,
+    "status": null,
+    "stale": false
+  },
+  "contract_scope_note": "Localized bibliographic addendum, not a new transformative manuscript review. Source-bound review_scope.md and the unchanged approved Gate 0/frozen v2 govern the comparison.",
+  "review_sources": [
+    {
+      "review_id": "GF-R1",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/review_round1.json",
+      "sha256": "1a6e665c41d70d609f24a22a2d62640006b21703ad424089e2e69da68d0f57a4"
+    },
+    {
+      "review_id": "GF-R1-MD",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/review_round1.md",
+      "sha256": "4346f92864326bd86bbac4408af6ed83cfe381586ba9a107c45bacf9f876f677"
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "R1-GF001",
+      "source_review": "GF-R1",
+      "quoted_finding": "Separate stronger bibliographic support from retroactive strengthening of tested C+: O comparador forte C+ fica mais forte depois desta leitura porque deve receber também",
+      "type": "scope_or_consistency",
+      "severity": "medium_documentary",
+      "scientific_dimension": "scope",
+      "held_decision": false,
+      "status": "PARTIAL",
+      "source_locations": [
+        "reading/full_read_report.md:13",
+        "reading/full_read_report.md:155",
+        "reading/full_read_report.md:157-164",
+        "reading/full_read_report.md:201-207",
+        "reading/claim_comparison.csv:L01",
+        "reading/claim_comparison.csv:L17",
+        "test_prespec_v2.md:18-28",
+        "test_prespec_v2.md:40-48",
+        "test_prespec_v2.md:132-134",
+        "test_prespec_v2.md:158",
+        "contribution/derivation.md:9",
+        "gelbach_addendum.md:15",
+        "gelbach_addendum.md:58"
+      ],
+      "defect_evidence": [
+        "The tested v2 already provides exact/population moments, shared causal inputs, OLS/intermediates, joint covariance and origin-degeneracy limits. It states C+ already had robust/cluster/covariance capacities (line158). Previous derivation line9 supplies a population version. The new report is ambiguous about what was added after observing results."
+      ],
+      "refuting_evidence": [
+        "Report lines17/225 preserve frozen OLS equivalence; line184 and matrix L07 qualify IV as a future scope. Addendum lines15/58 explicitly say C+ could already execute these operations. No operational change or biased rerun was found."
+      ],
+      "mechanical_checks": [
+        "Seven current and snapshot hashes match the frozen review packet",
+        "Coordinator read the exact quoted report passages and v2 sections 2, 3, 7 and 10"
+      ],
+      "reasoning": "A descrição admite leitura de mudança posterior das capacidades. A ficha v2 e o próprio contexto do relatório refutam mudança operacional efetiva. A correção deve esclarecer a atribuição bibliográfica sem alterar o teste.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "State bibliographic strengthening and clearer description of unchanged v2; qualify IV/Hausman as future comparison only; harmonize L01/L17 and update derived manifest hashes. Do not redesign or rerun tests."
+    },
+    {
+      "finding_id": "R1-GF002",
+      "source_review": "GF-R1",
+      "quoted_finding": "Correct population-equation locator in addendum: As eqs. (4) e (11) estabelecem as versões populacional e amostral da decomposição",
+      "type": "artifact",
+      "severity": "low",
+      "scientific_dimension": "exposition",
+      "held_decision": false,
+      "status": "CONFIRMED",
+      "source_locations": [
+        "gelbach_addendum.md:21",
+        "gelbach_addendum.pdf:page1 section2 item1",
+        "Gelbach2016:p518 eq3",
+        "Gelbach2016:p518 eq4",
+        "Gelbach2016:p521 eq11",
+        "independent_source_read.md:A01-A02"
+      ],
+      "defect_evidence": [
+        "Source printed p518/PDF10 eq(3) gives beta1base=beta1+Gamma beta2=beta1+delta. Eq(4) gives auxiliary projection X2=X1Gamma+W; sample identity is eq(11) p521. Source p518 was visually rechecked."
+      ],
+      "refuting_evidence": [],
+      "mechanical_checks": [
+        "Coordinator visually inspected source printed page 518: equation 3 is the population coefficient relation; equation 4 defines the auxiliary projection"
+      ],
+      "reasoning": "O número 4 localiza a auxiliar, não a relação populacional diretamente atribuída pela frase. A troca por 3 corrige a referência sem mudar a matemática.",
+      "proposed_fix_assessment": "safe",
+      "disposition": "Use eqs(3) and(11), or eqs(3)-(4) and(11) with auxiliary meaning distinguished; rebuild addendum PDF and update hashes."
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "confirmed": 1,
+    "partial": 1,
+    "refuted": 0,
+    "unresolved": 0,
+    "held_decisions": 0
+  },
+  "adjudication": {
+    "verdict": "READY_FOR_IMPLEMENTATION",
+    "checked_at": "2026-09-15T15:09:36.402962+00:00",
+    "reasons": [
+      "Two bounded documentary repairs are supported by the primary source and frozen test.",
+      "There is no evidence of an actual post-result comparator change and no scientific result needs recalculation.",
+      "The user already authorized implementation and per-gate records. Each repair returns to its original author, followed by independent review."
+    ]
+  },
+  "scientific_gate_approved": false,
+  "owner_route_choice_pending": true
+}

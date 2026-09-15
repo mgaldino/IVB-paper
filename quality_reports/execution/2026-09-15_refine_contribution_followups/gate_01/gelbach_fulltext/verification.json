@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "scope": "Saved files, source identity, coverage records, frozen snapshots, build/QA and baseline preservation",
+  "source_pdf_sha256": "77392b7b09815f291f0ca55aa965786c59c4ca46a9ac1da44df0395dff96de2f",
+  "original_download_present": true,
+  "recorded_text_pages": 35,
+  "recorded_visual_pages_by_reader": 22,
+  "claims": 17,
+  "frozen_snapshot_checks": 19,
+  "pdf_pages_visually_checked": 3,
+  "original_delivery": "PASS: 194 delivery files match their recorded bytes",
+  "baseline_files_unchanged": 17,
+  "gate_approved": false,
+  "analytical_execution": false,
+  "limitation": "File checks do not independently establish the truth of scientific claims or certify a reader's cognitive coverage; read the source-bound reviews."
+}

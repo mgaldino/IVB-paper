@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "round": 2,
+  "reviewer": "gelbach_full_review",
+  "created_at_utc": "2026-09-15T15:19:00.201089+00:00",
+  "scope": "Adjudicated R1-GF001/R1-GF002 repairs and dependencies only",
+  "documentary_verdict": "PASS",
+  "gate_approved": false,
+  "new_scientific_route_selected": false,
+  "new_findings": [],
+  "material_unresolved": 0,
+  "freeze": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review_input_freeze_round2.json",
+    "sha256": "aca2e52ed6b61158916f1883bfc7ed6a982772386b42a417576941cd3aa977bc"
+  },
+  "reviewed_artifacts": [
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/full_read_report.md",
+      "sha256": "2737dcab2c8a66baea836c4c751e7ea745b128ca43ce4bf0aeeba36d5f3b0c33",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/claim_comparison.csv",
+      "sha256": "e3413815890a91a3508474b08dc52e2911cfa6126c1619c6e07f62b8a91241dc",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/read_manifest.json",
+      "sha256": "cae6c66279a70e732bedd9c29c6f3b385eb318c4528c5d32c657882c3b6c5c8f",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/repair_round1.md",
+      "sha256": "7f91a6a0032390d7c35919a4d812fe511d7eefa22ed0903d5a6306dd56486ffa",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/gelbach_addendum.md",
+      "sha256": "60961506d6400160e140f29a4fa1e2f185593e71f54976abd62e99405d4d4067",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/gelbach_addendum.pdf",
+      "sha256": "76da384c52e1dbde4ce5d09c97ab5ed161a2bfa606f70fed04df7ed886f8015f",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/adjudication_round1.json",
+      "sha256": "a3d4c675820d24d954c23e4c9fa55054e3e48301fed2e53fc1fe9fa104c497c6",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/coordinator_repair_round1.json",
+      "sha256": "9fbbe92361134623c5432ecbefb6d321246b02de79108a0cb028f5511d6bbfe0",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/coordinator_repair_round1.diff",
+      "sha256": "d42909903edbfe830c7a341fee4af195bbade7fa3532544b3f703f7a467cac3d",
+      "matches_snapshot": true
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/visual_qa.json",
+      "sha256": "11f20e2b8b2745bf5993dbcb02414035fe6ec0a88eaef986271e0836a1062e49",
+      "matches_snapshot": true
+    }
+  ],
+  "closures": [
+    {
+      "finding_id": "R1-GF001",
+      "adjudicated_status": "PARTIAL",
+      "closure": "CLOSED_VERIFIED",
+      "evidence": [
+        "full_read_report.md:13, sections3.1-3.2,3.6,4-5",
+        "claim_comparison.csv:L01,L02,L04,L05,L10,L12,L17",
+        "read_manifest.json:repair_history,key_conclusions,outputs",
+        "repair_round1.md"
+      ],
+      "conclusion": "Bibliographic strengthening is distinguished from unchanged frozen capabilities; future IV/Hausman/weights/instruments excluded from tested unweighted OLS; no operational/test change."
+    },
+    {
+      "finding_id": "R1-GF002",
+      "adjudicated_status": "CONFIRMED",
+      "closure": "CLOSED_VERIFIED",
+      "evidence": [
+        "gelbach_addendum.md:21",
+        "gelbach_addendum.pdf:page1 section2 item1",
+        "coordinator_repair_round1.diff"
+      ],
+      "conclusion": "Eq(4) replaced by eq(3) exactly once in source and whole-PDF extracted text; changed page visually checked."
+    }
+  ],
+  "checks": {
+    "12_current_hashes_match_freeze": true,
+    "12_snapshots_match": true,
+    "reader_output_and_repair_hashes_match": true,
+    "six_prior_input_hashes_unchanged": true,
+    "source_pdf_text_map_hashes_unchanged": true,
+    "coverage_and_scope_byte_identical_to_round1": true,
+    "claims_L01_to_L17_ordered_unique": true,
+    "coordinator_repair_and_visual_QA_hashes_match": true,
+    "addendum_MD_exact_single_replacement": true,
+    "addendum_whole_PDF_extracted_text_exact_single_replacement": true,
+    "independent_repaired_PDF_visual_pages": [
+      1
+    ],
+    "coordinator_QA_repaired_PDF_visual_pages": [
+      1,
+      2,
+      3
+    ],
+    "new_source_reading": false
+  },
+  "not_executed": [
+    "R",
+    "Stata",
+    "analysis",
+    "bootstrap",
+    "manuscript edit",
+    "input artifact edit",
+    "new route choice",
+    "PDF rebuild by reviewer"
+  ],
+  "report": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/review_round2.md",
+    "sha256": "429d87d7132bbeb728792c6715b4af00a8325f1c9ba78af95379d7d835d38267"
+  },
+  "coordinator_followup": "Final adjudication, status/index and manifest may cite this review; these future records are not claimed reviewed here."
+}

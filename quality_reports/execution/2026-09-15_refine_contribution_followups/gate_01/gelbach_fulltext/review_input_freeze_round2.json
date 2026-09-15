@@ -1,0 +1,78 @@
+{
+  "created_at_utc": "2026-09-15T15:16:22.766514+00:00",
+  "scope": "Independent verification of adjudicated R1-GF001/R1-GF002 and dependencies, not a new scientific test",
+  "files": [
+    {
+      "path": "reading/full_read_report.md",
+      "sha256": "2737dcab2c8a66baea836c4c751e7ea745b128ca43ce4bf0aeeba36d5f3b0c33",
+      "bytes": 30134,
+      "snapshot": "snapshots/round2/reading/full_read_report.md"
+    },
+    {
+      "path": "reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "bytes": 6163,
+      "snapshot": "snapshots/round2/reading/page_coverage.csv"
+    },
+    {
+      "path": "reading/claim_comparison.csv",
+      "sha256": "e3413815890a91a3508474b08dc52e2911cfa6126c1619c6e07f62b8a91241dc",
+      "bytes": 10601,
+      "snapshot": "snapshots/round2/reading/claim_comparison.csv"
+    },
+    {
+      "path": "reading/read_manifest.json",
+      "sha256": "cae6c66279a70e732bedd9c29c6f3b385eb318c4528c5d32c657882c3b6c5c8f",
+      "bytes": 10678,
+      "snapshot": "snapshots/round2/reading/read_manifest.json"
+    },
+    {
+      "path": "reading/repair_round1.md",
+      "sha256": "7f91a6a0032390d7c35919a4d812fe511d7eefa22ed0903d5a6306dd56486ffa",
+      "bytes": 3862,
+      "snapshot": "snapshots/round2/reading/repair_round1.md"
+    },
+    {
+      "path": "gelbach_addendum.md",
+      "sha256": "60961506d6400160e140f29a4fa1e2f185593e71f54976abd62e99405d4d4067",
+      "bytes": 7191,
+      "snapshot": "snapshots/round2/gelbach_addendum.md"
+    },
+    {
+      "path": "gelbach_addendum.pdf",
+      "sha256": "76da384c52e1dbde4ce5d09c97ab5ed161a2bfa606f70fed04df7ed886f8015f",
+      "bytes": 65445,
+      "snapshot": "snapshots/round2/gelbach_addendum.pdf"
+    },
+    {
+      "path": "review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "bytes": 3690,
+      "snapshot": "snapshots/round2/review_scope.md"
+    },
+    {
+      "path": "adjudication_round1.json",
+      "sha256": "a3d4c675820d24d954c23e4c9fa55054e3e48301fed2e53fc1fe9fa104c497c6",
+      "bytes": 6033,
+      "snapshot": "snapshots/round2/adjudication_round1.json"
+    },
+    {
+      "path": "coordinator_repair_round1.json",
+      "sha256": "9fbbe92361134623c5432ecbefb6d321246b02de79108a0cb028f5511d6bbfe0",
+      "bytes": 788,
+      "snapshot": "snapshots/round2/coordinator_repair_round1.json"
+    },
+    {
+      "path": "coordinator_repair_round1.diff",
+      "sha256": "d42909903edbfe830c7a341fee4af195bbade7fa3532544b3f703f7a467cac3d",
+      "bytes": 1381,
+      "snapshot": "snapshots/round2/coordinator_repair_round1.diff"
+    },
+    {
+      "path": "visual_qa.json",
+      "sha256": "11f20e2b8b2745bf5993dbcb02414035fe6ec0a88eaef986271e0836a1062e49",
+      "bytes": 1425,
+      "snapshot": "snapshots/round2/visual_qa.json"
+    }
+  ]
+}

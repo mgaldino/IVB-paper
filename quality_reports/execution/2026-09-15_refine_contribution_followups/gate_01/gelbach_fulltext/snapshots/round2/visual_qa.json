@@ -1,0 +1,43 @@
+{
+  "at_utc": "2026-09-15T15:10:54.054904+00:00",
+  "pdf": "gelbach_addendum.pdf",
+  "pdf_sha256": "76da384c52e1dbde4ce5d09c97ab5ed161a2bfa606f70fed04df7ed886f8015f",
+  "source_sha256": "60961506d6400160e140f29a4fa1e2f185593e71f54976abd62e99405d4d4067",
+  "pdf_pages": 3,
+  "result": "PASS",
+  "method": "pdftoppm -scale-to 1400 -png; all 3 pages opened via view_image after final locator repair",
+  "pages": [
+    {
+      "page": 1,
+      "result": "PASS",
+      "checks": [
+        "legible text and equations",
+        "no clipping or overlap",
+        "headers and page numbers intact"
+      ],
+      "extra": "population locator (3) verified in section 2"
+    },
+    {
+      "page": 2,
+      "result": "PASS",
+      "checks": [
+        "legible text and equations",
+        "no clipping or overlap",
+        "headers and page numbers intact"
+      ],
+      "extra": "content and section transition inspected"
+    },
+    {
+      "page": 3,
+      "result": "PASS",
+      "checks": [
+        "legible text and equations",
+        "no clipping or overlap",
+        "headers and page numbers intact"
+      ],
+      "extra": "content and section transition inspected"
+    }
+  ],
+  "layout_iteration": "Initial draft had a forced page break and a short overflow page. The manual break was removed before round1 review. Final has 3 pages.",
+  "scope": "Visual rendering only; independent substantive revalidation is separate"
+}

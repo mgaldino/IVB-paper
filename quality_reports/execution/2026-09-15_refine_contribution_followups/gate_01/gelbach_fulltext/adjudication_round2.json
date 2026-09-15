@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "adjudication_id": "gelbach-fulltext:aca2e52ed6b6:round2",
+  "source": {
+    "reviewed_artifact": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review_input_freeze_round2.json",
+    "sha256": "aca2e52ed6b61158916f1883bfc7ed6a982772386b42a417576941cd3aa977bc",
+    "artifact_intact": true,
+    "scope": "Twelve current files and recoverable round2 snapshots"
+  },
+  "contract": {
+    "required": false,
+    "path": null,
+    "sha256": null,
+    "contract_id": null,
+    "artifact_sha256": null,
+    "status": null,
+    "stale": false
+  },
+  "contract_scope_note": "Revalidation of two adjudicated documentary repairs; governing review_scope and frozen v2 unchanged.",
+  "review_sources": [
+    {
+      "review_id": "GF-R2",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/review_round2.json",
+      "sha256": "d1ef30c7aa1820b332e86e18a41751972436d34cfa03b9be09d90d1487a6cab3"
+    },
+    {
+      "review_id": "GF-R2-MD",
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/review_round2.md",
+      "sha256": "429d87d7132bbeb728792c6715b4af00a8325f1c9ba78af95379d7d835d38267"
+    }
+  ],
+  "findings": [],
+  "resolved_findings": [
+    {
+      "finding_id": "R1-GF001",
+      "adjudicated_status": "PARTIAL",
+      "closure": "CLOSED_VERIFIED",
+      "evidence": [
+        "full_read_report.md:13, sections3.1-3.2,3.6,4-5",
+        "claim_comparison.csv:L01,L02,L04,L05,L10,L12,L17",
+        "read_manifest.json:repair_history,key_conclusions,outputs",
+        "repair_round1.md"
+      ],
+      "conclusion": "Bibliographic strengthening is distinguished from unchanged frozen capabilities; future IV/Hausman/weights/instruments excluded from tested unweighted OLS; no operational/test change."
+    },
+    {
+      "finding_id": "R1-GF002",
+      "adjudicated_status": "CONFIRMED",
+      "closure": "CLOSED_VERIFIED",
+      "evidence": [
+        "gelbach_addendum.md:21",
+        "gelbach_addendum.pdf:page1 section2 item1",
+        "coordinator_repair_round1.diff"
+      ],
+      "conclusion": "Eq(4) replaced by eq(3) exactly once in source and whole-PDF extracted text; changed page visually checked."
+    }
+  ],
+  "summary": {
+    "total": 0,
+    "confirmed": 0,
+    "partial": 0,
+    "refuted": 0,
+    "unresolved": 0,
+    "held_decisions": 0
+  },
+  "adjudication": {
+    "verdict": "NO_CONFIRMED_DEFECTS",
+    "checked_at": "2026-09-15T15:20:48.692817+00:00",
+    "reasons": [
+      "Independent round2 verified both repairs and found no new defect.",
+      "Coordinator checked exact reviewed hashes and snapshots, read the report/matrix changes and verified the single equation-number replacement.",
+      "Bibliographic incorporation may close; the negative scientific Gate1 disposition and author route choice are preserved."
+    ]
+  },
+  "previous_round": "adjudication_round1.json",
+  "scientific_gate_approved": false,
+  "owner_route_choice_pending": true
+}

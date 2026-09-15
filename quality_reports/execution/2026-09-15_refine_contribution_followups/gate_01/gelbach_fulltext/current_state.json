@@ -1,0 +1,59 @@
+{
+  "updated_at_utc": "2026-09-15T15:20:48.692817+00:00",
+  "gate": 1,
+  "state": "decisão do autor",
+  "gate_approved": false,
+  "access_status": "resolved",
+  "fulltext_reading_status": "complete_and_independently_reviewed",
+  "documentary_incorporation": "closed_after_independent_PASS_and_adjudication",
+  "source_pdf_sha256": "77392b7b09815f291f0ca55aa965786c59c4ca46a9ac1da44df0395dff96de2f",
+  "reading_coverage": {
+    "reader_text_pages": 35,
+    "reader_visual_pages": 22,
+    "independent_source_text_pages": 29,
+    "independent_source_visual_pages": 12
+  },
+  "no_longer_pending": [
+    "Access to Gelbach 2016 full text",
+    "Integral reading and source-bound confrontation of Gelbach 2016"
+  ],
+  "scientific_criteria": {
+    "gain_unreproducible_by_strong_comparator": "not_demonstrated_in_frozen_unweighted_OLS_domain",
+    "documentary_CET_application": "not_established_by_previous_triage",
+    "Gelbach_fulltext_requirement": "fulfilled"
+  },
+  "pending": [
+    "Author choice of scientific route after negative Gate1 result"
+  ],
+  "unchanged": [
+    "Frozen v2 test and its numerical results",
+    "Three-application triage and its limitations",
+    "Manuscript and original baseline",
+    "Original 194-file delivery"
+  ],
+  "accepted_review_records": [
+    {
+      "path": "review/review_round2.json",
+      "sha256": "d1ef30c7aa1820b332e86e18a41751972436d34cfa03b9be09d90d1487a6cab3"
+    },
+    {
+      "path": "review/review_round2.md",
+      "sha256": "429d87d7132bbeb728792c6715b4af00a8325f1c9ba78af95379d7d835d38267"
+    }
+  ],
+  "adjudication": "adjudication_round2.json",
+  "historical_decision": "../../../2026-09-15_refine_contribution/gate_01/decision.md",
+  "later_gates": {
+    "2": "planejado; dependent on scientific-route decision",
+    "3": "planejado; dependent on scientific-route decision",
+    "4": "planejado; dependent on scientific-route decision",
+    "5": "planejado; dependent on scientific-route decision",
+    "6": "planejado; dependent on scientific-route decision",
+    "7": "planejado; dependent on scientific-route decision"
+  },
+  "formal_goal_status_observed": "blocked",
+  "formal_goal_status_changed_in_this_followup": false,
+  "formal_goal_note": "The prior blocked state was observed with get_goal; this bibliographic followup did not mark the goal complete or choose a route.",
+  "analytical_execution_in_this_followup": false,
+  "coordination_record_note": "Written after independent review; documents its disposition without altering reviewed content."
+}

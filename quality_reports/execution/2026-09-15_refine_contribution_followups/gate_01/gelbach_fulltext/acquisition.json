@@ -1,0 +1,22 @@
+{
+  "acquired_at_utc": "2026-09-15T14:45:37.639447+00:00",
+  "source": "Local PDF identified by user in Downloads",
+  "original_path": "/Users/manoelgaldino/Downloads/683668.link.pdf",
+  "copied_path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/sources/gelbach_2016_683668.pdf",
+  "title": "When Do Covariates Matter? And Which Ones, and How Much?",
+  "author": "Jonah B. Gelbach",
+  "journal": "Journal of Labor Economics",
+  "year": 2016,
+  "volume": 34,
+  "issue": 2,
+  "printed_pages": "509-543",
+  "pdf_pages": 35,
+  "doi": "10.1086/683668",
+  "pdf_sha256": "77392b7b09815f291f0ca55aa965786c59c4ca46a9ac1da44df0395dff96de2f",
+  "text_sha256": "19c73f00577d19e289c6649ecc5668886d51dd74b08235a081d88d72e833e442",
+  "bytes": 626909,
+  "download_modified_at_utc": "2026-09-15T14:38:07.746127+00:00",
+  "identification": "Title, author and journal on first page; bibliography and page543 on last page; complete PDF page count",
+  "full_read_status": "pending reader and independent revalidation",
+  "history": "Prior acquisition failure remains a valid historical state; user supplied this new local file after the earlier delivery"
+}

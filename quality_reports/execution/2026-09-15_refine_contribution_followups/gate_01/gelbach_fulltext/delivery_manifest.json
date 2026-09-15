@@ -1,0 +1,283 @@
+{
+  "created_at_utc": "2026-09-15T15:22:28.917698+00:00",
+  "scope": "All addendum files except this manifest and Python caches",
+  "gate_approved": false,
+  "fulltext_reading_status": "complete_and_independently_reviewed",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "d6061261ca70bcec22e8c6b27e216602a8a4be0a75c117d40c209ed68832ea34",
+      "bytes": 6272
+    },
+    {
+      "path": "acquisition.json",
+      "sha256": "f6757d98be2fc70f561128581930a2724885fb719cd61d84eaed12ddae546ef1",
+      "bytes": 1185
+    },
+    {
+      "path": "adjudication_round1.json",
+      "sha256": "a3d4c675820d24d954c23e4c9fa55054e3e48301fed2e53fc1fe9fa104c497c6",
+      "bytes": 6033
+    },
+    {
+      "path": "adjudication_round1.md",
+      "sha256": "e50900883465db4a9fa1e1751a217ba98fa4f7d7d89acb6706b4b9156a978db6",
+      "bytes": 3604
+    },
+    {
+      "path": "adjudication_round2.json",
+      "sha256": "4f094e68fc168e342e604363aad35438c755a41fcb32636d3b608b7fdad9555b",
+      "bytes": 3071
+    },
+    {
+      "path": "adjudication_round2.md",
+      "sha256": "b3c2ccfd28f3c33b408ef7038889a58586a37dccf47a3c51cebe669726c163cf",
+      "bytes": 2204
+    },
+    {
+      "path": "build.json",
+      "sha256": "189a9b5f82a25c249bb77e849578e7f9e95541e4670e5e03bed9c119e31ec351",
+      "bytes": 1268
+    },
+    {
+      "path": "build_manifest.py",
+      "sha256": "edc50885bf9e2752d3dcb566a504f1698122ee283155944376d40d61ab2bd75f",
+      "bytes": 2150
+    },
+    {
+      "path": "coordinator_repair_round1.diff",
+      "sha256": "d42909903edbfe830c7a341fee4af195bbade7fa3532544b3f703f7a467cac3d",
+      "bytes": 1381
+    },
+    {
+      "path": "coordinator_repair_round1.json",
+      "sha256": "9fbbe92361134623c5432ecbefb6d321246b02de79108a0cb028f5511d6bbfe0",
+      "bytes": 788
+    },
+    {
+      "path": "current_state.json",
+      "sha256": "41df9028ec4d3a41c396d57556a4e773d572c82d1aff10b64ba1013d8b370f8b",
+      "bytes": 2522
+    },
+    {
+      "path": "gelbach_addendum.md",
+      "sha256": "60961506d6400160e140f29a4fa1e2f185593e71f54976abd62e99405d4d4067",
+      "bytes": 7191
+    },
+    {
+      "path": "gelbach_addendum.pdf",
+      "sha256": "76da384c52e1dbde4ce5d09c97ab5ed161a2bfa606f70fed04df7ed886f8015f",
+      "bytes": 65445
+    },
+    {
+      "path": "reading/claim_comparison.csv",
+      "sha256": "e3413815890a91a3508474b08dc52e2911cfa6126c1619c6e07f62b8a91241dc",
+      "bytes": 10601
+    },
+    {
+      "path": "reading/full_read_report.md",
+      "sha256": "2737dcab2c8a66baea836c4c751e7ea745b128ca43ce4bf0aeeba36d5f3b0c33",
+      "bytes": 30134
+    },
+    {
+      "path": "reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "bytes": 6163
+    },
+    {
+      "path": "reading/read_manifest.json",
+      "sha256": "cae6c66279a70e732bedd9c29c6f3b385eb318c4528c5d32c657882c3b6c5c8f",
+      "bytes": 10678
+    },
+    {
+      "path": "reading/repair_round1.md",
+      "sha256": "7f91a6a0032390d7c35919a4d812fe511d7eefa22ed0903d5a6306dd56486ffa",
+      "bytes": 3862
+    },
+    {
+      "path": "render.log",
+      "sha256": "acddc44a9ad26a13e7bffe0daa1e2dc577859315ae5af6aeacf97dc031e4381f",
+      "bytes": 166
+    },
+    {
+      "path": "render_addendum.py",
+      "sha256": "e3a83e4264304718d6a8a3288b7f6ac6864eab00fc6cdfdd31724bf44667c4ab",
+      "bytes": 1557
+    },
+    {
+      "path": "review/independent_source_read.md",
+      "sha256": "c302572c55619d09ff38167e0829a3493637790021ba672cbf3b4fbcd6d4c28b",
+      "bytes": 18860
+    },
+    {
+      "path": "review/independent_source_read_freeze.json",
+      "sha256": "a402ead86fd4a4d5ac53ff97c0401cbdb44f1b2dd7021e09904119f29315cd6f",
+      "bytes": 867
+    },
+    {
+      "path": "review/review_round1.json",
+      "sha256": "1a6e665c41d70d609f24a22a2d62640006b21703ad424089e2e69da68d0f57a4",
+      "bytes": 9501
+    },
+    {
+      "path": "review/review_round1.md",
+      "sha256": "4346f92864326bd86bbac4408af6ed83cfe381586ba9a107c45bacf9f876f677",
+      "bytes": 15825
+    },
+    {
+      "path": "review/review_round2.json",
+      "sha256": "d1ef30c7aa1820b332e86e18a41751972436d34cfa03b9be09d90d1487a6cab3",
+      "bytes": 6035
+    },
+    {
+      "path": "review/review_round2.md",
+      "sha256": "429d87d7132bbeb728792c6715b4af00a8325f1c9ba78af95379d7d835d38267",
+      "bytes": 5219
+    },
+    {
+      "path": "review_input_freeze_round1.json",
+      "sha256": "f150900bba2ac9a355f5ded9dc503d0fe04866fe2ab6a4cb84bbdbecc8942029",
+      "bytes": 1703
+    },
+    {
+      "path": "review_input_freeze_round2.json",
+      "sha256": "aca2e52ed6b61158916f1883bfc7ed6a982772386b42a417576941cd3aa977bc",
+      "bytes": 2847
+    },
+    {
+      "path": "review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "bytes": 3690
+    },
+    {
+      "path": "snapshots/acquisition/README.md",
+      "sha256": "045a1234fb11fd673f49e5d4631b3fb1e14392186e1f61436dc98eed7d354679",
+      "bytes": 1738
+    },
+    {
+      "path": "snapshots/round1/gelbach_addendum.md",
+      "sha256": "e2fcb8d9d9f9d083674b585e27d01568b47a21ac8a1ef61668b4ef0cb3bf06bd",
+      "bytes": 7191
+    },
+    {
+      "path": "snapshots/round1/gelbach_addendum.pdf",
+      "sha256": "9577982954fb50a132d06f9643a48fdb0e83fb954f98ac14bd6853c9f7f5d610",
+      "bytes": 65448
+    },
+    {
+      "path": "snapshots/round1/reading/claim_comparison.csv",
+      "sha256": "eabc22df049a1aafee7c97e6106ae6dafb3e7bb76e35747cb3d4e0727c2eb841",
+      "bytes": 10110
+    },
+    {
+      "path": "snapshots/round1/reading/full_read_report.md",
+      "sha256": "689ef5c5b03a5726f284670ff325cfe6f1c7ed5d260b1e606c6b1e628c88418b",
+      "bytes": 28835
+    },
+    {
+      "path": "snapshots/round1/reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "bytes": 6163
+    },
+    {
+      "path": "snapshots/round1/reading/read_manifest.json",
+      "sha256": "65e7dcb37087e56f3fda2210a5d8e938c67deadde2c0deeee654368856a2f968",
+      "bytes": 9201
+    },
+    {
+      "path": "snapshots/round1/review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "bytes": 3690
+    },
+    {
+      "path": "snapshots/round2/adjudication_round1.json",
+      "sha256": "a3d4c675820d24d954c23e4c9fa55054e3e48301fed2e53fc1fe9fa104c497c6",
+      "bytes": 6033
+    },
+    {
+      "path": "snapshots/round2/coordinator_repair_round1.diff",
+      "sha256": "d42909903edbfe830c7a341fee4af195bbade7fa3532544b3f703f7a467cac3d",
+      "bytes": 1381
+    },
+    {
+      "path": "snapshots/round2/coordinator_repair_round1.json",
+      "sha256": "9fbbe92361134623c5432ecbefb6d321246b02de79108a0cb028f5511d6bbfe0",
+      "bytes": 788
+    },
+    {
+      "path": "snapshots/round2/gelbach_addendum.md",
+      "sha256": "60961506d6400160e140f29a4fa1e2f185593e71f54976abd62e99405d4d4067",
+      "bytes": 7191
+    },
+    {
+      "path": "snapshots/round2/gelbach_addendum.pdf",
+      "sha256": "76da384c52e1dbde4ce5d09c97ab5ed161a2bfa606f70fed04df7ed886f8015f",
+      "bytes": 65445
+    },
+    {
+      "path": "snapshots/round2/reading/claim_comparison.csv",
+      "sha256": "e3413815890a91a3508474b08dc52e2911cfa6126c1619c6e07f62b8a91241dc",
+      "bytes": 10601
+    },
+    {
+      "path": "snapshots/round2/reading/full_read_report.md",
+      "sha256": "2737dcab2c8a66baea836c4c751e7ea745b128ca43ce4bf0aeeba36d5f3b0c33",
+      "bytes": 30134
+    },
+    {
+      "path": "snapshots/round2/reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "bytes": 6163
+    },
+    {
+      "path": "snapshots/round2/reading/read_manifest.json",
+      "sha256": "cae6c66279a70e732bedd9c29c6f3b385eb318c4528c5d32c657882c3b6c5c8f",
+      "bytes": 10678
+    },
+    {
+      "path": "snapshots/round2/reading/repair_round1.md",
+      "sha256": "7f91a6a0032390d7c35919a4d812fe511d7eefa22ed0903d5a6306dd56486ffa",
+      "bytes": 3862
+    },
+    {
+      "path": "snapshots/round2/review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "bytes": 3690
+    },
+    {
+      "path": "snapshots/round2/visual_qa.json",
+      "sha256": "11f20e2b8b2745bf5993dbcb02414035fe6ec0a88eaef986271e0836a1062e49",
+      "bytes": 1425
+    },
+    {
+      "path": "sources/gelbach_2016_683668.pdf",
+      "sha256": "77392b7b09815f291f0ca55aa965786c59c4ca46a9ac1da44df0395dff96de2f",
+      "bytes": 626909
+    },
+    {
+      "path": "sources/gelbach_2016_683668.txt",
+      "sha256": "19c73f00577d19e289c6649ecc5668886d51dd74b08235a081d88d72e833e442",
+      "bytes": 116987
+    },
+    {
+      "path": "sources/page_map.json",
+      "sha256": "25348b1c91a61f2bb9d6396631c545854f1af2c4ca7fa362b62655e880999972",
+      "bytes": 6749
+    },
+    {
+      "path": "verification.json",
+      "sha256": "792a8fb6cec5ea656958dbdf10782791a0a6e21c53760b07013dced735e7c3bc",
+      "bytes": 756
+    },
+    {
+      "path": "verify_documents.py",
+      "sha256": "6c51c4d9a26b7fee0802ae7b100f5cf5966c91860c48bd47afdd0129be0eee75",
+      "bytes": 4968
+    },
+    {
+      "path": "visual_qa.json",
+      "sha256": "11f20e2b8b2745bf5993dbcb02414035fe6ec0a88eaef986271e0836a1062e49",
+      "bytes": 1425
+    }
+  ]
+}

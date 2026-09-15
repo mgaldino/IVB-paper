@@ -1,0 +1,16 @@
+{
+  "at_utc": "2026-09-15T15:10:54.042390+00:00",
+  "finding": "R1-GF002",
+  "adjudication": "adjudication_round1.json",
+  "implementer": "coordinator",
+  "change": "Equation locator (4) to (3), exactly one textual replacement",
+  "old_source_sha256": "e2fcb8d9d9f9d083674b585e27d01568b47a21ac8a1ef61668b4ef0cb3bf06bd",
+  "new_source_sha256": "60961506d6400160e140f29a4fa1e2f185593e71f54976abd62e99405d4d4067",
+  "old_pdf_sha256": "9577982954fb50a132d06f9643a48fdb0e83fb954f98ac14bd6853c9f7f5d610",
+  "new_pdf_sha256": "76da384c52e1dbde4ce5d09c97ab5ed161a2bfa606f70fed04df7ed886f8015f",
+  "source_diff": "coordinator_repair_round1.diff",
+  "pdf_rebuilt": true,
+  "build_record": "build.json",
+  "independent_revalidation": "pending",
+  "scientific_content_or_conclusion_changed": false
+}

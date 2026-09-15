@@ -1,0 +1,11 @@
+--- snapshots/round1/gelbach_addendum.md
++++ gelbach_addendum.md
+@@ -18,7 +18,7 @@
+ 
+ Os localizadores abaixo usam as páginas impressas. No PDF, a página 1 corresponde à p. 509.
+ 
+-1. **Identidade e alocação já conhecidas.** As eqs. (4) e (11) estabelecem as versões populacional e amostral da decomposição, e a eq. (12) aloca o deslocamento por covariada; grupos são somas dos componentes. A base e o modelo completo precisam estar fixados. Gelbach usa base menos completo; a convenção do IVB-paper inverte esse sinal. Fontes: p. 518 e pp. 521–523.
++1. **Identidade e alocação já conhecidas.** As eqs. (3) e (11) estabelecem as versões populacional e amostral da decomposição, e a eq. (12) aloca o deslocamento por covariada; grupos são somas dos componentes. A base e o modelo completo precisam estar fixados. Gelbach usa base menos completo; a convenção do IVB-paper inverte esse sinal. Fontes: p. 518 e pp. 521–523.
+ 
+ 2. **Covariância conjunta.** O Apêndice B inclui a incerteza dos coeficientes do modelo completo, a das projeções auxiliares e dois termos cruzados. A eq. (B2), p. 532, contém esses quatro termos. A p. 534 admite estimação robusta à heterocedasticidade ou dependência por grupos, sob condições apropriadas. A variância de uma auxiliar isolada com resposta estimada tratada como fixa omite três termos (pp. 534–535).
+ 

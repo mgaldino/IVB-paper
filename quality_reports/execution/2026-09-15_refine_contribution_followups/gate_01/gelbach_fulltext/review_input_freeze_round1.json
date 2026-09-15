@@ -1,0 +1,48 @@
+{
+  "created_at_utc": "2026-09-15T15:02:27.304382+00:00",
+  "scope": "Input packet for independent Phase B, after reviewer Phase A was frozen",
+  "files": [
+    {
+      "path": "reading/full_read_report.md",
+      "sha256": "689ef5c5b03a5726f284670ff325cfe6f1c7ed5d260b1e606c6b1e628c88418b",
+      "bytes": 28835,
+      "snapshot": "snapshots/round1/reading/full_read_report.md"
+    },
+    {
+      "path": "reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "bytes": 6163,
+      "snapshot": "snapshots/round1/reading/page_coverage.csv"
+    },
+    {
+      "path": "reading/claim_comparison.csv",
+      "sha256": "eabc22df049a1aafee7c97e6106ae6dafb3e7bb76e35747cb3d4e0727c2eb841",
+      "bytes": 10110,
+      "snapshot": "snapshots/round1/reading/claim_comparison.csv"
+    },
+    {
+      "path": "reading/read_manifest.json",
+      "sha256": "65e7dcb37087e56f3fda2210a5d8e938c67deadde2c0deeee654368856a2f968",
+      "bytes": 9201,
+      "snapshot": "snapshots/round1/reading/read_manifest.json"
+    },
+    {
+      "path": "gelbach_addendum.md",
+      "sha256": "e2fcb8d9d9f9d083674b585e27d01568b47a21ac8a1ef61668b4ef0cb3bf06bd",
+      "bytes": 7191,
+      "snapshot": "snapshots/round1/gelbach_addendum.md"
+    },
+    {
+      "path": "gelbach_addendum.pdf",
+      "sha256": "9577982954fb50a132d06f9643a48fdb0e83fb954f98ac14bd6853c9f7f5d610",
+      "bytes": 65448,
+      "snapshot": "snapshots/round1/gelbach_addendum.pdf"
+    },
+    {
+      "path": "review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "bytes": 3690,
+      "snapshot": "snapshots/round1/review_scope.md"
+    }
+  ]
+}

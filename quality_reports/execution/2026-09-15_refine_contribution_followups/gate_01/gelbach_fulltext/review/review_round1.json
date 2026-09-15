@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0",
+  "phase": "B",
+  "round": 1,
+  "reviewer": "gelbach_full_review",
+  "created_at_utc": "2026-09-15T15:07:58.444041+00:00",
+  "documentary_verdict": "DOCUMENTATION_REQUIRES_LOCAL_CORRECTIONS",
+  "gate_approved": false,
+  "adjudication_status": "CANDIDATES_AWAITING_COORDINATOR",
+  "scientific_equivalence_reversed": false,
+  "new_scientific_route_selected": false,
+  "freeze": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review_input_freeze_round1.json",
+    "sha256": "f150900bba2ac9a355f5ded9dc503d0fe04866fe2ab6a4cb84bbdbecc8942029"
+  },
+  "reviewed_artifacts": [
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/full_read_report.md",
+      "sha256": "689ef5c5b03a5726f284670ff325cfe6f1c7ed5d260b1e606c6b1e628c88418b",
+      "matches_snapshot": true,
+      "review_mode": "full_text_read"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/page_coverage.csv",
+      "sha256": "d897a8a64b899f69bffb027c8fe433b1a7421822fc73809d4d08cde6b26eaac6",
+      "matches_snapshot": true,
+      "review_mode": "full_text_read"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/claim_comparison.csv",
+      "sha256": "eabc22df049a1aafee7c97e6106ae6dafb3e7bb76e35747cb3d4e0727c2eb841",
+      "matches_snapshot": true,
+      "review_mode": "full_text_read"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/reading/read_manifest.json",
+      "sha256": "65e7dcb37087e56f3fda2210a5d8e938c67deadde2c0deeee654368856a2f968",
+      "matches_snapshot": true,
+      "review_mode": "full_text_read"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/gelbach_addendum.md",
+      "sha256": "e2fcb8d9d9f9d083674b585e27d01568b47a21ac8a1ef61668b4ef0cb3bf06bd",
+      "matches_snapshot": true,
+      "review_mode": "full_text_read"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/gelbach_addendum.pdf",
+      "sha256": "9577982954fb50a132d06f9643a48fdb0e83fb954f98ac14bd6853c9f7f5d610",
+      "matches_snapshot": true,
+      "review_mode": "visual_3_of_3_pages"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review_scope.md",
+      "sha256": "63cd27f4b101fb6bf47694bbc4d63a86b9a77d516cbf060cce14b8963d6c1b44",
+      "matches_snapshot": true,
+      "review_mode": "full_text_read"
+    }
+  ],
+  "independent_phase_A": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/independent_source_read.md",
+    "sha256": "c302572c55619d09ff38167e0829a3493637790021ba672cbf3b4fbcd6d4c28b",
+    "freeze_sha256": "a402ead86fd4a4d5ac53ff97c0401cbdb44f1b2dd7021e09904119f29315cd6f",
+    "written_before_reader_products_opened": true
+  },
+  "source": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/sources/gelbach_2016_683668.pdf",
+    "sha256": "77392b7b09815f291f0ca55aa965786c59c4ca46a9ac1da44df0395dff96de2f",
+    "independent_text_printed_pages": [
+      509,
+      510,
+      511,
+      512,
+      516,
+      517,
+      518,
+      519,
+      520,
+      521,
+      522,
+      523,
+      524,
+      525,
+      526,
+      527,
+      528,
+      529,
+      530,
+      531,
+      532,
+      533,
+      534,
+      535,
+      536,
+      537,
+      538,
+      539,
+      540
+    ],
+    "independent_visual_printed_pages": [
+      518,
+      521,
+      522,
+      523,
+      524,
+      526,
+      528,
+      529,
+      532,
+      533,
+      534,
+      535
+    ],
+    "phase_B_visual_revisit_printed_pages": [
+      518
+    ],
+    "reader_claimed_full_coverage": 35,
+    "reader_claimed_visual_coverage": 22,
+    "coverage_record_consistent": true,
+    "reviewer_claims_full_source_read": false
+  },
+  "governing_inputs": [
+    {
+      "path": "quality_reports/plans/2026-09-15_refine_contribution/plan.md",
+      "sha256": "d2d2ea2e39102ab4193ee2f82b12b0823143867a23750c38d626aa4797eb7f5d",
+      "read_scope": "Gate1 definition and governing plan, read PhaseA"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/contribution/test_prespec_v2.md",
+      "sha256": "37562fccf615793d0b589b58303e0afeb225edd73ea85e44a7bb1b7688be7097",
+      "read_scope": "full PhaseA; targeted PhaseB sections2,3,7,10"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/decision.md",
+      "sha256": "f4eb96cb79d35535d159e2e90ef14c5f387fe54a834d498a7b0eb16f911fd7b3",
+      "read_scope": "full document read for historical decision"
+    },
+    {
+      "path": "quality_reports/execution/2026-09-15_refine_contribution/gate_01/contribution/derivation.md",
+      "sha256": "7038d74a1623e9b18a8902b48a44cbe7ba69530c7de96a03b876203055edb0c8",
+      "read_scope": "targeted lines9,39,72,76,208-214; not full proof re-audit"
+    }
+  ],
+  "findings": [
+    {
+      "id": "R1-GF001",
+      "status": "CANDIDATE",
+      "proposed_classification": "PARTIAL",
+      "severity": "medium_documentary",
+      "type": "scope_or_consistency",
+      "title": "Separate stronger bibliographic support from retroactive strengthening of tested C+",
+      "owner": "gelbach_full_reader",
+      "locations": [
+        "reading/full_read_report.md:13",
+        "reading/full_read_report.md:155",
+        "reading/full_read_report.md:157-164",
+        "reading/full_read_report.md:201-207",
+        "reading/claim_comparison.csv:L01",
+        "reading/claim_comparison.csv:L17"
+      ],
+      "original_excerpt": "O comparador forte C+ fica mais forte depois desta leitura porque deve receber também",
+      "defect_evidence": "The tested v2 already provides exact/population moments, shared causal inputs, OLS/intermediates, joint covariance and origin-degeneracy limits. It states C+ already had robust/cluster/covariance capacities (line158). Previous derivation line9 supplies a population version. The new report is ambiguous about what was added after observing results.",
+      "refuting_evidence": "Report lines17/225 preserve frozen OLS equivalence; line184 and matrix L07 qualify IV as a future scope. Addendum lines15/58 explicitly say C+ could already execute these operations. No operational change or biased rerun was found.",
+      "supporting_localizers": [
+        "test_prespec_v2.md:18-28",
+        "test_prespec_v2.md:40-48",
+        "test_prespec_v2.md:132-134",
+        "test_prespec_v2.md:158",
+        "contribution/derivation.md:9",
+        "gelbach_addendum.md:15",
+        "gelbach_addendum.md:58"
+      ],
+      "recommended_fix": "State bibliographic strengthening and clearer description of unchanged v2; qualify IV/Hausman as future comparison only; harmonize L01/L17 and update derived manifest hashes. Do not redesign or rerun tests.",
+      "fix_safety": "safe",
+      "scientific_conclusion_changed": false
+    },
+    {
+      "id": "R1-GF002",
+      "status": "CANDIDATE",
+      "proposed_classification": "CONFIRMED",
+      "severity": "low",
+      "type": "artifact",
+      "title": "Correct population-equation locator in addendum",
+      "owner": "coordinator",
+      "locations": [
+        "gelbach_addendum.md:21",
+        "gelbach_addendum.pdf:page1 section2 item1"
+      ],
+      "original_excerpt": "As eqs. (4) e (11) estabelecem as versões populacional e amostral da decomposição",
+      "defect_evidence": "Source printed p518/PDF10 eq(3) gives beta1base=beta1+Gamma beta2=beta1+delta. Eq(4) gives auxiliary projection X2=X1Gamma+W; sample identity is eq(11) p521. Source p518 was visually rechecked.",
+      "supporting_localizers": [
+        "Gelbach2016:p518 eq3",
+        "Gelbach2016:p518 eq4",
+        "Gelbach2016:p521 eq11",
+        "independent_source_read.md:A01-A02"
+      ],
+      "recommended_fix": "Use eqs(3) and(11), or eqs(3)-(4) and(11) with auxiliary meaning distinguished; rebuild addendum PDF and update hashes.",
+      "fix_safety": "safe",
+      "scientific_conclusion_changed": false
+    }
+  ],
+  "counts": {
+    "proposed_confirmed": 1,
+    "proposed_partial": 1,
+    "proposed_refuted": 0,
+    "material_unresolved": 0
+  },
+  "checks": {
+    "seven_input_hashes_and_snapshots_match": true,
+    "source_pdf_text_map_hashes_match": true,
+    "six_manifest_prior_input_hashes_match": true,
+    "historical_decision_hash_matches": true,
+    "phase_A_unchanged": true,
+    "coverage_rows": 35,
+    "coverage_sequences_valid": true,
+    "visual_claims_consistent": true,
+    "claim_rows": 17,
+    "manifest_output_hashes_match": true,
+    "addendum_visual_pages_reviewed": 3,
+    "material_layout_defect_found": false
+  },
+  "not_executed": [
+    "R",
+    "Stata",
+    "new analysis",
+    "bootstrap",
+    "new data collection",
+    "Gelbach2009 reading",
+    "manuscript edits",
+    "input-product edits",
+    "old-packet edits",
+    "commit",
+    "push",
+    "route choice"
+  ],
+  "report": {
+    "path": "quality_reports/execution/2026-09-15_refine_contribution_followups/gate_01/gelbach_fulltext/review/review_round1.md",
+    "sha256": "4346f92864326bd86bbac4408af6ed83cfe381586ba9a107c45bacf9f876f677"
+  }
+}
