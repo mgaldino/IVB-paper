@@ -15,9 +15,9 @@ A identidade de Frisch–Waugh–Lovell mede uma mudança entre projeções anin
 
 ## Extensão SDiD
 
-A extensão para estimadores com pesos adaptativos está isolada na branch `feature/ivb-sdid-factor-models`, em um worktree próprio. Ela contém um manuscrito, uma derivação e uma aplicação diferentes do paper principal. O snapshot pendente foi preservado no commit `67aa080`.
+A extensão para estimadores com pesos adaptativos foi separada no repositório irmão `../IVB-SDiD`, com histórico filtrado e documentação de proveniência. Ela contém um manuscrito, uma derivação e uma aplicação diferentes do paper principal.
 
-A extensão é candidata a um repositório independente. Até essa decisão ser executada, ela não deve ser fundida em `main` nem tratada como nova versão do manuscrito PA.
+A branch `feature/ivb-sdid-factor-models` e a tag `archive/ivb-sdid-pre-split-2026-09-14` permanecem neste repositório como registro da origem. A branch não deve ser fundida em `main` nem tratada como nova versão do manuscrito PA. O desenvolvimento da extensão continua em `../IVB-SDiD`.
 
 ## Estrutura
 

@@ -5,7 +5,7 @@
 - **Manuscrito ativo**: `ivb_paper_pa.Rmd` e `ivb_paper_pa.pdf`.
 - **Objeto central**: mudança de especificação em modelos lineares aninhados; a identidade IVB só recebe interpretação causal depois de fixados o estimando, o relógio temporal, o DAG e as hipóteses de identificação.
 - **Versão histórica**: `ivb_paper_psrm.Rmd` e `ivb_paper_psrm.pdf`; mantidos para rastreabilidade, não para edição corrente.
-- **Extensão SDiD**: branch `feature/ivb-sdid-factor-models`, em worktree isolado. O estado vivo foi preservado no commit `67aa080` e é candidato a repositório independente.
+- **Extensão SDiD**: separada no repositório irmão `../IVB-SDiD` em 2026-09-14, com histórico filtrado e `PROVENANCE.md`. A branch `feature/ivb-sdid-factor-models` e sua tag de checkpoint permanecem aqui apenas como registro da origem; não as fundir em `main`.
 - **Lean/CausalSmith**: avaliação concluída, implementação adiada até a organização de repositórios e versões.
 
 ## O que e este projeto
